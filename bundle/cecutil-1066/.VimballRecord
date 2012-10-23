@@ -1,0 +1,1 @@
+cecutil.vba: call delete('/Users/danesummers/.vim/bundle/cecutil-1066/plugin/cecutil.vim')|call delete('/Users/danesummers/.vim/bundle/cecutil-1066/doc/cecutil.txt')
