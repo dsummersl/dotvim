@@ -1,4 +1,6 @@
 " basic options {{{
+syntax on
+set t_Co=256
 set guioptions=egrLt  " GUI options
 colorscheme zellner
 set enc=utf-8
@@ -29,15 +31,15 @@ set showmatch   " Show matching brackets.
 let g:indenthlshowerrors = 1
 let g:indenthlinfertabmode = 1
 
-hi DiffAdd term=reverse ctermfg=0 ctermbg=5* guifg=Black guibg=LightBlue
+hi DiffAdd term=reverse guifg=Black guibg=LightBlue
 " hilighted colors should be nice.
-hi IncSearch term=reverse ctermfg=0 ctermbg=5* guifg=Black guibg=#bbdbff
-hi Search term=reverse ctermfg=0 ctermbg=5* guifg=Black guibg=#bbdbff
+hi IncSearch term=reverse guifg=Black guibg=#bbdbff
+hi Search term=reverse guifg=Black guibg=#bbdbff
 " show marks colors
-hi default ShowMarksHLl ctermfg=darkblue ctermbg=blue guifg=#e5f1ff guibg=#bebebe
-hi default ShowMarksHLu ctermfg=darkblue ctermbg=blue guifg=#e5f1ff guibg=#bebebe
-hi default ShowMarksHLo ctermfg=darkblue ctermbg=blue guifg=#acd3ff guibg=#bebebe
-hi default ShowMarksHLm ctermfg=darkblue ctermbg=blue guifg=white guibg=#bebebe
+hi default ShowMarksHLl guifg=#e5f1ff guibg=#bebebe
+hi default ShowMarksHLu guifg=#e5f1ff guibg=#bebebe
+hi default ShowMarksHLo guifg=#acd3ff guibg=#bebebe
+hi default ShowMarksHLm guifg=white guibg=#bebebe
 
 " disable the showmarks & minibuffer plugin to start.
 let g:showmarks_enable = 0
@@ -57,18 +59,22 @@ let Tlist_File_Fold_Auto_Close = 1
 
 let NERDMapleader = ','
 
+" show undo history
 nnoremap <F5> :GundoToggle<CR>
+" show tags in current file
+" TODO not working in console mode
 nnoremap <S-F5> :Tlist<CR>
-nnoremap <S-F6> :Gvdiff<CR>
-nnoremap <F6> :FufFile<CR>
+" show diff with git
+nnoremap <F6> :Gvdiff<CR>
 
 let g:mvom_bg_showinline = 1
+" TODO disable the plugin for now - it is very slow via the console.
+let g:mvom_enabled = 0 
+" Fix any hilighting so that it works in cterm:
+" exec ":CSApprox!"
 "let g:mvom_loaded = 1
 "call MVOM_Setup('Search','Slash')
 "call MVOM_Setup('Window','BG')
-
-" fuzzy finder
-let g:fuf_ignoreCase = 1
 
 function! LoadProject(type,directory)
 	" type      = the type of project.
@@ -87,26 +93,26 @@ function! LoadProject(type,directory)
 	endif
 	exec "source ~/.vim/bundle/lookupfile-grep/project/". a:type .".vim"
 endfunction
-command! -nargs=? -bang -complete=dir MR :call LoadProject("maven",<q-args>)
-command! -nargs=? -bang -complete=dir RR :call LoadProject("rails",<q-args>)
-command! -nargs=? -bang -complete=dir JR :call LoadProject("java",<q-args>)
-command! -nargs=? -bang -complete=dir SR :call LoadProject("script",<q-args>)
-command! -nargs=? -bang -complete=dir GR :call LoadProject("grails",<q-args>)
+command! -nargs=? -bang -complete=dir ProjectMaven  :call LoadProject("maven",<q-args>)
+command! -nargs=? -bang -complete=dir ProjectRails  :call LoadProject("rails",<q-args>)
+command! -nargs=? -bang -complete=dir ProjectJava   :call LoadProject("java",<q-args>)
+command! -nargs=? -bang -complete=dir ProjectScript :call LoadProject("script",<q-args>)
+command! -nargs=? -bang -complete=dir ProjectGrails :call LoadProject("grails",<q-args>)
+command! -nargs=? -bang -complete=dir ProjectScala  :call LoadProject("grails",<q-args>)
+command! -nargs=? -bang -complete=dir ProjectPython :call LoadProject("grails",<q-args>)
 
 "}}}
 " Setup how in 'list' mode characters for white space and tabs appear"{{{
 " set lcs=tab:]_,trail:+
-" hi SpecialKey term=underline ctermfg=0 ctermbg=5* guifg=LightBlue guibg=bg
+" hi SpecialKey term=underline guifg=LightBlue guibg=bg
 set lcs=tab:\ \ ,trail:+
-hi SpecialKey term=underline ctermfg=1 ctermbg=7 guifg=Red guibg=LightGrey
+hi SpecialKey term=underline guifg=Red guibg=LightGrey
 "}}}
 " for version 7"{{{
 if v:version / 100 == 7
-	if has("gui_running")
-		set anti
-		set cursorline
-		highlight CursorLine guibg=#fcc975
-	endif
+  set anti
+  set cursorline
+  highlight CursorLine guibg=#fcc975
 	set nospell spelllang=en_us
 	set cryptmethod=blowfish
 endif
@@ -152,6 +158,7 @@ if has("autocmd")
 	autocmd BufNewFile,BufRead *.tsv Delimiter \t
 	autocmd BufNewFile,BufRead *.tsv set ts=20
 	autocmd BufNewFile,BufRead *.tsv set sw=20
+	autocmd BufNewFile,BufRead *.gradle set ft=groovy
 	autocmd BufNewFile,BufRead Vagrantfile set ft=ruby
 
 	autocmd FileType groovy set ai
