@@ -1,8 +1,27 @@
+" pathogen setup {{{
+" Needed on some linux distros.
+" see http://www.adamlowe.me/2009/12/vim-destroys-all-other-rails-editors.html
+filetype off 
+call pathogen#runtime_append_all_bundles()
+call pathogen#helptags()
+
+filetype on 
+filetype indent on    " Enable filetype-specific indenting
+filetype plugin on    " Enable filetype-specific plugins
+" }}}
 " basic options {{{
 syntax on
 set t_Co=256
 set guioptions=egrLt  " GUI options
-colorscheme zellner
+
+set background=light
+let g:solarized_termcolors=256
+colorscheme solarized
+
+"colorscheme morning
+"colorscheme slate
+"colorscheme zellner
+
 set enc=utf-8
 set gfn=Monaco:h13
 set updatetime=500
@@ -27,6 +46,20 @@ set showmatch   " Show matching brackets.
 "}}}
 " Plugin settings, changes."{{{
 
+let g:gist_clip_command = 'pbcopy'
+let g:gist_detect_filetype = 1
+let g:gist_open_browser_after_post = 1
+
+let g:UltiSnipsSnippetsDir="~/.vim/bundle/ultisnips/UltiSnips"
+let g:UltiSnipsListSnippets='<c-\>'
+
+" CtrlP plugin
+let g:ctrlp_use_caching = 1
+let g:ctrlp_clear_cache_on_exit = 0
+let g:ctrlp_cache_dir = $HOME.'/.cache/ctrlp'
+" by default ignore subversion things and swap file
+set wildignore+=*/.git/*,*/.hg/*,*/.svn/*,*/*.sw?,*/*.pyc
+
 " indenthl syntax:
 let g:indenthlshowerrors = 1
 let g:indenthlinfertabmode = 1
@@ -48,24 +81,16 @@ let loaded_ZoomWin = 0
 let g:LookupFileGrep_IgnoreCase = 1
 let g:LookupFile_DisableDefaultMap = 1
 
-" IMPORTANT: grep will sometimes skip displaying the file name if you
-" search in a singe file. This will confuse latex-suite. Set your grep
-" program to alway generate a file-name.
-set grepprg=grep\ -nH\ $*
-
-" brew install ctags
-let Tlist_Ctags_Cmd = '/usr/local/bin/ctags'
-let Tlist_File_Fold_Auto_Close = 1
-
 let NERDMapleader = ','
+
+let g:tagbar_left = 1
 
 " show undo history
 nnoremap <F5> :GundoToggle<CR>
-" show tags in current file
-" TODO not working in console mode
-nnoremap <S-F5> :Tlist<CR>
 " show diff with git
 nnoremap <F6> :Gvdiff<CR>
+" show tags in current file
+nnoremap <F7> :TagbarToggle<CR>
 
 let g:mvom_bg_showinline = 1
 " TODO disable the plugin for now - it is very slow via the console.
@@ -101,6 +126,43 @@ command! -nargs=? -bang -complete=dir ProjectGrails :call LoadProject("grails",<
 command! -nargs=? -bang -complete=dir ProjectScala  :call LoadProject("grails",<q-args>)
 command! -nargs=? -bang -complete=dir ProjectPython :call LoadProject("grails",<q-args>)
 
+
+let g:tagbar_type_groovy = {
+    \ 'ctagstype' : 'groovy',
+    \ 'kinds'     : [
+        \ 'p:package',
+        \ 'c:class',
+        \ 'i:interface',
+        \ 'f:function',
+        \ 'v:variables',
+    \ ]
+\ }
+
+let g:tagbar_type_markdown = {
+  \ 'ctagstype' : 'markdown',
+  \ 'kinds' : [
+    \ 'h:Heading_L1',
+    \ 'i:Heading_L2',
+    \ 'k:Heading_L3'
+  \ ]
+\ }
+
+let g:tagbar_type_scala = {
+    \ 'ctagstype' : 'Scala',
+    \ 'kinds'     : [
+        \ 'p:packages:1',
+        \ 'V:values',
+        \ 'v:variables',
+        \ 'T:types',
+        \ 't:traits',
+        \ 'o:objects',
+        \ 'a:aclasses',
+        \ 'c:classes',
+        \ 'r:cclasses',
+        \ 'm:methods'
+    \ ]
+\ }
+
 "}}}
 " Setup how in 'list' mode characters for white space and tabs appear"{{{
 " set lcs=tab:]_,trail:+
@@ -118,19 +180,17 @@ if v:version / 100 == 7
 endif
 "}}}
 " Mappings"{{{
-" map the taglist function menu.
-" TODO how do you map an uppercase letter?
 " Mappings to allow moving around the line when in insert mode
 imap <c-f> <esc>lwi
 imap <c-b> <esc>lbi
-" TODO this one clashes, don't use it
-"imap <c-e> <esc>$a
+" c-4 is like $ for eol:
+imap <c-4> <esc>$a
 imap <c-a> <esc>^i
 
 " instead of using this, I use 'gt'
-"map <C-h> :tabnext
-"map <C-l> :tabp
 map <nul> <esc>
+" turn off help
+map <f1> <nul>
 
 " save with Ctrl-S
 map <C-s> :w
@@ -144,6 +204,17 @@ imap <C-Up> <C-x><C-y>
 " for moving between windows with ease:
 map <C-j> <C-w>j<C-w>_
 map <C-k> <C-w>k<C-w>_
+
+" vimux mappings
+map <Leader>vc :call VimuxClosePanes()<cr>
+map <Leader>vi :call VimuxInspectRunner()<cr>
+
+" console copy to buffer
+noremap <Leader>y "*y
+noremap <Leader>yy "*Y
+noremap <Leader>p :set paste<cr>:put *<cr>:set nopaste<cr>
+
+
 "}}}
 " Automappings"{{{
 
@@ -164,15 +235,4 @@ if has("autocmd")
 	autocmd FileType groovy set ai
 endif
 "}}}
-" pathogen setup {{{
-" Needed on some linux distros.
-" see http://www.adamlowe.me/2009/12/vim-destroys-all-other-rails-editors.html
-filetype off 
-call pathogen#runtime_append_all_bundles()
-call pathogen#helptags()
-
-filetype on 
-filetype indent on    " Enable filetype-specific indenting
-filetype plugin on    " Enable filetype-specific plugins
-" }}}
 " vim: set ai fdm=marker cms="%s:

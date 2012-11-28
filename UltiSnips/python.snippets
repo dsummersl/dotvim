@@ -1,0 +1,41 @@
+# TODO add file name
+snippet args "Add default VT style arg parsing."
+import sys
+import platform
+import re
+if (('-h' in sys.argv) or ('--help' in sys.argv) or (len(sys.argv) <= 1)):
+  invocation = '${1:filename}'
+  if (platform.system() == 'Windows'):
+    invocation = 'python ${1}'
+  print('Usage: '+invocation+' [options] <environments>')
+  print('''
+${2:description}
+
+Options:
+  --help,-h                   Display this help message.
+  --test                      Run tests in this script.
+  --${3:option}=<${4:value}>                      ${5:description}
+''')
+
+TEST=False
+${4}=None
+
+for arg in sys.argv[1:]:
+  m = re.match('--([a-z-]+)=(.*)', arg)
+  if arg == '--test':
+    TEST = True
+  elif m:
+    key = m.group(1)
+    value = m.group(2)
+    if key == '${3}':
+      ${4} = value
+  else:
+    print "Unknown option: '%s'" % (arg)
+    print "Run with -h option to see how to use this script. "
+    sys.exit(1)
+
+if TEST:
+  import nose
+  sys.exit(nose.main(argv=['-vvv',__file__]))
+
+endsnippet
