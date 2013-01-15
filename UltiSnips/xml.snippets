@@ -1,0 +1,12 @@
+snippet . "XML property" !
+${1:property}="${2:value}"$0
+endsnippet
+
+snippet < "XML tag" !
+<${1:tag}>${2:value}</$1>$0
+endsnippet
+
+# TODO sigh...doesn't work! So annoying as this would be the coolest insertion of props
+#snippet '^(.*<\w+[^<>]*\s)\b(\w+)\b(?!\W)$' "XML property" ri
+#`!p snip.rv=match.group(1)`${1:`!p snip.rv=match.group(2)`}="${2:value}"$0
+#endsnippet
