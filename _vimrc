@@ -1,9 +1,56 @@
-" pathogen setup {{{
-" Needed on some linux distros.
-" see http://www.adamlowe.me/2009/12/vim-destroys-all-other-rails-editors.html
+" vundle setup {{{
+set nocompatible
 filetype off 
-call pathogen#runtime_append_all_bundles()
-call pathogen#helptags()
+
+set rtp+=~/.vim/bundle/vundle/
+call vundle#rc()
+Bundle 'gmarik/vundle'
+
+Bundle 'git://github.com/tpope/vim-unimpaired.git'
+Bundle 'git://github.com/sjl/threesome.vim.git'
+Bundle 'git://github.com/sjl/gundo.vim.git'
+Bundle 'git://github.com/scrooloose/nerdcommenter.git'
+"  this one requires phpctags:
+Bundle 'git://github.com/techlivezheng/tagbar-phpctags.git'
+Bundle 'git://github.com/sukima/xmledit'
+Bundle 'git://github.com/majutsushi/tagbar.git'
+Bundle 'git://github.com/vim-scripts/applescript.vim'
+Bundle 'git://github.com/dsummersl/vimplugin-macromatches.git'
+Bundle 'git://github.com/dsummersl/wikia-csv.git'
+Bundle 'git://github.com/dsummersl/vimunit.git'
+Bundle 'git://github.com/tpope/vim-fugitive.git'
+Bundle 'git://github.com/kien/ctrlp.vim.git'
+Bundle 'git://github.com/guns/ultisnips.git'
+Bundle 'git://github.com/derekwyatt/vim-scala.git'
+Bundle 'git://github.com/kchmck/vim-coffee-script'
+Bundle 'git://github.com/tpope/vim-surround.git'
+Bundle 'git://github.com/mattn/webapi-vim.git'
+Bundle 'git://github.com/mattn/gist-vim.git'
+Bundle 'git://github.com/dsummersl/indenthl'
+Bundle 'git://github.com/PProvost/vim-ps1'
+"  tmux keybindings for the console:
+Bundle 'git://github.com/benmills/vimux'
+Bundle 'git://github.com/pitluga/vimux-nose-test'
+Bundle 'git://github.com/altercation/vim-colors-solarized'
+Bundle 'L9'
+Bundle 'git://github.com/vim-scripts/cecutil.git'
+Bundle 'git://github.com/vim-scripts/Vimball.git'
+Bundle 'git://github.com/vim-scripts/Align.git'
+Bundle 'git://github.com/vim-scripts/LargeFile.git'
+Bundle 'git://github.com/vim-scripts/genutils.git'
+Bundle 'git://github.com/vim-scripts/matchit.zip.git'
+Bundle 'https://github.com/godlygeek/csapprox.git'
+Bundle 'git://github.com/tpope/vim-unimpaired.git'
+Bundle 'git://github.com/alourie/Conque-Shell.git'
+Bundle 'mileszs/ack.vim'
+
+"  my own lame SVN mappings:
+" Bundle "git://github.com/dsummersl/svntools"
+"  this is no longer maintained by me:
+" "git://github.com/motemen/git-vim"
+" "git://github.com/dsummersl/lookupfile-grep"
+"  don't like how the tags are displayed. Its kinda annoying.
+" "git://github.com/kshenoy/vim-signature.git"
 
 filetype on 
 filetype indent on    " Enable filetype-specific indenting
@@ -12,7 +59,7 @@ filetype plugin on    " Enable filetype-specific plugins
 " basic options {{{
 syntax on
 set t_Co=256
-set guioptions=egrLt  " GUI options
+set guioptions=egt  " GUI options
 
 set background=light
 let g:solarized_termcolors=256
@@ -43,63 +90,56 @@ set history=150       " keep 150 lines of command line history
 set ruler             " show the cursor position all the time
 set showcmd   " Show (partial) command in status line.
 set showmatch   " Show matching brackets.
+
+set iskeyword-=#
+
 "}}}
 " Plugin settings, changes."{{{
+
+let g:tagbar_phpctags_bin='~/.vim/phpctags/phpctags'
 
 let g:gist_clip_command = 'pbcopy'
 let g:gist_detect_filetype = 1
 let g:gist_open_browser_after_post = 1
 
-let g:UltiSnipsSnippetsDir="~/.vim/bundle/ultisnips/UltiSnips"
+" Make sure my plugins override the default ones:
+let g:UltiSnipsDontReverseSearchPath="1"
+
+" this will work on both GUI and console:
 let g:UltiSnipsListSnippets='<c-\>'
+let g:UltiSnipsExpandTrigger="<tab>"
+let g:UltiSnipsJumpForwardTrigger="<tab>"
+let g:UltiSnipsJumpBackwardTrigger="<s-tab>"
 
 " CtrlP plugin
 let g:ctrlp_use_caching = 1
 let g:ctrlp_clear_cache_on_exit = 0
 let g:ctrlp_cache_dir = $HOME.'/.cache/ctrlp'
+" just use the pwd when finding files.
+let g:ctrlp_working_path_mode = 'w'
 " by default ignore subversion things and swap file
-set wildignore+=*/.git/*,*/.hg/*,*/.svn/*,*/*.sw?,*/*.pyc
+set wildignore+=*/.git/*,*/.hg/*,*/.svn/*,*/*.sw?,*/*.pyc,*/*.class
 
 " indenthl syntax:
 let g:indenthlshowerrors = 1
 let g:indenthlinfertabmode = 1
 
-hi DiffAdd term=reverse guifg=Black guibg=LightBlue
-" hilighted colors should be nice.
-hi IncSearch term=reverse guifg=Black guibg=#bbdbff
-hi Search term=reverse guifg=Black guibg=#bbdbff
-" show marks colors
-hi default ShowMarksHLl guifg=#e5f1ff guibg=#bebebe
-hi default ShowMarksHLu guifg=#e5f1ff guibg=#bebebe
-hi default ShowMarksHLo guifg=#acd3ff guibg=#bebebe
-hi default ShowMarksHLm guifg=white guibg=#bebebe
-
-" disable the showmarks & minibuffer plugin to start.
-let g:showmarks_enable = 0
-let loaded_minibufexplorer = 0
-let loaded_ZoomWin = 0
-let g:LookupFileGrep_IgnoreCase = 1
-let g:LookupFile_DisableDefaultMap = 1
-
 let NERDMapleader = ','
 
 let g:tagbar_left = 1
 
+let g:mvom_default_macromode=1
+
+" toggle MVOM gutters
+nnoremap <F4> :MVOMtoggle<CR>
 " show undo history
 nnoremap <F5> :GundoToggle<CR>
 " show diff with git
 nnoremap <F6> :Gvdiff<CR>
 " show tags in current file
 nnoremap <F7> :TagbarToggle<CR>
-
-let g:mvom_bg_showinline = 1
-" TODO disable the plugin for now - it is very slow via the console.
-let g:mvom_enabled = 0 
-" Fix any hilighting so that it works in cterm:
-" exec ":CSApprox!"
-"let g:mvom_loaded = 1
-"call MVOM_Setup('Search','Slash')
-"call MVOM_Setup('Window','BG')
+" Setup toggling the background colors from dark to light:
+call togglebg#map("<F8>")
 
 function! LoadProject(type,directory)
 	" type      = the type of project.
@@ -125,7 +165,6 @@ command! -nargs=? -bang -complete=dir ProjectScript :call LoadProject("script",<
 command! -nargs=? -bang -complete=dir ProjectGrails :call LoadProject("grails",<q-args>)
 command! -nargs=? -bang -complete=dir ProjectScala  :call LoadProject("grails",<q-args>)
 command! -nargs=? -bang -complete=dir ProjectPython :call LoadProject("grails",<q-args>)
-
 
 let g:tagbar_type_groovy = {
     \ 'ctagstype' : 'groovy',
@@ -168,32 +207,26 @@ let g:tagbar_type_scala = {
 " set lcs=tab:]_,trail:+
 " hi SpecialKey term=underline guifg=LightBlue guibg=bg
 set lcs=tab:\ \ ,trail:+
-hi SpecialKey term=underline guifg=Red guibg=LightGrey
+highlight SpecialKey term=underline guifg=Red guibg=LightGrey
 "}}}
 " for version 7"{{{
 if v:version / 100 == 7
   set anti
   set cursorline
-  highlight CursorLine guibg=#fcc975
-	set nospell spelllang=en_us
-	set cryptmethod=blowfish
+  "highlight CursorLine term=NONE guibg=#fcc975
+  set nospell spelllang=en_us
+  set cryptmethod=blowfish
 endif
 "}}}
 " Mappings"{{{
-" Mappings to allow moving around the line when in insert mode
-imap <c-f> <esc>lwi
-imap <c-b> <esc>lbi
-" c-4 is like $ for eol:
-imap <c-4> <esc>$a
-imap <c-a> <esc>^i
 
 " instead of using this, I use 'gt'
 map <nul> <esc>
+
 " turn off help
 map <f1> <nul>
+imap <f1> <nul>
 
-" save with Ctrl-S
-map <C-s> :w
 " Make Control up/down scroll up/down in the window...even in insert mode.
 map <C-Down> <C-e>
 map <C-Up> <C-y>
@@ -214,23 +247,37 @@ noremap <Leader>y "*y
 noremap <Leader>yy "*Y
 noremap <Leader>p :set paste<cr>:put *<cr>:set nopaste<cr>
 
-
 "}}}
 " Automappings"{{{
 
-if has("autocmd")
-	autocmd FileType ruby,eruby set omnifunc=rubycomplete#Complete
-	autocmd FileType python     set omnifunc=pythoncomplete#Complete
-	autocmd FileType sh  set omnifunc=syntaxcomplete#Complete
-	autocmd FileType vim set omnifunc=syntaxcomplete#Complete
-	autocmd BufNewFile,BufRead *.pp setf ruby
-	autocmd BufNewFile,BufRead *.csv setf csv
-	autocmd BufNewFile,BufRead *.tsv setf csv
-	autocmd BufNewFile,BufRead *.tsv Delimiter \t
-	autocmd BufNewFile,BufRead *.tsv set ts=20
-	autocmd BufNewFile,BufRead *.tsv set sw=20
-	autocmd BufNewFile,BufRead *.gradle set ft=groovy
-	autocmd BufNewFile,BufRead Vagrantfile set ft=ruby
+if has("autocmd") && !exists("autocommands_loaded")
+	let autocommands_loaded = 1
+
+  " ensure that tabstop settings for file browsing is big enough for column
+  " alignment:
+  autocmd FileType netrw setlocal ts=30
+
+  autocmd FileType ruby,eruby setlocal omnifunc=rubycomplete#Complete
+  autocmd FileType python     setlocal omnifunc=pythoncomplete#Complete
+  autocmd FileType sh  setlocal omnifunc=syntaxcomplete#Complete
+  autocmd FileType vim setlocal omnifunc=syntaxcomplete#Complete
+
+  " use the same comment formatting in groovy/PHP that is used for java:
+  autocmd FileType php setlocal comments=sO:*\ -,mO:*\ \ ,exO:*/,s1:/*,mb:*,ex:*/,://,b:#,:%,:XCOMM,n:>,fb:-
+  autocmd FileType groovy setlocal comments=sO:*\ -,mO:*\ \ ,exO:*/,s1:/*,mb:*,ex:*/,://,b:#,:%,:XCOMM,n:>,fb:-
+
+  autocmd BufNewFile,BufRead *.pp setf ruby
+  autocmd BufNewFile,BufRead *.csv setf csv
+  autocmd BufNewFile,BufRead *.tsv setf csv
+  autocmd BufNewFile,BufRead *.tsv Delimiter \t
+  autocmd BufNewFile,BufRead *.tsv set ts=20
+  autocmd BufNewFile,BufRead *.tsv set sw=20
+  autocmd BufNewFile,BufRead *.gradle set ft=groovy
+  autocmd BufNewFile,BufRead Vagrantfile set ft=ruby
+  autocmd BufNewFile,BufRead *.tss set ft=javascript
+
+  " get rid of any extra git fugitive buffers
+  autocmd BufReadPost fugitive://* set bufhidden=delete
 
 	autocmd FileType groovy set ai
 endif
