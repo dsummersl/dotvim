@@ -43,6 +43,7 @@ Bundle 'https://github.com/godlygeek/csapprox.git'
 Bundle 'git://github.com/tpope/vim-unimpaired.git'
 Bundle 'git://github.com/alourie/Conque-Shell.git'
 Bundle 'mileszs/ack.vim'
+Bundle 'dsummersl/vus'
 
 "  my own lame SVN mappings:
 " Bundle "git://github.com/dsummersl/svntools"
@@ -97,6 +98,8 @@ set iskeyword-=#
 " Plugin settings, changes."{{{
 
 let g:tagbar_phpctags_bin='~/.vim/phpctags/phpctags'
+let g:tagbar_foldlevel = 1
+let g:tagbar_iconchars = ['▾', '▸']
 
 let g:gist_clip_command = 'pbcopy'
 let g:gist_detect_filetype = 1
@@ -131,7 +134,8 @@ let g:tagbar_left = 1
 let g:mvom_default_macromode=1
 
 " toggle MVOM gutters
-nnoremap <F4> :MVOMtoggle<CR>
+nnoremap <F3> :MVOMmacroOff <bar> MVOMtoggle<CR>
+nnoremap <F4> :MVOMmacroOn <bar> MVOMtoggle<CR>
 " show undo history
 nnoremap <F5> :GundoToggle<CR>
 " show diff with git
@@ -246,6 +250,18 @@ map <Leader>vi :call VimuxInspectRunner()<cr>
 noremap <Leader>y "*y
 noremap <Leader>yy "*Y
 noremap <Leader>p :set paste<cr>:put *<cr>:set nopaste<cr>
+
+"}}}
+" Commands"{{{
+
+" Do a git grep on every file that is the same kind as the one I'm currently
+" in:
+function! GitGrepFile(search)
+  let extension = substitute(expand('%'),'\v^.*\.',"","")
+  exec printf("Ggrep %s -- '*.%s'",a:search,extension)
+endfunction
+
+command! -nargs=1 GG call GitGrepFile('<args>')
 
 "}}}
 " Automappings"{{{
