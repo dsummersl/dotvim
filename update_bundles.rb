@@ -41,28 +41,45 @@ hg_command = '/usr/local/Cellar/python/2.7/bin/hg'
 #	  ["git://github.com/vim-scripts/applescript.vim", lambda { }],
 
 bundles = [
+  # don't like how the tags are displayed. Its kinda annoying.
+  #["git://github.com/kshenoy/vim-signature.git"],
+  ["https://github.com/tpope/vim-unimpaired.git"],
+  ["git://github.com/sjl/threesome.vim.git"],
 	["git://github.com/sjl/gundo.vim.git"],
   ["git://github.com/scrooloose/nerdcommenter.git"],
+  # this one requires phpctags:
+  ["git://github.com/techlivezheng/tagbar-phpctags.git"],
   #["git://github.com/motemen/git-vim"],
   ["git://github.com/sukima/xmledit"],
-  ["git://github.com/vim-scripts/taglist.vim"],
+  ["git://github.com/majutsushi/tagbar.git"],
 	["git://github.com/vim-scripts/applescript.vim"],
-  ["git://github.com/dsummersl/lookupfile-grep"],
+  # this is no longer maintained by me:
+  #["git://github.com/dsummersl/lookupfile-grep"],
   ["git://github.com/dsummersl/vimplugin-macromatches.git"],
   ["git://github.com/dsummersl/wikia-csv.git"],
   ["git://github.com/dsummersl/vimunit.git"],
-  ["git://github.com/dsummersl/vim-fugitive"],
+  ["git://github.com/tpope/vim-fugitive.git"],
   ["git://github.com/kien/ctrlp.vim.git"],
+  ["git://github.com/dsummersl/ultisnips.git", lambda {
+    `git remote add upstream https://github.com/guns/ultisnips.git`
+  }],
   ["git://github.com/bdd/vim-scala"],
   ["git://github.com/kchmck/vim-coffee-script"],
   ["git://github.com/tpope/vim-surround.git"],
+  ["git://github.com/mattn/webapi-vim.git"],
+  ["git://github.com/mattn/gist-vim.git"],
   ["git://github.com/dsummersl/indenthl", lambda {
 		# I want to have indent hilighting for java and groovy too.
 		FileUtils.mkdir_p("after/syntax/groovy")
 		FileUtils.cp("after/syntax/python/indenthl.vim","after/syntax/groovy")
 	}],
+  # my own lame SVN mappings:
   ["git://github.com/dsummersl/svntools"],
   ["git://github.com/PProvost/vim-ps1"],
+  # tmux keybindings for the console:
+  ["git://github.com/benmills/vimux"],
+  ["git://github.com/pitluga/vimux-nose-test"],
+  ["git://github.com/altercation/vim-colors-solarized"],
   ["hg://bitbucket.org/ns9tks/vim-l9"],
   ["vim://cecutil-1066"    , "7618"]  , 
   ["vim://vimball-1502"    , "11981"] , 
@@ -70,10 +87,9 @@ bundles = [
   ["vim://largefile-1506"  , "9277"]  , 
   ["vim://genutils-197"    , "11399"] , 
   ["vim://matchit-39"      , "8196"]  , 
+  ["vim://csapprox-2390"      , "18594"]  , 
   ["vim://conqueshell-2771", "16279"]  , 
-  #["vim://lookupfile-1581" , "7671"]  , 
 
-#  "git://github.com/msanders/snipmate.vim.git",
 #  "git://github.com/timcharper/textile.vim.git",
 #  "git://github.com/tpope/vim-cucumber.git",
 #  "git://github.com/tpope/vim-fugitive.git",
