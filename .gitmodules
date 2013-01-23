@@ -1,0 +1,6 @@
+[submodule "phpctags"]
+	path = phpctags
+	url = git://github.com/techlivezheng/phpctags.git
+[submodule "bundle/vundle"]
+	path = bundle/vundle
+	url = https://github.com/gmarik/vundle.git
