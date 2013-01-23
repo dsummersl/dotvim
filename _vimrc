@@ -43,6 +43,8 @@ Bundle 'git://github.com/tpope/vim-unimpaired.git'
 Bundle 'git://github.com/alourie/Conque-Shell.git'
 Bundle 'mileszs/ack.vim'
 Bundle 'dsummersl/vus'
+Bundle 'gregsexton/gitv'
+Bundle 'scrooloose/nerdtree'
 
 if (v:version / 100 == 7 && has('gui')) || v:version >= 703
   Bundle 'https://github.com/godlygeek/csapprox.git'
@@ -228,6 +230,8 @@ endif
 "}}}
 " Mappings"{{{
 
+cabbrev gitv Gitv
+
 " instead of using this, I use 'gt'
 map <nul> <esc>
 
@@ -235,11 +239,12 @@ map <nul> <esc>
 map <f1> <nul>
 imap <f1> <nul>
 
+imap <C-e> <End>
+imap <C-a> <Home>
+
 " Make Control up/down scroll up/down in the window...even in insert mode.
-map <C-Down> <C-e>
-map <C-Up> <C-y>
-imap <C-Down> <C-x><C-e>
-imap <C-Up> <C-x><C-y>
+imap <C-j> <C-x><C-e>
+imap <C-k> <C-x><C-y>
 
 " Mappings that I have been using
 " for moving between windows with ease:
