@@ -39,11 +39,14 @@ Bundle 'git://github.com/vim-scripts/Align.git'
 Bundle 'git://github.com/vim-scripts/LargeFile.git'
 Bundle 'git://github.com/vim-scripts/genutils.git'
 Bundle 'git://github.com/vim-scripts/matchit.zip.git'
-Bundle 'https://github.com/godlygeek/csapprox.git'
 Bundle 'git://github.com/tpope/vim-unimpaired.git'
 Bundle 'git://github.com/alourie/Conque-Shell.git'
 Bundle 'mileszs/ack.vim'
 Bundle 'dsummersl/vus'
+
+if (v:version / 100 == 7 && has('gui')) || v:version >= 703
+  Bundle 'https://github.com/godlygeek/csapprox.git'
+endif
 
 "  my own lame SVN mappings:
 " Bundle "git://github.com/dsummersl/svntools"
