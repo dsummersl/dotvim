@@ -82,7 +82,6 @@ set ts=2
 set visualbell
 set backspace=2 " allow backspacing over everything in insert mode
 set nobackup
-set undofile
 set incsearch
 let mapleader=','
 let maplocalleader='='
@@ -212,12 +211,15 @@ let g:tagbar_type_scala = {
 set lcs=tab:\ \ ,trail:+
 highlight SpecialKey term=underline guifg=Red guibg=LightGrey
 "}}}
-" for version 7"{{{
+" version specific settings (7+) "{{{
 if v:version / 100 == 7
   set anti
   set cursorline
   "highlight CursorLine term=NONE guibg=#fcc975
   set nospell spelllang=en_us
+endif
+if v:version >= 703
+  set undofile
   set cryptmethod=blowfish
 endif
 "}}}
