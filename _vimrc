@@ -82,6 +82,7 @@ set ts=2
 set visualbell
 set backspace=2 " allow backspacing over everything in insert mode
 set nobackup
+set undofile
 set incsearch
 let mapleader=','
 let maplocalleader='='
@@ -91,8 +92,6 @@ set history=150       " keep 150 lines of command line history
 set ruler             " show the cursor position all the time
 set showcmd   " Show (partial) command in status line.
 set showmatch   " Show matching brackets.
-
-set iskeyword-=#
 
 "}}}
 " Plugin settings, changes."{{{
@@ -280,7 +279,9 @@ if has("autocmd") && !exists("autocommands_loaded")
 
   " use the same comment formatting in groovy/PHP that is used for java:
   autocmd FileType php setlocal comments=sO:*\ -,mO:*\ \ ,exO:*/,s1:/*,mb:*,ex:*/,://,b:#,:%,:XCOMM,n:>,fb:-
+  autocmd FileType php setlocal fo=croq
   autocmd FileType groovy setlocal comments=sO:*\ -,mO:*\ \ ,exO:*/,s1:/*,mb:*,ex:*/,://,b:#,:%,:XCOMM,n:>,fb:-
+  autocmd FileType groovy setlocal fo=croq
 
   autocmd BufNewFile,BufRead *.pp setf ruby
   autocmd BufNewFile,BufRead *.csv setf csv
