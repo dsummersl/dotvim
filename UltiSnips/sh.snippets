@@ -1,0 +1,15 @@
+
+snippet #! "top of shell script"
+#!/bin/bash
+
+set -u
+set -e
+endsnippet
+
+snippet if "if ... then (if)"
+if ${2:[[ ${1:condition} ]]}
+then
+	${0:#statements}
+fi
+endsnippet
+
