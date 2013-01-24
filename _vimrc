@@ -26,7 +26,7 @@ Bundle 'git://github.com/kchmck/vim-coffee-script'
 Bundle 'git://github.com/tpope/vim-surround.git'
 Bundle 'git://github.com/mattn/webapi-vim.git'
 Bundle 'git://github.com/mattn/gist-vim.git'
-Bundle 'git://github.com/dsummersl/indenthl'
+Bundle 'nathanaelkane/vim-indent-guides'
 Bundle 'git://github.com/PProvost/vim-ps1'
 "  tmux keybindings for the console:
 Bundle 'git://github.com/benmills/vimux'
@@ -125,10 +125,6 @@ let g:ctrlp_cache_dir = $HOME.'/.cache/ctrlp'
 let g:ctrlp_working_path_mode = 'w'
 " by default ignore subversion things and swap file
 set wildignore+=*/.git/*,*/.hg/*,*/.svn/*,*/*.sw?,*/*.pyc,*/*.class
-
-" indenthl syntax:
-let g:indenthlshowerrors = 1
-let g:indenthlinfertabmode = 1
 
 let NERDMapleader = ','
 
