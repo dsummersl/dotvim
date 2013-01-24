@@ -1,4 +1,4 @@
-" vundle setup {{{
+" vundle plugin options {{{
 set nocompatible
 filetype off 
 
@@ -28,8 +28,6 @@ Bundle 'git://github.com/mattn/webapi-vim.git'
 Bundle 'git://github.com/mattn/gist-vim.git'
 Bundle 'nathanaelkane/vim-indent-guides'
 Bundle 'git://github.com/PProvost/vim-ps1'
-"  tmux keybindings for the console:
-Bundle 'git://github.com/benmills/vimux'
 Bundle 'git://github.com/pitluga/vimux-nose-test'
 Bundle 'git://github.com/altercation/vim-colors-solarized'
 Bundle 'L9'
@@ -41,10 +39,25 @@ Bundle 'git://github.com/vim-scripts/genutils.git'
 Bundle 'git://github.com/vim-scripts/matchit.zip.git'
 Bundle 'git://github.com/tpope/vim-unimpaired.git'
 Bundle 'git://github.com/alourie/Conque-Shell.git'
-Bundle 'mileszs/ack.vim'
 Bundle 'dsummersl/vus'
 Bundle 'gregsexton/gitv'
 Bundle 'scrooloose/nerdtree'
+" Use localleader twice and then a w/b etc: ,,w
+Bundle 'Lokaltog/vim-easymotion.git'
+Bundle 'Shougo/neocomplcache.git'
+" awesome: makes the surround plugin work with the '.' keys (repeatability!)
+Bundle 'tpope/vim-repeat'
+" via (visual inner arg)
+Bundle 'vim-scripts/argtextobj.vim'
+
+" TODO plugins to think about
+" https://github.com/vim-scripts/YankRing.vim
+" https://github.com/chrisbra/color_highlight
+" kana/vim-textobj-function
+"
+" this one seems super cool except that it totally doesn't work with 'vii' or
+" viI??
+"Bundle 'michaeljsmith/vim-indent-object'
 
 if (v:version / 100 == 7 && has('gui')) || v:version >= 703
   Bundle 'https://github.com/godlygeek/csapprox.git'
@@ -144,6 +157,11 @@ nnoremap <F7> :TagbarToggle<CR>
 " Setup toggling the background colors from dark to light:
 call togglebg#map("<F8>")
 
+" don't search included files by default - it can be fucked up slow:
+set complete-=i
+
+" project loading functions"{{{
+
 function! LoadProject(type,directory)
 	" type      = the type of project.
 	" directory = Directory of the project to set up for.
@@ -168,6 +186,8 @@ command! -nargs=? -bang -complete=dir ProjectScript :call LoadProject("script",<
 command! -nargs=? -bang -complete=dir ProjectGrails :call LoadProject("grails",<q-args>)
 command! -nargs=? -bang -complete=dir ProjectScala  :call LoadProject("grails",<q-args>)
 command! -nargs=? -bang -complete=dir ProjectPython :call LoadProject("grails",<q-args>)
+"}}}
+" tagbar groovy/markdown/scala/php"{{{
 
 let g:tagbar_type_groovy = {
     \ 'ctagstype' : 'groovy',
@@ -204,6 +224,84 @@ let g:tagbar_type_scala = {
         \ 'm:methods'
     \ ]
 \ }
+"}}}
+" necompl options: {{{
+
+" Launches neocomplcache automatically on vim startup.
+let g:neocomplcache_enable_at_startup = 1
+" Use smartcase.
+let g:neocomplcache_enable_smart_case = 1
+" Use camel case completion.
+let g:neocomplcache_enable_camel_case_completion = 1
+" Use underscore completion.
+let g:neocomplcache_enable_underbar_completion = 1
+" Sets minimum char length of syntax keyword.
+let g:neocomplcache_min_syntax_length = 3
+" buffer file name pattern that locks neocomplcache. e.g. ku.vim or fuzzyfinder 
+let g:neocomplcache_lock_buffer_name_pattern = '\*ku\*'
+
+" Define file-type dependent dictionaries.
+let g:neocomplcache_dictionary_filetype_lists = {
+    \ 'default' : '',
+    \ 'vimshell' : $HOME.'/.vimshell_hist',
+    \ 'scheme' : $HOME.'/.gosh_completions'
+    \ }
+
+" Define keyword, for minor languages
+if !exists('g:neocomplcache_keyword_patterns')
+  let g:neocomplcache_keyword_patterns = {}
+endif
+let g:neocomplcache_keyword_patterns['default'] = '\h\w*'
+
+" Plugin key-mappings.
+imap <C-k>     <Plug>(neocomplcache_snippets_expand)
+smap <C-k>     <Plug>(neocomplcache_snippets_expand)
+inoremap <expr><C-g>     neocomplcache#undo_completion()
+inoremap <expr><C-l>     neocomplcache#complete_common_string()
+
+" Recommended key-mappings.
+" <CR>: close popup and save indent.
+inoremap <expr><CR>  neocomplcache#smart_close_popup() . "\<CR>"
+" <TAB>: completion.
+" SuperTab like snippets behavior.
+" TODO until ultisnips can support  something like the following its best to
+" TURN TAB OFF:
+" See: https://bugs.launchpad.net/ultisnips/+bug/883341
+"imap <expr><TAB> neocomplcache#sources#snippets_complete#expandable() ? "\<Plug>(neocomplcache_snippets_expand)" : pumvisible() ? "\<C-n>" : "\<TAB>"
+" <C-h>, <BS>: close popup and delete backword char.
+inoremap <expr><C-h> neocomplcache#smart_close_popup()."\<C-h>"
+inoremap <expr><BS> neocomplcache#smart_close_popup()."\<C-h>"
+inoremap <expr><C-y>  neocomplcache#close_popup()
+inoremap <expr><C-e>  neocomplcache#cancel_popup()
+
+" AutoComplPop like behavior.
+"let g:neocomplcache_enable_auto_select = 1
+
+" Shell like behavior(not recommended).
+"set completeopt+=longest
+"let g:neocomplcache_enable_auto_select = 1
+"let g:neocomplcache_disable_auto_complete = 1
+"inoremap <expr><TAB>  pumvisible() ? "\<Down>" : "\<TAB>"
+"inoremap <expr><CR>  neocomplcache#smart_close_popup() . "\<CR>"
+
+" Enable omni completion. Not required if they are already set elsewhere in .vimrc
+autocmd FileType css setlocal omnifunc=csscomplete#CompleteCSS
+autocmd FileType html,markdown setlocal omnifunc=htmlcomplete#CompleteTags
+autocmd FileType javascript setlocal omnifunc=javascriptcomplete#CompleteJS
+autocmd FileType python setlocal omnifunc=pythoncomplete#Complete
+autocmd FileType xml setlocal omnifunc=xmlcomplete#CompleteTags
+
+" Enable heavy omni completion, which require computational power and may stall the vim. 
+if !exists('g:neocomplcache_omni_patterns')
+  let g:neocomplcache_omni_patterns = {}
+endif
+let g:neocomplcache_omni_patterns.ruby = '[^. *\t]\.\w*\|\h\w*::'
+"autocmd FileType ruby setlocal omnifunc=rubycomplete#Complete
+let g:neocomplcache_omni_patterns.php = '[^. \t]->\h\w*\|\h\w*::'
+let g:neocomplcache_omni_patterns.c = '\%(\.\|->\)\h\w*'
+let g:neocomplcache_omni_patterns.cpp = '\h\w*\%(\.\|->\)\h\w*\|\h\w*::'
+
+" }}}
 
 "}}}
 " Setup how in 'list' mode characters for white space and tabs appear"{{{
