@@ -15,7 +15,7 @@ Bundle 'git://github.com/techlivezheng/tagbar-phpctags.git'
 Bundle 'git://github.com/sukima/xmledit'
 Bundle 'git://github.com/majutsushi/tagbar.git'
 Bundle 'git://github.com/vim-scripts/applescript.vim'
-Bundle 'git://github.com/dsummersl/vimplugin-macromatches.git'
+Bundle 'dsummersl/vim-sluice'
 Bundle 'git://github.com/dsummersl/wikia-csv.git'
 Bundle 'git://github.com/dsummersl/vimunit.git'
 Bundle 'git://github.com/tpope/vim-fugitive.git'
@@ -105,9 +105,9 @@ let mapleader=','
 let maplocalleader='='
 
 set viminfo='50,\"50,h
-set history=150       " keep 150 lines of command line history
-set ruler             " show the cursor position all the time
-set showcmd   " Show (partial) command in status line.
+set history=100 " keep 150 lines of command line history
+set ruler       " show the cursor position all the time
+set showcmd     " Show (partial) command in status line.
 set showmatch   " Show matching brackets.
 
 "}}}
@@ -143,11 +143,11 @@ let NERDMapleader = ','
 
 let g:tagbar_left = 1
 
-let g:mvom_default_macromode=1
+let g:sluice_default_macromode=1
 
-" toggle MVOM gutters
-nnoremap <F3> :MVOMmacroOff <bar> MVOMtoggle<CR>
-nnoremap <F4> :MVOMmacroOn <bar> MVOMtoggle<CR>
+" toggle Sluice gutters
+nnoremap <F3> :SluiceMacroOff <bar> SluiceToggle<CR>
+nnoremap <F4> :SluiceMacroOn <bar> SluiceToggle<CR>
 " show undo history
 nnoremap <F5> :GundoToggle<CR>
 " show diff with git
@@ -227,6 +227,8 @@ let g:tagbar_type_scala = {
 "}}}
 " necompl options: {{{
 
+" automatically insert the /# delimiter for vim/files
+let g:neocomplcache_enable_auto_delimiter = 1
 " Launches neocomplcache automatically on vim startup.
 let g:neocomplcache_enable_at_startup = 1
 " Use smartcase.
@@ -235,8 +237,9 @@ let g:neocomplcache_enable_smart_case = 1
 let g:neocomplcache_enable_camel_case_completion = 1
 " Use underscore completion.
 let g:neocomplcache_enable_underbar_completion = 1
+" Enable fuzzy completion.
+"let g:neocomplcache_enable_fuzzy_completion = 1
 " Sets minimum char length of syntax keyword.
-let g:neocomplcache_min_syntax_length = 3
 " buffer file name pattern that locks neocomplcache. e.g. ku.vim or fuzzyfinder 
 let g:neocomplcache_lock_buffer_name_pattern = '\*ku\*'
 
@@ -254,8 +257,6 @@ endif
 let g:neocomplcache_keyword_patterns['default'] = '\h\w*'
 
 " Plugin key-mappings.
-imap <C-k>     <Plug>(neocomplcache_snippets_expand)
-smap <C-k>     <Plug>(neocomplcache_snippets_expand)
 inoremap <expr><C-g>     neocomplcache#undo_completion()
 inoremap <expr><C-l>     neocomplcache#complete_common_string()
 
@@ -277,24 +278,11 @@ inoremap <expr><C-e>  neocomplcache#cancel_popup()
 " AutoComplPop like behavior.
 "let g:neocomplcache_enable_auto_select = 1
 
-" Shell like behavior(not recommended).
-"set completeopt+=longest
-"let g:neocomplcache_enable_auto_select = 1
-"let g:neocomplcache_disable_auto_complete = 1
-"inoremap <expr><TAB>  pumvisible() ? "\<Down>" : "\<TAB>"
-"inoremap <expr><CR>  neocomplcache#smart_close_popup() . "\<CR>"
-
-" Enable omni completion. Not required if they are already set elsewhere in .vimrc
-autocmd FileType css setlocal omnifunc=csscomplete#CompleteCSS
-autocmd FileType html,markdown setlocal omnifunc=htmlcomplete#CompleteTags
-autocmd FileType javascript setlocal omnifunc=javascriptcomplete#CompleteJS
-autocmd FileType python setlocal omnifunc=pythoncomplete#Complete
-autocmd FileType xml setlocal omnifunc=xmlcomplete#CompleteTags
-
 " Enable heavy omni completion, which require computational power and may stall the vim. 
 if !exists('g:neocomplcache_omni_patterns')
   let g:neocomplcache_omni_patterns = {}
 endif
+
 let g:neocomplcache_omni_patterns.ruby = '[^. *\t]\.\w*\|\h\w*::'
 "autocmd FileType ruby setlocal omnifunc=rubycomplete#Complete
 let g:neocomplcache_omni_patterns.php = '[^. \t]->\h\w*\|\h\w*::'
@@ -311,6 +299,9 @@ set lcs=tab:\ \ ,trail:+
 highlight SpecialKey term=underline guifg=Red guibg=LightGrey
 "}}}
 " version specific settings (7+) "{{{
+
+let g:sluice_enabled=0
+
 if v:version / 100 == 7
   set anti
   set cursorline
@@ -318,6 +309,8 @@ if v:version / 100 == 7
   set nospell spelllang=en_us
 endif
 if v:version >= 703
+  " sluice needs vim 7.3
+  let g:sluice_enabled=1
   set undofile
   set cryptmethod=blowfish
 endif
