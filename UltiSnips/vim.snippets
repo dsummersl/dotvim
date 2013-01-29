@@ -5,3 +5,15 @@ function! ${1:Description}(${2:parameters})
   ${3:" code}
 endfunction
 endsnippet
+
+snippet ifhc "If has key" !b
+if ${1:!}has_key(${2:list},${4:'${3:element}'})
+  ${7:let $2[$4] = ${6:'${5:val}'}}
+endif
+endsnippet
+
+snippet ife "If exists" !b
+if ${1:!}exists(${3:'${2:element}'})
+  ${5:let ${4:var} = `!p snip.rv = t[2]`}
+endif$0
+endsnippet
