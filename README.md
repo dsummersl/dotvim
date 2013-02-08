@@ -9,6 +9,6 @@ Check it out, and install the plugins:
 
 If you want to use phpctags:
 
-    cd phpctags
+    cd ~/.vim/phpctags
     curl -s http://getcomposer.org/installer | php
     php composer.phar install
