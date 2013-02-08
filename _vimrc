@@ -28,7 +28,6 @@ Bundle 'git://github.com/mattn/webapi-vim.git'
 Bundle 'git://github.com/mattn/gist-vim.git'
 Bundle 'nathanaelkane/vim-indent-guides'
 Bundle 'git://github.com/PProvost/vim-ps1'
-Bundle 'git://github.com/pitluga/vimux-nose-test'
 Bundle 'git://github.com/altercation/vim-colors-solarized'
 Bundle 'L9'
 Bundle 'git://github.com/vim-scripts/cecutil.git'
@@ -48,8 +47,6 @@ Bundle 'Lokaltog/vim-easymotion.git'
 Bundle 'tpope/vim-repeat'
 " via (visual inner arg)
 Bundle 'vim-scripts/argtextobj.vim'
-" xdebug for PHP
-Bundle 'ludovicPelle/vim-xdebug'
 Bundle 'Shougo/neocomplcache.git'
 
 " TODO plugins to think about
@@ -86,13 +83,8 @@ set background=light
 let g:solarized_termcolors=256
 colorscheme solarized
 
-"colorscheme morning
-"colorscheme slate
-"colorscheme zellner
-
 set enc=utf-8
 set gfn=Monaco:h13
-set updatetime=500
 set diffopt=filler,iwhite
 set hls
 set nowrap
@@ -107,7 +99,7 @@ let mapleader=','
 let maplocalleader='='
 
 set viminfo='50,\"50,h
-set history=100 " keep 150 lines of command line history
+set history=100 " keep 100 lines of command line history
 set ruler       " show the cursor position all the time
 set showcmd     " Show (partial) command in status line.
 set showmatch   " Show matching brackets.
@@ -304,7 +296,7 @@ let g:sluice_enabled=0
 if v:version / 100 == 7
   set anti
   set cursorline
-  "highlight CursorLine term=NONE guibg=#fcc975
+  " TODO make the fold highlight non-underlined.
   set nospell spelllang=en_us
 endif
 if v:version >= 703
@@ -337,10 +329,6 @@ imap <C-k> <C-x><C-y>
 map <C-j> <C-w>j<C-w>_
 map <C-k> <C-w>k<C-w>_
 
-" vimux mappings
-map <Leader>vc :call VimuxClosePanes()<cr>
-map <Leader>vi :call VimuxInspectRunner()<cr>
-
 " console copy to buffer
 noremap <Leader>y "*y
 noremap <Leader>yy "*Y
@@ -351,12 +339,12 @@ noremap <Leader>p :set paste<cr>:put *<cr>:set nopaste<cr>
 
 " Do a git grep on every file that is the same kind as the one I'm currently
 " in:
-function! GitGrepFile(search)
+function! s:GitGrepFile(search)
   let extension = substitute(expand('%'),'\v^.*\.',"","")
-  exec printf("Ggrep %s -- '*.%s'",a:search,extension)
+  exec printf("Ggrep '%s' -- '*.%s'",a:search,extension)
 endfunction
 
-command! -nargs=1 GG call GitGrepFile('<args>')
+command! -nargs=1 GG call s:GitGrepFile('<args>')
 
 "}}}
 " Automappings"{{{
