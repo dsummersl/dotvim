@@ -7,13 +7,9 @@ call vundle#rc()
 Bundle 'gmarik/vundle'
 
 Bundle 'git://github.com/tpope/vim-unimpaired.git'
-Bundle 'git://github.com/sjl/threesome.vim.git'
 Bundle 'git://github.com/sjl/gundo.vim.git'
 Bundle 'git://github.com/scrooloose/nerdcommenter.git'
-"  this one requires phpctags:
-Bundle 'git://github.com/techlivezheng/tagbar-phpctags.git'
 Bundle 'git://github.com/sukima/xmledit'
-Bundle 'git://github.com/majutsushi/tagbar.git'
 Bundle 'git://github.com/vim-scripts/applescript.vim'
 Bundle 'dsummersl/vim-sluice'
 Bundle 'git://github.com/dsummersl/wikia-csv.git'
@@ -24,20 +20,20 @@ Bundle 'git://github.com/guns/ultisnips.git'
 Bundle 'git://github.com/derekwyatt/vim-scala.git'
 Bundle 'git://github.com/kchmck/vim-coffee-script'
 Bundle 'git://github.com/tpope/vim-surround.git'
-Bundle 'git://github.com/mattn/webapi-vim.git'
 Bundle 'git://github.com/mattn/gist-vim.git'
+" gist depends on this:
+Bundle 'git://github.com/mattn/webapi-vim.git'
 Bundle 'nathanaelkane/vim-indent-guides'
+" TODO this?
 Bundle 'git://github.com/PProvost/vim-ps1'
 Bundle 'git://github.com/altercation/vim-colors-solarized'
+" TODO this?
 Bundle 'L9'
-Bundle 'git://github.com/vim-scripts/cecutil.git'
-Bundle 'git://github.com/vim-scripts/Vimball.git'
 Bundle 'git://github.com/vim-scripts/Align.git'
 Bundle 'git://github.com/vim-scripts/LargeFile.git'
 Bundle 'git://github.com/vim-scripts/genutils.git'
 Bundle 'git://github.com/vim-scripts/matchit.zip.git'
 Bundle 'git://github.com/tpope/vim-unimpaired.git'
-Bundle 'git://github.com/alourie/Conque-Shell.git'
 Bundle 'dsummersl/vus'
 Bundle 'gregsexton/gitv'
 Bundle 'scrooloose/nerdtree'
@@ -51,6 +47,17 @@ Bundle 'vim-scripts/argtextobj.vim'
 Bundle 'skammer/vim-css-color'
 " fix spelling errors
 Bundle 'tpope/vim-abolish'
+Bundle 'Shougo/unite.vim'
+Bundle 'h1mesuke/unite-outline'
+
+" Probably going to remove this:
+"  this one requires phpctags:
+Bundle 'git://github.com/techlivezheng/tagbar-phpctags.git'
+Bundle 'git://github.com/majutsushi/tagbar.git'
+Bundle 'git://github.com/sjl/threesome.vim.git'
+Bundle 'git://github.com/vim-scripts/cecutil.git'
+Bundle 'git://github.com/vim-scripts/Vimball.git'
+Bundle 'git://github.com/alourie/Conque-Shell.git'
 
 " TODO plugins to think about
 " https://github.com/vim-scripts/YankRing.vim
@@ -110,6 +117,14 @@ set showmatch   " Show matching brackets.
 "}}}
 " Plugin settings, changes."{{{
 
+" enable yanks!
+let g:unite_source_history_yank_enable = 1
+let g:unite_enable_start_insert = 1
+" I like the unite thing on the left side all get it going:
+let g:unite_enable_split_vertically=1
+let g:unite_winwidth=40
+call unite#set_profile('source/outline', 'ignorecase', 1)
+
 let g:tagbar_phpctags_bin='~/.vim/phpctags/phpctags'
 let g:tagbar_foldlevel = 1
 let g:tagbar_iconchars = ['▾', '▸']
@@ -128,6 +143,7 @@ let g:UltiSnipsJumpForwardTrigger="<tab>"
 let g:UltiSnipsJumpBackwardTrigger="<s-tab>"
 
 " CtrlP plugin
+nnoremap <C-p> :CtrlPBuffer<CR>
 let g:ctrlp_use_caching = 1
 let g:ctrlp_clear_cache_on_exit = 0
 let g:ctrlp_cache_dir = $HOME.'/.cache/ctrlp'
@@ -135,6 +151,11 @@ let g:ctrlp_cache_dir = $HOME.'/.cache/ctrlp'
 let g:ctrlp_working_path_mode = 'w'
 " by default ignore subversion things and swap file
 set wildignore+=*/.git/*,*/.hg/*,*/.svn/*,*/*.sw?,*/*.pyc,*/*.class
+" enable the quickfix plugin source:
+let g:ctrlp_extensions=['quickfix']
+
+" Unite outline mode
+nnoremap <C-t> :Unite outline<CR>
 
 let NERDMapleader = ','
 
