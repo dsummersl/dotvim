@@ -6,35 +6,31 @@ set rtp+=~/.vim/bundle/vundle/
 call vundle#rc()
 Bundle 'gmarik/vundle'
 
-Bundle 'git://github.com/tpope/vim-unimpaired.git'
-Bundle 'git://github.com/sjl/gundo.vim.git'
-Bundle 'git://github.com/scrooloose/nerdcommenter.git'
-Bundle 'git://github.com/sukima/xmledit'
-Bundle 'git://github.com/vim-scripts/applescript.vim'
-Bundle 'dsummersl/vim-sluice'
-Bundle 'git://github.com/dsummersl/wikia-csv.git'
-Bundle 'dsummersl/vimunit'
-Bundle 'git://github.com/tpope/vim-fugitive.git'
-Bundle 'git://github.com/kien/ctrlp.vim.git'
-Bundle 'git://github.com/guns/ultisnips.git'
-Bundle 'git://github.com/derekwyatt/vim-scala.git'
-Bundle 'git://github.com/kchmck/vim-coffee-script'
-Bundle 'git://github.com/tpope/vim-surround.git'
-Bundle 'git://github.com/mattn/gist-vim.git'
+" TODO maybe include Ack again with the_silver_searcher (ag)
+Bundle 'scrooloose/nerdcommenter.git'
+Bundle 'sukima/xmledit'
+Bundle 'vim-scripts/applescript.vim'
+Bundle 'dsummersl/wikia-csv.git'
+Bundle 'tpope/vim-fugitive.git'
+Bundle 'kien/ctrlp.vim.git'
+Bundle 'guns/ultisnips.git'
+Bundle 'derekwyatt/vim-scala.git'
+Bundle 'kchmck/vim-coffee-script'
+Bundle 'tpope/vim-surround.git'
+Bundle 'mattn/gist-vim.git'
 " gist depends on this:
-Bundle 'git://github.com/mattn/webapi-vim.git'
+Bundle 'mattn/webapi-vim.git'
 Bundle 'nathanaelkane/vim-indent-guides'
 " TODO this?
-Bundle 'git://github.com/PProvost/vim-ps1'
-Bundle 'git://github.com/altercation/vim-colors-solarized'
+Bundle 'PProvost/vim-ps1'
+Bundle 'altercation/vim-colors-solarized'
 " TODO this?
 Bundle 'L9'
-Bundle 'git://github.com/vim-scripts/Align.git'
-Bundle 'git://github.com/vim-scripts/LargeFile.git'
-Bundle 'git://github.com/vim-scripts/genutils.git'
-Bundle 'git://github.com/vim-scripts/matchit.zip.git'
-Bundle 'git://github.com/tpope/vim-unimpaired.git'
-Bundle 'dsummersl/vus'
+Bundle 'vim-scripts/Align.git'
+Bundle 'vim-scripts/LargeFile.git'
+Bundle 'vim-scripts/genutils.git'
+Bundle 'vim-scripts/matchit.zip.git'
+Bundle 'tpope/vim-unimpaired.git'
 Bundle 'gregsexton/gitv'
 Bundle 'scrooloose/nerdtree'
 " Use localleader twice and then a w/b etc: ,,w
@@ -47,29 +43,32 @@ Bundle 'vim-scripts/argtextobj.vim'
 Bundle 'skammer/vim-css-color'
 " fix spelling errors
 Bundle 'tpope/vim-abolish'
+" quick find method definitions:
 Bundle 'Shougo/unite.vim'
 Bundle 'h1mesuke/unite-outline'
+Bundle 'kana/vim-textobj-function'
+Bundle 'michaeljsmith/vim-indent-object'
 
 " Probably going to remove this:
 "  this one requires phpctags:
-Bundle 'git://github.com/techlivezheng/tagbar-phpctags.git'
-Bundle 'git://github.com/majutsushi/tagbar.git'
-Bundle 'git://github.com/sjl/threesome.vim.git'
-Bundle 'git://github.com/vim-scripts/cecutil.git'
-Bundle 'git://github.com/vim-scripts/Vimball.git'
-Bundle 'git://github.com/alourie/Conque-Shell.git'
+Bundle 'vim-scripts/AnsiEsc.vim'
+Bundle 'techlivezheng/tagbar-phpctags.git'
+Bundle 'majutsushi/tagbar.git'
+Bundle 'sjl/threesome.vim.git'
+Bundle 'vim-scripts/cecutil.git'
+Bundle 'vim-scripts/Vimball.git'
+Bundle 'alourie/Conque-Shell.git'
 
 " TODO plugins to think about
 " https://github.com/vim-scripts/YankRing.vim
 " https://github.com/chrisbra/color_highlight
-" kana/vim-textobj-function
-"
-" this one seems super cool except that it totally doesn't work with 'vii' or
-" viI??
-"Bundle 'michaeljsmith/vim-indent-object'
 
 if (v:version / 100 == 7 && has('gui')) || v:version >= 703
   Bundle 'https://github.com/godlygeek/csapprox.git'
+  Bundle 'sjl/gundo.vim.git'
+  Bundle 'dsummersl/vus'
+  Bundle 'dsummersl/vim-sluice'
+  Bundle 'dsummersl/vimunit'
 endif
 
 "  my own lame SVN mappings:
@@ -144,6 +143,7 @@ let g:UltiSnipsJumpBackwardTrigger="<s-tab>"
 
 " CtrlP plugin
 nnoremap <C-p> :CtrlPBuffer<CR>
+let g:ctrlp_mruf_relative = 1
 let g:ctrlp_use_caching = 1
 let g:ctrlp_clear_cache_on_exit = 0
 let g:ctrlp_cache_dir = $HOME.'/.cache/ctrlp'

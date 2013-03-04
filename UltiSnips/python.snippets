@@ -21,13 +21,12 @@ ${2:Description}
 
 Options:
   --help,-h                   Display this help message.
-  --test                      Run tests in this script.`!p
+  --test                      Run tests for this script.`!p
 # by default don't make a new variable.
 snip.rv = ''
 if t[4]:
   # show the option for this new option
   keyval = '--'+ t[3] +'=<VAL>'
-  # TODO it would be cool to make this \t expand tab aware
   snip.rv = '\n  '+ keyval +''.rjust(30 - len(keyval) - int(vim.eval('&shiftwidth'))) + 'DESCRIPTION'
 `
 ''')
@@ -38,7 +37,7 @@ TEST=False`!p
 snip.rv = ''
 if t[4]:
   # show the variable as long as it exists:
-  snip.rv = '\n'+ t[3] +'=None'
+  snip.rv = '\n'+ t[3].upper() +'=None'
 `
 
 # parse out the program parameters:
