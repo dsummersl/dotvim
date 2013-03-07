@@ -32,7 +32,6 @@ Bundle 'vim-scripts/genutils.git'
 Bundle 'vim-scripts/matchit.zip.git'
 Bundle 'tpope/vim-unimpaired.git'
 Bundle 'gregsexton/gitv'
-Bundle 'scrooloose/nerdtree'
 " Use localleader twice and then a w/b etc: ,,w
 Bundle 'Lokaltog/vim-easymotion.git'
 " awesome: makes the surround plugin work with the '.' keys (repeatability!)
@@ -46,7 +45,7 @@ Bundle 'tpope/vim-abolish'
 " quick find method definitions:
 Bundle 'Shougo/unite.vim'
 Bundle 'h1mesuke/unite-outline'
-Bundle 'kana/vim-textobj-function'
+" viI (visual inner Indent)
 Bundle 'michaeljsmith/vim-indent-object'
 
 " Probably going to remove this:
@@ -243,6 +242,15 @@ let g:tagbar_type_scala = {
     \ ]
 \ }
 "}}}
+" delete all buffers function
+function DeleteHiddenBuffers()
+    let tpbl=[]
+    call map(range(1, tabpagenr('$')), 'extend(tpbl, tabpagebuflist(v:val))')
+    for buf in filter(range(1, bufnr('$')), 'bufexists(v:val) && index(tpbl, v:val)==-1')
+        silent execute 'bwipeout' buf
+    endfor
+endfunction
+"
 "}}}
 " Setup how in 'list' mode characters for white space and tabs appear"{{{
 " set lcs=tab:]_,trail:+
@@ -269,6 +277,7 @@ endif
 "}}}
 " Mappings"{{{
 
+cabbrev bda call DeleteHiddenBuffers()
 cabbrev gitv Gitv
 
 " instead of using this, I use 'gt'
@@ -318,6 +327,7 @@ if has("autocmd") && !exists("autocommands_loaded")
   autocmd FileType netrw setlocal ts=30
 
   autocmd FileType ruby,eruby setlocal omnifunc=rubycomplete#Complete
+  autocmd FileType ruby,eruby setlocal fdm&
   autocmd FileType python     setlocal omnifunc=pythoncomplete#Complete
   autocmd FileType sh  setlocal omnifunc=syntaxcomplete#Complete
   autocmd FileType vim setlocal omnifunc=syntaxcomplete#Complete
