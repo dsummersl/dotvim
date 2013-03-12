@@ -10,12 +10,14 @@ Bundle 'gmarik/vundle'
 Bundle 'scrooloose/nerdcommenter.git'
 Bundle 'sukima/xmledit'
 Bundle 'vim-scripts/applescript.vim'
+" editing CSV docs, super handily.
 Bundle 'dsummersl/wikia-csv.git'
 Bundle 'tpope/vim-fugitive.git'
 Bundle 'kien/ctrlp.vim.git'
 Bundle 'guns/ultisnips.git'
 Bundle 'derekwyatt/vim-scala.git'
 Bundle 'kchmck/vim-coffee-script'
+" surround things with quotes, etc
 Bundle 'tpope/vim-surround.git'
 Bundle 'mattn/gist-vim.git'
 " gist depends on this:
@@ -30,6 +32,7 @@ Bundle 'vim-scripts/Align.git'
 Bundle 'vim-scripts/LargeFile.git'
 Bundle 'vim-scripts/genutils.git'
 Bundle 'vim-scripts/matchit.zip.git'
+" many additional mappings for ]q, etc
 Bundle 'tpope/vim-unimpaired.git'
 Bundle 'gregsexton/gitv'
 " Use localleader twice and then a w/b etc: ,,w
