@@ -50,6 +50,10 @@ Bundle 'Shougo/unite.vim'
 Bundle 'h1mesuke/unite-outline'
 " viI (visual inner Indent)
 Bundle 'michaeljsmith/vim-indent-object'
+" vi/ (last search)
+Bundle 'kana/vim-textobj-lastpat'
+" change quicklist to arglist
+Bundle 'nelstrom/vim-qargs'
 
 " Probably going to remove this:
 "  this one requires phpctags:
@@ -246,7 +250,7 @@ let g:tagbar_type_scala = {
 \ }
 "}}}
 " delete all buffers function
-function DeleteHiddenBuffers()
+function! DeleteHiddenBuffers()
     let tpbl=[]
     call map(range(1, tabpagenr('$')), 'extend(tpbl, tabpagebuflist(v:val))')
     for buf in filter(range(1, bufnr('$')), 'bufexists(v:val) && index(tpbl, v:val)==-1')
