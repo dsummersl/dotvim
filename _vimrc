@@ -75,6 +75,9 @@ if (v:version / 100 == 7 && has('gui')) || v:version >= 703
   Bundle 'dsummersl/vus'
   Bundle 'dsummersl/vim-sluice'
   Bundle 'dsummersl/vimunit'
+  set background=light
+else
+  set background=dark
 endif
 
 "  my own lame SVN mappings:
@@ -94,7 +97,6 @@ syntax on
 set t_Co=256
 set guioptions=egt  " GUI options
 
-set background=light
 let g:solarized_termcolors=256
 colorscheme solarized
 
