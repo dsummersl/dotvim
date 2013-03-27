@@ -50,8 +50,6 @@ Bundle 'Shougo/unite.vim'
 Bundle 'h1mesuke/unite-outline'
 " viI (visual inner Indent)
 Bundle 'michaeljsmith/vim-indent-object'
-" vi/ (last search)
-Bundle 'kana/vim-textobj-lastpat'
 " change quicklist to arglist
 Bundle 'nelstrom/vim-qargs'
 
@@ -69,15 +67,20 @@ Bundle 'alourie/Conque-Shell.git'
 " https://github.com/vim-scripts/YankRing.vim
 " https://github.com/chrisbra/color_highlight
 
+if has("gui_running")
+  " vi/ (last search)
+  Bundle 'kana/vim-textobj-lastpat'
+  set background=light
+else
+  set background=dark
+endif
+
 if (v:version / 100 == 7 && has('gui')) || v:version >= 703
   Bundle 'https://github.com/godlygeek/csapprox.git'
   Bundle 'sjl/gundo.vim.git'
   Bundle 'dsummersl/vus'
   Bundle 'dsummersl/vim-sluice'
   Bundle 'dsummersl/vimunit'
-  set background=light
-else
-  set background=dark
 endif
 
 "  my own lame SVN mappings:
@@ -101,7 +104,7 @@ let g:solarized_termcolors=256
 colorscheme solarized
 
 set enc=utf-8
-set gfn=Monaco:h13
+set gfn=Monaco:h15
 set diffopt=filler,iwhite
 set hls
 set nowrap
@@ -112,6 +115,7 @@ set visualbell
 set backspace=2 " allow backspacing over everything in insert mode
 set nobackup
 set incsearch
+" TODO I should change this so g, and , normal commands work well.
 let mapleader=','
 let maplocalleader='='
 
@@ -120,6 +124,13 @@ set history=100 " keep 100 lines of command line history
 set ruler       " show the cursor position all the time
 set showcmd     " Show (partial) command in status line.
 set showmatch   " Show matching brackets.
+
+" Setup a vertical higlight for the 80+ column positions:
+set textwidth=80
+set cc=+1,+2,+3,+4,+5
+
+" when wrap is turned on, break on words
+set linebreak
 
 "}}}
 " Plugin settings, changes."{{{
@@ -320,7 +331,7 @@ noremap <Leader>p :set paste<cr>:put *<cr>:set nopaste<cr>
 " in:
 function! s:GitGrepFile(search)
   let extension = substitute(expand('%'),'\v^.*\.',"","")
-  exec printf("Ggrep '%s' -- '*.%s'",a:search,extension)
+  exec printf("Ggrep %s -- '*.%s'",a:search,extension)
 endfunction
 
 command! -nargs=1 GG call s:GitGrepFile('<args>')

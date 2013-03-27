@@ -8,6 +8,8 @@ from ultisniphelpers import *
 endglobal
 
 snippet args "Add default VT style arg parsing." b
+# arg processing boiler plate {{{
+import logging
 import sys
 import platform
 import re
@@ -21,6 +23,7 @@ ${2:Description}
 
 Options:
   --help,-h                   Display this help message.
+  --log=<LEVEL>               Log level to output (defaults to ERROR).
   --test                      Run tests for this script.`!p
 # by default don't make a new variable.
 snip.rv = ''
@@ -31,7 +34,11 @@ if t[4]:
 `
 ''')
 
-# argument parameters:
+LOGLEVELS = [ 'NOTSET', 'ERROR', 'INFO', 'DEBUG', 'WARN' ]
+# default log level
+LOG = 'ERROR'
+
+# test setting
 TEST=False`!p
 # by default don't make a new variable.
 snip.rv = ''
@@ -48,8 +55,14 @@ for arg in sys.argv[1:]:
   elif m:
     key = m.group(1)
     value = m.group(2)
+    if key == 'log':
+      if value not in LOGLEVELS:
+        print "Unknown log level: '%s'" % (value)
+        print "Use one of these: %s" % (repr(LOGLEVELS))
+        sys.exit(1)
+      LOG = value
     ${4:
-    if key == '${3:VARIABLE}':
+    elif key == '${3:VARIABLE}':
       $3 = value
 }
   else:
@@ -57,10 +70,26 @@ for arg in sys.argv[1:]:
     print "Run with -h option to see how to use this script. "
     sys.exit(1)
 
+logging.basicConfig(level=getattr(logging,LOG))
+logger = logging.getLogger('`!v substitute(substitute(@%, "^.*\/", "", ""), '\.\w\+$', "", "")`')
+
 if TEST:
   import nose
   sys.exit(nose.main(argv=['-vvv',__file__]))
+# }}}
 $0
+endsnippet
+
+  snippet '^t' "Example completion snippet" r
+  $1`!p snip.rv=complete(t[1],['one','two','three','overboard'])`
+  endsnippet
+
+snippet lg "logger.log" !b
+logger.$1`!p snip.rv=complete(t[1],['info','debug','error','warn'])`(${3:'${2:message}'}${4: % })$0
+endsnippet
+
+snippet kv "key/value" !b
+"${1:key}": ${3:"${2:value}",}$0
 endsnippet
 
 snippet def "function with docstrings" b
@@ -69,7 +98,7 @@ def ${1:function}(${2:params}):
 endsnippet
 
 snippet for "for loop" !b
-for ${2:val} in ${1:values}:
+for ${1:val} in ${2:`!p snip.rv=t[1]`s}:
   ${3:# TODO ...}
 endsnippet
 snippet if "if" b

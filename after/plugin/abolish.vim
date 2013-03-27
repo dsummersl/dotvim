@@ -6,3 +6,7 @@ Abolish improt import
 Abolish ealie{r,st} earlie{}
 Abolish taht that
 Abolish resutl{,s,ing} result{}
+Abolish flase false
+Abolish pytohn python
+Abolish form from
+Abolish ahve have
