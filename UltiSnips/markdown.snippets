@@ -1,0 +1,17 @@
+clearsnippets
+
+snippet hh "Markdown heading" !b
+${1:Heading}
+`!p
+snip.rv = '='*(len(t[1]))
+`
+$0
+endsnippet
+
+snippet sh "Markdown sub-heading" !b
+${1:Sub Heading}
+`!p
+snip.rv = '-'*(len(t[1]))
+`
+$0
+endsnippet
