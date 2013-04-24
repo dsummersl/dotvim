@@ -10,7 +10,7 @@ elif match.group(2) == '(':
 `$0
 endsnippet
 
-snippet '([^\]\[\'"]|^)([\]}\)])' "Expand variable['...']" !ri
+snippet '([^\]\[\'"(){}]|^)([\]}\)])' "Expand variable['...']" !ri
 `!p snip.rv=match.group(1)``!p
 if match.group(2) == ']':
   snip.rv='['

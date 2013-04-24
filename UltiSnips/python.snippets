@@ -17,7 +17,7 @@ if (('-h' in sys.argv) or ('--help' in sys.argv) or (len(sys.argv) <= 1)):
   invocation = '`!v substitute(@%, "^.*\/", "", "")`'
   if (platform.system() == 'Windows'):
     invocation = 'python `!v substitute(@%, "^.*\/", "", "")`'
-  print('Usage: '+invocation+' [options] <environments>')
+  print('Usage: '+invocation+' [options] <arguments>')
   print('''
 ${2:Description}
 
@@ -84,12 +84,16 @@ endsnippet
   $1`!p snip.rv=complete(t[1],['one','two','three','overboard'])`
   endsnippet
 
+snippet rp "report.log" !b
+${1:self.}report.$2`!p snip.rv=complete(t[2],['doing','done','warn','error','debug','fail','prompt','getInput'])`(${4:'${3:message}'}${5})$0
+endsnippet
+
 snippet lg "logger.log" !b
-logger.$1`!p snip.rv=complete(t[1],['info','debug','error','warn'])`(${3:'${2:message}'}${4: % })$0
+logger.$1`!p snip.rv=complete(t[1],['info','debug','error','warn'])`(${3:'${2:message}'}${4})$0
 endsnippet
 
 snippet kv "key/value" !b
-"${1:key}": ${3:"${2:value}",}$0
+'${1:key}': ${3:"${2:value}",}$0
 endsnippet
 
 snippet def "function with docstrings" b
