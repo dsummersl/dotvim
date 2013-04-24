@@ -47,11 +47,14 @@ Bundle 'skammer/vim-css-color'
 Bundle 'tpope/vim-abolish'
 " quick find method definitions:
 Bundle 'Shougo/unite.vim'
+" Nice outline of a file's methods within Unite.
 Bundle 'h1mesuke/unite-outline'
 " viI (visual inner Indent)
 Bundle 'michaeljsmith/vim-indent-object'
 " change quicklist to arglist
 Bundle 'nelstrom/vim-qargs'
+" allow the quicklist to be edited :cw
+Bundle 'jceb/vim-editqf'
 
 " Probably going to remove this:
 "  this one requires phpctags:
@@ -127,10 +130,12 @@ set showmatch   " Show matching brackets.
 
 " Setup a vertical higlight for the 80+ column positions:
 set textwidth=80
-set cc=+1,+2,+3,+4,+5
 
 " when wrap is turned on, break on words
 set linebreak
+
+" let macros go faster
+set lazyredraw
 
 "}}}
 " Plugin settings, changes."{{{
@@ -293,6 +298,8 @@ if v:version >= 703
   let g:sluice_enabled=1
   set undofile
   set cryptmethod=blowfish
+  " show 5 column markers beyond the 80 char line.
+  set cc=+1,+2,+3,+4,+5
 endif
 "}}}
 " Mappings"{{{
