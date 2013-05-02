@@ -25,8 +25,7 @@ Bundle 'mattn/webapi-vim.git'
 Bundle 'nathanaelkane/vim-indent-guides'
 " TODO this?
 Bundle 'PProvost/vim-ps1'
-" base16 color schemes
-Bundle 'chriskempson/base16-vim'
+Bundle 'altercation/vim-colors-solarized'
 " TODO this?
 Bundle 'L9'
 Bundle 'vim-scripts/Align.git'
@@ -75,11 +74,8 @@ if has("gui_running")
   " vi/ (last search)
   Bundle 'kana/vim-textobj-lastpat'
   set background=light
-  colorscheme base16-solarized
 else
-  set t_Co=256
   set background=dark
-  colorscheme base16-eighties
 endif
 
 if (v:version / 100 == 7 && has('gui')) || v:version >= 703
@@ -104,7 +100,11 @@ filetype plugin on    " Enable filetype-specific plugins
 " }}}
 " basic options {{{
 syntax on
+set t_Co=256
 set guioptions=egt  " GUI options
+
+let g:solarized_termcolors=256
+colorscheme solarized
 
 set enc=utf-8
 set gfn=Monaco:h15
@@ -196,6 +196,8 @@ nnoremap <F5> :GundoToggle<CR>
 nnoremap <F6> :Gvdiff<CR>
 " show tags in current file
 nnoremap <F7> :TagbarToggle<CR>
+" Setup toggling the background colors from dark to light:
+call togglebg#map("<F8>")
 
 " don't search included files by default - it can be fucked up slow:
 set complete-=i
