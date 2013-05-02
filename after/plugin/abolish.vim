@@ -11,3 +11,6 @@ Abolish pytohn python
 Abolish form from
 Abolish ahv{e,ing} hav{}
 Abolish tehse these
+Abolish lcoal local
+Abolish ofr for
+Abolish adn and
