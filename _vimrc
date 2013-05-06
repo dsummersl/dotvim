@@ -74,11 +74,7 @@ if has("gui_running")
   " vi/ (last search)
   Bundle 'kana/vim-textobj-lastpat'
   set background=light
-  set t_Co=256
-  let g:solarized_termcolors=256
   colorscheme solarized
-else
-  "set background=dark
 endif
 
 if (v:version / 100 == 7 && has('gui')) || v:version >= 703
@@ -103,6 +99,7 @@ filetype plugin on    " Enable filetype-specific plugins
 " }}}
 " basic options {{{
 syntax on
+set t_Co=256
 set guioptions=egt  " GUI options
 
 set enc=utf-8
