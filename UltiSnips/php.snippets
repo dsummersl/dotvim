@@ -8,6 +8,19 @@ snippet th "$this->" !i
 $this->$0
 endsnippet
 
+#snippet erno "Print VT error number line (using register i)" !b
+#reportError(${1:'err:'. }get_backtrace_string());$0
+# * @author ${5:`!v g:snips_author`}
+#endsnippet
+
+snippet rpe "VT report a variable" !b
+reportError("${1:var}: ". $$1);$0
+endsnippet
+
+snippet dbg "Print VT debug statements" !b
+reportError(${1:'err:'. }get_backtrace_string());$0
+endsnippet
+
 ## Snippets from SnipMate, taken from
 ## https://github.com/scrooloose/snipmate-snippets.git
 
@@ -230,26 +243,6 @@ class $1 {
 	    ${4:// code}
 	    $0
 	}
-}
-endsnippet
-
-snippet pr "Dumb debug helper in HTML"
-echo '<pre>' . var_export($1, 1) . '</pre>';$0
-endsnippet
-
-snippet pc "Dumb debug helper in cli"
-var_export($1);$0
-endsnippet
-
-# Symfony 2 based snippets
-snippet sfa "Symfony 2 Controller action"
-/**
-* @Route("/${1:route_name}", name="$1")
-* @Template()
-*/
-public function $1Action($2) {
-	$3
-	return ${4:array();}$0
 }
 endsnippet
 
