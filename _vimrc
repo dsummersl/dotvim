@@ -55,6 +55,12 @@ Bundle 'michaeljsmith/vim-indent-object'
 Bundle 'nelstrom/vim-qargs'
 " allow the quicklist to be edited :cw
 Bundle 'jceb/vim-editqf'
+" javascript integration
+Bundle 'marijnh/tern_for_vim'
+" neo completion - mapped to...C-space maybe? see below
+Bundle 'Shougo/neocomplcache.git'
+Bundle 'JazzCore/neocomplcache-ultisnips'
+Bundle 'Shougo/vimproc'
 
 " Probably going to remove this:
 "  this one requires phpctags:
@@ -156,7 +162,7 @@ let g:gist_open_browser_after_post = 1
 let g:UltiSnipsDontReverseSearchPath="1"
 
 " this will work on both GUI and console:
-let g:UltiSnipsListSnippets='<c-\>'
+let g:UltiSnipsListSnippets=''
 let g:UltiSnipsExpandTrigger="<tab>"
 let g:UltiSnipsJumpForwardTrigger="<tab>"
 let g:UltiSnipsJumpBackwardTrigger="<s-tab>"
@@ -263,6 +269,44 @@ let g:tagbar_type_scala = {
     \ ]
 \ }
 "}}}
+" necompl options: {{{
+
+" Launches neocomplcache automatically on vim startup.
+let g:neocomplcache_enable_at_startup = 1
+" automatically insert the /# delimiter for vim/files
+let g:neocomplcache_enable_auto_delimiter = 1
+" make the start length so long that it doesn't turn on 'automatically'
+let g:neocomplcache_auto_completion_start_length = 30
+" Use camel case completion.
+let g:neocomplcache_enable_camel_case_completion = 1
+" Use underscore completion.
+let g:neocomplcache_enable_underbar_completion = 1
+let g:neocomplcache_disable_auto_complete = 1
+let g:neocomplcache_enable_auto_select = 0
+
+" This would be cool - but complete includes [F] (gotta take that out), and we
+" it doesn't show ALL matches when you haven't typed anything yet (which is what
+" I would like)
+inoremap <expr><C-\> neocomplcache#start_manual_complete(['ultisnips_complete'])
+inoremap <expr><C-space> neocomplcache#start_manual_complete()
+inoremap <expr><CR>      neocomplcache#smart_close_popup() . "\<CR>"
+
+" turn off neo complete for omni patterns (python in particular is annoying)
+if !exists('g:neocomplcache_omni_patterns')
+  let g:neocomplcache_omni_patterns = {}
+endif
+let g:neocomplcache_omni_patterns.python = ''
+
+" TODO setup the general completion options I want to see
+" TODO or???? g:neocomplcache_disabled_sources_list
+"if !exists('g:neocomplcache_sources_list')
+"  let g:neocomplcache_sources_list = {}
+"endif
+"let g:neocomplcache_sources_list._ = ['buffer_complete']
+"let g:neocomplcache_sources_list.cpp = ['buffer_complete', 'include_complete']
+
+" }}}
+
 " delete all buffers function
 function! DeleteHiddenBuffers()
     let tpbl=[]
