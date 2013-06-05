@@ -23,10 +23,10 @@ Bundle 'mattn/gist-vim.git'
 " gist depends on this:
 Bundle 'mattn/webapi-vim.git'
 Bundle 'nathanaelkane/vim-indent-guides'
-" TODO this?
+" TODO this? Its a dependency for a number of libs?
 Bundle 'PProvost/vim-ps1'
 Bundle 'altercation/vim-colors-solarized'
-" TODO this?
+" TODO this? Its a dependency for a number of libs?
 Bundle 'L9'
 Bundle 'vim-scripts/Align.git'
 Bundle 'vim-scripts/LargeFile.git'
@@ -61,6 +61,10 @@ Bundle 'marijnh/tern_for_vim'
 Bundle 'Shougo/neocomplcache.git'
 Bundle 'JazzCore/neocomplcache-ultisnips'
 Bundle 'Shougo/vimproc'
+" syntax hilighting for actionscript
+Bundle 'jeroenbourgois/vim-actionscript'
+" Use c-a c-x to increment and decrement dates
+Bundle 'tpope/vim-speeddating.git'
 
 " Probably going to remove this:
 "  this one requires phpctags:
@@ -162,13 +166,17 @@ let g:gist_open_browser_after_post = 1
 let g:UltiSnipsDontReverseSearchPath="1"
 
 " this will work on both GUI and console:
-let g:UltiSnipsListSnippets=''
+if (v:version / 100 == 7 && has('gui')) || v:version >= 703
+  let g:UltiSnipsListSnippets=''
+endif
 let g:UltiSnipsExpandTrigger="<tab>"
 let g:UltiSnipsJumpForwardTrigger="<tab>"
 let g:UltiSnipsJumpBackwardTrigger="<s-tab>"
 
 " CtrlP plugin
-nnoremap <C-p> :CtrlPBuffer<CR>
+nnoremap <C-p> :CtrlPMRUFiles<CR>
+cnoremap <C-p> :CtrlPMRUFiles<CR>
+
 let g:ctrlp_mruf_relative = 1
 let g:ctrlp_use_caching = 1
 let g:ctrlp_clear_cache_on_exit = 0
@@ -178,7 +186,7 @@ let g:ctrlp_working_path_mode = 'w'
 " by default ignore subversion things and swap file
 set wildignore+=*/.git/*,*/.hg/*,*/.svn/*,*/*.sw?,*/*.pyc,*/*.class
 " enable the quickfix plugin source:
-let g:ctrlp_extensions=['quickfix']
+let g:ctrlp_extensions=['changes']
 
 " Unite outline mode
 nnoremap <C-t> :Unite outline<CR>
@@ -288,7 +296,7 @@ let g:neocomplcache_enable_auto_select = 0
 " it doesn't show ALL matches when you haven't typed anything yet (which is what
 " I would like)
 inoremap <expr><C-\> neocomplcache#start_manual_complete(['ultisnips_complete'])
-inoremap <expr><C-space> neocomplcache#start_manual_complete()
+inoremap <expr><C-n> neocomplcache#start_manual_complete()
 inoremap <expr><CR>      neocomplcache#smart_close_popup() . "\<CR>"
 
 " turn off neo complete for omni patterns (python in particular is annoying)
@@ -354,7 +362,8 @@ map <nul> <esc>
 map <f1> <nul>
 imap <f1> <nul>
 
-imap <C-e> <End>
+" This interfere's with: line completion.
+" imap <C-e> <End>
 imap <C-a> <Home>
 
 " Make Control up/down scroll up/down in the window...even in insert mode.
@@ -402,9 +411,11 @@ if has("autocmd") && !exists("autocommands_loaded")
   " use the same comment formatting in groovy/PHP that is used for java:
   autocmd FileType php setlocal comments=sO:*\ -,mO:*\ \ ,exO:*/,s1:/*,mb:*,ex:*/,://,b:#,:%,:XCOMM,n:>,fb:-
   autocmd FileType php setlocal fo=croq
+  autocmd FileType php compiler php
   autocmd FileType groovy setlocal comments=sO:*\ -,mO:*\ \ ,exO:*/,s1:/*,mb:*,ex:*/,://,b:#,:%,:XCOMM,n:>,fb:-
   autocmd FileType groovy setlocal fo=croq
 
+  autocmd BufNewFile,BufRead *.md setf markdown
   autocmd BufNewFile,BufRead *.pp setf ruby
   autocmd BufNewFile,BufRead *.csv setf csv
   autocmd BufNewFile,BufRead *.tsv setf csv
