@@ -14,3 +14,4 @@ Abolish lcoal local
 Abolish ofr for
 Abolish adn and
 Abolish instnace{,s} instance{}
+Abolish iwth with
