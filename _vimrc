@@ -96,6 +96,8 @@ Bundle 'maxbrunsfeld/vim-yankstack'
 
 set nospell spelllang=en_us
 let g:sluice_enabled=0
+let g:Powerline_theme = 'default'
+"let g:Powerline_colorscheme = 'solarized256'
 
 if v:version >= 703
   " sluice needs vim 7.3
@@ -121,8 +123,18 @@ if v:version >= 703
     " a powerline friendly font might look like
     " set gfn=Menlo\ Regular\ for\ Powerline:h15
     set gfn=Monaco:h15
-    let g:Powerline_theme = 'default'
-    "let g:Powerline_colorscheme = 'solarized256'
+
+    " only match ultisnips completions
+    inoremap <expr><C-\> neocomplcache#start_manual_complete(['ultisnips_complete'])
+    " match neo style.
+    inoremap <expr><C-space> neocomplcache#start_manual_complete()
+    inoremap <expr><CR>      neocomplcache#smart_close_popup() . "\<CR>"
+
+    " toggle Sluice gutters
+    nnoremap <F3> :SluiceMacroOff <bar> SluiceToggle<CR>
+    nnoremap <F4> :SluiceMacroOn <bar> SluiceToggle<CR>
+    " show undo history
+    nnoremap <F5> :GundoToggle<CR>
   endif
 endif
 
@@ -234,11 +246,6 @@ let g:tagbar_left = 1
 
 let g:sluice_default_macromode=1
 
-" toggle Sluice gutters
-nnoremap <F3> :SluiceMacroOff <bar> SluiceToggle<CR>
-nnoremap <F4> :SluiceMacroOn <bar> SluiceToggle<CR>
-" show undo history
-nnoremap <F5> :GundoToggle<CR>
 " show diff with git
 nnoremap <F6> :Gvdiff<CR>
 
@@ -324,13 +331,6 @@ let g:neocomplcache_enable_camel_case_completion = 1
 let g:neocomplcache_enable_underbar_completion = 1
 let g:neocomplcache_disable_auto_complete = 1
 let g:neocomplcache_enable_auto_select = 0
-
-" This would be cool - but complete includes [F] (gotta take that out), and we
-" it doesn't show ALL matches when you haven't typed anything yet (which is what
-" I would like)
-inoremap <expr><C-\> neocomplcache#start_manual_complete(['ultisnips_complete'])
-inoremap <expr><C-n> neocomplcache#start_manual_complete()
-inoremap <expr><CR>      neocomplcache#smart_close_popup() . "\<CR>"
 
 " turn off neo complete for omni patterns (python in particular is annoying)
 if !exists('g:neocomplcache_omni_patterns')
