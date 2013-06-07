@@ -66,9 +66,10 @@ Bundle 'jeroenbourgois/vim-actionscript'
 Bundle 'tpope/vim-speeddating'
 " run make in the background.
 Bundle 'tpope/vim-dispatch'
+" use cdo to quicklist argument modifications
 Bundle 'Peeja/vim-cdo'
 " use multiple cursors (ala sublime text editor)
-Bundle 'terryma/vim-multiple-cursors'
+"Bundle 'terryma/vim-multiple-cursors'
 Bundle 'Lokaltog/vim-powerline'
 " TODO look into https://github.com/Valloric/YouCompleteMe instead of neocomplcache
 " Add the 's' key to do a two word seek (like 'f', but takes two chars)
@@ -96,28 +97,32 @@ Bundle 'maxbrunsfeld/vim-yankstack'
 set nospell spelllang=en_us
 let g:sluice_enabled=0
 
-if has("gui_running")
-  " vi/ (last search)
-  Bundle 'kana/vim-textobj-lastpat'
-  set background=dark
-  colorscheme base16-ocean
-  set macmeta
-  set anti
-  set cursorline
-  " TODO make the fold highlight non-underlined.
-else
-  if v:version >= 703
-    " sluice needs vim 7.3
-    let g:sluice_enabled=1
-    set undofile
-    set cryptmethod=blowfish
+if v:version >= 703
+  " sluice needs vim 7.3
+  let g:sluice_enabled=1
+  set undofile
+  set cryptmethod=blowfish
+  Bundle 'https://github.com/godlygeek/csapprox.git'
+  Bundle 'sjl/gundo.vim.git'
+  Bundle 'dsummersl/vus'
+  Bundle 'dsummersl/vim-sluice'
+  Bundle 'dsummersl/vimunit'
+  if has("gui_running")
+    " vi/ (last search)
+    Bundle 'kana/vim-textobj-lastpat'
+    set background=light
+    colorscheme base16-solarized
+    set macmeta
+    set anti
+    set cursorline
     " show 5 column markers beyond the 80 char line.
-    set cc=+1,+2,+3,+4,+5
-    Bundle 'https://github.com/godlygeek/csapprox.git'
-    Bundle 'sjl/gundo.vim.git'
-    Bundle 'dsummersl/vus'
-    Bundle 'dsummersl/vim-sluice'
-    Bundle 'dsummersl/vimunit'
+    set colorcolumn=+1,+2,+3,+4,+5
+    " TODO make the fold highlight non-underlined.
+    " a powerline friendly font might look like
+    " set gfn=Menlo\ Regular\ for\ Powerline:h15
+    set gfn=Monaco:h15
+    let g:Powerline_theme = 'default'
+    "let g:Powerline_colorscheme = 'solarized256'
   endif
 endif
 
@@ -140,7 +145,6 @@ syntax on
 set t_Co=256
 set guioptions=egt  " GUI options
 
-set gfn=Monaco:h15
 set diffopt=filler,iwhite
 "set hls
 set nowrap
