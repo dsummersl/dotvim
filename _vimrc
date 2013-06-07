@@ -51,8 +51,6 @@ Bundle 'Shougo/unite.vim'
 Bundle 'h1mesuke/unite-outline'
 " viI (visual inner Indent)
 Bundle 'michaeljsmith/vim-indent-object'
-" change quicklist to arglist
-Bundle 'nelstrom/vim-qargs'
 " allow the quicklist to be edited :cw
 Bundle 'jceb/vim-editqf'
 " javascript integration
@@ -64,17 +62,25 @@ Bundle 'Shougo/vimproc'
 " syntax hilighting for actionscript
 Bundle 'jeroenbourgois/vim-actionscript'
 " Use c-a c-x to increment and decrement dates
-Bundle 'tpope/vim-speeddating.git'
+Bundle 'tpope/vim-speeddating'
+" run make in the background.
+Bundle 'tpope/vim-dispatch'
+Bundle 'Peeja/vim-cdo'
+" use multiple cursors (ala sublime text editor)
+Bundle 'terryma/vim-multiple-cursors'
+Bundle 'Lokaltog/vim-powerline'
 
 " Probably going to remove this:
 "  this one requires phpctags:
 Bundle 'vim-scripts/AnsiEsc.vim'
 Bundle 'techlivezheng/tagbar-phpctags.git'
 Bundle 'majutsushi/tagbar.git'
-Bundle 'sjl/threesome.vim.git'
 Bundle 'vim-scripts/cecutil.git'
 Bundle 'vim-scripts/Vimball.git'
 Bundle 'alourie/Conque-Shell.git'
+" an md5 implementation - make it easy to compute the md5 of a string in the
+" editor (ie, yank a block, then do :echo md5#md5(@") )
+Bundle 'vim-scripts/md5.vim'
 
 " TODO plugins to think about
 " https://github.com/vim-scripts/YankRing.vim
@@ -115,7 +121,7 @@ set guioptions=egt  " GUI options
 set enc=utf-8
 set gfn=Monaco:h15
 set diffopt=filler,iwhite
-set hls
+"set hls
 set nowrap
 set et
 set sw=2
@@ -133,6 +139,8 @@ set history=100 " keep 100 lines of command line history
 set ruler       " show the cursor position all the time
 set showcmd     " Show (partial) command in status line.
 set showmatch   " Show matching brackets.
+set laststatus=2
+set encoding=utf-8
 
 " Setup a vertical higlight for the 80+ column positions:
 set textwidth=80
@@ -145,6 +153,10 @@ set lazyredraw
 
 "}}}
 " Plugin settings, changes."{{{
+
+" quit multicursor mode!
+let g:multi_cursor_start_key='<C-m>'
+let g:multi_cursor_quit_key='<C-m>'
 
 " enable yanks!
 let g:unite_source_history_yank_enable = 1
