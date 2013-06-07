@@ -25,7 +25,8 @@ Bundle 'mattn/webapi-vim.git'
 Bundle 'nathanaelkane/vim-indent-guides'
 " TODO this? Its a dependency for a number of libs?
 Bundle 'PProvost/vim-ps1'
-Bundle 'altercation/vim-colors-solarized'
+" base16 color schemes
+Bundle 'chriskempson/base16-vim'
 " TODO this? Its a dependency for a number of libs?
 Bundle 'L9'
 Bundle 'vim-scripts/Align.git'
@@ -69,6 +70,9 @@ Bundle 'Peeja/vim-cdo'
 " use multiple cursors (ala sublime text editor)
 Bundle 'terryma/vim-multiple-cursors'
 Bundle 'Lokaltog/vim-powerline'
+" TODO look into https://github.com/Valloric/YouCompleteMe instead of neocomplcache
+" Add the 's' key to do a two word seek (like 'f', but takes two chars)
+Bundle 'goldfeld/vim-seek'
 
 " Probably going to remove this:
 "  this one requires phpctags:
@@ -81,6 +85,7 @@ Bundle 'alourie/Conque-Shell.git'
 " an md5 implementation - make it easy to compute the md5 of a string in the
 " editor (ie, yank a block, then do :echo md5#md5(@") )
 Bundle 'vim-scripts/md5.vim'
+Bundle 'maxbrunsfeld/vim-yankstack'
 
 " TODO plugins to think about
 " https://github.com/vim-scripts/YankRing.vim
@@ -89,8 +94,9 @@ Bundle 'vim-scripts/md5.vim'
 if has("gui_running")
   " vi/ (last search)
   Bundle 'kana/vim-textobj-lastpat'
-  set background=light
-  colorscheme solarized
+  set background=dark
+  colorscheme base16-ocean
+  set macmeta
 endif
 
 if (v:version / 100 == 7 && has('gui')) || v:version >= 703
@@ -216,10 +222,6 @@ nnoremap <F4> :SluiceMacroOn <bar> SluiceToggle<CR>
 nnoremap <F5> :GundoToggle<CR>
 " show diff with git
 nnoremap <F6> :Gvdiff<CR>
-" show tags in current file
-nnoremap <F7> :TagbarToggle<CR>
-" Setup toggling the background colors from dark to light:
-call togglebg#map("<F8>")
 
 " don't search included files by default - it can be fucked up slow:
 set complete-=i
@@ -338,8 +340,8 @@ endfunction
 "
 "}}}
 " Setup how in 'list' mode characters for white space and tabs appear"{{{
-" set lcs=tab:]_,trail:+
-" hi SpecialKey term=underline guifg=LightBlue guibg=bg
+" display tags and trailing white spaces in list mode.
+set fillchars+=stl:\ ,stlnc:\ 
 set lcs=tab:\ \ ,trail:+
 highlight SpecialKey term=underline guifg=Red guibg=LightGrey
 "}}}
