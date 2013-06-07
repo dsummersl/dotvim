@@ -91,21 +91,37 @@ Bundle 'maxbrunsfeld/vim-yankstack'
 " https://github.com/vim-scripts/YankRing.vim
 " https://github.com/chrisbra/color_highlight
 
+" version specific settings (7+) "{{{
+
+set nospell spelllang=en_us
+let g:sluice_enabled=0
+
 if has("gui_running")
   " vi/ (last search)
   Bundle 'kana/vim-textobj-lastpat'
   set background=dark
   colorscheme base16-ocean
   set macmeta
+  set anti
+  set cursorline
+  " TODO make the fold highlight non-underlined.
+else
+  if v:version >= 703
+    " sluice needs vim 7.3
+    let g:sluice_enabled=1
+    set undofile
+    set cryptmethod=blowfish
+    " show 5 column markers beyond the 80 char line.
+    set cc=+1,+2,+3,+4,+5
+    Bundle 'https://github.com/godlygeek/csapprox.git'
+    Bundle 'sjl/gundo.vim.git'
+    Bundle 'dsummersl/vus'
+    Bundle 'dsummersl/vim-sluice'
+    Bundle 'dsummersl/vimunit'
+  endif
 endif
 
-if (v:version / 100 == 7 && has('gui')) || v:version >= 703
-  Bundle 'https://github.com/godlygeek/csapprox.git'
-  Bundle 'sjl/gundo.vim.git'
-  Bundle 'dsummersl/vus'
-  Bundle 'dsummersl/vim-sluice'
-  Bundle 'dsummersl/vimunit'
-endif
+"}}}
 
 "  my own lame SVN mappings:
 " Bundle "git://github.com/dsummersl/svntools"
@@ -124,7 +140,6 @@ syntax on
 set t_Co=256
 set guioptions=egt  " GUI options
 
-set enc=utf-8
 set gfn=Monaco:h15
 set diffopt=filler,iwhite
 "set hls
@@ -344,25 +359,6 @@ endfunction
 set fillchars+=stl:\ ,stlnc:\ 
 set lcs=tab:\ \ ,trail:+
 highlight SpecialKey term=underline guifg=Red guibg=LightGrey
-"}}}
-" version specific settings (7+) "{{{
-
-let g:sluice_enabled=0
-
-if v:version / 100 == 7
-  set anti
-  set cursorline
-  " TODO make the fold highlight non-underlined.
-  set nospell spelllang=en_us
-endif
-if v:version >= 703
-  " sluice needs vim 7.3
-  let g:sluice_enabled=1
-  set undofile
-  set cryptmethod=blowfish
-  " show 5 column markers beyond the 80 char line.
-  set cc=+1,+2,+3,+4,+5
-endif
 "}}}
 " Mappings"{{{
 
