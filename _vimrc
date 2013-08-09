@@ -12,6 +12,8 @@ Bundle 'sukima/xmledit'
 Bundle 'vim-scripts/applescript.vim'
 " editing CSV docs, super handily.
 Bundle 'dsummersl/wikia-csv.git'
+" simple utf2ascii function.
+Bundle 'dsummersl/vim-utf2ascii'
 Bundle 'tpope/vim-fugitive.git'
 Bundle 'kien/ctrlp.vim.git'
 Bundle 'guns/ultisnips.git'
@@ -32,6 +34,7 @@ Bundle 'L9'
 Bundle 'vim-scripts/Align.git'
 Bundle 'vim-scripts/LargeFile.git'
 Bundle 'vim-scripts/genutils.git'
+" TODO do I need both matchit and xmledit?
 Bundle 'vim-scripts/matchit.zip.git'
 " many additional mappings for ]q, etc
 Bundle 'tpope/vim-unimpaired.git'
@@ -64,29 +67,53 @@ Bundle 'Shougo/vimproc'
 Bundle 'jeroenbourgois/vim-actionscript'
 " Use c-a c-x to increment and decrement dates
 Bundle 'tpope/vim-speeddating'
-" run make in the background.
-Bundle 'tpope/vim-dispatch'
-" use cdo to quicklist argument modifications
-Bundle 'Peeja/vim-cdo'
-" use multiple cursors (ala sublime text editor)
-"Bundle 'terryma/vim-multiple-cursors'
+" use Cdo to quicklist argument modifications
+Bundle 'dsummersl/vim-cdo'
 Bundle 'Lokaltog/vim-powerline'
 " TODO look into https://github.com/Valloric/YouCompleteMe instead of neocomplcache
-" Add the 's' key to do a two word seek (like 'f', but takes two chars)
-Bundle 'goldfeld/vim-seek'
+" user defined textobj implementations
+Bundle 'kana/vim-textobj-user'
+" vib between any arbitrary object
+Bundle 'thinca/vim-textobj-between'
+" vic and vac (comments)
+Bundle 'glts/vim-textobj-comment'
+" provide focus of a selected block into its own buffer via 'NR' 
+Bundle 'chrisbra/NrrwRgn'
+" Easily toggle boolean values:
+Bundle 'AndrewRadev/switch.vim'
+" three way commit resolution
+Bundle 'sjl/splice.vim'
+" automatic ctags generation
+Bundle 'szw/vim-tags'
+" run make in the background. (used by vim-tags)
+Bundle 'tpope/vim-dispatch'
 
-" Probably going to remove this:
-"  this one requires phpctags:
+" TODO grow/shrink the visual selection with J/K: https://github.com/terryma/vim-expand-region
+" TODO https://github.com/vim-scripts/PatternsOnText - delete/replace non
+" matches (also has some quicklist looking stuff).
+" TODO move text blocks easily through )}" : https://github.com/vim-scripts/easy-through-pairing.vim
+" TODO use count in front of jk control keys: https://github.com/vim-scripts/rel-jump
+
+" python omni completion
+" Its annoying b/c it automatically appears when I only want it when I
+" explicitly ask for it. Maybe there is a way to configure it that way:
+"Bundle 'davidhalter/jedi-vim'
+
+" Probably going to remove these:
+" colorize ansi escaped text (console dumps)
 Bundle 'vim-scripts/AnsiEsc.vim'
 Bundle 'techlivezheng/tagbar-phpctags.git'
 Bundle 'majutsushi/tagbar.git'
 Bundle 'vim-scripts/cecutil.git'
 Bundle 'vim-scripts/Vimball.git'
-Bundle 'alourie/Conque-Shell.git'
 " an md5 implementation - make it easy to compute the md5 of a string in the
 " editor (ie, yank a block, then do :echo md5#md5(@") )
 Bundle 'vim-scripts/md5.vim'
-Bundle 'maxbrunsfeld/vim-yankstack'
+" TODO something like yankstack sounds nice but this breaks the vS feature of
+" the surround plugin.
+"Bundle 'maxbrunsfeld/vim-yankstack'
+" use multiple cursors (ala sublime text editor) - cool but very buggy
+"Bundle 'terryma/vim-multiple-cursors'
 
 " TODO plugins to think about
 " https://github.com/vim-scripts/YankRing.vim
@@ -157,9 +184,16 @@ syntax on
 set t_Co=256
 set guioptions=egt  " GUI options
 
+" improve syntax highlighting when we have long lines:
+set synmaxcol=240
+" improve syntax highlighting speed in general
+syntax sync minlines=64
+syntax sync maxlines=128
+
 set diffopt=filler,iwhite
-"set hls
+set nohls
 set nowrap
+" no tabs, and tab size of two characters
 set et
 set sw=2
 set ts=2
@@ -191,6 +225,40 @@ set lazyredraw
 "}}}
 " Plugin settings, changes."{{{
 
+let g:Powerline_mode_n  = 'N'
+let g:Powerline_mode_i  = 'I'
+let g:Powerline_mode_R  = 'R'
+let g:Powerline_mode_v  = 'v'
+let g:Powerline_mode_V  = 'V'
+let g:Powerline_mode_cv = 'c'
+let g:Powerline_mode_s  = 's'
+let g:Powerline_mode_S  = 'S'
+let g:Powerline_mode_cs = 's'
+
+" automatically toggle with control-
+nnoremap <Leader>. :Switch<cr>
+autocmd FileType php let b:switch_custom_definitions =
+    \ [
+    \ { '\([^=]\)===\([^=]\)': '\1==\2' },
+    \ { '\([^=]\)==\([^=]\)': '\1===\2' }
+    \ ]
+autocmd FileType javascript let b:switch_custom_definitions =
+    \ [
+    \ { '\([^=]\)===\([^=]\)': '\1==\2' },
+    \ { '\([^=]\)==\([^=]\)': '\1===\2' }
+    \ ]
+
+" don't use vif (thats a function, duh!)
+let g:textobj_between_no_default_key_mappings=0
+" use vib and vab instead
+xmap ab  <Plug>(textobj-between-a)
+omap ab  <Plug>(textobj-between-a)
+xmap ib  <Plug>(textobj-between-i)
+omap ib  <Plug>(textobj-between-i)
+
+" don't use - we use neocomplete
+let g:jedi#auto_initialization = 0
+
 " quit multicursor mode!
 let g:multi_cursor_start_key='<C-m>'
 let g:multi_cursor_quit_key='<C-m>'
@@ -200,7 +268,7 @@ let g:unite_source_history_yank_enable = 1
 let g:unite_enable_start_insert = 1
 " I like the unite thing on the left side all get it going:
 let g:unite_enable_split_vertically=1
-let g:unite_winwidth=40
+let g:unite_winwidth=60
 call unite#set_profile('source/outline', 'ignorecase', 1)
 
 let g:tagbar_phpctags_bin='~/.vim/phpctags/phpctags'
@@ -215,8 +283,8 @@ let g:gist_open_browser_after_post = 1
 let g:UltiSnipsDontReverseSearchPath="1"
 
 " this will work on both GUI and console:
-if (v:version / 100 == 7 && has('gui')) || v:version >= 703
-  let g:UltiSnipsListSnippets=''
+if ! has("gui_running")
+  let g:UltiSnipsListSnippets='<C-\>'
 endif
 let g:UltiSnipsExpandTrigger="<tab>"
 let g:UltiSnipsJumpForwardTrigger="<tab>"
@@ -369,6 +437,9 @@ highlight SpecialKey term=underline guifg=Red guibg=LightGrey
 cabbrev bda call DeleteHiddenBuffers()
 cabbrev gitv Gitv
 
+" quickly clear out search results
+nnoremap [n :nohlsearch
+
 " instead of using this, I use 'gt'
 map <nul> <esc>
 
@@ -439,6 +510,8 @@ if has("autocmd") && !exists("autocommands_loaded")
   autocmd BufNewFile,BufRead *.gradle set ft=groovy
   autocmd BufNewFile,BufRead Vagrantfile set ft=ruby
   autocmd BufNewFile,BufRead *.tss set ft=javascript
+  autocmd BufNewFile,BufRead *.coffee set ft=coffee
+  autocmd BufNewFile,BufRead Cakefile set ft=coffee
 
   " get rid of any extra git fugitive buffers
   autocmd BufReadPost fugitive://* set bufhidden=delete

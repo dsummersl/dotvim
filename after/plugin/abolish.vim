@@ -15,3 +15,6 @@ Abolish ofr for
 Abolish adn and
 Abolish instnace{,s} instance{}
 Abolish iwth with
+Abolish foudn{,ing,er} found{}
+Abolish woudl would
+Abolish unalbe unable
