@@ -4,7 +4,13 @@ snippet > "Expand $variable->..." !i
 $${1:parent}->${2:child}$0
 endsnippet
 
-snippet th "$this->" !i
+snippet ifset "if (isset(..))" !b
+if ($1isset(${2:var})) {
+  $0
+}
+endsnippet
+
+snippet th "$this->" !
 $this->$0
 endsnippet
 
@@ -37,7 +43,7 @@ define('${1}'${2});${3}
 endsnippet
 
 snippet kv "key/value" !b
-'${1:key}' => ${3:"${2:value}",}$0
+'${1:key}' => ${3:'${2:value}',}$0
 endsnippet
 
 snippet do "do"
@@ -64,9 +70,9 @@ foreach ($${1:variable} as $${2:key} => $${3:value}){
 }
 endsnippet
 
-snippet if "if"
+snippet if "if" !b
 if (${1:/* condition */}) {
-	${2:// code...}
+	${VISUAL}$0
 }
 endsnippet
 
@@ -101,7 +107,15 @@ ${2:public }function ${3:name}(${4:$param}) {
 	${VISUAL}$0
 }
 endsnippet
-# :vim:ft=snippets
+
+snippet testfu "SimpleTest function snip" !b
+/// Group: test$1
+/// ...${2:DESCRIPTION}
+function test${1:name}() {
+  /// Test: XXX
+	${VISUAL}$0
+}
+endsnippet
 
 snippet fore "Foreach loop"
 foreach ($${1:variable} as $${3:value}) {

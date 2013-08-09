@@ -105,6 +105,7 @@ snippet for "for loop" !b
 for ${1:val} in ${2:`!p snip.rv=t[1]`s}:
   ${3:# TODO ...}
 endsnippet
+
 snippet if "if" b
 if ${1:condition}:
 	${2:# content}$0
@@ -134,6 +135,11 @@ snippet pdb "Set PDB breakpoint" b
 import pdb; pdb.set_trace()
 endsnippet
 
+snippet trace "print stack trace" !b
+import traceback
+traceback.print_stack()$0
+endsnippet
+
 snippet testcase "pyunit testcase" b
 class Test${1:Class}(${2:unittest.TestCase}):
 	"""${3:Test case docstring}"""
@@ -146,10 +152,4 @@ class Test${1:Class}(${2:unittest.TestCase}):
 
 	def test_${6:name}(self):
 		${7:pass}
-endsnippet
-
-
-
-snippet th "expand this to that." !b
-${1:this}->${2:someting}$0
 endsnippet
