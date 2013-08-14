@@ -6,6 +6,9 @@ set rtp+=~/.vim/bundle/vundle/
 call vundle#rc()
 Bundle 'gmarik/vundle'
 
+Bundle 'kien/ctrlp.vim.git'
+" base16 color schemes
+Bundle 'chriskempson/base16-vim'
 " TODO maybe include Ack again with the_silver_searcher (ag)
 Bundle 'scrooloose/nerdcommenter.git'
 Bundle 'sukima/xmledit'
@@ -15,7 +18,6 @@ Bundle 'dsummersl/wikia-csv.git'
 " simple utf2ascii function.
 Bundle 'dsummersl/vim-utf2ascii'
 Bundle 'tpope/vim-fugitive.git'
-Bundle 'kien/ctrlp.vim.git'
 Bundle 'guns/ultisnips.git'
 Bundle 'derekwyatt/vim-scala.git'
 Bundle 'kchmck/vim-coffee-script'
@@ -27,8 +29,6 @@ Bundle 'mattn/webapi-vim.git'
 Bundle 'nathanaelkane/vim-indent-guides'
 " TODO this? Its a dependency for a number of libs?
 Bundle 'PProvost/vim-ps1'
-" base16 color schemes
-Bundle 'chriskempson/base16-vim'
 " TODO this? Its a dependency for a number of libs?
 Bundle 'L9'
 Bundle 'vim-scripts/Align.git'
@@ -69,7 +69,10 @@ Bundle 'jeroenbourgois/vim-actionscript'
 Bundle 'tpope/vim-speeddating'
 " use Cdo to quicklist argument modifications
 Bundle 'dsummersl/vim-cdo'
-Bundle 'Lokaltog/vim-powerline'
+
+" TODO powerline is VERY slow for new buffer loading for some reason.
+"Bundle 'Lokaltog/vim-powerline'
+
 " TODO look into https://github.com/Valloric/YouCompleteMe instead of neocomplcache
 " user defined textobj implementations
 Bundle 'kana/vim-textobj-user'
@@ -130,6 +133,7 @@ if v:version >= 703
   " sluice needs vim 7.3
   let g:sluice_enabled=1
   set undofile
+  set undodir=~/.vim/undo
   set cryptmethod=blowfish
   Bundle 'https://github.com/godlygeek/csapprox.git'
   Bundle 'sjl/gundo.vim.git'
