@@ -188,6 +188,7 @@ syntax on
 set t_Co=256
 set guioptions=egt  " GUI options
 
+
 " improve syntax highlighting when we have long lines:
 set synmaxcol=240
 " improve syntax highlighting speed in general
@@ -214,11 +215,13 @@ set history=100 " keep 100 lines of command line history
 set ruler       " show the cursor position all the time
 set showcmd     " Show (partial) command in status line.
 set showmatch   " Show matching brackets.
-set laststatus=2
+"powerline specific setting:
+"set laststatus=2
 set encoding=utf-8
 
 " Setup a vertical higlight for the 80+ column positions:
 set textwidth=80
+set fo=croq
 
 " when wrap is turned on, break on words
 set linebreak
@@ -298,6 +301,7 @@ let g:UltiSnipsJumpBackwardTrigger="<s-tab>"
 nnoremap <C-p> :CtrlPMRUFiles<CR>
 cnoremap <C-p> :CtrlPMRUFiles<CR>
 
+let g:ctrlp_by_filename = 1
 let g:ctrlp_mruf_relative = 1
 let g:ctrlp_use_caching = 1
 let g:ctrlp_clear_cache_on_exit = 0

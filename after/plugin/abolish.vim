@@ -18,3 +18,4 @@ Abolish iwth with
 Abolish foudn{,ing,er} found{}
 Abolish woudl would
 Abolish unalbe unable
+Abolish reutrn{s,ing} return{}
