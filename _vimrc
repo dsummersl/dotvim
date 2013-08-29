@@ -451,8 +451,10 @@ command! -nargs=1 GG call s:GitGrepFile('<args>')
 if has("autocmd") && !exists("autocommands_loaded")
 	let autocommands_loaded = 1
 
-  au WinLeave * set nocursorline
-  au WinEnter * set cursorline
+  if has("gui_running")
+    au WinLeave * set nocursorline
+    au WinEnter * set cursorline
+  endif
 
   " ensure that tabstop settings for file browsing is big enough for column
   " alignment:
