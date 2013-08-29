@@ -55,13 +55,10 @@ Bundle 'Shougo/unite.vim'
 Bundle 'h1mesuke/unite-outline'
 " viI (visual inner Indent)
 Bundle 'michaeljsmith/vim-indent-object'
-" allow the quicklist to be edited :cw
+" allow the quicklist to be edited :cw, 'i'. :QFLoad and :LocSave
 Bundle 'jceb/vim-editqf'
-" javascript integration
+" javascript omni integration
 Bundle 'marijnh/tern_for_vim'
-" neo completion - mapped to...C-space maybe? see below
-Bundle 'Shougo/neocomplcache.git'
-Bundle 'JazzCore/neocomplcache-ultisnips'
 Bundle 'Shougo/vimproc'
 " syntax hilighting for actionscript
 Bundle 'jeroenbourgois/vim-actionscript'
@@ -69,9 +66,6 @@ Bundle 'jeroenbourgois/vim-actionscript'
 Bundle 'tpope/vim-speeddating'
 " use Cdo to quicklist argument modifications
 Bundle 'dsummersl/vim-cdo'
-
-" TODO powerline is VERY slow for new buffer loading for some reason.
-"Bundle 'Lokaltog/vim-powerline'
 
 " TODO look into https://github.com/Valloric/YouCompleteMe instead of neocomplcache
 " user defined textobj implementations
@@ -84,12 +78,18 @@ Bundle 'glts/vim-textobj-comment'
 Bundle 'chrisbra/NrrwRgn'
 " Easily toggle boolean values:
 Bundle 'AndrewRadev/switch.vim'
-" three way commit resolution
-Bundle 'sjl/splice.vim'
 " automatic ctags generation
 Bundle 'szw/vim-tags'
 " run make in the background. (used by vim-tags)
 Bundle 'tpope/vim-dispatch'
+" utility functions
+" a hash implementation - make it easy to compute the hash of a string in the
+" editor (ie, yank a block, then do :echo _#hash(@") )
+Bundle 'dsummersl/vus'
+" sluice side screen control
+Bundle 'dsummersl/vim-sluice'
+" unit testing for vim.
+Bundle 'dsummersl/vimunit'
 
 " TODO grow/shrink the visual selection with J/K: https://github.com/terryma/vim-expand-region
 " TODO https://github.com/vim-scripts/PatternsOnText - delete/replace non
@@ -109,9 +109,6 @@ Bundle 'techlivezheng/tagbar-phpctags.git'
 Bundle 'majutsushi/tagbar.git'
 Bundle 'vim-scripts/cecutil.git'
 Bundle 'vim-scripts/Vimball.git'
-" an md5 implementation - make it easy to compute the md5 of a string in the
-" editor (ie, yank a block, then do :echo md5#md5(@") )
-Bundle 'vim-scripts/md5.vim'
 " TODO something like yankstack sounds nice but this breaks the vS feature of
 " the surround plugin.
 "Bundle 'maxbrunsfeld/vim-yankstack'
@@ -125,21 +122,13 @@ Bundle 'vim-scripts/md5.vim'
 " version specific settings (7+) "{{{
 
 set nospell spelllang=en_us
-let g:sluice_enabled=0
-let g:Powerline_theme = 'default'
-"let g:Powerline_colorscheme = 'solarized256'
 
 if v:version >= 703
-  " sluice needs vim 7.3
-  let g:sluice_enabled=1
   set undofile
   set undodir=~/.vim/undo
   set cryptmethod=blowfish
   Bundle 'https://github.com/godlygeek/csapprox.git'
   Bundle 'sjl/gundo.vim.git'
-  Bundle 'dsummersl/vus'
-  Bundle 'dsummersl/vim-sluice'
-  Bundle 'dsummersl/vimunit'
   if has("gui_running")
     " vi/ (last search)
     Bundle 'kana/vim-textobj-lastpat'
@@ -149,21 +138,12 @@ if v:version >= 703
     set anti
     set cursorline
     " show 5 column markers beyond the 80 char line.
-    set colorcolumn=+1,+2,+3,+4,+5
+    set colorcolumn=80,-1,-2,-3
     " TODO make the fold highlight non-underlined.
     " a powerline friendly font might look like
     " set gfn=Menlo\ Regular\ for\ Powerline:h15
     set gfn=Monaco:h15
 
-    " only match ultisnips completions
-    inoremap <expr><C-\> neocomplcache#start_manual_complete(['ultisnips_complete'])
-    " match neo style.
-    inoremap <expr><C-space> neocomplcache#start_manual_complete()
-    inoremap <expr><CR>      neocomplcache#smart_close_popup() . "\<CR>"
-
-    " toggle Sluice gutters
-    nnoremap <F3> :SluiceMacroOff <bar> SluiceToggle<CR>
-    nnoremap <F4> :SluiceMacroOn <bar> SluiceToggle<CR>
     " show undo history
     nnoremap <F5> :GundoToggle<CR>
   endif
@@ -206,8 +186,8 @@ set visualbell
 set backspace=2 " allow backspacing over everything in insert mode
 set nobackup
 set incsearch
-" TODO I should change this so g, and , normal commands work well.
-let mapleader=','
+
+let mapleader='m'
 let maplocalleader='='
 
 set viminfo='50,\"50,h
@@ -231,6 +211,16 @@ set lazyredraw
 
 "}}}
 " Plugin settings, changes."{{{
+
+" toggle Sluice gutters
+nnoremap <F3> :SluiceMacroOff <bar> SluiceToggle<CR>
+nnoremap <F4> :SluiceMacroOn <bar> SluiceToggle<CR>
+
+" speed dating american date format:
+" TODO didn't work on the console
+if has("gui_running")
+  SpeedDatingFormat %m%[/-]%d%1%Y
+endif
 
 let g:Powerline_mode_n  = 'N'
 let g:Powerline_mode_i  = 'I'
@@ -393,36 +383,6 @@ let g:tagbar_type_scala = {
     \ ]
 \ }
 "}}}
-" necompl options: {{{
-
-" Launches neocomplcache automatically on vim startup.
-let g:neocomplcache_enable_at_startup = 1
-" automatically insert the /# delimiter for vim/files
-let g:neocomplcache_enable_auto_delimiter = 1
-" make the start length so long that it doesn't turn on 'automatically'
-let g:neocomplcache_auto_completion_start_length = 30
-" Use camel case completion.
-let g:neocomplcache_enable_camel_case_completion = 1
-" Use underscore completion.
-let g:neocomplcache_enable_underbar_completion = 1
-let g:neocomplcache_disable_auto_complete = 1
-let g:neocomplcache_enable_auto_select = 0
-
-" turn off neo complete for omni patterns (python in particular is annoying)
-if !exists('g:neocomplcache_omni_patterns')
-  let g:neocomplcache_omni_patterns = {}
-endif
-let g:neocomplcache_omni_patterns.python = ''
-
-" TODO setup the general completion options I want to see
-" TODO or???? g:neocomplcache_disabled_sources_list
-"if !exists('g:neocomplcache_sources_list')
-"  let g:neocomplcache_sources_list = {}
-"endif
-"let g:neocomplcache_sources_list._ = ['buffer_complete']
-"let g:neocomplcache_sources_list.cpp = ['buffer_complete', 'include_complete']
-
-" }}}
 
 " delete all buffers function
 function! DeleteHiddenBuffers()
@@ -490,6 +450,9 @@ command! -nargs=1 GG call s:GitGrepFile('<args>')
 
 if has("autocmd") && !exists("autocommands_loaded")
 	let autocommands_loaded = 1
+
+  au WinLeave * set nocursorline
+  au WinEnter * set cursorline
 
   " ensure that tabstop settings for file browsing is big enough for column
   " alignment:

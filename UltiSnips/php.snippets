@@ -27,6 +27,10 @@ snippet rpev "VT report a variable w/ var_export" !b
 reportError("${1:var}: ". var_export($$1,false));$0
 endsnippet
 
+snippet trace "VT back trace" !b
+reportError("Trace","",true);
+endsnippet
+
 snippet dbg "Print VT debug statements" !b
 reportError(${1:'err:'. }get_backtrace_string());$0
 endsnippet
@@ -118,8 +122,8 @@ function test${1:name}() {
 endsnippet
 
 snippet fore "Foreach loop"
-foreach ($${1:variable} as $${3:value}) {
-	${VISUAL}${4}
+foreach ($${2:$1s} as $${1:value}) {
+	${VISUAL}${3}
 }
 $0
 endsnippet
