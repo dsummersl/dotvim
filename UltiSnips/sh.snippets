@@ -1,9 +1,15 @@
 
-snippet #! "top of shell script"
+snippet #! "top of shell script" !
 #!/bin/bash
 
+# nounset: undefined variable outputs error message, and forces an exit
 set -u
+# errexit: abort script at first error
 set -e
+# print command to stdout before executing it:
+set -x
+
+$0
 endsnippet
 
 snippet if "if ... then (if)" !
@@ -13,3 +19,9 @@ then
 fi
 endsnippet
 
+snippet file "While loop for file" !b
+while read line
+do
+  ${2:# commands}
+done < ${1:filename}
+endsnippet

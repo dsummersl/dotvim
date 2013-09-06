@@ -18,11 +18,13 @@ Bundle 'dsummersl/wikia-csv.git'
 " simple utf2ascii function.
 Bundle 'dsummersl/vim-utf2ascii'
 Bundle 'tpope/vim-fugitive.git'
+" snippets
 Bundle 'guns/ultisnips.git'
 Bundle 'derekwyatt/vim-scala.git'
 Bundle 'kchmck/vim-coffee-script'
-" surround things with quotes, etc
+" surround things with quotes, etc (csw - surround word)
 Bundle 'tpope/vim-surround.git'
+" Post to github's gist.com with Gist
 Bundle 'mattn/gist-vim.git'
 " gist depends on this:
 Bundle 'mattn/webapi-vim.git'
@@ -138,7 +140,7 @@ if v:version >= 703
     set anti
     set cursorline
     " show 5 column markers beyond the 80 char line.
-    set colorcolumn=80,-1,-2,-3
+    set colorcolumn=+1,+2,+3
     " TODO make the fold highlight non-underlined.
     " a powerline friendly font might look like
     " set gfn=Menlo\ Regular\ for\ Powerline:h15
@@ -222,16 +224,6 @@ if has("gui_running")
   SpeedDatingFormat %m%[/-]%d%1%Y
 endif
 
-let g:Powerline_mode_n  = 'N'
-let g:Powerline_mode_i  = 'I'
-let g:Powerline_mode_R  = 'R'
-let g:Powerline_mode_v  = 'v'
-let g:Powerline_mode_V  = 'V'
-let g:Powerline_mode_cv = 'c'
-let g:Powerline_mode_s  = 's'
-let g:Powerline_mode_S  = 'S'
-let g:Powerline_mode_cs = 's'
-
 " automatically toggle with control-
 nnoremap <Leader>. :Switch<cr>
 autocmd FileType php let b:switch_custom_definitions =
@@ -280,9 +272,7 @@ let g:gist_open_browser_after_post = 1
 let g:UltiSnipsDontReverseSearchPath="1"
 
 " this will work on both GUI and console:
-if ! has("gui_running")
-  let g:UltiSnipsListSnippets='<C-\>'
-endif
+let g:UltiSnipsListSnippets='<C-\>'
 let g:UltiSnipsExpandTrigger="<tab>"
 let g:UltiSnipsJumpForwardTrigger="<tab>"
 let g:UltiSnipsJumpBackwardTrigger="<s-tab>"
@@ -452,8 +442,8 @@ if has("autocmd") && !exists("autocommands_loaded")
 	let autocommands_loaded = 1
 
   if has("gui_running")
-    au WinLeave * set nocursorline
-    au WinEnter * set cursorline
+    au WinLeave * setlocal nocursorline
+    au WinEnter * setlocal cursorline
   endif
 
   " ensure that tabstop settings for file browsing is big enough for column
@@ -474,22 +464,24 @@ if has("autocmd") && !exists("autocommands_loaded")
   autocmd FileType groovy setlocal fo=croq
 
   autocmd BufNewFile,BufRead *.md setf markdown
+  autocmd BufNewFile,BufRead *.md setlocal spell fo-=tn wrap
   autocmd BufNewFile,BufRead *.pp setf ruby
   autocmd BufNewFile,BufRead *.csv setf csv
   autocmd BufNewFile,BufRead *.tsv setf csv
   autocmd BufNewFile,BufRead *.tsv Delimiter \t
-  autocmd BufNewFile,BufRead *.tsv set ts=20
-  autocmd BufNewFile,BufRead *.tsv set sw=20
+  autocmd BufNewFile,BufRead *.tsv setlocal ts=20 sw=25
   autocmd BufNewFile,BufRead *.gradle set ft=groovy
   autocmd BufNewFile,BufRead Vagrantfile set ft=ruby
   autocmd BufNewFile,BufRead *.tss set ft=javascript
   autocmd BufNewFile,BufRead *.coffee set ft=coffee
   autocmd BufNewFile,BufRead Cakefile set ft=coffee
+  " make commit messages formatted to 72 columns for optimal reading/history:
+  autocmd BufNewFile,BufRead COMMIT_EDITMSG setlocal tw=72 fo=tc spell
 
   " get rid of any extra git fugitive buffers
   autocmd BufReadPost fugitive://* set bufhidden=delete
 
-	autocmd FileType groovy set ai
+	autocmd FileType groovy setlocal ai
 endif
 "}}}
 " vim: set ai fdm=marker cms="%s:
