@@ -6,6 +6,7 @@ set rtp+=~/.vim/bundle/vundle/
 call vundle#rc()
 Bundle 'gmarik/vundle'
 
+Bundle 'joonty/vdebug.git'
 Bundle 'kien/ctrlp.vim.git'
 " base16 color schemes
 Bundle 'chriskempson/base16-vim'
@@ -172,7 +173,7 @@ set guioptions=egt  " GUI options
 
 
 " improve syntax highlighting when we have long lines:
-set synmaxcol=240
+set synmaxcol=360
 " improve syntax highlighting speed in general
 syntax sync minlines=64
 syntax sync maxlines=128
@@ -214,6 +215,10 @@ set lazyredraw
 "}}}
 " Plugin settings, changes."{{{
 
+" Setup the VDebug options. Start and stop with f11/12.
+let g:vdebug_keymap['run'] = '<F11>'
+let g:vdebug_keymap['close'] = '<F12>'
+
 " toggle Sluice gutters
 nnoremap <F3> :SluiceMacroOff <bar> SluiceToggle<CR>
 nnoremap <F4> :SluiceMacroOn <bar> SluiceToggle<CR>
@@ -254,7 +259,7 @@ let g:multi_cursor_quit_key='<C-m>'
 
 " enable yanks!
 let g:unite_source_history_yank_enable = 1
-let g:unite_enable_start_insert = 1
+let g:unite_enable_start_insert = 0
 " I like the unite thing on the left side all get it going:
 let g:unite_enable_split_vertically=1
 let g:unite_winwidth=60
@@ -278,8 +283,8 @@ let g:UltiSnipsJumpForwardTrigger="<tab>"
 let g:UltiSnipsJumpBackwardTrigger="<s-tab>"
 
 " CtrlP plugin
-nnoremap <C-p> :CtrlPMRUFiles<CR>
-cnoremap <C-p> :CtrlPMRUFiles<CR>
+nnoremap <C-p> :CtrlPMixed<CR>
+cnoremap <C-p> :CtrlPMixed<CR>
 
 let g:ctrlp_by_filename = 1
 let g:ctrlp_mruf_relative = 1
