@@ -294,8 +294,10 @@ let g:UltiSnipsJumpForwardTrigger="<tab>"
 let g:UltiSnipsJumpBackwardTrigger="<s-tab>"
 
 " CtrlP plugin
-nnoremap <C-p> :CtrlPMixed<CR>
-cnoremap <C-p> :CtrlPMixed<CR>
+nnoremap <C-p> :CtrlP<CR>
+cnoremap <C-p> :CtrlP<CR>
+nnoremap <C-b> :CtrlPMRU<CR>
+cnoremap <C-b> :CtrlPMRU<CR>
 
 let g:ctrlp_by_filename = 1
 let g:ctrlp_mruf_relative = 1
