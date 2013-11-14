@@ -6,16 +6,21 @@ set rtp+=~/.vim/bundle/vundle/
 call vundle#rc()
 Bundle 'gmarik/vundle'
 
+" TODO look into:
+" pomodoro reminder plugin: https://github.com/vim-scripts/vim-airline-tomato
+
+" debug xdebug
 Bundle 'joonty/vdebug.git'
 Bundle 'kien/ctrlp.vim.git'
 " base16 color schemes
-Bundle 'chriskempson/base16-vim'
-" TODO maybe include Ack again with the_silver_searcher (ag)
+Bundle 'altercation/vim-colors-solarized'
 Bundle 'scrooloose/nerdcommenter.git'
 Bundle 'sukima/xmledit'
 Bundle 'vim-scripts/applescript.vim'
 " editing CSV docs, super handily.
-Bundle 'dsummersl/wikia-csv.git'
+" TODO update this repo so that people know to look for chrisba
+" Bundle 'dsummersl/wikia-csv.git'
+Bundle 'chrisba/csv.vim.git'
 " simple utf2ascii function.
 Bundle 'dsummersl/vim-utf2ascii'
 Bundle 'tpope/vim-fugitive.git'
@@ -25,10 +30,6 @@ Bundle 'derekwyatt/vim-scala.git'
 Bundle 'kchmck/vim-coffee-script'
 " surround things with quotes, etc (csw - surround word)
 Bundle 'tpope/vim-surround.git'
-" Post to github's gist.com with Gist
-Bundle 'mattn/gist-vim.git'
-" gist depends on this:
-Bundle 'mattn/webapi-vim.git'
 Bundle 'nathanaelkane/vim-indent-guides'
 " TODO this? Its a dependency for a number of libs?
 Bundle 'PProvost/vim-ps1'
@@ -42,8 +43,6 @@ Bundle 'vim-scripts/matchit.zip.git'
 " many additional mappings for ]q, etc
 Bundle 'tpope/vim-unimpaired.git'
 Bundle 'gregsexton/gitv'
-" Use localleader twice and then a w/b etc: ,,w
-Bundle 'Lokaltog/vim-easymotion.git'
 " awesome: makes the surround plugin work with the '.' keys (repeatability!)
 Bundle 'tpope/vim-repeat'
 " via (visual inner arg)
@@ -65,12 +64,11 @@ Bundle 'marijnh/tern_for_vim'
 Bundle 'Shougo/vimproc'
 " syntax hilighting for actionscript
 Bundle 'jeroenbourgois/vim-actionscript'
-" Use c-a c-x to increment and decrement dates
-Bundle 'tpope/vim-speeddating'
 " use Cdo to quicklist argument modifications
 Bundle 'dsummersl/vim-cdo'
 
-" TODO look into https://github.com/Valloric/YouCompleteMe instead of neocomplcache
+" auto completion
+Bundle 'Valloric/YouCompleteMe'
 " user defined textobj implementations
 Bundle 'kana/vim-textobj-user'
 " vib between any arbitrary object
@@ -81,8 +79,8 @@ Bundle 'glts/vim-textobj-comment'
 Bundle 'chrisbra/NrrwRgn'
 " Easily toggle boolean values:
 Bundle 'AndrewRadev/switch.vim'
-" automatic ctags generation
-Bundle 'szw/vim-tags'
+" TODO automatic ctags generation doesn't seem to work, but I love the idea...
+"Bundle 'szw/vim-tags'
 " run make in the background. (used by vim-tags)
 Bundle 'tpope/vim-dispatch'
 " utility functions
@@ -130,13 +128,15 @@ if v:version >= 703
   set undofile
   set undodir=~/.vim/undo
   set cryptmethod=blowfish
+  " A better powerline plugin:
+  Bundle 'bling/vim-airline'
   Bundle 'https://github.com/godlygeek/csapprox.git'
-  Bundle 'sjl/gundo.vim.git'
+  Bundle 'dsummers/gundo.vim.git'
   if has("gui_running")
     " vi/ (last search)
     Bundle 'kana/vim-textobj-lastpat'
     set background=light
-    colorscheme base16-solarized
+    colorscheme solarized
     set macmeta
     set anti
     set cursorline
@@ -171,6 +171,8 @@ syntax on
 set t_Co=256
 set guioptions=egt  " GUI options
 
+" for the powerline feature.
+set laststatus=2
 
 " improve syntax highlighting when we have long lines:
 set synmaxcol=360
@@ -215,6 +217,9 @@ set lazyredraw
 "}}}
 " Plugin settings, changes."{{{
 
+" I don't really care about trailing spaces so much as the indenting:
+let g:airline#extensions#whitespace#checks = [ 'indent' ]
+
 " Setup the VDebug options. Start and stop with f11/12.
 let g:vdebug_keymap = {
 \    "run" : "<F8>",
@@ -233,12 +238,6 @@ let g:vdebug_keymap = {
 " toggle Sluice gutters
 nnoremap <F3> :SluiceMacroOff <bar> SluiceToggle<CR>
 nnoremap <F4> :SluiceMacroOn <bar> SluiceToggle<CR>
-
-" speed dating american date format:
-" TODO didn't work on the console
-if has("gui_running")
-  SpeedDatingFormat %m%[/-]%d%1%Y
-endif
 
 " automatically toggle with control-
 nnoremap <Leader>. :Switch<cr>
@@ -261,16 +260,9 @@ omap ab  <Plug>(textobj-between-a)
 xmap ib  <Plug>(textobj-between-i)
 omap ib  <Plug>(textobj-between-i)
 
-" don't use - we use neocomplete
-let g:jedi#auto_initialization = 0
-
-" quit multicursor mode!
-let g:multi_cursor_start_key='<C-m>'
-let g:multi_cursor_quit_key='<C-m>'
-
 " enable yanks!
 let g:unite_source_history_yank_enable = 1
-let g:unite_enable_start_insert = 0
+let g:unite_enable_start_insert = 1
 " I like the unite thing on the left side all get it going:
 let g:unite_enable_split_vertically=1
 let g:unite_winwidth=60
@@ -280,18 +272,33 @@ let g:tagbar_phpctags_bin='~/.vim/phpctags/phpctags'
 let g:tagbar_foldlevel = 1
 let g:tagbar_iconchars = ['▾', '▸']
 
-let g:gist_clip_command = 'pbcopy'
-let g:gist_detect_filetype = 1
-let g:gist_open_browser_after_post = 1
-
 " Make sure my plugins override the default ones:
 let g:UltiSnipsDontReverseSearchPath="1"
 
 " this will work on both GUI and console:
-let g:UltiSnipsListSnippets='<C-\>'
-let g:UltiSnipsExpandTrigger="<tab>"
+"let g:UltiSnipsListSnippets="<C-'>"
+"let g:UltiSnipsExpandTrigger="<C-'>"
+"let g:UltiSnipsJumpForwardTrigger="<C-'>"
+"let g:UltiSnipsJumpBackwardTrigger="<C-'>"
+" From https://github.com/Valloric/YouCompleteMe/issues/36#issuecomment-15451411
+function! g:UltiSnips_Complete()
+    call UltiSnips_ExpandSnippet()
+    if g:ulti_expand_res == 0
+        if pumvisible()
+            return "\<C-n>"
+        else
+            call UltiSnips_JumpForwards()
+            if g:ulti_jump_forwards_res == 0
+               return "\<TAB>"
+            endif
+        endif
+    endif
+    return ""
+endfunction
+
+au BufEnter * exec "inoremap <silent> " . g:UltiSnipsExpandTrigger . " <C-R>=g:UltiSnips_Complete()<cr>"
 let g:UltiSnipsJumpForwardTrigger="<tab>"
-let g:UltiSnipsJumpBackwardTrigger="<s-tab>"
+let g:UltiSnipsListSnippets="<c-e>"
 
 " CtrlP plugin
 nnoremap <C-p> :CtrlP<CR>
@@ -300,6 +307,9 @@ nnoremap <C-b> :CtrlPMRU<CR>
 cnoremap <C-b> :CtrlPMRU<CR>
 
 let g:ctrlp_by_filename = 1
+" use 'r'
+let g:ctrlp_regexp = 1
+" use 'd'
 let g:ctrlp_mruf_relative = 1
 let g:ctrlp_use_caching = 1
 let g:ctrlp_clear_cache_on_exit = 0
@@ -453,6 +463,10 @@ endfunction
 
 command! -nargs=1 GG call s:GitGrepFile('<args>')
 
+function! ConcealSearch(repl)
+  exe 'syn keyword concealSearch "'. @/ .'" conceal cchar='. a:repl
+  set conceallevel=2
+endfunction
 "}}}
 " Automappings"{{{
 
