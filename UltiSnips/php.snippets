@@ -1,5 +1,16 @@
 clearsnippets
 
+global !p
+import os
+import sys
+sys.path.append(os.path.expanduser('~/.vim/python'))
+from ultisniphelpers import *
+
+endglobal
+snippet lg "PSR-3 logger" !b
+$${1:this->}logger->$2`!p snip.rv=complete(t[2],['info','debug','error','warning'])`(${4:"${3:message}"}${5});$0
+endsnippet
+
 snippet > "Expand $variable->..." !i
 $${1:parent}->${2:child}$0
 endsnippet
@@ -14,10 +25,18 @@ snippet th "$this->" !
 $this->$0
 endsnippet
 
+snippet ppre "print w/ <pre> tags." !b
+print "<pre>". $1 ."</pre>";$0
+endsnippet
+
 #snippet erno "Print VT error number line (using register i)" !b
 #reportError(${1:'err:'. }get_backtrace_string());$0
 # * @author ${5:`!v g:snips_author`}
 #endsnippet
+
+snippet rp "VT report" !b
+reportError("${1}"$2);$0
+endsnippet
 
 snippet rpe "VT report a variable" !b
 reportError("${1:var}: ". $$1);$0
@@ -31,16 +50,8 @@ snippet trace "VT back trace" !b
 reportError("Trace","",true);
 endsnippet
 
-snippet dbg "Print VT debug statements" !b
-reportError(${1:'err:'. }get_backtrace_string());$0
-endsnippet
-
 ## Snippets from SnipMate, taken from
 ## https://github.com/scrooloose/snipmate-snippets.git
-
-snippet array "array"
-$${1:arrayName} = array('${2}' => ${3});${4}
-endsnippet
 
 snippet def "def"
 define('${1}'${2});${3}
@@ -68,6 +79,12 @@ for ($${2:i} = 0; $$2 < ${1:count}; $$2${3:++}) {
 }
 endsnippet
 
+snippet foreach "foreach"
+foreach ($${1:variable} as $${2:key}){
+	${3:// code...}
+}
+endsnippet
+
 snippet foreachk "foreachk"
 foreach ($${1:variable} as $${2:key} => $${3:value}){
 	${4:// code...}
@@ -78,10 +95,6 @@ snippet if "if" !b
 if (${1:/* condition */}) {
 	${VISUAL}$0
 }
-endsnippet
-
-snippet t "Set val on one line: $val = cond ? a:b"
-$${1:retVal} = (${2:condition}) ? ${3:a} : ${4:b};${5}
 endsnippet
 
 snippet fu "Function snip" !b
@@ -121,19 +134,6 @@ function test${1:name}() {
 }
 endsnippet
 
-snippet fore "Foreach loop"
-foreach ($${2:$1s} as $${1:value}) {
-	${VISUAL}${3}
-}
-$0
-endsnippet
-
-snippet new "New class instance" !b
-$$1 = new $1($2);
-$0
-endsnippet
-
-
 snippet ife "if else"
 if (${1:/* condition */}) {
 	${2:// code...}
@@ -143,11 +143,9 @@ if (${1:/* condition */}) {
 $0
 endsnippet
 
-
 snippet class "Class declaration template" !b
 //
 // Class ${1:`!p snip.rv=snip.fn.capitalize().split('.')[0]`} 
-// @author $2
 //
 class $1 {
 	public function ${3:__construct}(${4:$options}) {
@@ -158,4 +156,3 @@ class $1 {
 endsnippet
 
 # :vim:ft=snippets:
-
