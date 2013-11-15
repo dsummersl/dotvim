@@ -67,8 +67,6 @@ Bundle 'jeroenbourgois/vim-actionscript'
 " use Cdo to quicklist argument modifications
 Bundle 'dsummersl/vim-cdo'
 
-" auto completion
-Bundle 'Valloric/YouCompleteMe'
 " user defined textobj implementations
 Bundle 'kana/vim-textobj-user'
 " vib between any arbitrary object
@@ -132,7 +130,6 @@ if v:version >= 703
   Bundle 'bling/vim-airline'
   Bundle 'https://github.com/godlygeek/csapprox.git'
   Bundle 'dsummers/gundo.vim.git'
-  au BufEnter * exec "inoremap <silent> " . g:UltiSnipsExpandTrigger . " <C-R>=g:UltiSnips_Complete()<cr>"
   if has("gui_running")
     " vi/ (last search)
     Bundle 'kana/vim-textobj-lastpat'
@@ -281,28 +278,10 @@ let g:tagbar_iconchars = ['▾', '▸']
 let g:UltiSnipsDontReverseSearchPath="1"
 
 " this will work on both GUI and console:
-"let g:UltiSnipsListSnippets="<C-'>"
-"let g:UltiSnipsExpandTrigger="<C-'>"
-"let g:UltiSnipsJumpForwardTrigger="<C-'>"
-"let g:UltiSnipsJumpBackwardTrigger="<C-'>"
-" From https://github.com/Valloric/YouCompleteMe/issues/36#issuecomment-15451411
-function! g:UltiSnips_Complete()
-    call UltiSnips_ExpandSnippet()
-    if g:ulti_expand_res == 0
-        if pumvisible()
-            return "\<C-n>"
-        else
-            call UltiSnips_JumpForwards()
-            if g:ulti_jump_forwards_res == 0
-               return "\<TAB>"
-            endif
-        endif
-    endif
-    return ""
-endfunction
-
+let g:UltiSnipsListSnippets='<C-\>'
+let g:UltiSnipsExpandTrigger="<tab>"
 let g:UltiSnipsJumpForwardTrigger="<tab>"
-let g:UltiSnipsListSnippets="<c-e>"
+let g:UltiSnipsJumpBackwardTrigger="<s-tab>"
 
 " CtrlP plugin
 nnoremap <C-p> :CtrlP<CR>
@@ -335,8 +314,6 @@ let g:tagbar_left = 1
 let g:sluice_default_macromode=1
 " set the sluice updatetime to fast for quick gutter updates.
 set updatetime=200
-" prevent you complete me from clobbering the update time.
-let g:ycm_allow_changing_updatetime = 0
 
 " show diff with git
 nnoremap <F6> :Gvdiff<CR>
@@ -347,21 +324,21 @@ set complete-=i
 " project loading functions"{{{
 
 function! LoadProject(type,directory)
-	" type      = the type of project.
-	" directory = Directory of the project to set up for.
-	"
-	" Load a project. This is a generic function that loads a script for a type
-	" of project. Each type of project keeps its functions in a directory
-	" named after the project (~/.vim/Project/{type}). When this function is
-	" called, the script ~/.vim/Project/{type}/in.vim is executed, with
-	" b:proj_cd set to the directory of the project that in.vim should setup
-	" for.
-	"
-	let b:proj_cd=getcwd()
-	if (a:directory != '')
-		let b:proj_cd=a:directory
-	endif
-	exec "source ~/.vim/bundle/lookupfile-grep/project/". a:type .".vim"
+  " type      = the type of project.
+  " directory = Directory of the project to set up for.
+  "
+  " Load a project. This is a generic function that loads a script for a type
+  " of project. Each type of project keeps its functions in a directory
+  " named after the project (~/.vim/Project/{type}). When this function is
+  " called, the script ~/.vim/Project/{type}/in.vim is executed, with
+  " b:proj_cd set to the directory of the project that in.vim should setup
+  " for.
+  "
+  let b:proj_cd=getcwd()
+  if (a:directory != '')
+    let b:proj_cd=a:directory
+  endif
+  exec "source ~/.vim/bundle/lookupfile-grep/project/". a:type .".vim"
 endfunction
 command! -nargs=? -bang -complete=dir ProjectMaven  :call LoadProject("maven",<q-args>)
 command! -nargs=? -bang -complete=dir ProjectRails  :call LoadProject("rails",<q-args>)
@@ -479,7 +456,7 @@ endfunction
 " Automappings"{{{
 
 if has("autocmd") && !exists("autocommands_loaded")
-	let autocommands_loaded = 1
+  let autocommands_loaded = 1
 
   if has("gui_running")
     au WinLeave * setlocal nocursorline
@@ -521,7 +498,7 @@ if has("autocmd") && !exists("autocommands_loaded")
   " get rid of any extra git fugitive buffers
   autocmd BufReadPost fugitive://* set bufhidden=delete
 
-	autocmd FileType groovy setlocal ai
+  autocmd FileType groovy setlocal ai
 endif
 "}}}
 " vim: set ai fdm=marker cms="%s:
