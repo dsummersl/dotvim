@@ -132,6 +132,7 @@ if v:version >= 703
   Bundle 'bling/vim-airline'
   Bundle 'https://github.com/godlygeek/csapprox.git'
   Bundle 'dsummers/gundo.vim.git'
+  au BufEnter * exec "inoremap <silent> " . g:UltiSnipsExpandTrigger . " <C-R>=g:UltiSnips_Complete()<cr>"
   if has("gui_running")
     " vi/ (last search)
     Bundle 'kana/vim-textobj-lastpat'
@@ -217,8 +218,12 @@ set lazyredraw
 "}}}
 " Plugin settings, changes."{{{
 
+" we have very long commit lines - this helps!
+let g:Gitv_TruncateCommitSubjects = 1
+
 " I don't really care about trailing spaces so much as the indenting:
 let g:airline#extensions#whitespace#checks = [ 'indent' ]
+let g:airline_theme='base16'
 
 " Setup the VDebug options. Start and stop with f11/12.
 let g:vdebug_keymap = {
@@ -296,7 +301,6 @@ function! g:UltiSnips_Complete()
     return ""
 endfunction
 
-au BufEnter * exec "inoremap <silent> " . g:UltiSnipsExpandTrigger . " <C-R>=g:UltiSnips_Complete()<cr>"
 let g:UltiSnipsJumpForwardTrigger="<tab>"
 let g:UltiSnipsListSnippets="<c-e>"
 
@@ -329,6 +333,10 @@ let NERDMapleader = ','
 let g:tagbar_left = 1
 
 let g:sluice_default_macromode=1
+" set the sluice updatetime to fast for quick gutter updates.
+set updatetime=200
+" prevent you complete me from clobbering the update time.
+let g:ycm_allow_changing_updatetime = 0
 
 " show diff with git
 nnoremap <F6> :Gvdiff<CR>
