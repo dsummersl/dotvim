@@ -19,8 +19,8 @@ Bundle 'sukima/xmledit'
 Bundle 'vim-scripts/applescript.vim'
 " editing CSV docs, super handily.
 " TODO update this repo so that people know to look for chrisba
-" Bundle 'dsummersl/wikia-csv.git'
-Bundle 'chrisba/csv.vim.git'
+Bundle 'dsummersl/wikia-csv.git'
+" Bundle 'chrisba/csv.vim.git'
 " simple utf2ascii function.
 Bundle 'dsummersl/vim-utf2ascii'
 Bundle 'tpope/vim-fugitive.git'
@@ -66,6 +66,8 @@ Bundle 'Shougo/vimproc'
 Bundle 'jeroenbourgois/vim-actionscript'
 " use Cdo to quicklist argument modifications
 Bundle 'dsummersl/vim-cdo'
+" Go language autocompletion
+Bundle 'Blackrush/vim-gocode'
 
 " user defined textobj implementations
 Bundle 'kana/vim-textobj-user'
@@ -169,11 +171,16 @@ syntax on
 set t_Co=256
 set guioptions=egt  " GUI options
 
+" use folding by default
+set fdm=marker
+
 " for the powerline feature.
 set laststatus=2
 
-" improve syntax highlighting when we have long lines:
+" improve syntax highlighting when we have long lines by not highlighting lines
+" over 360 columns:
 set synmaxcol=360
+
 " improve syntax highlighting speed in general
 syntax sync minlines=64
 syntax sync maxlines=128
@@ -181,12 +188,16 @@ syntax sync maxlines=128
 set diffopt=filler,iwhite
 set nohls
 set nowrap
+
 " no tabs, and tab size of two characters
 set et
 set sw=2
 set ts=2
+set sts=2
+
 set visualbell
-set backspace=2 " allow backspacing over everything in insert mode
+" allow backspacing over everything in insert mode
+set backspace=2
 set nobackup
 set incsearch
 
@@ -198,8 +209,6 @@ set history=100 " keep 100 lines of command line history
 set ruler       " show the cursor position all the time
 set showcmd     " Show (partial) command in status line.
 set showmatch   " Show matching brackets.
-"powerline specific setting:
-"set laststatus=2
 set encoding=utf-8
 
 " Setup a vertical higlight for the 80+ column positions:
