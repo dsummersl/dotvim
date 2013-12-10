@@ -9,6 +9,8 @@ Bundle 'gmarik/vundle'
 " TODO look into:
 " pomodoro reminder plugin: https://github.com/vim-scripts/vim-airline-tomato
 
+" fast HTML tag generation (in insert mode type tr*3CTL-Y, to make three <tr>s
+Bundle 'mattn/emmet-vim.git'
 " debug xdebug
 Bundle 'joonty/vdebug.git'
 Bundle 'kien/ctrlp.vim.git'
@@ -65,7 +67,7 @@ Bundle 'jeroenbourgois/vim-actionscript'
 " use Cdo to quicklist argument modifications
 Bundle 'dsummersl/vim-cdo'
 " Go language autocompletion
-Bundle 'Blackrush/vim-gocode'
+Bundle 'jnwhiteh/vim-golang'
 
 " user defined textobj implementations
 Bundle 'kana/vim-textobj-user'
@@ -250,15 +252,17 @@ nnoremap <F4> :SluiceMacroOn <bar> SluiceToggle<CR>
 
 " automatically toggle with control-
 nnoremap <Leader>. :Switch<cr>
-autocmd FileType php let b:switch_custom_definitions =
+" left/right and up/down first/last
+autocmd FileType * let b:switch_custom_definitions =
     \ [
     \ { '\([^=]\)===\([^=]\)': '\1==\2' },
-    \ { '\([^=]\)==\([^=]\)': '\1===\2' }
-    \ ]
-autocmd FileType javascript let b:switch_custom_definitions =
-    \ [
-    \ { '\([^=]\)===\([^=]\)': '\1==\2' },
-    \ { '\([^=]\)==\([^=]\)': '\1===\2' }
+    \ { '\([^=]\)==\([^=]\)': '\1===\2' },
+    \ { 'left': 'right' },
+    \ { 'right': 'left' },
+    \ { 'up': 'down' },
+    \ { 'down': 'up' },
+    \ { 'first': 'last' },
+    \ { 'last': 'first' }
     \ ]
 
 " don't use vif (thats a function, duh!)
