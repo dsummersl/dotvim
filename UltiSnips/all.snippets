@@ -1,3 +1,5 @@
+#
+#
 # super matcher :)
 #snippet '(\b\w*)([{[(])([\'"])($|[^[({])' "[({ and quote auto closer" !ri
 #${1:`!p snip.rv=match.group(1)`}`!p snip.rv=match.group(2)``!p snip.rv=match.group(3)`${2:...}`!p snip.rv=match.group(3)``!p
@@ -10,15 +12,47 @@
 #`$0
 #endsnippet
 
-snippet '([^\]\[\'"(){}]|^)([\]}\)])' "Expand variable['...']" !ri
-`!p snip.rv=match.group(1)``!p
-if match.group(2) == ']':
+# TODO When encountering a ] that isn't matched, allow for expansions - AT the
+# moment this is causing havoc for if ()<tab> { type situations.
+#snippet '([^\]\[\'"(){}]|^)([\]}\)])' "Expand variable['...']" !ri
+#`!p snip.rv=match.group(1)``!p
+#if match.group(2) == ']':
+#  snip.rv='['
+#elif match.group(2) == '}':
+#  snip.rv='{'
+#elif match.group(2) == ')':
+#  snip.rv='('
+#`${2:'${1:?}'}`!p snip.rv=match.group(2)`$0
+#endsnippet
+
+snippet 'x([\]\\0])' "Expand variable['X']" !ri
+`!p
+right=''
+if match.group(1) == ']':
   snip.rv='['
-elif match.group(2) == '}':
+  right=']'
+elif match.group(1) == '\\':
   snip.rv='{'
-elif match.group(2) == ')':
+  right='}'
+elif match.group(1) == '0':
   snip.rv='('
-`${2:'${1:?}'}`!p snip.rv=match.group(2)`$0
+  right=')'
+`'${1:X}'`!p snip.rv=right`$0
+endsnippet
+
+snippet 'q([\]\\0])' "Expand variable[X]" !ri
+`!p
+right=''
+if match.group(1) == ']':
+  snip.rv='['
+  right=']'
+elif match.group(1) == '\\':
+  snip.rv='{'
+  right='}'
+elif match.group(1) == '0':
+  snip.rv='('
+  right=')'
+`${1:X}`!p snip.rv=right`$0
 endsnippet
 
 snippet licenseurl "Make a CC URL" !b

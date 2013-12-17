@@ -53,7 +53,7 @@ endsnippet
 ## Snippets from SnipMate, taken from
 ## https://github.com/scrooloose/snipmate-snippets.git
 
-snippet def "def"
+snippet def "def" !b
 define('${1}'${2});${3}
 endsnippet
 
@@ -61,7 +61,7 @@ snippet kv "key/value" !b
 '${1:key}' => ${3:'${2:value}',}$0
 endsnippet
 
-snippet do "do"
+snippet do "do" !b
 do {
 	${2:// code... }
 } while (${1:/* condition */});"
@@ -73,19 +73,19 @@ else {
 }
 endsnippet
 
-snippet for "for"
+snippet for "for" !b
 for ($${2:i} = 0; $$2 < ${1:count}; $$2${3:++}) {
 	${4:// code...}
 }
 endsnippet
 
-snippet foreach "foreach"
+snippet foreach "foreach" !b
 foreach ($${1:variable} as $${2:key}){
 	${3:// code...}
 }
 endsnippet
 
-snippet foreachk "foreachk"
+snippet foreachk "foreachk" !b
 foreach ($${1:variable} as $${2:key} => $${3:value}){
 	${4:// code...}
 }
@@ -97,9 +97,16 @@ if (${1:/* condition */}) {
 }
 endsnippet
 
-snippet fu "Function snip" !b
+snippet fu "function snip" !
+function ${1}(${2}) {
+	$0
+}
+endsnippet
+
+snippet docfu "Function snip w/ docs" !b
 // ${1:DESCRIPTION}
 // 
+// Parameters:
 // `!p
 snip.rv = ''
 # if there are parameters, show each parameter in the function list
@@ -115,10 +122,11 @@ if t[3]:
     snip.rv += '\n'+ snip.mkline('//   %s' % name.strip().rjust(maxlen))
     if len(parts) > 1:
       default = parts[1]
-      snip.rv += ' = XXX (default: %s)' % default
+      snip.rv += ' - XXX (default: %s)' % default
     else:
-      snip.rv += ' = XXX'
+      snip.rv += ' - XXX'
 `
+//
 // Returns:
 ${2:public }function ${3:name}(${4:$param}) {
 	${VISUAL}$0
