@@ -47,8 +47,6 @@ Bundle 'gregsexton/gitv'
 Bundle 'tpope/vim-repeat'
 " via (visual inner arg)
 Bundle 'vim-scripts/argtextobj.vim'
-" color css colors auto magically
-Bundle 'skammer/vim-css-color'
 " fix spelling errors
 Bundle 'tpope/vim-abolish'
 " quick find method definitions:
@@ -91,8 +89,9 @@ Bundle 'dsummersl/vus'
 Bundle 'dsummersl/vim-sluice'
 " unit testing for vim.
 Bundle 'dsummersl/vimunit'
+" grow/shrink the visual selection with +/_
+Bundle 'terryma/vim-expand-region'
 
-" TODO grow/shrink the visual selection with J/K: https://github.com/terryma/vim-expand-region
 " TODO https://github.com/vim-scripts/PatternsOnText - delete/replace non
 " matches (also has some quicklist looking stuff).
 " TODO move text blocks easily through )}" : https://github.com/vim-scripts/easy-through-pairing.vim
@@ -106,6 +105,7 @@ Bundle 'dsummersl/vimunit'
 " Probably going to remove these:
 " colorize ansi escaped text (console dumps)
 Bundle 'vim-scripts/AnsiEsc.vim'
+" see ctags for Ctrl-T for PHP
 Bundle 'techlivezheng/tagbar-phpctags.git'
 Bundle 'majutsushi/tagbar.git'
 Bundle 'vim-scripts/cecutil.git'
@@ -114,7 +114,7 @@ Bundle 'vim-scripts/Vimball.git'
 " the surround plugin.
 "Bundle 'maxbrunsfeld/vim-yankstack'
 " use multiple cursors (ala sublime text editor) - cool but very buggy
-"Bundle 'terryma/vim-multiple-cursors'
+Bundle 'terryma/vim-multiple-cursors'
 
 " TODO plugins to think about
 " https://github.com/vim-scripts/YankRing.vim
@@ -137,6 +137,8 @@ if v:version >= 703
     Bundle 'bling/vim-airline'
     " vi/ (last search)
     Bundle 'kana/vim-textobj-lastpat'
+    " color css colors auto magically - VERY slow on the console.
+    Bundle 'skammer/vim-css-color'
 
     " I don't really care about trailing spaces so much as the indenting:
     let g:airline#extensions#whitespace#checks = [ 'indent' ]
@@ -262,7 +264,10 @@ autocmd FileType * let b:switch_custom_definitions =
     \ { 'up': 'down' },
     \ { 'down': 'up' },
     \ { 'first': 'last' },
-    \ { 'last': 'first' }
+    \ { 'last': 'first' },
+    \ { 'public': 'private' },
+    \ { 'private': 'protected' },
+    \ { 'protected': 'public' }
     \ ]
 
 " don't use vif (thats a function, duh!)
@@ -421,6 +426,10 @@ cabbrev gitv Gitv
 
 " quickly clear out search results
 nnoremap [n :nohlsearch
+
+" when switching between the alternate window, automatically save.
+set autowrite
+inoremap <C-^> :e #'
 
 " instead of using this, I use 'gt'
 map <nul> <esc>
