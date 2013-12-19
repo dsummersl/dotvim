@@ -152,13 +152,12 @@ $0
 endsnippet
 
 snippet class "Class declaration template" !b
-//
-// Class ${1:`!p snip.rv=snip.fn.capitalize().split('.')[0]`} 
-//
+// $0
 class $1 {
-	public function ${3:__construct}(${4:$options}) {
-	    ${4:// code}
-	    $0
+	public function $1() { }
+
+	public static function instance() {
+		return new $1();
 	}
 }
 endsnippet

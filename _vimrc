@@ -1,6 +1,6 @@
 " vundle plugin options {{{
 set nocompatible
-filetype off 
+filetype off
 
 set rtp+=~/.vim/bundle/vundle/
 call vundle#rc()
@@ -66,6 +66,8 @@ Bundle 'jeroenbourgois/vim-actionscript'
 Bundle 'dsummersl/vim-cdo'
 " Go language autocompletion
 Bundle 'jnwhiteh/vim-golang'
+" automatically detect the indent style of the document
+Bundle 'raymond-w-ko/detectindent'
 
 " user defined textobj implementations
 Bundle 'kana/vim-textobj-user'
@@ -92,6 +94,7 @@ Bundle 'dsummersl/vimunit'
 " grow/shrink the visual selection with +/_
 Bundle 'terryma/vim-expand-region'
 
+" TODO jcfaria/Vim-R-plugin
 " TODO https://github.com/vim-scripts/PatternsOnText - delete/replace non
 " matches (also has some quicklist looking stuff).
 " TODO move text blocks easily through )}" : https://github.com/vim-scripts/easy-through-pairing.vim
@@ -191,12 +194,14 @@ set synmaxcol=360
 syntax sync minlines=64
 syntax sync maxlines=128
 
+set list
+
 set diffopt=filler,iwhite
 set nohls
 set nowrap
 
-" no tabs, and tab size of two characters
-set et
+" TABS, and tab size of two characters
+set noet
 set sw=2
 set ts=2
 set sts=2
@@ -229,6 +234,10 @@ set lazyredraw
 
 "}}}
 " Plugin settings, changes."{{{
+
+let g:detectindent_preferred_indent = 2
+let g:detectindent_max_lines_to_analyse = 256
+let g:detectindent_min_indent = 2
 
 " we have very long commit lines - this helps!
 let g:Gitv_TruncateCommitSubjects = 1
@@ -429,7 +438,7 @@ nnoremap [n :nohlsearch
 
 " when switching between the alternate window, automatically save.
 set autowrite
-inoremap <C-^> :e #'
+inoremap <C-^> :e #
 
 " instead of using this, I use 'gt'
 map <nul> <esc>
@@ -482,6 +491,8 @@ if has("autocmd") && !exists("autocommands_loaded")
     au WinLeave * setlocal nocursorline
     au WinEnter * setlocal cursorline
   endif
+
+  autocmd BufReadPost * :DetectIndent
 
   " ensure that tabstop settings for file browsing is big enough for column
   " alignment:
