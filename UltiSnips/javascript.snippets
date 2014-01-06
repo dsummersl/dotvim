@@ -3,7 +3,15 @@ snippet kv "JSON key/value" !b
 endsnippet
 
 snippet lg "console.log" !b
-console.log("$1"$2);$0
+console.log("$1");$0
+endsnippet
+
+snippet lge "console.log variable" !b
+console.log("$1 = "+ $1);$0
+endsnippet
+
+snippet lgev "console.log variable(stringify)" !b
+console.log("$1 = "+ JSON.stringify($1));$0
 endsnippet
 
 snippet str "Stringify" !w

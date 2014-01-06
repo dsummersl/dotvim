@@ -1,3 +1,13 @@
+extends javascript
+
 snippet ti "Ti.API.debug statement" 
 Ti.API.debug("${1}")$0
+endsnippet
+
+snippet lge "console.log variable" !b
+console.log("$1 = #{$1}");$0
+endsnippet
+
+snippet lgev "console.log variable (stringify)" !b
+console.log("$1 = #{JSON.stringify($1)}");$0
 endsnippet

@@ -7,6 +7,11 @@ sys.path.append(os.path.expanduser('~/.vim/python'))
 from ultisniphelpers import *
 
 endglobal
+
+snippet break "xdebug_break" !b
+xdebug_break();
+endsnippet
+
 snippet lg "PSR-3 logger" !b
 $${1:this->}logger->$2`!p snip.rv=complete(t[2],['info','debug','error','warning'])`(${4:"${3:message}"}${5});$0
 endsnippet
@@ -23,6 +28,10 @@ endsnippet
 
 snippet th "$this->" !
 $this->$0
+endsnippet
+
+snippet pve "print var_export" !b
+print "\n\n $1: ". var_export(\$$1,true) ."\n\n";
 endsnippet
 
 snippet ppre "print w/ <pre> tags." !b
@@ -58,7 +67,7 @@ define('${1}'${2});${3}
 endsnippet
 
 snippet kv "key/value" !b
-'${1:key}' => ${3:'${2:value}',}$0
+'${1:key}' => ${2:value}
 endsnippet
 
 snippet do "do" !b
@@ -95,6 +104,10 @@ snippet if "if" !b
 if (${1:/* condition */}) {
 	${VISUAL}$0
 }
+endsnippet
+
+snippet checkset "Do isset before check(Visual)" !i
+isset(${1:${VISUAL}}) ${1:&&} $2$0
 endsnippet
 
 snippet fu "function snip" !

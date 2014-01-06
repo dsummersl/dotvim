@@ -194,8 +194,6 @@ set synmaxcol=360
 syntax sync minlines=64
 syntax sync maxlines=128
 
-set list
-
 set diffopt=filler,iwhite
 set nohls
 set nowrap
@@ -234,6 +232,8 @@ set lazyredraw
 
 "}}}
 " Plugin settings, changes."{{{
+
+let g:indent_guides_color_change_percent = 2
 
 let g:detectindent_preferred_indent = 2
 let g:detectindent_max_lines_to_analyse = 256
