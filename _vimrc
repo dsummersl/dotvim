@@ -73,8 +73,6 @@ Bundle 'raymond-w-ko/detectindent'
 Bundle 'kana/vim-textobj-user'
 " vib between any arbitrary object
 Bundle 'thinca/vim-textobj-between'
-" vic and vac (comments)
-Bundle 'glts/vim-textobj-comment'
 " provide focus of a selected block into its own buffer via 'NR' 
 Bundle 'chrisbra/NrrwRgn'
 " Easily toggle boolean values:
@@ -233,6 +231,8 @@ set lazyredraw
 "}}}
 " Plugin settings, changes."{{{
 
+let g:fugitive_git_executable = '/usr/local/bin/git'
+
 let g:indent_guides_color_change_percent = 2
 
 let g:detectindent_preferred_indent = 2
@@ -272,6 +272,8 @@ autocmd FileType * let b:switch_custom_definitions =
     \ { 'right': 'left' },
     \ { 'up': 'down' },
     \ { 'down': 'up' },
+    \ { 'top': 'bottom' },
+    \ { 'bottom': 'top' },
     \ { 'first': 'last' },
     \ { 'last': 'first' },
     \ { 'public': 'private' },
@@ -464,6 +466,7 @@ map <C-k> <C-w>k<C-w>_
 noremap <Leader>y "*y
 noremap <Leader>yy "*Y
 noremap <Leader>p :set paste<cr>:put *<cr>:set nopaste<cr>
+noremap <Leader>/ :exec "g//NRP" \| NRM<cr>
 
 "}}}
 " Commands"{{{

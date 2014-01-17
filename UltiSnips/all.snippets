@@ -25,6 +25,7 @@
 #`${2:'${1:?}'}`!p snip.rv=match.group(2)`$0
 #endsnippet
 
+# expands x] x\(curly braces) x0(parenthesis)
 snippet 'x([\]\\0])' "Expand variable['X']" !ri
 `!p
 right=''
@@ -37,10 +38,14 @@ elif match.group(1) == '\\':
 elif match.group(1) == '0':
   snip.rv='('
   right=')'
+else:
+  snip.rv=match.group(1)
+  right=match.group(1)
 `'${1:X}'`!p snip.rv=right`$0
 endsnippet
 
-snippet 'q([\]\\0])' "Expand variable[X]" !ri
+# expands q] q\(curly braces) q0(parenthesis) q;(double quotes) q'
+snippet 'q([\]\\0\';])' "Expand variable[X]" !ri
 `!p
 right=''
 if match.group(1) == ']':
@@ -52,6 +57,12 @@ elif match.group(1) == '\\':
 elif match.group(1) == '0':
   snip.rv='('
   right=')'
+elif match.group(1) == ';':
+  snip.rv='"'
+  right='"'
+else:
+  snip.rv=match.group(1)
+  right=match.group(1)
 `${1:X}`!p snip.rv=right`$0
 endsnippet
 
