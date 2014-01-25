@@ -108,16 +108,11 @@ Bundle 'terryma/vim-expand-region'
 " Probably going to remove these:
 " colorize ansi escaped text (console dumps)
 Bundle 'vim-scripts/AnsiEsc.vim'
-" see ctags for Ctrl-T for PHP
-Bundle 'techlivezheng/tagbar-phpctags.git'
-Bundle 'majutsushi/tagbar.git'
 Bundle 'vim-scripts/cecutil.git'
 Bundle 'vim-scripts/Vimball.git'
 " TODO something like yankstack sounds nice but this breaks the vS feature of
 " the surround plugin.
 "Bundle 'maxbrunsfeld/vim-yankstack'
-" use multiple cursors (ala sublime text editor) - cool but very buggy
-Bundle 'terryma/vim-multiple-cursors'
 
 " TODO plugins to think about
 " https://github.com/vim-scripts/YankRing.vim
