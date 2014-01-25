@@ -524,7 +524,9 @@ if has("autocmd") && !exists("autocommands_loaded")
     au WinEnter * setlocal cursorline
   endif
 
+  " setup the right indenting...
   autocmd BufReadPost * :DetectIndent
+  autocmd BufReadPost * :call AutoPairsInit()
 
   " ensure that tabstop settings for file browsing is big enough for column
   " alignment:
