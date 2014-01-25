@@ -25,47 +25,6 @@
 #`${2:'${1:?}'}`!p snip.rv=match.group(2)`$0
 #endsnippet
 
-# expands x] x\(curly braces) x0(parenthesis)
-snippet 'x([\]\\0])' "Expand variable['X']" !ri
-`!p
-right=''
-if match.group(1) == ']':
-  snip.rv='['
-  right=']'
-elif match.group(1) == '\\':
-  snip.rv='{'
-  right='}'
-elif match.group(1) == '0':
-  snip.rv='('
-  right=')'
-else:
-  snip.rv=match.group(1)
-  right=match.group(1)
-`'${1:X}'`!p snip.rv=right`$0
-endsnippet
-
-# expands q] q\(curly braces) q0(parenthesis) q;(double quotes) q'
-snippet 'q([\]\\0\';])' "Expand variable[X]" !ri
-`!p
-right=''
-if match.group(1) == ']':
-  snip.rv='['
-  right=']'
-elif match.group(1) == '\\':
-  snip.rv='{'
-  right='}'
-elif match.group(1) == '0':
-  snip.rv='('
-  right=')'
-elif match.group(1) == ';':
-  snip.rv='"'
-  right='"'
-else:
-  snip.rv=match.group(1)
-  right=match.group(1)
-`${1:X}`!p snip.rv=right`$0
-endsnippet
-
 snippet licenseurl "Make a CC URL" !b
 <a rel="license" href="http://creativecommons.org/licenses/by/3.0/deed.en_US"><img alt="Creative Commons License" style="border-width:0" src="http://i.creativecommons.org/l/by/3.0/88x31.png" /></a><br />This work is licensed under a <a rel="license" href="http://creativecommons.org/licenses/by/3.0/deed.en_US">Creative Commons Attribution 3.0 Unported License</a>.
 $0

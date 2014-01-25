@@ -1,5 +1,12 @@
 extends javascript
 
+snippet kv "key/value" !b
+$1: $2
+endsnippet
+
+# not really needed for coffescript, its a no brainer.
+clearsnippets if If
+
 snippet ti "Ti.API.debug statement" 
 Ti.API.debug("${1}")$0
 endsnippet

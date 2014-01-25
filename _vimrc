@@ -52,7 +52,7 @@ Bundle 'tpope/vim-abolish'
 " quick find method definitions:
 Bundle 'Shougo/unite.vim'
 " Nice outline of a file's methods within Unite.
-Bundle 'h1mesuke/unite-outline'
+Bundle 'Shougo/unite-outline'
 " viI (visual inner Indent)
 Bundle 'michaeljsmith/vim-indent-object'
 " allow the quicklist to be edited :cw, 'i'. :QFLoad and :LocSave
@@ -68,6 +68,8 @@ Bundle 'dsummersl/vim-cdo'
 Bundle 'jnwhiteh/vim-golang'
 " automatically detect the indent style of the document
 Bundle 'raymond-w-ko/detectindent'
+" close quotes and such automatically
+Bundle 'jiangmiao/auto-pairs'
 
 " user defined textobj implementations
 Bundle 'kana/vim-textobj-user'
@@ -177,6 +179,9 @@ filetype indent on    " Enable filetype-specific indenting
 filetype plugin on    " Enable filetype-specific plugins
 " }}}
 " basic options {{{
+
+set number
+
 syntax on
 set t_Co=256
 set guioptions=egt  " GUI options
@@ -230,6 +235,9 @@ set lazyredraw
 
 "}}}
 " Plugin settings, changes."{{{
+
+let g:AutoPairsFlyMode = 1
+call AutoPairsInit()
 
 let g:fugitive_git_executable = '/usr/local/bin/git'
 
@@ -467,6 +475,10 @@ noremap <Leader>y "*y
 noremap <Leader>yy "*Y
 noremap <Leader>p :set paste<cr>:put *<cr>:set nopaste<cr>
 noremap <Leader>/ :exec "g//NRP" \| NRM<cr>
+" For a two parameter function, swap the two paramters - ideally I'd change this so that the cursor was in a position to swap the next terms:
+" (a,b,c)  ... swap this and the next, or swap this and the previous (and leave
+" me at the previous)
+map <Leader>ss F( dia viaPF(p
 
 "}}}
 " Commands"{{{
