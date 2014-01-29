@@ -1,100 +1,103 @@
 " vundle plugin options {{{
-set nocompatible
-filetype off
+if has('vim_starting')
+  " vim mode!
+  set nocompatible
+  filetype off
 
-set rtp+=~/.vim/bundle/vundle/
-call vundle#rc()
-Bundle 'gmarik/vundle'
+  set rtp+=~/.vim/bundle/neobundle.vim/
+endif
+
+call neobundle#rc(expand('~/.vim/bundle/'))
+NeoBundleFetch 'Shougo/neobundle.vim'
 
 " TODO look into:
 " pomodoro reminder plugin: https://github.com/vim-scripts/vim-airline-tomato
 
 " fast HTML tag generation (in insert mode type tr*3CTL-Y, to make three <tr>s
-Bundle 'mattn/emmet-vim.git'
+NeoBundle 'mattn/emmet-vim.git'
 " debug xdebug
-Bundle 'joonty/vdebug.git'
-Bundle 'kien/ctrlp.vim.git'
-Bundle 'scrooloose/nerdcommenter.git'
-Bundle 'sukima/xmledit'
-Bundle 'vim-scripts/applescript.vim'
+NeoBundle 'joonty/vdebug.git'
+NeoBundle 'kien/ctrlp.vim.git'
+NeoBundle 'scrooloose/nerdcommenter.git'
+NeoBundle 'sukima/xmledit'
+NeoBundle 'vim-scripts/applescript.vim'
 " editing CSV docs, super handily.
 " TODO update this repo so that people know to look for chrisba
-Bundle 'dsummersl/wikia-csv.git'
-" Bundle 'chrisba/csv.vim.git'
+NeoBundle 'dsummersl/wikia-csv.git'
+" NeoBundle 'chrisba/csv.vim.git'
 " simple utf2ascii function.
-Bundle 'dsummersl/vim-utf2ascii'
-Bundle 'tpope/vim-fugitive.git'
+NeoBundle 'dsummersl/vim-utf2ascii'
+NeoBundle 'tpope/vim-fugitive.git'
 " snippets
-Bundle 'guns/ultisnips.git'
-Bundle 'derekwyatt/vim-scala.git'
-Bundle 'kchmck/vim-coffee-script'
+NeoBundle 'guns/ultisnips.git'
+NeoBundle 'derekwyatt/vim-scala.git'
+NeoBundle 'kchmck/vim-coffee-script'
 " surround things with quotes, etc (csw - surround word)
-Bundle 'tpope/vim-surround.git'
-Bundle 'nathanaelkane/vim-indent-guides'
+NeoBundle 'tpope/vim-surround.git'
+NeoBundle 'nathanaelkane/vim-indent-guides'
 " TODO this? Its a dependency for a number of libs?
-Bundle 'PProvost/vim-ps1'
+NeoBundle 'PProvost/vim-ps1'
 " TODO this? Its a dependency for a number of libs?
-Bundle 'L9'
-Bundle 'vim-scripts/Align.git'
-Bundle 'vim-scripts/LargeFile.git'
-Bundle 'vim-scripts/genutils.git'
+NeoBundle 'L9'
+NeoBundle 'vim-scripts/Align.git'
+NeoBundle 'vim-scripts/LargeFile.git'
+NeoBundle 'vim-scripts/genutils.git'
 " TODO do I need both matchit and xmledit?
-Bundle 'vim-scripts/matchit.zip.git'
+NeoBundle 'vim-scripts/matchit.zip.git'
 " many additional mappings for ]q, etc
-Bundle 'tpope/vim-unimpaired.git'
-Bundle 'gregsexton/gitv'
+NeoBundle 'tpope/vim-unimpaired.git'
+NeoBundle 'gregsexton/gitv'
 " awesome: makes the surround plugin work with the '.' keys (repeatability!)
-Bundle 'tpope/vim-repeat'
+NeoBundle 'tpope/vim-repeat'
 " via (visual inner arg)
-Bundle 'vim-scripts/argtextobj.vim'
+NeoBundle 'vim-scripts/argtextobj.vim'
 " fix spelling errors
-Bundle 'tpope/vim-abolish'
+NeoBundle 'tpope/vim-abolish'
 " quick find method definitions:
-Bundle 'Shougo/unite.vim'
+NeoBundle 'Shougo/unite.vim'
 " Nice outline of a file's methods within Unite.
-Bundle 'Shougo/unite-outline'
+NeoBundle 'Shougo/unite-outline'
 " viI (visual inner Indent)
-Bundle 'michaeljsmith/vim-indent-object'
+NeoBundle 'michaeljsmith/vim-indent-object'
 " allow the quicklist to be edited :cw, 'i'. :QFLoad and :LocSave
-Bundle 'jceb/vim-editqf'
+NeoBundle 'jceb/vim-editqf'
 " javascript omni integration
-Bundle 'marijnh/tern_for_vim'
-Bundle 'Shougo/vimproc'
+NeoBundle 'marijnh/tern_for_vim'
+NeoBundle 'Shougo/vimproc'
 " syntax hilighting for actionscript
-Bundle 'jeroenbourgois/vim-actionscript'
+NeoBundle 'jeroenbourgois/vim-actionscript'
 " use Cdo to quicklist argument modifications
-Bundle 'dsummersl/vim-cdo'
+NeoBundle 'dsummersl/vim-cdo'
 " Go language autocompletion
-Bundle 'jnwhiteh/vim-golang'
+NeoBundle 'jnwhiteh/vim-golang'
 " automatically detect the indent style of the document
-Bundle 'raymond-w-ko/detectindent'
+NeoBundle 'raymond-w-ko/detectindent'
 " close quotes and such automatically
-Bundle 'jiangmiao/auto-pairs'
-" auto completion
-Bundle 'Valloric/YouCompleteMe'
+NeoBundle 'jiangmiao/auto-pairs'
+NeoBundle 'tpope/vim-rails'
 
 " user defined textobj implementations
-Bundle 'kana/vim-textobj-user'
+NeoBundle 'kana/vim-textobj-user'
 " vib between any arbitrary object
-Bundle 'thinca/vim-textobj-between'
+NeoBundle 'thinca/vim-textobj-between'
 " provide focus of a selected block into its own buffer via 'NR' 
-Bundle 'chrisbra/NrrwRgn'
+NeoBundle 'chrisbra/NrrwRgn'
 " Easily toggle boolean values:
-Bundle 'AndrewRadev/switch.vim'
+NeoBundle 'AndrewRadev/switch.vim'
 " TODO automatic ctags generation doesn't seem to work, but I love the idea...
-"Bundle 'szw/vim-tags'
+"NeoBundle 'szw/vim-tags'
 " run make in the background. (used by vim-tags)
-Bundle 'tpope/vim-dispatch'
+NeoBundle 'tpope/vim-dispatch'
 " utility functions
 " a hash implementation - make it easy to compute the hash of a string in the
 " editor (ie, yank a block, then do :echo _#hash(@") )
-Bundle 'dsummersl/vus'
+NeoBundle 'dsummersl/vus'
 " sluice side screen control
-Bundle 'dsummersl/vim-sluice'
+NeoBundle 'dsummersl/vim-sluice'
 " unit testing for vim.
-Bundle 'dsummersl/vimunit'
+NeoBundle 'dsummersl/vimunit'
 " grow/shrink the visual selection with +/_
-Bundle 'terryma/vim-expand-region'
+NeoBundle 'terryma/vim-expand-region'
 
 " TODO jcfaria/Vim-R-plugin
 " TODO https://github.com/vim-scripts/PatternsOnText - delete/replace non
@@ -105,22 +108,22 @@ Bundle 'terryma/vim-expand-region'
 " python omni completion
 " Its annoying b/c it automatically appears when I only want it when I
 " explicitly ask for it. Maybe there is a way to configure it that way:
-"Bundle 'davidhalter/jedi-vim'
+"NeoBundle 'davidhalter/jedi-vim'
 
 " Probably going to remove these:
 " colorize ansi escaped text (console dumps)
-Bundle 'vim-scripts/AnsiEsc.vim'
-Bundle 'vim-scripts/cecutil.git'
-Bundle 'vim-scripts/Vimball.git'
+NeoBundle 'vim-scripts/AnsiEsc.vim'
+NeoBundle 'vim-scripts/cecutil.git'
+NeoBundle 'vim-scripts/Vimball.git'
 " TODO something like yankstack sounds nice but this breaks the vS feature of
 " the surround plugin.
-"Bundle 'maxbrunsfeld/vim-yankstack'
+"NeoBundle 'maxbrunsfeld/vim-yankstack'
 
 " TODO plugins to think about
 " https://github.com/vim-scripts/YankRing.vim
 " https://github.com/chrisbra/color_highlight
 
-" version specific settings (7+) "{{{
+" GUI & version specific settings (7+) "{{{
 
 set nospell spelllang=en_us
 
@@ -128,18 +131,21 @@ if v:version >= 703
   set undofile
   set undodir=~/.vim/undo
   set cryptmethod=blowfish
-  Bundle 'https://github.com/godlygeek/csapprox.git'
-  Bundle 'dsummers/gundo.vim.git'
+  NeoBundle 'https://github.com/godlygeek/csapprox.git'
+  NeoBundle 'dsummers/gundo.vim.git'
   au BufEnter * exec "inoremap <silent> " . g:UltiSnipsExpandTrigger . " <C-R>=g:UltiSnips_Complete()<cr>"
   if has("gui_running")
+    " auto completion
+    NeoBundle 'Valloric/YouCompleteMe'
+
     " base16 color schemes
-    Bundle 'altercation/vim-colors-solarized'
+    NeoBundle 'altercation/vim-colors-solarized'
     " A better powerline plugin:
-    Bundle 'bling/vim-airline'
+    NeoBundle 'bling/vim-airline'
     " vi/ (last search)
-    Bundle 'kana/vim-textobj-lastpat'
+    NeoBundle 'kana/vim-textobj-lastpat'
     " color css colors auto magically - VERY slow on the console.
-    Bundle 'skammer/vim-css-color'
+    NeoBundle 'skammer/vim-css-color'
 
     " I don't really care about trailing spaces so much as the indenting:
     let g:airline#extensions#whitespace#checks = [ 'indent' ]
@@ -165,7 +171,7 @@ endif
 "}}}
 
 "  my own lame SVN mappings:
-" Bundle "git://github.com/dsummersl/svntools"
+" NeoBundle "git://github.com/dsummersl/svntools"
 "  this is no longer maintained by me:
 " "git://github.com/motemen/git-vim"
 " "git://github.com/dsummersl/lookupfile-grep"
@@ -234,8 +240,13 @@ set lazyredraw
 "}}}
 " Plugin settings, changes."{{{
 
-let g:AutoPairsFlyMode = 1
-call AutoPairsInit()
+" let the narrow region plugin NR functions automatically update the window
+" location on change:
+let g:narrow_rgn_update_orig_win = 1
+let g:nrrw_rgn_update_orig_win = 1
+
+" automatically jump to the next )] or what have you
+let g:AutoPairsFlyMode = 0
 
 let g:fugitive_git_executable = '/usr/local/bin/git'
 
@@ -263,7 +274,20 @@ let g:vdebug_keymap = {
 \    "eval_visual" : "<Leader>e",
 \}
 
+" Toggle a setting on or off.
+function! Toggle(setting)
+  exec "let b=". a:setting
+  if b == '0'
+    echom a:setting ."=1"
+    exec "let ". a:setting ."=1"
+  else
+    echom a:setting ."=0"
+    exec "let ". a:setting ."=0"
+  endif
+endfunction
+
 " toggle Sluice gutters
+nnoremap <F2> :call Toggle('g:AutoPairsFlyMode')<CR>
 nnoremap <F3> :SluiceMacroOff <bar> SluiceToggle<CR>
 nnoremap <F4> :SluiceMacroOn <bar> SluiceToggle<CR>
 
@@ -303,15 +327,11 @@ let g:unite_enable_split_vertically=1
 let g:unite_winwidth=60
 call unite#set_profile('source/outline', 'ignorecase', 1)
 
-let g:tagbar_phpctags_bin='~/.vim/phpctags/phpctags'
-let g:tagbar_foldlevel = 1
-let g:tagbar_iconchars = ['▾', '▸']
-
 " Make sure my plugins override the default ones:
 let g:UltiSnipsDontReverseSearchPath="1"
 
 " this will work on both GUI and console:
-let g:UltiSnipsListSnippets="<c-e>"
+let g:UltiSnipsListSnippets="<C-\>"
 "let g:UltiSnipsExpandTrigger="<C-'>"
 "let g:UltiSnipsJumpForwardTrigger="<C-'>"
 "let g:UltiSnipsJumpBackwardTrigger="<C-'>"
@@ -474,8 +494,6 @@ map <nul> <esc>
 map <f1> <nul>
 imap <f1> <nul>
 
-" This interfere's with: line completion.
-" imap <C-e> <End>
 imap <C-a> <Home>
 
 " Make Control up/down scroll up/down in the window...even in insert mode.
@@ -522,11 +540,11 @@ if has("autocmd") && !exists("autocommands_loaded")
   if has("gui_running")
     au WinLeave * setlocal nocursorline
     au WinEnter * setlocal cursorline
+    autocmd BufReadPost * :call AutoPairsInit()
   endif
 
   " setup the right indenting...
   autocmd BufReadPost * :DetectIndent
-  autocmd BufReadPost * :call AutoPairsInit()
 
   " ensure that tabstop settings for file browsing is big enough for column
   " alignment:
