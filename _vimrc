@@ -133,11 +133,7 @@ if v:version >= 703
   set cryptmethod=blowfish
   NeoBundle 'https://github.com/godlygeek/csapprox.git'
   NeoBundle 'dsummers/gundo.vim.git'
-  au BufEnter * exec "inoremap <silent> " . g:UltiSnipsExpandTrigger . " <C-R>=g:UltiSnips_Complete()<cr>"
   if has("gui_running")
-    " auto completion
-    NeoBundle 'Valloric/YouCompleteMe'
-
     " base16 color schemes
     NeoBundle 'altercation/vim-colors-solarized'
     " A better powerline plugin:
@@ -330,30 +326,10 @@ call unite#set_profile('source/outline', 'ignorecase', 1)
 " Make sure my plugins override the default ones:
 let g:UltiSnipsDontReverseSearchPath="1"
 
-" this will work on both GUI and console:
-let g:UltiSnipsListSnippets="<C-\>"
-"let g:UltiSnipsExpandTrigger="<C-'>"
-"let g:UltiSnipsJumpForwardTrigger="<C-'>"
-"let g:UltiSnipsJumpBackwardTrigger="<C-'>"
-" From https://github.com/Valloric/YouCompleteMe/issues/36#issuecomment-15451411
-function! g:UltiSnips_Complete()
-    call UltiSnips_ExpandSnippet()
-    if g:ulti_expand_res == 0
-        if pumvisible()
-            return "\<C-n>"
-        else
-            call UltiSnips_JumpForwards()
-            if g:ulti_jump_forwards_res == 0
-               return "\<TAB>"
-            endif
-        endif
-    endif
-    return ""
-endfunction
-
-" prevent you complete me from clobbering the update time.
-let g:ycm_allow_changing_updatetime = 0
-let g:ycm_min_num_of_chars_for_completion = 3
+let g:UltiSnipsListSnippets='<C-\>'
+let g:UltiSnipsExpandTrigger="<tab>"
+let g:UltiSnipsJumpForwardTrigger="<tab>"
+let g:UltiSnipsJumpBackwardTrigger="<s-tab>"
 
 " CtrlP plugin
 nnoremap <C-p> :CtrlP<CR>
