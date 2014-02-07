@@ -39,7 +39,6 @@ NeoBundle 'nathanaelkane/vim-indent-guides'
 NeoBundle 'PProvost/vim-ps1'
 " TODO this? Its a dependency for a number of libs?
 NeoBundle 'L9'
-NeoBundle 'vim-scripts/Align.git'
 NeoBundle 'vim-scripts/LargeFile.git'
 NeoBundle 'vim-scripts/genutils.git'
 " TODO do I need both matchit and xmledit?
@@ -75,6 +74,11 @@ NeoBundle 'raymond-w-ko/detectindent'
 " close quotes and such automatically
 NeoBundle 'jiangmiao/auto-pairs'
 NeoBundle 'tpope/vim-rails'
+NeoBundle 'junegunn/vim-easy-align' " A simple Vim alignment plugin
+NeoBundle 'danro/rename.vim' " Rename the current file in the vim buffer + retain relative path.
+NeoBundle 'tpope/vim-eunuch' " eunuch.vim: cp/move/unlink commands
+" TODO try out this seek plugin (sounds better than the original):
+"   https://github.com/justinmk/vim-sneak
 
 " user defined textobj implementations
 NeoBundle 'kana/vim-textobj-user'
@@ -127,6 +131,28 @@ NeoBundle 'vim-scripts/Vimball.git'
 
 set nospell spelllang=en_us
 
+" for the latest version I am both gui/console enabled!
+if v:version >= 704
+  " base16 color schemes
+  NeoBundle 'altercation/vim-colors-solarized'
+  " A better powerline plugin:
+  NeoBundle 'bling/vim-airline'
+  " vi/ (last search)
+  NeoBundle 'kana/vim-textobj-lastpat'
+
+  " I don't really care about trailing spaces so much as the indenting:
+  let g:airline#extensions#whitespace#checks = [ 'indent' ]
+  let g:airline_theme='base16'
+  set laststatus=2
+
+  " show undo history
+  nnoremap <F5> :GundoToggle<CR>
+
+  let macvim_skip_colorscheme = 1
+  colorscheme default
+  autocmd BufWinEnter * :colorscheme default
+endif
+
 if v:version >= 703
   set undofile
   set undodir=~/.vim/undo
@@ -134,33 +160,20 @@ if v:version >= 703
   NeoBundle 'https://github.com/godlygeek/csapprox.git'
   NeoBundle 'dsummers/gundo.vim.git'
   if has("gui_running")
-    " base16 color schemes
-    NeoBundle 'altercation/vim-colors-solarized'
-    " A better powerline plugin:
-    NeoBundle 'bling/vim-airline'
-    " vi/ (last search)
-    NeoBundle 'kana/vim-textobj-lastpat'
     " color css colors auto magically - VERY slow on the console.
     NeoBundle 'skammer/vim-css-color'
 
-    " I don't really care about trailing spaces so much as the indenting:
-    let g:airline#extensions#whitespace#checks = [ 'indent' ]
-    let g:airline_theme='base16'
-    set laststatus=2
     set background=light
     colorscheme solarized
     set macmeta
     set anti
-    set cursorline
-    " show 5 column markers beyond the 80 char line.
-    set colorcolumn=+1,+2,+3
     " TODO make the fold highlight non-underlined.
     " a powerline friendly font might look like
     " set gfn=Menlo\ Regular\ for\ Powerline:h15
     set gfn=Monaco:h15
-
-    " show undo history
-    nnoremap <F5> :GundoToggle<CR>
+    set cursorline
+    " show column markers beyond the 80 char line.
+    set colorcolumn=+1,+2,+3
   endif
 endif
 
@@ -174,13 +187,15 @@ endif
 "  don't like how the tags are displayed. Its kinda annoying.
 " "git://github.com/kshenoy/vim-signature.git"
 
-filetype on 
+filetype on
 filetype indent on    " Enable filetype-specific indenting
 filetype plugin on    " Enable filetype-specific plugins
 " }}}
 " basic options {{{
 
 set number
+" I want to know about bad tab/space use:
+set list
 
 syntax on
 set t_Co=256
@@ -236,6 +251,12 @@ set lazyredraw
 "}}}
 " Plugin settings, changes."{{{
 
+" the emmet mappings really f this up:
+"let g:user_emmet_leader_key = 'm'
+
+vmap <Enter> <Plug>(LiveEasyAlign)
+nmap <Leader>a <Plug>(LiveEasyAlign)
+
 " let the narrow region plugin NR functions automatically update the window
 " location on change:
 let g:narrow_rgn_update_orig_win = 1
@@ -283,9 +304,14 @@ function! Toggle(setting)
 endfunction
 
 " toggle Sluice gutters
+inoremap <F2> <C-O>:call Toggle('g:AutoPairsFlyMode')<CR>
 nnoremap <F2> :call Toggle('g:AutoPairsFlyMode')<CR>
 nnoremap <F3> :SluiceMacroOff <bar> SluiceToggle<CR>
 nnoremap <F4> :SluiceMacroOn <bar> SluiceToggle<CR>
+
+" in insert mode, move up/down one line and stay in insert mode.
+inoremap <C-D> <esc>o
+inoremap <C-U> <esc>O
 
 " automatically toggle with control-
 nnoremap <Leader>. :Switch<cr>
@@ -323,9 +349,6 @@ let g:unite_enable_split_vertically=1
 let g:unite_winwidth=60
 call unite#set_profile('source/outline', 'ignorecase', 1)
 
-" Make sure my plugins override the default ones:
-let g:UltiSnipsDontReverseSearchPath="1"
-
 let g:UltiSnipsListSnippets='<C-\>'
 let g:UltiSnipsExpandTrigger="<tab>"
 let g:UltiSnipsJumpForwardTrigger="<tab>"
@@ -353,7 +376,9 @@ set wildignore+=*/.git/*,*/.hg/*,*/.svn/*,*/*.sw?,*/*.pyc,*/*.class
 let g:ctrlp_extensions=['changes']
 
 " Unite outline mode
-nnoremap <C-t> :Unite outline<CR>
+nnoremap <C-T> :Unite outline<CR>
+" look into the current directory
+nnoremap <Leader><C-T> :UniteWithBufferDir directory<CR>
 
 let NERDMapleader = ','
 
@@ -494,6 +519,13 @@ map <Leader>ss F( dia viaPF(p
 "}}}
 " Commands"{{{
 
+function FoldArgumentsOntoMultipleLines()
+  substitute@,\s*@,\r@ge
+  normal v``="
+endfunction
+
+nnoremap <Leader>rr <C-O>:call FoldArgumentsOntoMultipleLines()<CR>
+
 " Do a git grep on every file that is the same kind as the one I'm currently
 " in:
 function! s:GitGrepFile(search)
@@ -516,10 +548,10 @@ if has("autocmd") && !exists("autocommands_loaded")
   if has("gui_running")
     au WinLeave * setlocal nocursorline
     au WinEnter * setlocal cursorline
-    autocmd BufReadPost * :call AutoPairsInit()
+    au BufNewFile,BufReadPost * :call AutoPairsInit()
   endif
 
-  " setup the right indenting...
+  " Set the indenting to what it looks like the file is using:
   autocmd BufReadPost * :DetectIndent
 
   " ensure that tabstop settings for file browsing is big enough for column
@@ -539,6 +571,8 @@ if has("autocmd") && !exists("autocommands_loaded")
   autocmd FileType groovy setlocal comments=sO:*\ -,mO:*\ \ ,exO:*/,s1:/*,mb:*,ex:*/,://,b:#,:%,:XCOMM,n:>,fb:-
   autocmd FileType groovy setlocal fo=croq
 
+  autocmd BufNewFile,BufRead *.rabl setf eruby
+  autocmd BufNewFile,BufRead *.eco setf eruby
   autocmd BufNewFile,BufRead *.md setf markdown
   autocmd BufNewFile,BufRead *.md setlocal spell fo-=tn wrap
   autocmd BufNewFile,BufRead *.pp setf ruby
@@ -551,6 +585,7 @@ if has("autocmd") && !exists("autocommands_loaded")
   autocmd BufNewFile,BufRead *.tss set ft=javascript
   autocmd BufNewFile,BufRead *.coffee set ft=coffee
   autocmd BufNewFile,BufRead Cakefile set ft=coffee
+
   " make commit messages formatted to 72 columns for optimal reading/history:
   autocmd BufNewFile,BufRead COMMIT_EDITMSG setlocal tw=72 fo=tc spell
 

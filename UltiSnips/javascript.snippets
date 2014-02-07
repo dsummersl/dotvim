@@ -2,15 +2,15 @@ snippet kv "JSON key/value" !b
 "$1": $2$0
 endsnippet
 
-snippet lg "console.log" !b
+snippet lg "console.log" !w
 console.log("$1");$0
 endsnippet
 
-snippet lge "console.log variable" !b
+snippet lge "console.log variable" !w
 console.log("$1 = "+ $1);$0
 endsnippet
 
-snippet lgev "console.log variable(stringify)" !b
+snippet lgev "console.log variable(stringify)" !w
 console.log("$1 = "+ JSON.stringify($1));$0
 endsnippet
 
@@ -18,8 +18,8 @@ snippet str "Stringify" !w
 JSON.stringify($1)$0
 endsnippet
 
-snippet fun "Description" !w
-function() {
+snippet fu "function" !w
+function($1) {
   $0
 }
 endsnippet

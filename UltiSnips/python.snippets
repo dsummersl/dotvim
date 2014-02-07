@@ -96,7 +96,7 @@ snippet kv "key/value" !b
 '${1:key}': ${3:"${2:value}",}$0
 endsnippet
 
-snippet def "function with docstrings" b
+snippet def "function with docstrings" !b
 def ${1:function}(${2:params}):
   ${4:""" ${3:TODO document function} """}
   ${5:pass}
@@ -107,7 +107,7 @@ for ${1:val} in ${2:`!p snip.rv=t[1]`s}:
   ${3:# TODO ...}
 endsnippet
 
-snippet if "if" b
+snippet if "if" !b
 if ${1:condition}:
 	${2:# content}$0
 endsnippet

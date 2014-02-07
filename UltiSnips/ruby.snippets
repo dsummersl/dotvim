@@ -12,3 +12,9 @@ snippet "\b(de)?f" "def <name>..." !r
 def $1
 end
 endsnippet
+
+snippet it "rspec it '...'" !b
+it "$1" do
+  $0
+end
+endsnippet

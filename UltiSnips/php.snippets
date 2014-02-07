@@ -26,7 +26,7 @@ if ($1isset(${2:var})) {
 }
 endsnippet
 
-snippet th "$this->" !
+snippet th "$this->" !w
 $this->$0
 endsnippet
 
@@ -55,6 +55,18 @@ snippet rpev "VT report a variable w/ var_export" !b
 reportError("${1:var}: ". var_export($$1,true));$0
 endsnippet
 
+snippet pp "VT report" !b
+print "${1}\n"$2;$0
+endsnippet
+
+snippet ppe "VT report a variable" !b
+print "${1:var}: ". $$1 ."\n";$0
+endsnippet
+
+snippet ppev "VT report a variable w/ var_export" !b
+print "${1:var}: ". var_export($$1,true) ."\n";$0
+endsnippet
+
 snippet trace "VT back trace" !b
 reportError("Trace","",true);
 endsnippet
@@ -67,41 +79,41 @@ define('${1}'${2});${3}
 endsnippet
 
 snippet kv "key/value" !b
-'${1:key}' => ${2:value}
+$1 => $2
 endsnippet
 
 snippet do "do" !b
 do {
-	${2:// code... }
-} while (${1:/* condition */});"
+  $2
+} while ($1);
 endsnippet
 
 snippet else "else"
 else {
-	${1:// code...}
+  $1
 }
 endsnippet
 
 snippet for "for" !b
 for ($${2:i} = 0; $$2 < ${1:count}; $$2${3:++}) {
-	${4:// code...}
+	$4
 }
 endsnippet
 
 snippet foreach "foreach" !b
-foreach ($${1:variable} as $${2:key}){
-	${3:// code...}
+foreach ($${1:variable} as $${2:key}) {
+	$3
 }
 endsnippet
 
 snippet foreachk "foreachk" !b
-foreach ($${1:variable} as $${2:key} => $${3:value}){
-	${4:// code...}
+foreach ($${1:variable} as $${2:key} => $${3:value}) {
+	$4
 }
 endsnippet
 
 snippet if "if" !b
-if (${1:/* condition */}) {
+if ($1) {
 	${VISUAL}$0
 }
 endsnippet
@@ -164,13 +176,18 @@ if (${1:/* condition */}) {
 $0
 endsnippet
 
+snippet php "<?php namespace header " !b
+<?php
+
+namespace VT\\$1;
+
+$0
+endsnippet
+
 snippet class "Class declaration template" !b
 // $0
 class $1 {
-	public function $1() { }
-
-	public static function instance() {
-		return new $1();
+	function __construct() {
 	}
 }
 endsnippet
