@@ -52,7 +52,7 @@ reportError("${1:var}: ". $$1);$0
 endsnippet
 
 snippet rpev "VT report a variable w/ var_export" !b
-reportError("${1:var}: ". var_export($$1,true));$0
+reportError("|$1: ". var_export($$1,true));$0
 endsnippet
 
 snippet pp "VT report" !b

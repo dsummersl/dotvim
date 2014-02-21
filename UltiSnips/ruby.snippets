@@ -4,7 +4,7 @@ ${1:block} { "${2:name}":
 }
 endsnippet
 
-snippet kv "key/value" !b
+snippet kv "key/value" !w
 $1 => $2
 endsnippet
 
@@ -17,4 +17,14 @@ snippet it "rspec it '...'" !b
 it "$1" do
   $0
 end
+endsnippet
+
+snippet desc "rspec describe '...'" !b
+describe "$1" do
+  $0
+end
+endsnippet
+
+snippet break "breakpoint" !b
+debugger
 endsnippet
