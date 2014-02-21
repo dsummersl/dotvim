@@ -79,6 +79,8 @@ NeoBundle 'danro/rename.vim' " Rename the current file in the vim buffer + retai
 NeoBundle 'tpope/vim-eunuch' " eunuch.vim: cp/move/unlink commands
 " TODO try out this seek plugin (sounds better than the original):
 "   https://github.com/justinmk/vim-sneak
+NeoBundle 'AndrewRadev/splitjoin.vim' " A vim plugin that simplifies the transition between multiline and single-line code
+NeoBundle 'ervandew/ag' " vim plugin to search using the silver searcher (ag)
 
 " user defined textobj implementations
 NeoBundle 'kana/vim-textobj-user'
@@ -100,8 +102,6 @@ NeoBundle 'dsummersl/vus'
 NeoBundle 'dsummersl/vim-sluice'
 " unit testing for vim.
 NeoBundle 'dsummersl/vimunit'
-" grow/shrink the visual selection with +/_
-NeoBundle 'terryma/vim-expand-region'
 
 " TODO jcfaria/Vim-R-plugin
 " TODO https://github.com/vim-scripts/PatternsOnText - delete/replace non
@@ -150,7 +150,9 @@ if v:version >= 704
 
   let macvim_skip_colorscheme = 1
   colorscheme default
-  autocmd BufWinEnter * :colorscheme default
+  if !has("gui_running")
+    autocmd BufWinEnter * :colorscheme default
+  endif
 endif
 
 if v:version >= 703
@@ -193,6 +195,7 @@ filetype plugin on    " Enable filetype-specific plugins
 " }}}
 " basic options {{{
 
+set autowrite
 set number
 " I want to know about bad tab/space use:
 set list
@@ -267,7 +270,10 @@ let g:AutoPairsFlyMode = 0
 
 let g:fugitive_git_executable = '/usr/local/bin/git'
 
+let g:indent_guides_enable_on_vim_startup = 1
 let g:indent_guides_color_change_percent = 2
+" don't include tabs in 'soft' tabs - I want to see when things are amiss.
+let g:indent_guides_soft_pattern = ' '
 
 let g:detectindent_preferred_indent = 2
 let g:detectindent_max_lines_to_analyse = 256
@@ -303,9 +309,14 @@ function! Toggle(setting)
   endif
 endfunction
 
+" automatically
+"imap <C-'> <C-O>:let g:AutoPairsFlyMode=1<CR>"<C-O>:let g:AutoPairsFlyMode=0<CR>
+"imap <C-;> <C-O>:let g:AutoPairsFlyMode=1<CR>'<C-O>:let g:AutoPairsFlyMode=0<CR>
+"imap <C-[> <C-O>:let g:AutoPairsFlyMode=1<CR>]<C-O>:let g:AutoPairsFlyMode=0<CR>
+"imap <C-0> <C-O>:let g:AutoPairsFlyMode=1<CR>)<C-O>:let g:AutoPairsFlyMode=0<CR>
+"imap <C-]> <C-O>:let g:AutoPairsFlyMode=1<CR>}<C-O>:let g:AutoPairsFlyMode=0<CR>
+
 " toggle Sluice gutters
-inoremap <F2> <C-O>:call Toggle('g:AutoPairsFlyMode')<CR>
-nnoremap <F2> :call Toggle('g:AutoPairsFlyMode')<CR>
 nnoremap <F3> :SluiceMacroOff <bar> SluiceToggle<CR>
 nnoremap <F4> :SluiceMacroOn <bar> SluiceToggle<CR>
 
@@ -320,6 +331,8 @@ autocmd FileType * let b:switch_custom_definitions =
     \ [
     \ { '\([^=]\)===\([^=]\)': '\1==\2' },
     \ { '\([^=]\)==\([^=]\)': '\1===\2' },
+    \ { 'FALSE': 'TRUE' },
+    \ { 'TRUE': 'FALSE' },
     \ { 'left': 'right' },
     \ { 'right': 'left' },
     \ { 'up': 'down' },
@@ -475,6 +488,8 @@ endfunction
 set fillchars+=stl:\ ,stlnc:\ 
 set lcs=tab:\ \ ,trail:+
 highlight SpecialKey term=underline guifg=Red guibg=LightGrey
+" syntax match MixedIndentation /^\v +(\t+)|\t+( +)/
+" hi MixedIndentation guibg=Red guifg=White ctermbg=Red ctermfg=White
 "}}}
 " Mappings"{{{
 
@@ -482,11 +497,10 @@ cabbrev bda call DeleteHiddenBuffers()
 cabbrev gitv Gitv
 
 " quickly clear out search results
-nnoremap [n :nohlsearch
+nnoremap [n :nohlsearch<CR>
 
 " when switching between the alternate window, automatically save.
-set autowrite
-inoremap <C-^> :e #
+inoremap <C-^> <C-O>:e #<CR>
 
 " instead of using this, I use 'gt'
 map <nul> <esc>
@@ -510,21 +524,20 @@ map <C-k> <C-w>k<C-w>_
 noremap <Leader>y "*y
 noremap <Leader>yy "*Y
 noremap <Leader>p :set paste<cr>:put *<cr>:set nopaste<cr>
+
+" see all the search matches in a separate window (narrow region)
 noremap <Leader>/ :exec "g//NRP" \| NRM<cr>
+
 " For a two parameter function, swap the two paramters - ideally I'd change this so that the cursor was in a position to swap the next terms:
 " (a,b,c)  ... swap this and the next, or swap this and the previous (and leave
 " me at the previous)
 map <Leader>ss F( dia viaPF(p
 
+" Open the current directory (or make new directory)
+map <Leader>ep :e %:h
+
 "}}}
 " Commands"{{{
-
-function FoldArgumentsOntoMultipleLines()
-  substitute@,\s*@,\r@ge
-  normal v``="
-endfunction
-
-nnoremap <Leader>rr <C-O>:call FoldArgumentsOntoMultipleLines()<CR>
 
 " Do a git grep on every file that is the same kind as the one I'm currently
 " in:
@@ -533,12 +546,13 @@ function! s:GitGrepFile(search)
   exec printf("Ggrep %s -- '*.%s'",a:search,extension)
 endfunction
 
-command! -nargs=1 GG call s:GitGrepFile('<args>')
+command! -nargs=1 GG call s:GitGrepFile('<args>')<CR>
 
 function! ConcealSearch(repl)
   exe 'syn keyword concealSearch "'. @/ .'" conceal cchar='. a:repl
   set conceallevel=2
 endfunction
+
 "}}}
 " Automappings"{{{
 
