@@ -81,6 +81,13 @@ NeoBundle 'tpope/vim-eunuch' " eunuch.vim: cp/move/unlink commands
 "   https://github.com/justinmk/vim-sneak
 NeoBundle 'AndrewRadev/splitjoin.vim' " A vim plugin that simplifies the transition between multiline and single-line code
 NeoBundle 'ervandew/ag' " vim plugin to search using the silver searcher (ag)
+NeoBundle 'tommcdo/vim-exchange' " Easy text exchange operator for Vim
+NeoBundle 'bigfish/vim-js-context-coloring', {
+  \ 'build' : {
+  \     'mac' : 'npm install --update',
+  \     'unix' : 'npm install --update',
+  \    },
+  \ }
 
 " user defined textobj implementations
 NeoBundle 'kana/vim-textobj-user'
@@ -253,6 +260,9 @@ set lazyredraw
 
 "}}}
 " Plugin settings, changes."{{{
+
+let g:js_context_colors = [ 22, 28, 34, 106, 178, 166, 124 ]
+let g:js_context_colors_enabled = 0
 
 " the emmet mappings really f this up:
 "let g:user_emmet_leader_key = 'm'
@@ -536,17 +546,22 @@ map <Leader>ss F( dia viaPF(p
 " Open the current directory (or make new directory)
 map <Leader>ep :e %:h
 
+" Use gp to select the last pasted region.
+nnoremap <expr> gp '`[' . strpart(getregtype(), 0, 1) . '`]'
+
 "}}}
 " Commands"{{{
 
-" Do a git grep on every file that is the same kind as the one I'm currently
-" in:
-function! s:GitGrepFile(search)
+" Execute something on all files of the same kind:
+"
+" See GG and AA commands:
+function! s:ExecFileType(cmd,search)
   let extension = substitute(expand('%'),'\v^.*\.',"","")
-  exec printf("Ggrep %s -- '*.%s'",a:search,extension)
+  exec printf("silent %s",printf(a:cmd,a:search,extension))
 endfunction
 
-command! -nargs=1 GG call s:GitGrepFile('<args>')<CR>
+command! -nargs=1 GG call s:ExecFileType("Ggrep %s -- '*.%s'",'<args>')
+command! -nargs=1 AA call s:ExecFileType("Ag %s **/*.%s",'<args>')
 
 function! ConcealSearch(repl)
   exe 'syn keyword concealSearch "'. @/ .'" conceal cchar='. a:repl
