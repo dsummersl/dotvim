@@ -6,7 +6,7 @@ Abolish ivm vim
 Abolish improt{,s} import{}
 Abolish ealie{r,st} earlie{}
 Abolish tah{t,nk,nks,t,ts} tha{}
-Abolish resutl{,s,ing} result{}
+Abolish r{esu,eus}{tl,lt}{,s,ing} r{esu}{lt}{}
 Abolish flase false
 Abolish pytohn python
 Abolish ahv{e,ing} hav{}
