@@ -1,5 +1,5 @@
 snippet kv "JSON key/value" !b
-"$1": $2$0
+$1: $2$0
 endsnippet
 
 snippet lg "console.log" !w
@@ -19,7 +19,9 @@ JSON.stringify($1)$0
 endsnippet
 
 snippet fu "function" !w
-function($1) {
-  $0
-}
+function($1) {$2}$0
+endsnippet
+
+snippet break "node.js breakpoint" !b
+debugger;$0
 endsnippet
