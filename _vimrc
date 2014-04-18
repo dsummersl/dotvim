@@ -303,11 +303,6 @@ let g:nrrw_rgn_update_orig_win = 1
 
 let g:fugitive_git_executable = '/usr/local/bin/git'
 
-let g:indent_guides_enable_on_vim_startup = 1
-let g:indent_guides_color_change_percent = 2
-" don't include tabs in 'soft' tabs - I want to see when things are amiss.
-let g:indent_guides_soft_pattern = ' '
-
 let g:detectindent_preferred_indent = 2
 let g:detectindent_preferred_expandtab = 2
 let g:detectindent_max_lines_to_analyse = 64
@@ -605,9 +600,6 @@ function! s:SetStop(type,count)
   exec "set sw=". a:count
   exec "set ts=". a:count
   exec "set sts=". a:count
-  " redo hilighting if indent guides are enabled.
-  IndentGuidesToggle
-  IndentGuidesToggle
 endfunction
 
 command! -nargs=* SS call s:SetStop(<f-args>)
