@@ -69,7 +69,9 @@ NeoBundle 'jeroenbourgois/vim-actionscript'
 NeoBundle 'dsummersl/vim-cdo'
 " Go language autocompletion
 NeoBundle 'jnwhiteh/vim-golang'
+" NeoBundle 'tpope/vim-sleuth'
 " automatically detect the indent style of the document
+" TODO try https://github.com/roryokane/detectindent
 NeoBundle 'raymond-w-ko/detectindent'
 " close quotes and such automatically
 NeoBundle 'jiangmiao/auto-pairs'
@@ -109,6 +111,7 @@ NeoBundle 'dsummersl/vus'
 NeoBundle 'dsummersl/vim-sluice'
 " unit testing for vim.
 NeoBundle 'dsummersl/vimunit'
+"NeoBundle 'ivanov/vim-ipython' " A two-way integration between Vim and IPython 0.11+
 
 " TODO jcfaria/Vim-R-plugin
 " TODO https://github.com/vim-scripts/PatternsOnText - delete/replace non
@@ -119,7 +122,7 @@ NeoBundle 'dsummersl/vimunit'
 " python omni completion
 " Its annoying b/c it automatically appears when I only want it when I
 " explicitly ask for it. Maybe there is a way to configure it that way:
-"NeoBundle 'davidhalter/jedi-vim'
+NeoBundle 'davidhalter/jedi-vim'
 
 " Probably going to remove these:
 " colorize ansi escaped text (console dumps)
@@ -150,6 +153,11 @@ if v:version >= 704
   " I don't really care about trailing spaces so much as the indenting:
   let g:airline#extensions#whitespace#checks = [ 'indent' ]
   let g:airline_theme='base16'
+  if !exists('g:airline_symbols')
+    let g:airline_symbols = {}
+  endif
+
+  let g:airline_section_y = airline#util#wrap(airline#parts#ffenc() .' %#__accent_bold_red#%{&expandtab?"_":""}%#__restore__#%{&expandtab?"":"t"}%{&tabstop}',0)
   set laststatus=2
 
   " show undo history
@@ -178,11 +186,27 @@ if v:version >= 703
     set anti
     " TODO make the fold highlight non-underlined.
     " a powerline friendly font might look like
-    " set gfn=Menlo\ Regular\ for\ Powerline:h15
-    set gfn=Monaco:h15
+    " set gfn=Source\ Code\ Pro\ for\ Powerline:h17
+    " set gfn=Liberation\ Mono\ for\ Powerline:h15
+    set gfn=Monaco\ for\ Powerline:h15
+    "set gfn=Monaco:h15
     set cursorline
     " show column markers beyond the 80 char line.
     set colorcolumn=+1,+2,+3
+
+    " unicode symbols
+    let g:airline_left_sep = ''
+    let g:airline_left_alt_sep = ''
+    let g:airline_right_sep = ''
+    let g:airline_right_alt_sep = ''
+    let g:airline_symbols.linenr = '␊'
+    let g:airline_symbols.linenr = '␤'
+    let g:airline_symbols.linenr = '¶'
+    let g:airline_symbols.branch = '⎇'
+    let g:airline_symbols.paste = 'ρ'
+    let g:airline_symbols.paste = 'Þ'
+    let g:airline_symbols.paste = '∥'
+    let g:airline_symbols.whitespace = 'Ξ'
   endif
 endif
 
@@ -207,6 +231,9 @@ set number
 " I want to know about bad tab/space use:
 set list
 
+" give a little context
+set scrolloff=2
+
 syntax on
 set t_Co=256
 set guioptions=egt  " GUI options
@@ -222,7 +249,7 @@ set synmaxcol=360
 syntax sync minlines=64
 syntax sync maxlines=128
 
-set diffopt=filler,iwhite
+set diffopt=filler
 set nohls
 set nowrap
 
@@ -275,9 +302,6 @@ nmap <Leader>a <Plug>(LiveEasyAlign)
 let g:narrow_rgn_update_orig_win = 1
 let g:nrrw_rgn_update_orig_win = 1
 
-" automatically jump to the next )] or what have you
-let g:AutoPairsFlyMode = 0
-
 let g:fugitive_git_executable = '/usr/local/bin/git'
 
 let g:indent_guides_enable_on_vim_startup = 1
@@ -286,7 +310,8 @@ let g:indent_guides_color_change_percent = 2
 let g:indent_guides_soft_pattern = ' '
 
 let g:detectindent_preferred_indent = 2
-let g:detectindent_max_lines_to_analyse = 256
+let g:detectindent_preferred_expandtab = 2
+let g:detectindent_max_lines_to_analyse = 64
 let g:detectindent_min_indent = 2
 
 " we have very long commit lines - this helps!
@@ -319,23 +344,6 @@ function! Toggle(setting)
   endif
 endfunction
 
-" automatically
-"imap <C-'> <C-O>:let g:AutoPairsFlyMode=1<CR>"<C-O>:let g:AutoPairsFlyMode=0<CR>
-"imap <C-;> <C-O>:let g:AutoPairsFlyMode=1<CR>'<C-O>:let g:AutoPairsFlyMode=0<CR>
-"imap <C-[> <C-O>:let g:AutoPairsFlyMode=1<CR>]<C-O>:let g:AutoPairsFlyMode=0<CR>
-"imap <C-0> <C-O>:let g:AutoPairsFlyMode=1<CR>)<C-O>:let g:AutoPairsFlyMode=0<CR>
-"imap <C-]> <C-O>:let g:AutoPairsFlyMode=1<CR>}<C-O>:let g:AutoPairsFlyMode=0<CR>
-
-" toggle Sluice gutters
-nnoremap <F3> :SluiceMacroOff <bar> SluiceToggle<CR>
-nnoremap <F4> :SluiceMacroOn <bar> SluiceToggle<CR>
-
-" in insert mode, move up/down one line and stay in insert mode.
-inoremap <C-D> <esc>o
-inoremap <C-U> <esc>O
-
-" automatically toggle with control-
-nnoremap <Leader>. :Switch<cr>
 " left/right and up/down first/last
 autocmd FileType * let b:switch_custom_definitions =
     \ [
@@ -393,8 +401,9 @@ let g:ctrlp_clear_cache_on_exit = 0
 let g:ctrlp_cache_dir = $HOME.'/.cache/ctrlp'
 " just use the pwd when finding files.
 let g:ctrlp_working_path_mode = 'w'
+let g:ctrlp_custom_ignore = '\.git$\|\.hg$\|\.svn|$'
 " by default ignore subversion things and swap file
-set wildignore+=*/.git/*,*/.hg/*,*/.svn/*,*/*.sw?,*/*.pyc,*/*.class
+set wildignore+=*/*.sw?,*/*.pyc,*/*.class
 " enable the quickfix plugin source:
 let g:ctrlp_extensions=['changes']
 
@@ -537,6 +546,9 @@ noremap <Leader>p :set paste<cr>:put *<cr>:set nopaste<cr>
 
 " see all the search matches in a separate window (narrow region)
 noremap <Leader>/ :exec "g//NRP" \| NRM<cr>
+" unimpaired like mapping for diff option for ignoring whitespace.
+noremap ]oI :set diffopt-=iwhite<cr>
+noremap [oI :set diffopt+=iwhite<cr>
 
 " For a two parameter function, swap the two paramters - ideally I'd change this so that the cursor was in a position to swap the next terms:
 " (a,b,c)  ... swap this and the next, or swap this and the previous (and leave
@@ -548,6 +560,24 @@ map <Leader>ep :e %:h
 
 " Use gp to select the last pasted region.
 nnoremap <expr> gp '`[' . strpart(getregtype(), 0, 1) . '`]'
+
+" automatically
+"imap <C-'> <C-O>:let g:AutoPairsFlyMode=1<CR>"<C-O>:let g:AutoPairsFlyMode=0<CR>
+"imap <D-;> <C-O>:let g:AutoPairsFlyMode=1<CR>'<C-O>:let g:AutoPairsFlyMode=0<CR>
+imap <C-]> <C-O>:let g:AutoPairsFlyMode=1<CR>]<C-O>:let g:AutoPairsFlyMode=0<CR>
+imap <D-0> <C-O>:let g:AutoPairsFlyMode=1<CR>)<C-O>:let g:AutoPairsFlyMode=0<CR>
+imap <D-]> <C-O>:let g:AutoPairsFlyMode=1<CR>}<C-O>:let g:AutoPairsFlyMode=0<CR>
+
+" toggle Sluice gutters
+nnoremap <F3> :SluiceMacroOff <bar> SluiceToggle<CR>
+nnoremap <F4> :SluiceMacroOn <bar> SluiceToggle<CR>
+
+" in insert mode, move up/down one line and stay in insert mode.
+inoremap <C-D> <esc>o
+inoremap <C-U> <esc>O
+
+" automatically toggle with control-
+nnoremap <Leader>. :Switch<cr>
 
 "}}}
 " Commands"{{{
@@ -562,6 +592,26 @@ endfunction
 
 command! -nargs=1 GG call s:ExecFileType("Ggrep %s -- '*.%s'",'<args>')
 command! -nargs=1 AA call s:ExecFileType("Ag %s **/*.%s",'<args>')
+command! -nargs=1 AA call s:ExecFileType("Ag %s **/*.%s",'<args>')
+
+" TODO automate this diffsplit two matching regions
+" let @m=j?<<<jV/^===k"aynjV/^>>>k"by:sp belowggdG"bp:vert diffs aboveggdG"apgglgg:diffupdate=
+
+function! s:SetStop(type,count)
+  if a:type == "t"
+    set noexpandtab
+  else
+    set expandtab
+  end
+  exec "set sw=". a:count
+  exec "set ts=". a:count
+  exec "set sts=". a:count
+  " redo hilighting if indent guides are enabled.
+  IndentGuidesToggle
+  IndentGuidesToggle
+endfunction
+
+command! -nargs=* SS call s:SetStop(<f-args>)
 
 function! ConcealSearch(repl)
   exe 'syn keyword concealSearch "'. @/ .'" conceal cchar='. a:repl
@@ -580,8 +630,16 @@ if has("autocmd") && !exists("autocommands_loaded")
     au BufNewFile,BufReadPost * :call AutoPairsInit()
   endif
 
-  " Set the indenting to what it looks like the file is using:
   autocmd BufReadPost * :DetectIndent
+
+  "function! s:SynOffInDiffMode()
+  "  if &diff
+  "    syntax off
+  "  else
+  "    syntax on
+  "  endif
+  "endfunction
+  "autocmd BufReadPost * call s:SynOffInDiffMode()
 
   " ensure that tabstop settings for file browsing is big enough for column
   " alignment:
