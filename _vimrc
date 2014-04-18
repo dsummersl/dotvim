@@ -34,7 +34,6 @@ NeoBundle 'derekwyatt/vim-scala.git'
 NeoBundle 'kchmck/vim-coffee-script'
 " surround things with quotes, etc (csw - surround word)
 NeoBundle 'tpope/vim-surround.git'
-NeoBundle 'nathanaelkane/vim-indent-guides'
 " TODO this? Its a dependency for a number of libs?
 NeoBundle 'PProvost/vim-ps1'
 " TODO this? Its a dependency for a number of libs?
