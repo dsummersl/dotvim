@@ -10,9 +10,8 @@ endif
 call neobundle#rc(expand('~/.vim/bundle/'))
 NeoBundleFetch 'Shougo/neobundle.vim'
 
-" TODO look into:
-" pomodoro reminder plugin: https://github.com/vim-scripts/vim-airline-tomato
-
+" TODO not installing?
+" NeoBundle 'shawncplus/phpcomplete'
 " fast HTML tag generation (in insert mode type tr*3CTL-Y, to make three <tr>s
 NeoBundle 'mattn/emmet-vim.git'
 " debug xdebug
@@ -47,16 +46,12 @@ NeoBundle 'tpope/vim-unimpaired.git'
 NeoBundle 'gregsexton/gitv'
 " awesome: makes the surround plugin work with the '.' keys (repeatability!)
 NeoBundle 'tpope/vim-repeat'
-" via (visual inner arg)
-NeoBundle 'vim-scripts/argtextobj.vim'
 " fix spelling errors
 NeoBundle 'tpope/vim-abolish'
 " quick find method definitions:
 NeoBundle 'Shougo/unite.vim'
 " Nice outline of a file's methods within Unite.
 NeoBundle 'Shougo/unite-outline'
-" viI (visual inner Indent)
-NeoBundle 'michaeljsmith/vim-indent-object'
 " allow the quicklist to be edited :cw, 'i'. :QFLoad and :LocSave
 NeoBundle 'jceb/vim-editqf'
 " javascript omni integration
@@ -74,9 +69,8 @@ NeoBundle 'jnwhiteh/vim-golang'
 NeoBundle 'raymond-w-ko/detectindent'
 " close quotes and such automatically
 NeoBundle 'jiangmiao/auto-pairs'
-NeoBundle 'tpope/vim-rails'
+"NeoBundle 'tpope/vim-rails'
 NeoBundle 'junegunn/vim-easy-align' " A simple Vim alignment plugin
-NeoBundle 'danro/rename.vim' " Rename the current file in the vim buffer + retain relative path.
 NeoBundle 'tpope/vim-eunuch' " eunuch.vim: cp/move/unlink commands
 " TODO try out this seek plugin (sounds better than the original):
 "   https://github.com/justinmk/vim-sneak
@@ -90,16 +84,22 @@ NeoBundle 'bigfish/vim-js-context-coloring', {
   \    },
   \ }
 
+" via (visual inner arg)
+NeoBundle 'vim-scripts/argtextobj.vim'
+" viI (visual inner Indent)
+NeoBundle 'michaeljsmith/vim-indent-object'
 " user defined textobj implementations
 NeoBundle 'kana/vim-textobj-user'
+NeoBundle 'glts/vim-textobj-comment'
 " vib between any arbitrary object
 NeoBundle 'thinca/vim-textobj-between'
+
 " provide focus of a selected block into its own buffer via 'NR' 
 NeoBundle 'chrisbra/NrrwRgn'
 " Easily toggle boolean values:
 NeoBundle 'AndrewRadev/switch.vim'
 " TODO automatic ctags generation doesn't seem to work, but I love the idea...
-"NeoBundle 'szw/vim-tags'
+NeoBundle 'hackaugusto/vim-tags'
 " run make in the background. (used by vim-tags)
 NeoBundle 'tpope/vim-dispatch'
 " utility functions
@@ -121,7 +121,7 @@ NeoBundle 'dsummersl/vimunit'
 " python omni completion
 " Its annoying b/c it automatically appears when I only want it when I
 " explicitly ask for it. Maybe there is a way to configure it that way:
-NeoBundle 'davidhalter/jedi-vim'
+"NeoBundle 'davidhalter/jedi-vim'
 
 " Probably going to remove these:
 " colorize ansi escaped text (console dumps)
@@ -163,10 +163,7 @@ if v:version >= 704
   nnoremap <F5> :GundoToggle<CR>
 
   let macvim_skip_colorscheme = 1
-  colorscheme default
-  if !has("gui_running")
-    autocmd BufWinEnter * :colorscheme default
-  endif
+  colorscheme solarized
 endif
 
 if v:version >= 703
@@ -180,7 +177,6 @@ if v:version >= 703
     NeoBundle 'skammer/vim-css-color'
 
     set background=light
-    colorscheme solarized
     set macmeta
     set anti
     " TODO make the fold highlight non-underlined.
@@ -231,7 +227,7 @@ set number
 set list
 
 " give a little context
-set scrolloff=2
+set scrolloff=1
 
 syntax on
 set t_Co=256
@@ -310,6 +306,7 @@ let g:detectindent_min_indent = 2
 
 " we have very long commit lines - this helps!
 let g:Gitv_TruncateCommitSubjects = 1
+let g:Gitv_OpenHorizontal = 1
 
 " Setup the VDebug options. Start and stop with f11/12.
 let g:vdebug_keymap = {
@@ -374,6 +371,7 @@ let g:unite_enable_split_vertically=1
 let g:unite_winwidth=60
 call unite#set_profile('source/outline', 'ignorecase', 1)
 
+let g:UltiSnipsPythonPath="/usr/local/bin/python"
 let g:UltiSnipsListSnippets='<C-\>'
 let g:UltiSnipsExpandTrigger="<tab>"
 let g:UltiSnipsJumpForwardTrigger="<tab>"
@@ -500,7 +498,6 @@ endfunction
 " display tags and trailing white spaces in list mode.
 set fillchars+=stl:\ ,stlnc:\ 
 set lcs=tab:\ \ ,trail:+
-highlight SpecialKey term=underline guifg=Red guibg=LightGrey
 " syntax match MixedIndentation /^\v +(\t+)|\t+( +)/
 " hi MixedIndentation guibg=Red guifg=White ctermbg=Red ctermfg=White
 "}}}
@@ -522,8 +519,6 @@ map <nul> <esc>
 map <f1> <nul>
 imap <f1> <nul>
 
-imap <C-a> <Home>
-
 " Make Control up/down scroll up/down in the window...even in insert mode.
 imap <C-j> <C-x><C-e>
 imap <C-k> <C-x><C-y>
@@ -532,6 +527,10 @@ imap <C-k> <C-x><C-y>
 " for moving between windows with ease:
 map <C-j> <C-w>j<C-w>_
 map <C-k> <C-w>k<C-w>_
+
+" jump to the end of the line
+imap <D-e> <C-O>$
+imap <D-a> <Home>
 
 " console copy to buffer
 noremap <Leader>y "*y
