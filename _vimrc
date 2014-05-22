@@ -28,7 +28,6 @@ NeoBundle 'dsummersl/wikia-csv.git'
 NeoBundle 'dsummersl/vim-utf2ascii'
 NeoBundle 'tpope/vim-fugitive.git'
 " snippets
-NeoBundle 'guns/ultisnips.git'
 NeoBundle 'derekwyatt/vim-scala.git'
 NeoBundle 'kchmck/vim-coffee-script'
 " surround things with quotes, etc (csw - surround word)
@@ -46,6 +45,7 @@ NeoBundle 'tpope/vim-unimpaired.git'
 NeoBundle 'gregsexton/gitv'
 " awesome: makes the surround plugin work with the '.' keys (repeatability!)
 NeoBundle 'tpope/vim-repeat'
+NeoBundle 'vim-scripts/visualrepeat'
 " fix spelling errors
 NeoBundle 'tpope/vim-abolish'
 " quick find method definitions:
@@ -106,8 +106,6 @@ NeoBundle 'tpope/vim-dispatch'
 " a hash implementation - make it easy to compute the hash of a string in the
 " editor (ie, yank a block, then do :echo _#hash(@") )
 NeoBundle 'dsummersl/vus'
-" sluice side screen control
-NeoBundle 'dsummersl/vim-sluice'
 " unit testing for vim.
 NeoBundle 'dsummersl/vimunit'
 "NeoBundle 'ivanov/vim-ipython' " A two-way integration between Vim and IPython 0.11+
@@ -163,18 +161,21 @@ if v:version >= 704
   nnoremap <F5> :GundoToggle<CR>
 
   let macvim_skip_colorscheme = 1
-  colorscheme solarized
 endif
 
 if v:version >= 703
   set undofile
   set undodir=~/.vim/undo
-  set cryptmethod=blowfish
   NeoBundle 'https://github.com/godlygeek/csapprox.git'
   NeoBundle 'dsummers/gundo.vim.git'
   if has("gui_running")
+    " sluice side screen control
+    NeoBundle 'dsummersl/vim-sluice'
+    colorscheme solarized
+    set cryptmethod=blowfish
     " color css colors auto magically - VERY slow on the console.
     NeoBundle 'skammer/vim-css-color'
+    NeoBundle 'guns/ultisnips.git'
 
     set background=light
     set macmeta
@@ -202,6 +203,9 @@ if v:version >= 703
     let g:airline_symbols.paste = 'Þ'
     let g:airline_symbols.paste = '∥'
     let g:airline_symbols.whitespace = 'Ξ'
+  else
+    colorscheme solarized
+    colorscheme default
   endif
 endif
 
@@ -497,7 +501,7 @@ endfunction
 " Setup how in 'list' mode characters for white space and tabs appear"{{{
 " display tags and trailing white spaces in list mode.
 set fillchars+=stl:\ ,stlnc:\ 
-set lcs=tab:\ \ ,trail:+
+set lcs=tab:\ \ 
 " syntax match MixedIndentation /^\v +(\t+)|\t+( +)/
 " hi MixedIndentation guibg=Red guifg=White ctermbg=Red ctermfg=White
 "}}}
@@ -574,6 +578,37 @@ nnoremap <Leader>. :Switch<cr>
 
 "}}}
 " Commands"{{{
+
+" Set an arbitrary value to a number.
+"
+" Use this like so:
+"
+" :call SV(392)
+" :%s/\v(something:)(\d+)/\=submatch(1) . UV()/
+"
+function! SV(v)
+  let b:set_value = a:v
+endfunction
+
+" Get the next value of the value, and increment by one
+function! UV()
+	if !exists("b:set_value")
+		let b:set_value = 1
+	endif
+  let old_value = b:set_value
+  let b:set_value += 1
+  return old_value
+endfunction
+
+" Get the next value, and decrement by one:
+function! DV()
+	if !exists("b:set_value")
+		let b:set_value = 1
+	endif
+  let old_value = b:set_value
+  let b:set_value -= 1
+  return old_value
+endfunction
 
 " Execute something on all files of the same kind:
 "
