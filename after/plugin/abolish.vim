@@ -15,6 +15,7 @@ Abolish ofr for
 Abolish adn and
 Abolish instnace{,s} instance{}
 Abolish iwth with
+Abolish waht what
 Abolish foudn{,ing,er} found{}
 Abolish {w,sh}oudl {}ould
 Abolish unalbe unable

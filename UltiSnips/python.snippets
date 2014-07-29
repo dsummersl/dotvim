@@ -96,6 +96,10 @@ snippet lg "logger.log" !b
 logger.$1`!p snip.rv=complete(t[1],['info','debug','error','warn'])`(${3:'${2:message}'}${4})$0
 endsnippet
 
+snippet lge "logger.log" !b
+logger.$1`!p snip.rv=complete(t[1],['info','debug','error','warn'])`('${2}: {}'.format(${3:$2}))$0
+endsnippet
+
 snippet kv "key/value" !b
 '${1:key}': $2
 endsnippet
@@ -136,7 +140,7 @@ finally:
 	${7:pass}
 endsnippet
 
-snippet pdb "Set PDB breakpoint" b
+snippet break "Set PDB breakpoint" b
 import pdb; pdb.set_trace()
 endsnippet
 

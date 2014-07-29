@@ -22,6 +22,26 @@ snippet fu "function" !w
 function($1) {$2}$0
 endsnippet
 
+snippet trace "dump stack trace" !b
+console.log(new Error().stack);
+endsnippet
+
 snippet break "node.js breakpoint" !b
 debugger;$0
+endsnippet
+
+snippet req "require statement" !b
+var $1 = require("${2:$1}");$0
+endsnippet
+
+snippet des "Describe (js)" !b
+describe("${1:description}", function() {
+	$0
+});
+endsnippet
+
+snippet it "it (js)" !b
+it("${1:description}", function() {
+	$0
+});
 endsnippet

@@ -12,9 +12,9 @@ snippet break "xdebug_break" !b
 xdebug_break();
 endsnippet
 
-snippet lg "PSR-3 logger" !b
-$${1:this->}logger->$2`!p snip.rv=complete(t[2],['info','debug','error','warning'])`(${4:"${3:message}"}${5});$0
-endsnippet
+#snippet lg "PSR-3 logger" !b
+#$${1:this->}logger->$2`!p snip.rv=complete(t[2],['info','debug','error','warning'])`(${4:"${3:message}"}${5});$0
+#endsnippet
 
 snippet > "Expand $variable->..." !i
 $${1:parent}->${2:child}$0
@@ -154,15 +154,6 @@ if t[3]:
 //
 // Returns:
 ${2:public }function ${3:name}(${4:$param}) {
-	${VISUAL}$0
-}
-endsnippet
-
-snippet testfu "SimpleTest function snip" !b
-/// Group: test$1
-/// ...${2:DESCRIPTION}
-function test${1:name}() {
-  /// Test: XXX
 	${VISUAL}$0
 }
 endsnippet
