@@ -10,12 +10,8 @@ endif
 call neobundle#rc(expand('~/.vim/bundle/'))
 NeoBundleFetch 'Shougo/neobundle.vim'
 
-" TODO not installing?
-" NeoBundle 'shawncplus/phpcomplete'
 " fast HTML tag generation (in insert mode type tr*3CTL-Y, to make three <tr>s
 NeoBundle 'mattn/emmet-vim.git'
-" debug xdebug
-NeoBundle 'joonty/vdebug.git'
 NeoBundle 'kien/ctrlp.vim.git'
 NeoBundle 'scrooloose/nerdcommenter.git'
 NeoBundle 'sukima/xmledit'
@@ -77,6 +73,7 @@ NeoBundle 'tpope/vim-eunuch' " eunuch.vim: cp/move/unlink commands
 NeoBundle 'AndrewRadev/splitjoin.vim' " A vim plugin that simplifies the transition between multiline and single-line code
 NeoBundle 'ervandew/ag' " vim plugin to search using the silver searcher (ag)
 NeoBundle 'tommcdo/vim-exchange' " Easy text exchange operator for Vim
+NeoBundle 'nelstrom/vim-visual-star-search' " use #/* in visual mode for searching
 NeoBundle 'bigfish/vim-js-context-coloring', {
   \ 'build' : {
   \     'mac' : 'npm install --update',
@@ -90,6 +87,7 @@ NeoBundle 'vim-scripts/argtextobj.vim'
 NeoBundle 'michaeljsmith/vim-indent-object'
 " user defined textobj implementations
 NeoBundle 'kana/vim-textobj-user'
+" select comment with vic or vac.
 NeoBundle 'glts/vim-textobj-comment'
 " vib between any arbitrary object
 NeoBundle 'thinca/vim-textobj-between'
@@ -509,6 +507,7 @@ set lcs=tab:\ \
 
 cabbrev bda call DeleteHiddenBuffers()
 cabbrev gitv Gitv
+cabbrev ag Ag
 
 " quickly clear out search results
 nnoremap [n :nohlsearch<CR>
@@ -542,7 +541,7 @@ noremap <Leader>yy "*Y
 noremap <Leader>p :set paste<cr>:put *<cr>:set nopaste<cr>
 
 " see all the search matches in a separate window (narrow region)
-noremap <Leader>/ :exec "g//NRP" \| NRM<cr>
+noremap <Leader>/ :exec "Unite -input=". @/ ." -no-start-insert line"<cr>
 " unimpaired like mapping for diff option for ignoring whitespace.
 noremap ]oI :set diffopt-=iwhite<cr>
 noremap [oI :set diffopt+=iwhite<cr>
@@ -686,7 +685,7 @@ if has("autocmd") && !exists("autocommands_loaded")
   autocmd BufNewFile,BufRead *.rabl setf eruby
   autocmd BufNewFile,BufRead *.eco setf eruby
   autocmd BufNewFile,BufRead *.md setf markdown
-  autocmd BufNewFile,BufRead *.md setlocal spell fo-=tn wrap
+  autocmd BufNewFile,BufRead *.md setlocal spell fo-=tn wrap et
   autocmd BufNewFile,BufRead *.pp setf ruby
   autocmd BufNewFile,BufRead *.csv setf csv
   autocmd BufNewFile,BufRead *.tsv setf csv
