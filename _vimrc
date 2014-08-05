@@ -411,8 +411,6 @@ let NERDMapleader = ','
 let g:tagbar_left = 1
 
 let g:sluice_default_macromode=1
-" set the sluice updatetime to fast for quick gutter updates.
-set updatetime=200
 
 " show diff with git
 nnoremap <F6> :Gvdiff<CR>
