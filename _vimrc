@@ -182,7 +182,7 @@ if v:version >= 703
     " a powerline friendly font might look like
     " set gfn=Source\ Code\ Pro\ for\ Powerline:h17
     " set gfn=Liberation\ Mono\ for\ Powerline:h15
-    set gfn=Monaco\ for\ Powerline:h15
+    set gfn=Monaco\ for\ Powerline:h13
     "set gfn=Monaco:h15
     set cursorline
     " show column markers beyond the 80 char line.
@@ -654,6 +654,7 @@ if has("autocmd") && !exists("autocommands_loaded")
     au BufNewFile,BufReadPost * :call AutoPairsInit()
   endif
 
+  " TODO set a buffer variable and then only call this one time.
   autocmd BufReadPost * :DetectIndent
 
   "function! s:SynOffInDiffMode()
