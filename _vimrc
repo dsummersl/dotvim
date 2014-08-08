@@ -10,6 +10,7 @@ endif
 call neobundle#rc(expand('~/.vim/bundle/'))
 NeoBundleFetch 'Shougo/neobundle.vim'
 
+NeoBundle 'scrooloose/syntastic' " Syntax checking hacks for vim
 " fast HTML tag generation (in insert mode type tr*3CTL-Y, to make three <tr>s
 NeoBundle 'mattn/emmet-vim.git'
 NeoBundle 'kien/ctrlp.vim.git'
@@ -229,7 +230,7 @@ set number
 set list
 
 " give a little context
-set scrolloff=1
+set scrolloff=5
 
 syntax on
 set t_Co=256
