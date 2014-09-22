@@ -10,11 +10,14 @@ endif
 call neobundle#rc(expand('~/.vim/bundle/'))
 NeoBundleFetch 'Shougo/neobundle.vim'
 
+NeoBundle 'motus/pig.vim' " Pig syntax highlighting for vim
+NeoBundle 'editorconfig-vim' " 0.1.0 EditorConfig Plugin for Vim -- helps define and maintain consistent coding style
+NeoBundle 'nathanaelkane/vim-indent-guides' " A Vim plugin for visually displaying indent levels in code
 NeoBundle 'scrooloose/syntastic' " Syntax checking hacks for vim
 " fast HTML tag generation (in insert mode type tr*3CTL-Y, to make three <tr>s
 NeoBundle 'mattn/emmet-vim.git'
+NeoBundle 'tomtom/tcomment_vim' " An extensible & universal comment vim-plugin that also handles embedded filetypes
 NeoBundle 'kien/ctrlp.vim.git'
-NeoBundle 'scrooloose/nerdcommenter.git'
 NeoBundle 'sukima/xmledit'
 NeoBundle 'vim-scripts/applescript.vim'
 " editing CSV docs, super handily.
@@ -170,7 +173,6 @@ if v:version >= 703
   if has("gui_running")
     " sluice side screen control
     NeoBundle 'dsummersl/vim-sluice'
-    colorscheme solarized
     set cryptmethod=blowfish
     " color css colors auto magically - VERY slow on the console.
     NeoBundle 'skammer/vim-css-color'
@@ -202,12 +204,10 @@ if v:version >= 703
     let g:airline_symbols.paste = 'Þ'
     let g:airline_symbols.paste = '∥'
     let g:airline_symbols.whitespace = 'Ξ'
-  else
-    colorscheme solarized
-    colorscheme default
   endif
-endif
 
+  colorscheme solarized
+endif
 "}}}
 
 "  my own lame SVN mappings:
@@ -230,11 +230,11 @@ set number
 set list
 
 " give a little context
-set scrolloff=5
+set scrolloff=1
 
-syntax on
 set t_Co=256
 set guioptions=egt  " GUI options
+syntax on
 
 " use folding by default
 set fdm=marker
@@ -285,6 +285,16 @@ set lazyredraw
 
 "}}}
 " Plugin settings, changes."{{{
+
+if has('neovim')
+  let s:python_host_init = 'python -c "import neovim; neovim.start_host()"'
+  let &initpython = s:python_host_init
+endif
+
+let g:indent_guides_enable_on_vim_startup = 0
+let g:indent_guides_color_change_percent = 2
+" don't include tabs in 'soft' tabs - I want to see when things are amiss.
+" let g:indent_guides_soft_pattern = ' '
 
 let g:js_context_colors = [ 22, 28, 34, 106, 178, 166, 124 ]
 let g:js_context_colors_enabled = 0
@@ -406,8 +416,6 @@ let g:ctrlp_extensions=['changes']
 nnoremap <C-T> :Unite outline<CR>
 " look into the current directory
 nnoremap <Leader><C-T> :UniteWithBufferDir directory<CR>
-
-let NERDMapleader = ','
 
 let g:tagbar_left = 1
 
@@ -641,6 +649,16 @@ function! ConcealSearch(repl)
   set conceallevel=2
 endfunction
 
+" Let an command execute once:
+function! Once(cmd)
+  let varName = 'b:'. a:cmd .'_once'
+  if exists(varName)
+    return
+  endif
+  exe 'let '. varName .'=1'
+  exe a:cmd
+endfunction
+
 "}}}
 " Automappings"{{{
 
@@ -653,8 +671,8 @@ if has("autocmd") && !exists("autocommands_loaded")
     au BufNewFile,BufReadPost * :call AutoPairsInit()
   endif
 
-  " TODO set a buffer variable and then only call this one time.
-  autocmd BufReadPost * :DetectIndent
+  " Set a buffer variable and then only call this one time.
+  autocmd BufReadPost * :call Once('DetectIndent')
 
   "function! s:SynOffInDiffMode()
   "  if &diff
