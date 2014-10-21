@@ -7,7 +7,7 @@ if has('vim_starting')
   set rtp+=~/.vim/bundle/neobundle.vim/
 endif
 
-call neobundle#rc(expand('~/.vim/bundle/'))
+call neobundle#begin(expand('~/.vim/bundle/'))
 NeoBundleFetch 'Shougo/neobundle.vim'
 
 NeoBundle 'motus/pig.vim' " Pig syntax highlighting for vim
@@ -142,33 +142,21 @@ set nospell spelllang=en_us
 
 " for the latest version I am both gui/console enabled!
 if v:version >= 704
-  " base16 color schemes
-  NeoBundle 'altercation/vim-colors-solarized'
-  " A better powerline plugin:
-  NeoBundle 'bling/vim-airline'
   " vi/ (last search)
   NeoBundle 'kana/vim-textobj-lastpat'
-
-  " I don't really care about trailing spaces so much as the indenting:
-  let g:airline#extensions#whitespace#checks = [ 'indent' ]
-  let g:airline_theme='base16'
-  if !exists('g:airline_symbols')
-    let g:airline_symbols = {}
+  if has("gui_running")
+    " base16 color schemes
+    NeoBundle 'altercation/vim-colors-solarized'
+    " A better powerline plugin:
+    NeoBundle 'bling/vim-airline'
   endif
-
-  let g:airline_section_y = airline#util#wrap(airline#parts#ffenc() .' %#__accent_bold_red#%{&expandtab?"_":""}%#__restore__#%{&expandtab?"":"t"}%{&tabstop}',0)
-  set laststatus=2
-
-  " show undo history
-  nnoremap <F5> :GundoToggle<CR>
-
-  let macvim_skip_colorscheme = 1
 endif
 
 if v:version >= 703
   set undofile
   set undodir=~/.vim/undo
-  NeoBundle 'https://github.com/godlygeek/csapprox.git'
+  " This f's with neovim
+  " NeoBundle 'https://github.com/godlygeek/csapprox.git'
   NeoBundle 'dsummers/gundo.vim.git'
   if has("gui_running")
     " sluice side screen control
@@ -177,7 +165,47 @@ if v:version >= 703
     " color css colors auto magically - VERY slow on the console.
     NeoBundle 'skammer/vim-css-color'
     NeoBundle 'guns/ultisnips.git'
+  endif
+endif
+"}}}
 
+"  my own lame SVN mappings:
+" NeoBundle "git://github.com/dsummersl/svntools"
+"  this is no longer maintained by me:
+" "git://github.com/motemen/git-vim"
+" "git://github.com/dsummersl/lookupfile-grep"
+"  don't like how the tags are displayed. Its kinda annoying.
+" "git://github.com/kshenoy/vim-signature.git"
+
+call neobundle#end()
+
+filetype on
+filetype indent on    " Enable filetype-specific indenting
+filetype plugin on    " Enable filetype-specific plugins
+
+NeoBundleCheck
+
+if v:version >= 704
+  " I don't really care about trailing spaces so much as the indenting:
+  if has('gui_running')
+    let g:airline#extensions#whitespace#checks = [ 'indent' ]
+    let g:airline_theme='base16'
+    if !exists('g:airline_symbols')
+      let g:airline_symbols = {}
+    endif
+
+    let g:airline_section_y = airline#util#wrap(airline#parts#ffenc() .' %#__accent_bold_red#%{&expandtab?"_":""}%#__restore__#%{&expandtab?"":"t"}%{&tabstop}',0)
+    set laststatus=2
+  endif
+
+  " show undo history
+  nnoremap <F5> :GundoToggle<CR>
+
+  let macvim_skip_colorscheme = 1
+endif
+
+if v:version >= 703
+  if has("gui_running")
     set background=light
     set macmeta
     set anti
@@ -204,23 +232,10 @@ if v:version >= 703
     let g:airline_symbols.paste = 'Þ'
     let g:airline_symbols.paste = '∥'
     let g:airline_symbols.whitespace = 'Ξ'
+
+    colorscheme solarized
   endif
-
-  colorscheme solarized
 endif
-"}}}
-
-"  my own lame SVN mappings:
-" NeoBundle "git://github.com/dsummersl/svntools"
-"  this is no longer maintained by me:
-" "git://github.com/motemen/git-vim"
-" "git://github.com/dsummersl/lookupfile-grep"
-"  don't like how the tags are displayed. Its kinda annoying.
-" "git://github.com/kshenoy/vim-signature.git"
-
-filetype on
-filetype indent on    " Enable filetype-specific indenting
-filetype plugin on    " Enable filetype-specific plugins
 " }}}
 " basic options {{{
 
@@ -382,7 +397,7 @@ let g:unite_enable_start_insert = 1
 " I like the unite thing on the left side all get it going:
 let g:unite_enable_split_vertically=1
 let g:unite_winwidth=60
-call unite#set_profile('source/outline', 'ignorecase', 1)
+call unite#custom#profile('default', 'source/outline', { 'ignorecase': 1 })
 
 let g:UltiSnipsPythonPath="/usr/local/bin/python"
 let g:UltiSnipsListSnippets='<C-\>'
@@ -559,7 +574,7 @@ noremap [oI :set diffopt+=iwhite<cr>
 map <Leader>ss F( dia viaPF(p
 
 " Open the current directory (or make new directory)
-map <Leader>ep :e %:h
+map <Leader>ep :e %:h/
 
 " Use gp to select the last pasted region.
 nnoremap <expr> gp '`[' . strpart(getregtype(), 0, 1) . '`]'
