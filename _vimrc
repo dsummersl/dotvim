@@ -10,6 +10,8 @@ endif
 call neobundle#begin(expand('~/.vim/bundle/'))
 NeoBundleFetch 'Shougo/neobundle.vim'
 
+NeoBundle 'Blackrush/vim-gocode' " Go language autocompletion
+NeoBundle 'Blackrush/vim-gocode' " Go language autocompletion
 NeoBundle 'motus/pig.vim' " Pig syntax highlighting for vim
 NeoBundle 'editorconfig-vim' " 0.1.0 EditorConfig Plugin for Vim -- helps define and maintain consistent coding style
 NeoBundle 'nathanaelkane/vim-indent-guides' " A Vim plugin for visually displaying indent levels in code
@@ -74,6 +76,7 @@ NeoBundle 'junegunn/vim-easy-align' " A simple Vim alignment plugin
 NeoBundle 'tpope/vim-eunuch' " eunuch.vim: cp/move/unlink commands
 " TODO try out this seek plugin (sounds better than the original):
 "   https://github.com/justinmk/vim-sneak
+NeoBundle 'kristijanhusak/vim-multiple-cursors' " multiple cursors
 NeoBundle 'AndrewRadev/splitjoin.vim' " A vim plugin that simplifies the transition between multiline and single-line code
 NeoBundle 'ervandew/ag' " vim plugin to search using the silver searcher (ag)
 NeoBundle 'tommcdo/vim-exchange' " Easy text exchange operator for Vim
@@ -149,6 +152,7 @@ if v:version >= 704
     NeoBundle 'altercation/vim-colors-solarized'
     " A better powerline plugin:
     NeoBundle 'bling/vim-airline'
+    NeoBundle 'Valloric/YouCompleteMe' " auto completion
   endif
 endif
 
@@ -301,6 +305,13 @@ set lazyredraw
 "}}}
 " Plugin settings, changes."{{{
 
+let g:syntastic_always_populate_loc_list = 1
+let g:syntastic_enable_signs = 0
+
+" let g:syntastic_mode_map = { "mode": "active",
+"       \ "active_filetypes": [ "javascript" ],
+"       \ "passive_filetypes": [] }
+
 if has('neovim')
   let s:python_host_init = 'python -c "import neovim; neovim.start_host()"'
   let &initpython = s:python_host_init
@@ -319,6 +330,13 @@ let g:js_context_colors_enabled = 0
 
 vmap <Enter> <Plug>(LiveEasyAlign)
 nmap <Leader>a <Plug>(LiveEasyAlign)
+
+" quit multicursor mode!
+let g:multi_cursor_use_default_mapping=0
+let g:multi_cursor_next_key='<C-n>'
+let g:multi_cursor_prev_key='<C-p>'
+let g:multi_cursor_skip_key='<C-x>'
+let g:multi_cursor_quit_key='<C-c>'
 
 " let the narrow region plugin NR functions automatically update the window
 " location on change:
@@ -397,13 +415,15 @@ let g:unite_enable_start_insert = 1
 " I like the unite thing on the left side all get it going:
 let g:unite_enable_split_vertically=1
 let g:unite_winwidth=60
-call unite#custom#profile('default', 'source/outline', { 'ignorecase': 1 })
 
 let g:UltiSnipsPythonPath="/usr/local/bin/python"
 let g:UltiSnipsListSnippets='<C-\>'
-let g:UltiSnipsExpandTrigger="<tab>"
-let g:UltiSnipsJumpForwardTrigger="<tab>"
-let g:UltiSnipsJumpBackwardTrigger="<s-tab>"
+let g:UltiSnipsExpandTrigger="<Tab>"
+let g:UltiSnipsJumpForwardTrigger="<Tab>"                                           
+let g:UltiSnipsJumpBackwardTrigger="<S-Tab>"
+
+let g:ycm_key_list_select_completion=['<C-n>', '<Down>']
+let g:ycm_key_list_previous_completion=['<C-p>', '<Up>']
 
 " CtrlP plugin
 nnoremap <C-p> :CtrlP<CR>
@@ -428,9 +448,9 @@ set wildignore+=*/*.sw?,*/*.pyc,*/*.class
 let g:ctrlp_extensions=['changes']
 
 " Unite outline mode
-nnoremap <C-T> :Unite outline<CR>
+nnoremap <C-T> :Unite outline -smartcase<CR>
 " look into the current directory
-nnoremap <Leader><C-T> :UniteWithBufferDir directory<CR>
+nnoremap <Leader>t :UniteWithBufferDir directory<CR>
 
 let g:tagbar_left = 1
 
@@ -531,9 +551,6 @@ cabbrev bda call DeleteHiddenBuffers()
 cabbrev gitv Gitv
 cabbrev ag Ag
 
-" quickly clear out search results
-nnoremap [n :nohlsearch<CR>
-
 " when switching between the alternate window, automatically save.
 inoremap <C-^> <C-O>:e #<CR>
 
@@ -568,16 +585,38 @@ noremap <Leader>/ :exec "Unite -input=". @/ ." -no-start-insert line"<cr>
 noremap ]oI :set diffopt-=iwhite<cr>
 noremap [oI :set diffopt+=iwhite<cr>
 
-" For a two parameter function, swap the two paramters - ideally I'd change this so that the cursor was in a position to swap the next terms:
-" (a,b,c)  ... swap this and the next, or swap this and the previous (and leave
-" me at the previous)
-map <Leader>ss F( dia viaPF(p
+" For function parameters, move the current parameter to the left or to the
+" right.
+map <silent> <Plug>MoveTermLeft cxiaF,hcxia:call repeat#set("\<Plug>MoveTermLeft")<CR>
+map <Leader>sh <Plug>MoveTermLeft 
+map <silent> <Plug>MoveTermRight cxiaf,cxia:call repeat#set("\<Plug>MoveTermRight")<CR>
+map <Leader>sl <Plug>MoveTermRight 
+
+map <Leader>dd :TernDef<cr>
+map <Leader>dp :TernDefPreview<cr>
+
+" When in Gstatus jump to the next file in the list and diff it.
+map <silent> <Plug>MoveDownGstatusAndDiff <C-w>l<C-w>kjdv:call repeat#set("\<Plug>MoveDownGstatusAndDiff")<CR>
+map <Leader>gj <Plug>MoveDownGstatusAndDiff 
+map <silent> <Plug>MoveUpGstatusAndDiff <C-w>l<C-w>kkdv:call repeat#set("\<Plug>MoveUpGstatusAndDiff")<CR>
+map <Leader>gk <Plug>MoveUpGstatusAndDiff 
+
+" yank a block by the whole line.
+map <Leader>a} va}Vy
+map <Leader>i} vi}Vy
+
+" Setup a delete out block function that supports repeatability.
+nnoremap <silent> <Plug>DeleteCurlyBlock va}Vd:call repeat#set("\<Plug>DeleteCurlyBlock")<CR>
+map <Leader>da} <Plug>DeleteCurlyBlock 
 
 " Open the current directory (or make new directory)
 map <Leader>ep :e %:h/
 
 " Use gp to select the last pasted region.
 nnoremap <expr> gp '`[' . strpart(getregtype(), 0, 1) . '`]'
+
+" Undo highlighting.
+nnoremap <expr> gs ':nohls<Enter>'
 
 " automatically
 "imap <C-'> <C-O>:let g:AutoPairsFlyMode=1<CR>"<C-O>:let g:AutoPairsFlyMode=0<CR>
@@ -687,7 +726,7 @@ if has("autocmd") && !exists("autocommands_loaded")
   endif
 
   " Set a buffer variable and then only call this one time.
-  autocmd BufReadPost * :call Once('DetectIndent')
+  autocmd BufReadPost * :DetectIndent
 
   "function! s:SynOffInDiffMode()
   "  if &diff
