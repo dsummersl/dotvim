@@ -11,7 +11,6 @@ call neobundle#begin(expand('~/.vim/bundle/'))
 NeoBundleFetch 'Shougo/neobundle.vim'
 
 NeoBundle 'Blackrush/vim-gocode' " Go language autocompletion
-NeoBundle 'Blackrush/vim-gocode' " Go language autocompletion
 NeoBundle 'motus/pig.vim' " Pig syntax highlighting for vim
 NeoBundle 'editorconfig-vim' " 0.1.0 EditorConfig Plugin for Vim -- helps define and maintain consistent coding style
 NeoBundle 'nathanaelkane/vim-indent-guides' " A Vim plugin for visually displaying indent levels in code
@@ -70,7 +69,7 @@ NeoBundle 'jnwhiteh/vim-golang'
 " TODO try https://github.com/roryokane/detectindent
 NeoBundle 'raymond-w-ko/detectindent'
 " close quotes and such automatically
-NeoBundle 'jiangmiao/auto-pairs'
+NeoBundle 'Raimondi/delimitMate'
 "NeoBundle 'tpope/vim-rails'
 NeoBundle 'junegunn/vim-easy-align' " A simple Vim alignment plugin
 NeoBundle 'tpope/vim-eunuch' " eunuch.vim: cp/move/unlink commands
@@ -147,13 +146,13 @@ set nospell spelllang=en_us
 if v:version >= 704
   " vi/ (last search)
   NeoBundle 'kana/vim-textobj-lastpat'
-  if has("gui_running")
-    " base16 color schemes
-    NeoBundle 'altercation/vim-colors-solarized'
-    " A better powerline plugin:
-    NeoBundle 'bling/vim-airline'
-    NeoBundle 'Valloric/YouCompleteMe' " auto completion
-  endif
+  " base16 color schemes
+  NeoBundle 'altercation/vim-colors-solarized'
+  NeoBundle 'chriskempson/base16-vim'
+  " A better powerline plugin:
+  NeoBundle 'bling/vim-airline'
+  NeoBundle 'Valloric/YouCompleteMe' " auto completion
+  let base16colorspace=256
 endif
 
 if v:version >= 703
@@ -162,13 +161,13 @@ if v:version >= 703
   " This f's with neovim
   " NeoBundle 'https://github.com/godlygeek/csapprox.git'
   NeoBundle 'dsummers/gundo.vim.git'
+  NeoBundle 'SirVer/ultisnips.git'
+  " sluice side screen control
+  NeoBundle 'dsummersl/vim-sluice'
   if has("gui_running")
-    " sluice side screen control
-    NeoBundle 'dsummersl/vim-sluice'
     set cryptmethod=blowfish
     " color css colors auto magically - VERY slow on the console.
     NeoBundle 'skammer/vim-css-color'
-    NeoBundle 'guns/ultisnips.git'
   endif
 endif
 "}}}
@@ -191,16 +190,16 @@ NeoBundleCheck
 
 if v:version >= 704
   " I don't really care about trailing spaces so much as the indenting:
+  let g:airline#extensions#whitespace#checks = [ 'indent' ]
   if has('gui_running')
-    let g:airline#extensions#whitespace#checks = [ 'indent' ]
     let g:airline_theme='base16'
-    if !exists('g:airline_symbols')
-      let g:airline_symbols = {}
-    endif
-
-    let g:airline_section_y = airline#util#wrap(airline#parts#ffenc() .' %#__accent_bold_red#%{&expandtab?"_":""}%#__restore__#%{&expandtab?"":"t"}%{&tabstop}',0)
-    set laststatus=2
   endif
+  if !exists('g:airline_symbols')
+    let g:airline_symbols = {}
+  endif
+
+  let g:airline_section_y = airline#util#wrap(airline#parts#ffenc() .' %#__accent_bold_red#%{&expandtab?"_":""}%#__restore__#%{&expandtab?"":"t"}%{&tabstop}',0)
+  set laststatus=2
 
   " show undo history
   nnoremap <F5> :GundoToggle<CR>
@@ -219,26 +218,30 @@ if v:version >= 703
     " set gfn=Liberation\ Mono\ for\ Powerline:h15
     set gfn=Monaco\ for\ Powerline:h13
     "set gfn=Monaco:h15
-    set cursorline
-    " show column markers beyond the 80 char line.
-    set colorcolumn=+1,+2,+3
 
     " unicode symbols
     let g:airline_left_sep = ''
     let g:airline_left_alt_sep = ''
     let g:airline_right_sep = ''
     let g:airline_right_alt_sep = ''
-    let g:airline_symbols.linenr = '␊'
-    let g:airline_symbols.linenr = '␤'
-    let g:airline_symbols.linenr = '¶'
-    let g:airline_symbols.branch = '⎇'
-    let g:airline_symbols.paste = 'ρ'
-    let g:airline_symbols.paste = 'Þ'
-    let g:airline_symbols.paste = '∥'
-    let g:airline_symbols.whitespace = 'Ξ'
 
     colorscheme solarized
+  else
+    colorscheme base16-solarized
   endif
+
+  let g:airline_symbols.linenr = '␊'
+  let g:airline_symbols.linenr = '␤'
+  let g:airline_symbols.linenr = '¶'
+  let g:airline_symbols.branch = '⎇'
+  let g:airline_symbols.paste = 'ρ'
+  let g:airline_symbols.paste = 'Þ'
+  let g:airline_symbols.paste = '∥'
+  let g:airline_symbols.whitespace = 'Ξ'
+
+  set cursorline
+  " show column markers beyond the 80 char line.
+  set colorcolumn=+1,+2,+3
 endif
 " }}}
 " basic options {{{
@@ -266,7 +269,7 @@ set synmaxcol=360
 syntax sync minlines=64
 syntax sync maxlines=128
 
-set diffopt=filler
+set diffopt=filler,iwhite
 set nohls
 set nowrap
 
@@ -305,17 +308,17 @@ set lazyredraw
 "}}}
 " Plugin settings, changes."{{{
 
+" call unite#filters#matcher_default#use(['matcher_fuzzy'])
+" call unite#filters#sorter_default#use(['sorter_rank'])
+" call unite#custom#profile('files', 'filters', ['sorter_rank'])
+" call unite#custom#profile('default', 'source/outline', { 'ignorecase': 1 })
+
 let g:syntastic_always_populate_loc_list = 1
 let g:syntastic_enable_signs = 0
 
 " let g:syntastic_mode_map = { "mode": "active",
 "       \ "active_filetypes": [ "javascript" ],
 "       \ "passive_filetypes": [] }
-
-if has('neovim')
-  let s:python_host_init = 'python -c "import neovim; neovim.start_host()"'
-  let &initpython = s:python_host_init
-endif
 
 let g:indent_guides_enable_on_vim_startup = 0
 let g:indent_guides_color_change_percent = 2
@@ -426,10 +429,7 @@ let g:ycm_key_list_select_completion=['<C-n>', '<Down>']
 let g:ycm_key_list_previous_completion=['<C-p>', '<Up>']
 
 " CtrlP plugin
-nnoremap <C-p> :CtrlP<CR>
-cnoremap <C-p> :CtrlP<CR>
-nnoremap <C-b> :CtrlPMRU<CR>
-cnoremap <C-b> :CtrlPMRU<CR>
+let g:ctrlp_cmd = 'CtrlPMRU'
 
 let g:ctrlp_by_filename = 1
 " use 'r'
@@ -576,7 +576,6 @@ imap <D-a> <Home>
 
 " console copy to buffer
 noremap <Leader>y "*y
-noremap <Leader>yy "*Y
 noremap <Leader>p :set paste<cr>:put *<cr>:set nopaste<cr>
 
 " see all the search matches in a separate window (narrow region)
@@ -617,13 +616,6 @@ nnoremap <expr> gp '`[' . strpart(getregtype(), 0, 1) . '`]'
 
 " Undo highlighting.
 nnoremap <expr> gs ':nohls<Enter>'
-
-" automatically
-"imap <C-'> <C-O>:let g:AutoPairsFlyMode=1<CR>"<C-O>:let g:AutoPairsFlyMode=0<CR>
-"imap <D-;> <C-O>:let g:AutoPairsFlyMode=1<CR>'<C-O>:let g:AutoPairsFlyMode=0<CR>
-imap <C-]> <C-O>:let g:AutoPairsFlyMode=1<CR>]<C-O>:let g:AutoPairsFlyMode=0<CR>
-imap <D-0> <C-O>:let g:AutoPairsFlyMode=1<CR>)<C-O>:let g:AutoPairsFlyMode=0<CR>
-imap <D-]> <C-O>:let g:AutoPairsFlyMode=1<CR>}<C-O>:let g:AutoPairsFlyMode=0<CR>
 
 " toggle Sluice gutters
 nnoremap <F3> :SluiceMacroOff <bar> SluiceToggle<CR>
@@ -719,11 +711,8 @@ endfunction
 if has("autocmd") && !exists("autocommands_loaded")
   let autocommands_loaded = 1
 
-  if has("gui_running")
-    au WinLeave * setlocal nocursorline
-    au WinEnter * setlocal cursorline
-    au BufNewFile,BufReadPost * :call AutoPairsInit()
-  endif
+  au WinLeave * setlocal nocursorline
+  au WinEnter * setlocal cursorline
 
   " Set a buffer variable and then only call this one time.
   autocmd BufReadPost * :DetectIndent
