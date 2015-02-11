@@ -5,6 +5,8 @@ Abolish r{s,se}ult{,s} r{es}ult{}
 Abolish ivm vim
 Abolish improt{,s} import{}
 Abolish ealie{r,st} earlie{}
+Abolish relaly really
+Abolish jsut just
 Abolish tah{t,nk,nks,t,ts} tha{}
 Abolish r{esu,eus}{tl,lt}{,s,ing} r{esu}{lt}{}
 Abolish flase false

@@ -1,26 +1,32 @@
-extends javascript
+# not really needed for coffescript:
+# clearsnippets if If lg lge lgev kv
 
-# not really needed for coffescript, its a no brainer.
-clearsnippets if If
+snippet trace "dump stack trace" !b
+console.log(new Error().stack);
+endsnippet
+
+snippet break "node.js breakpoint" !b
+debugger;$0
+endsnippet
 
 snippet kv "key/value" !b
 $1: $2
 endsnippet
 
-snippet ti "Ti.API.debug statement"
+snippet ti "Ti.API.debug statement" !b
 Ti.API.debug("${1}")$0
 endsnippet
 
 snippet lg "console.log" !b
-console.log($1)
+console.log $1
 endsnippet
 
 snippet lge "console.log variable" !b
-console.log("$1 = #{$1}")$0
+console.log "$1 = #{$1}"$0
 endsnippet
 
 snippet lgev "console.log variable(stringify)" !b
-console.log("$1 = #{JSON.stringify($1)}")$0
+console.log "$1 = #{JSON.stringify($1)}"$0
 endsnippet
 
 snippet mmod "Marionette module" !b

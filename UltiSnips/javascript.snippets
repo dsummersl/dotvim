@@ -53,6 +53,26 @@ it("${1:description}", function($2) {
 });
 endsnippet
 
+snippet if "if()" !b
+if ($1) {$2}
+endsnippet
+
+snippet aft "afterEach()" !b
+after$1(function() {
+	$2
+});
+endsnippet
+
+snippet bef "beforeEach()" !b
+before$1(function() {
+	$2
+});
+endsnippet
+
 snippet exp "expect()" !b
-expect($1).to.$2`!p snip.rv=complete(t[2],['equal','be.an.instanceof','deep.equal'])`($3);$0
+expect($1).to.$2`!p snip.rv=complete(t[2],['equal','be.an.instanceof','deep.equal','to.contain'])`($3);$0
+endsnippet
+
+snippet log "logger.something()" !b
+logger.$1`!p snip.rv=complete(t[1],['info','debug','warn','error'])`($2);$0
 endsnippet
