@@ -22,6 +22,7 @@ NeoBundle 'scrooloose/syntastic' " Syntax checking hacks for vim
 NeoBundle 'mattn/emmet-vim.git'
 NeoBundle 'tomtom/tcomment_vim' " An extensible & universal comment vim-plugin that also handles embedded filetypes
 NeoBundle 'kien/ctrlp.vim.git'
+NeoBundle 'JazzCore/ctrlp-cmatcher'
 NeoBundle 'sukima/xmledit'
 NeoBundle 'vim-scripts/applescript.vim'
 " editing CSV docs, super handily.
@@ -439,6 +440,14 @@ let g:ycm_key_list_select_completion=['<C-n>', '<Down>']
 let g:ycm_key_list_previous_completion=['<C-p>', '<Up>']
 
 " CtrlP plugin
+let g:ctrlp_user_command = 'ag %s -i --nocolor --nogroup --hidden
+      \ --ignore .git
+      \ --ignore .svn
+      \ --ignore .hg
+      \ --ignore .DS_Store
+      \ --ignore "**/*.pyc"
+      \ -g ""'
+
 let g:ctrlp_cmd = 'CtrlPMRU'
 
 let g:ctrlp_by_filename = 1
@@ -456,6 +465,8 @@ let g:ctrlp_custom_ignore = '\.git$\|\.hg$\|\.svn|$'
 set wildignore+=*/*.sw?,*/*.pyc,*/*.class
 " enable the quickfix plugin source:
 let g:ctrlp_extensions=['changes']
+" Use cmatcher for faster matching.
+let g:ctrlp_match_func = {'match' : 'matcher#cmatch' }
 
 " Unite outline mode
 nnoremap <C-T> :Unite outline -smartcase<CR>
