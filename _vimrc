@@ -10,6 +10,9 @@ endif
 call neobundle#begin(expand('~/.vim/bundle/'))
 NeoBundleFetch 'Shougo/neobundle.vim'
 
+NeoBundle 'digitaltoad/vim-jade' " Vim Jade template engine syntax highlighting and indention
+NeoBundle 'mattn/webapi-vim'
+NeoBundle 'mattn/gist-vim' " 4.9   vimscript for gist
 NeoBundle 'Blackrush/vim-gocode' " Go language autocompletion
 NeoBundle 'motus/pig.vim' " Pig syntax highlighting for vim
 NeoBundle 'editorconfig-vim' " 0.1.0 EditorConfig Plugin for Vim -- helps define and maintain consistent coding style
@@ -144,6 +147,7 @@ set nospell spelllang=en_us
 
 " for the latest version I am both gui/console enabled!
 if v:version >= 704
+  let base16colorspace=256
   " vi/ (last search)
   NeoBundle 'kana/vim-textobj-lastpat'
   " base16 color schemes
@@ -151,8 +155,7 @@ if v:version >= 704
   NeoBundle 'chriskempson/base16-vim'
   " A better powerline plugin:
   NeoBundle 'bling/vim-airline'
-  NeoBundle 'Valloric/YouCompleteMe' " auto completion
-  let base16colorspace=256
+  " NeoBundle 'Valloric/YouCompleteMe' " auto completion
 endif
 
 if v:version >= 703
@@ -227,6 +230,11 @@ if v:version >= 703
 
     colorscheme solarized
   else
+    " unicode symbols
+    let g:airline_left_sep = '⮀'
+    let g:airline_left_alt_sep = '⮁'
+    let g:airline_right_sep = '⮂'
+    let g:airline_right_alt_sep = '⮃'
     colorscheme base16-solarized
   endif
 
@@ -269,6 +277,9 @@ set synmaxcol=360
 syntax sync minlines=64
 syntax sync maxlines=128
 
+" So that I can use :put to paste from the * register
+set clipboard=unnamed
+
 set diffopt=filler,iwhite
 set nohls
 set nowrap
@@ -285,8 +296,7 @@ set backspace=2
 set nobackup
 set incsearch
 
-let mapleader='m'
-let maplocalleader='='
+let mapleader='s'
 
 set viminfo='50,\"50,h
 set history=100 " keep 100 lines of command line history
@@ -576,10 +586,10 @@ imap <D-a> <Home>
 
 " console copy to buffer
 noremap <Leader>y "*y
-noremap <Leader>p :set paste<cr>:put *<cr>:set nopaste<cr>
+noremap <Leader>p :set paste<cr>:put<cr>:set nopaste<cr>
 
 " see all the search matches in a separate window (narrow region)
-noremap <Leader>/ :exec "Unite -input=". @/ ." -no-start-insert line"<cr>
+noremap <Leader>/ :exec "Unite -input=". @/ ." -no-start-insert line -horizontal"<cr>
 " unimpaired like mapping for diff option for ignoring whitespace.
 noremap ]oI :set diffopt-=iwhite<cr>
 noremap [oI :set diffopt+=iwhite<cr>
@@ -587,9 +597,9 @@ noremap [oI :set diffopt+=iwhite<cr>
 " For function parameters, move the current parameter to the left or to the
 " right.
 map <silent> <Plug>MoveTermLeft cxiaF,hcxia:call repeat#set("\<Plug>MoveTermLeft")<CR>
-map <Leader>sh <Plug>MoveTermLeft 
+map <Leader>ah <Plug>MoveTermLeft 
 map <silent> <Plug>MoveTermRight cxiaf,cxia:call repeat#set("\<Plug>MoveTermRight")<CR>
-map <Leader>sl <Plug>MoveTermRight 
+map <Leader>al <Plug>MoveTermRight 
 
 map <Leader>dd :TernDef<cr>
 map <Leader>dp :TernDefPreview<cr>
@@ -615,7 +625,7 @@ map <Leader>ep :e %:h/
 nnoremap <expr> gp '`[' . strpart(getregtype(), 0, 1) . '`]'
 
 " Undo highlighting.
-nnoremap <expr> gs ':nohls<Enter>'
+nnoremap <Leader>s :nohls<Enter>
 
 " toggle Sluice gutters
 nnoremap <F3> :SluiceMacroOff <bar> SluiceToggle<CR>
