@@ -210,6 +210,8 @@ if v:version >= 704
   let macvim_skip_colorscheme = 1
 endif
 
+set background=dark
+
 if v:version >= 703
   if has("gui_running")
     set background=light
@@ -322,6 +324,10 @@ set lazyredraw
 " call unite#filters#sorter_default#use(['sorter_rank'])
 " call unite#custom#profile('files', 'filters', ['sorter_rank'])
 " call unite#custom#profile('default', 'source/outline', { 'ignorecase': 1 })
+
+let g:gundo_verbose_graph = 0
+let g:gundo_mirror_graph = 1
+let g:gundo_inline_undo = 1
 
 let g:syntastic_always_populate_loc_list = 1
 let g:syntastic_enable_signs = 0

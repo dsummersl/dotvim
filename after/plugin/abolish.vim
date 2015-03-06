@@ -14,6 +14,7 @@ Abolish pytohn python
 Abolish ahv{e,ing} hav{}
 Abolish lcoal local
 Abolish ofr for
+Abolish fro for
 Abolish adn and
 Abolish instnace{,s} instance{}
 Abolish iwth with
