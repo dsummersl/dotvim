@@ -73,11 +73,11 @@ NeoBundle 'jnwhiteh/vim-golang'
 " automatically detect the indent style of the document
 " TODO try https://github.com/roryokane/detectindent
 NeoBundle 'raymond-w-ko/detectindent'
+NeoBundle 'jiangmiao/auto-pairs' " close quotes and such automatically
 "NeoBundle 'tpope/vim-rails'
 NeoBundle 'junegunn/vim-easy-align' " A simple Vim alignment plugin
 NeoBundle 'tpope/vim-eunuch' " eunuch.vim: cp/move/unlink commands
-" TODO try out this seek plugin (sounds better than the original):
-"   https://github.com/justinmk/vim-sneak
+NeoBundle 'justinmk/vim-sneak' " Sneak is a minimalist, versatile Vim motion plugin that jumps to any location specified by two characters
 NeoBundle 'AndrewRadev/splitjoin.vim' " A vim plugin that simplifies the transition between multiline and single-line code
 NeoBundle 'ervandew/ag' " vim plugin to search using the silver searcher (ag)
 NeoBundle 'tommcdo/vim-exchange' " Easy text exchange operator for Vim
@@ -97,7 +97,7 @@ NeoBundle 'michaeljsmith/vim-indent-object'
 NeoBundle 'kana/vim-textobj-user'
 " select comment with vic or vac.
 NeoBundle 'glts/vim-textobj-comment'
-" vib between any arbitrary object
+" vib between any arbitrary object (vibX where X is the obj)
 NeoBundle 'thinca/vim-textobj-between'
 
 " provide focus of a selected block into its own buffer via 'NR' 
@@ -279,7 +279,7 @@ syntax sync minlines=64
 syntax sync maxlines=128
 
 " So that I can use :put to paste from the * register
-set clipboard=unnamed
+" set clipboard=unnamed
 
 set diffopt=filler,iwhite
 set nohls
@@ -297,7 +297,7 @@ set backspace=2
 set nobackup
 set incsearch
 
-let mapleader='s'
+let mapleader='m'
 
 set viminfo='50,\"50,h
 set history=100 " keep 100 lines of command line history
@@ -578,6 +578,7 @@ cabbrev ag Ag
 
 " when switching between the alternate window, automatically save.
 inoremap <C-^> <C-O>:e #<CR>
+noremap <C-c> :w<CR>
 
 " instead of using this, I use 'gt'
 map <nul> <esc>
@@ -585,6 +586,9 @@ map <nul> <esc>
 " turn off help
 map <f1> <nul>
 imap <f1> <nul>
+
+" quickly get rid of other windows
+map <F12> :only<CR>
 
 " Make Control up/down scroll up/down in the window...even in insert mode.
 imap <C-j> <C-x><C-e>
@@ -596,8 +600,10 @@ map <C-j> <C-w>j<C-w>_
 map <C-k> <C-w>k<C-w>_
 
 " jump to the end of the line
-imap <D-e> <C-O>$
-imap <D-a> <Home>
+" Used iterm2 to map alt-e to <f15>
+imap <F15> <C-O>$
+" Used iterm2 to map alt-a to <f16>
+imap <F16> <Home>
 
 " console copy to buffer
 noremap <Leader>y "*y
@@ -641,6 +647,16 @@ nnoremap <expr> gp '`[' . strpart(getregtype(), 0, 1) . '`]'
 
 " Undo highlighting.
 nnoremap <Leader>s :nohls<Enter>
+
+" automatically
+" In Iterm2 I mapped C-S-' to <f14>
+imap <F14> <C-O>:let g:AutoPairsFlyMode=1<CR>"<C-O>:let g:AutoPairsFlyMode=0<CR>
+" Can't do anything about this - its ^M
+" imap <C-'> <C-O>:let g:AutoPairsFlyMode=1<CR>'<C-O>:let g:AutoPairsFlyMode=0<CR>
+imap <C-]> <C-O>:let g:AutoPairsFlyMode=1<CR>]<C-O>:let g:AutoPairsFlyMode=0<CR>
+" imap <C-0> <C-O>:let g:AutoPairsFlyMode=1<CR>)<C-O>:let g:AutoPairsFlyMode=0<CR>
+" In Iterm2 I mapped C-S-] to <f13>
+imap <F13> <C-O>:let g:AutoPairsFlyMode=1<CR>}<C-O>:let g:AutoPairsFlyMode=0<CR>
 
 " toggle Sluice gutters
 nnoremap <F3> :SluiceMacroOff <bar> SluiceToggle<CR>
@@ -738,6 +754,7 @@ if has("autocmd") && !exists("autocommands_loaded")
 
   au WinLeave * setlocal nocursorline
   au WinEnter * setlocal cursorline
+  au BufNewFile,BufReadPost * :call AutoPairsInit()
 
   " Set a buffer variable and then only call this one time.
   autocmd BufReadPost * :DetectIndent
