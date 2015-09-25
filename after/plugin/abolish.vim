@@ -25,3 +25,4 @@ Abolish unalbe unable
 Abolish reutrn{s,ing} return{}
 Abolish ture true
 Abolish {ch,r}nag{e,ed,es} {}ang{}
+Abolish DOTO TODO
