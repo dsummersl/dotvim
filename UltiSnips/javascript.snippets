@@ -30,7 +30,7 @@ JSON.stringify($1)$0
 endsnippet
 
 snippet fu "function" !w
-function($1) {$2}$0
+function$1($2) {$3}$0
 endsnippet
 
 snippet trace "dump stack trace" !b
@@ -62,19 +62,25 @@ if ($1) {$2}
 endsnippet
 
 snippet aft "afterEach()" !b
-after$1(function() {
+after${1:Each}(function() {
 	$2
 });
 endsnippet
 
+snippet for "for loop" !b
+for(var ${1:i}=0; $1<$2; $1++) {
+	$3
+}
+endsnippet
+
 snippet bef "beforeEach()" !b
-before$1(function() {
+before${1:Each}(function() {
 	$2
 });
 endsnippet
 
 snippet exp "expect()" !b
-expect($1).to.$2`!p snip.rv=complete(t[2],['equal','be.an.instanceof','deep.equal','to.contain'])`($3);$0
+expect($1).to.$2`!p snip.rv=complete(t[2],['equal','be.an.instanceof','deep.equal','contain'])`($3);$0
 endsnippet
 
 snippet log "logger.something()" !b

@@ -1,4 +1,5 @@
 clearsnippets
+priority 1
 
 global !p
 import os
@@ -7,86 +8,13 @@ sys.path.append(os.path.expanduser('~/.vim/python'))
 from ultisniphelpers import *
 endglobal
 
-snippet pe "print var" !b
+snippet pr "print " !b
+print "$1"$0
+endsnippet
+
+snippet pre "print var" !b
 print "$1 = {0}".format($1)
 endsnippet
-
-snippet args "Add default VT style arg parsing." b
-# arg processing boiler plate {{{
-import logging
-import sys
-import platform
-import re
-if (('-h' in sys.argv) or ('--help' in sys.argv) or (len(sys.argv) <= 1)):
-  invocation = '`!v substitute(@%, "^.*\/", "", "")`'
-  if (platform.system() == 'Windows'):
-    invocation = 'python `!v substitute(@%, "^.*\/", "", "")`'
-  print('Usage: '+invocation+' [options] <arguments>')
-  print('''
-${2:Description}
-
-Options:
-  --help,-h                   Display this help message.
-  --log=<LEVEL>               Log level to output (defaults to ERROR).
-  --test                      Run tests for this script.`!p
-# by default don't make a new variable.
-snip.rv = ''
-if t[4]:
-  # show the option for this new option
-  keyval = '--'+ t[3] +'=<VAL>'
-  snip.rv = '\n  '+ keyval +''.rjust(30 - len(keyval) - int(vim.eval('&shiftwidth'))) + 'DESCRIPTION'
-`
-''')
-
-LOGLEVELS = [ 'NOTSET', 'ERROR', 'INFO', 'DEBUG', 'WARN' ]
-# default log level
-LOG = 'ERROR'
-
-# test setting
-TEST=False`!p
-# by default don't make a new variable.
-snip.rv = ''
-if t[4]:
-  # show the variable as long as it exists:
-  snip.rv = '\n'+ t[3].upper() +'=None'
-`
-
-# parse out the program parameters:
-for arg in sys.argv[1:]:
-  m = re.match('--([a-z-]+)=(.*)', arg)
-  if arg == '--test':
-    TEST = True
-  elif m:
-    key = m.group(1)
-    value = m.group(2)
-    if key == 'log':
-      if value not in LOGLEVELS:
-        print "Unknown log level: '%s'" % (value)
-        print "Use one of these: %s" % (repr(LOGLEVELS))
-        sys.exit(1)
-      LOG = value
-    ${4:
-    elif key == '${3:VARIABLE}':
-      $3 = value
-}
-  else:
-    print "Unknown option: '%s'" % (arg)
-    print "Run with -h option to see how to use this script. "
-    sys.exit(1)
-
-logging.basicConfig(level=getattr(logging,LOG))
-logger = logging.getLogger('`!v substitute(substitute(@%, "^.*\/", "", ""), '\.\w\+$', "", "")`')
-
-if TEST:
-  import nose
-  sys.exit(nose.main(argv=['-vvv',__file__]))
-# }}}
-$0
-endsnippet
-
-  snippet '^t' "Example completion snippet" r
-  $1`!p snip.rv=complete(t[1],['one','two','three','overboard'])`
-  endsnippet
 
 snippet rp "report.log" !b
 ${1:self.}report.$2`!p snip.rv=complete(t[2],['doing','done','warn','info','error','debug','fail','prompt','getInput'])`(${4:'${3:message}'}${5})$0

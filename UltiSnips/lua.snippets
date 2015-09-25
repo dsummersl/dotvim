@@ -1,0 +1,15 @@
+global !p
+import os
+import sys
+sys.path.append(os.path.expanduser('~/.vim/python'))
+from ultisniphelpers import *
+endglobal
+
+snippet lg "print()" !w
+print("|$1")$0
+endsnippet
+
+snippet lge "print() variable" !w
+print("|$1 = " .. $1)$0
+endsnippet
+

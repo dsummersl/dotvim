@@ -17,3 +17,12 @@ if ${1:!}exists(${3:'${2:element}'})
   ${5:let ${4:var} = `!p snip.rv = t[2]`}
 endif$0
 endsnippet
+
+snippet lg "print" !b
+echo "$1"$0
+endsnippet
+
+snippet lge "print" !b
+echo "|$1 = ". $1$0
+endsnippet
+
