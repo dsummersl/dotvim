@@ -5,8 +5,12 @@ sys.path.append(os.path.expanduser('~/.vim/python'))
 from ultisniphelpers import *
 endglobal
 
-snippet kv "JSON key/value" !b
-$1: $2$0
+snippet try "try/catch" !b
+try {
+	${VISUAL}
+} catch (${1:e}) {
+	${0:/* handle error */}
+}
 endsnippet
 
 snippet at "attr(k,v)" !b

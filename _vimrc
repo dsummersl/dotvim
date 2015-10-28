@@ -445,7 +445,8 @@ let g:unite_enable_start_insert = 1
 let g:unite_enable_split_vertically=1
 let g:unite_winwidth=60
 
-set rtp+=~/.vim/mysnips
+" let g:UltiSnipsSnippetDirectories = ['UltiSnips']
+" set rtp += ~/.vim/mysnips
 let g:UltiSnipsPythonPath="/usr/local/bin/python"
 let g:UltiSnipsListSnippets='<C-\>'
 let g:UltiSnipsExpandTrigger="<Tab>"
