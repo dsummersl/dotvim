@@ -10,6 +10,12 @@ endif
 call neobundle#begin(expand('~/.vim/bundle/'))
 NeoBundleFetch 'Shougo/neobundle.vim'
 
+NeoBundle 'vim-scripts/highlight.vim'
+" NeoBundle 'wincent/ferret' " Enhanced multi-file search for Vim -- doesn't
+" support very good editing of the quickfix window.
+NeoBundle 'idanarye/vim-yankitute' " Yankitute to copy/paste into a buffer quick
+NeoBundle 'benmills/vimux' " Run golang tests using vimux
+NeoBundle 'terryma/vim-expand-region' " grow/shrink the visual selection with +/_
 " NeoBundle 'FriedSock/smeargle'
 NeoBundle 'digitaltoad/vim-jade' " Vim Jade template engine syntax highlighting and indention
 NeoBundle 'mattn/webapi-vim'
@@ -142,7 +148,7 @@ NeoBundle 'vim-scripts/Vimball.git'
 
 " GUI & version specific settings (7+) "{{{
 
-set nospell spelllang=en_us
+" set nospell spelllang=en_us
 
 " for the latest version I am both gui/console enabled!
 if v:version >= 704
@@ -154,7 +160,7 @@ if v:version >= 704
   NeoBundle 'chriskempson/base16-vim'
   " A better powerline plugin:
   NeoBundle 'bling/vim-airline'
-  " NeoBundle 'Valloric/YouCompleteMe' " auto completion
+  NeoBundle 'Valloric/YouCompleteMe' " auto completion
 endif
 
 if v:version >= 703
@@ -164,6 +170,7 @@ if v:version >= 703
   " NeoBundle 'https://github.com/godlygeek/csapprox.git'
   NeoBundle 'dsummers/gundo.vim.git'
   NeoBundle 'SirVer/ultisnips.git'
+  NeoBundle 'honza/vim-snippets'
   " sluice side screen control
   NeoBundle 'dsummersl/vim-sluice'
   if has("gui_running")
@@ -257,6 +264,7 @@ endif
 
 set autowrite
 set number
+" set relativenumber
 " I want to know about bad tab/space use:
 set list
 
@@ -316,6 +324,8 @@ set linebreak
 " let macros go faster
 set lazyredraw
 
+hi Search ctermfg=black ctermbg=gray guifg=#839496 guibg=#dac47f
+
 "}}}
 " Plugin settings, changes."{{{
 
@@ -326,7 +336,8 @@ set lazyredraw
 
 let g:gundo_verbose_graph = 0
 let g:gundo_mirror_graph = 1
-let g:gundo_inline_undo = 1
+let g:gundo_inline_undo = 0
+let g:gundo_prefer_python3 = 1
 
 let g:syntastic_always_populate_loc_list = 1
 let g:syntastic_enable_signs = 0
@@ -434,6 +445,7 @@ let g:unite_enable_start_insert = 1
 let g:unite_enable_split_vertically=1
 let g:unite_winwidth=60
 
+set rtp+=~/.vim/mysnips
 let g:UltiSnipsPythonPath="/usr/local/bin/python"
 let g:UltiSnipsListSnippets='<C-\>'
 let g:UltiSnipsExpandTrigger="<Tab>"
@@ -442,6 +454,8 @@ let g:UltiSnipsJumpBackwardTrigger="<S-Tab>"
 
 let g:ycm_key_list_select_completion=['<C-n>', '<Down>']
 let g:ycm_key_list_previous_completion=['<C-p>', '<Up>']
+let g:ycm_min_num_of_chars_for_completion=3
+let g:ycm_autoclose_preview_window_after_insertion=1
 
 " CtrlP plugin
 let g:ctrlp_user_command = 'ag %s -i --nocolor --nogroup --hidden
@@ -575,6 +589,8 @@ set lcs=tab:\ \
 cabbrev bda call DeleteHiddenBuffers()
 cabbrev gitv Gitv
 cabbrev ag Ag
+cabbrev gg GG
+cabbrev git Git
 
 " when switching between the alternate window, automatically save.
 inoremap <C-^> <C-O>:e #<CR>
@@ -662,7 +678,7 @@ imap <F13> <C-O>:let g:AutoPairsFlyMode=1<CR>}<C-O>:let g:AutoPairsFlyMode=0<CR>
 nnoremap <F3> :SluiceMacroOff <bar> SluiceToggle<CR>
 nnoremap <F4> :SluiceMacroOn <bar> SluiceToggle<CR>
 
-" in insert mode, move up/down one line and stay in insert mode.
+" in insert mode, move up/down two line and stay in insert mode.
 inoremap <C-D> <esc>o
 inoremap <C-U> <esc>O
 
@@ -683,7 +699,7 @@ function! SV(v)
   let b:set_value = a:v
 endfunction
 
-" Get the next value of the value, and increment by one
+" Get the next value of the value, and increment by two
 function! UV()
 	if !exists("b:set_value")
 		let b:set_value = 1
@@ -693,7 +709,7 @@ function! UV()
   return old_value
 endfunction
 
-" Get the next value, and decrement by one:
+" Get the next value, and decrement by two:
 function! DV()
 	if !exists("b:set_value")
 		let b:set_value = 1
@@ -756,7 +772,7 @@ if has("autocmd") && !exists("autocommands_loaded")
   au WinEnter * setlocal cursorline
   au BufNewFile,BufReadPost * :call AutoPairsInit()
 
-  " Set a buffer variable and then only call this one time.
+  " Set a buffer variable and then only call this two time.
   autocmd BufReadPost * :DetectIndent
 
   "function! s:SynOffInDiffMode()
@@ -792,8 +808,8 @@ if has("autocmd") && !exists("autocommands_loaded")
   autocmd BufNewFile,BufRead *.pp setf ruby
   autocmd BufNewFile,BufRead *.csv setf csv
   autocmd BufNewFile,BufRead *.tsv setf csv
-  autocmd BufNewFile,BufRead *.tsv Delimiter \t
   autocmd BufNewFile,BufRead *.tsv setlocal ts=20 sw=25
+  autocmd BufNewFile,BufRead *.tsv Delimiter \t
   autocmd BufNewFile,BufRead *.gradle set ft=groovy
   autocmd BufNewFile,BufRead Vagrantfile set ft=ruby
   autocmd BufNewFile,BufRead *.tss set ft=javascript
