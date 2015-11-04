@@ -152,11 +152,10 @@ NeoBundle 'vim-scripts/Vimball.git'
 
 " for the latest version I am both gui/console enabled!
 if v:version >= 704
-  let base16colorspace=256
+  let $NVIM_TUI_ENABLE_TRUE_COLOR=1
   " vi/ (last search)
   NeoBundle 'kana/vim-textobj-lastpat'
   " base16 color schemes
-  NeoBundle 'altercation/vim-colors-solarized'
   NeoBundle 'chriskempson/base16-vim'
   " A better powerline plugin:
   NeoBundle 'bling/vim-airline'
@@ -235,16 +234,15 @@ if v:version >= 703
     let g:airline_left_alt_sep = ''
     let g:airline_right_sep = ''
     let g:airline_right_alt_sep = ''
-
-    colorscheme solarized
   else
     " unicode symbols
     let g:airline_left_sep = '⮀'
     let g:airline_left_alt_sep = '⮁'
     let g:airline_right_sep = '⮂'
     let g:airline_right_alt_sep = '⮃'
-    colorscheme base16-solarized
   endif
+
+  colorscheme base16-solarized
 
   let g:airline_symbols.linenr = '␊'
   let g:airline_symbols.linenr = '␤'
@@ -266,7 +264,7 @@ set autowrite
 set number
 " set relativenumber
 " I want to know about bad tab/space use:
-set list
+set nolist
 
 " give a little context
 set scrolloff=1
@@ -346,8 +344,8 @@ let g:syntastic_enable_signs = 0
 "       \ "active_filetypes": [ "javascript" ],
 "       \ "passive_filetypes": [] }
 
-let g:indent_guides_enable_on_vim_startup = 0
-let g:indent_guides_color_change_percent = 2
+let g:indent_guides_enable_on_vim_startup = 1
+let g:indent_guides_color_change_percent = 3
 " don't include tabs in 'soft' tabs - I want to see when things are amiss.
 " let g:indent_guides_soft_pattern = ' '
 
@@ -577,12 +575,14 @@ function! DeleteHiddenBuffers()
 endfunction
 "
 "}}}
-" Setup how in 'list' mode characters for white space and tabs appear"{{{
-" display tags and trailing white spaces in list mode.
-set fillchars+=stl:\ ,stlnc:\ 
-set lcs=tab:\ \ 
-" syntax match MixedIndentation /^\v +(\t+)|\t+( +)/
-" hi MixedIndentation guibg=Red guifg=White ctermbg=Red ctermfg=White
+  " Setup how in 'list' mode characters for white space and tabs appear"{{{
+  " display tags and trailing white spaces in list mode.
+function! ShowMixedIndents()
+  set fillchars+=stl:\ ,stlnc:\ 
+  set lcs=tab:\ \ 
+  syntax match MixedIndentation /^\v +(\t+)|\t+( +)/
+  hi MixedIndentation guibg=Red guifg=White ctermbg=Red ctermfg=White
+endfunction
 "}}}
 " Mappings"{{{
 
@@ -648,8 +648,8 @@ map <silent> <Plug>MoveUpGstatusAndDiff <C-w>l<C-w>kkdv:call repeat#set("\<Plug>
 map <Leader>gk <Plug>MoveUpGstatusAndDiff 
 
 " yank a block by the whole line.
-map <Leader>a} va}Vy
-map <Leader>i} vi}Vy
+map <Leader>ya} va}Vy
+map <Leader>yi} vi}Vy
 
 " Setup a delete out block function that supports repeatability.
 nnoremap <silent> <Plug>DeleteCurlyBlock va}Vd:call repeat#set("\<Plug>DeleteCurlyBlock")<CR>
