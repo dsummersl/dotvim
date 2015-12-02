@@ -20,15 +20,13 @@ NeoBundle 'terryma/vim-expand-region' " grow/shrink the visual selection with +/
 NeoBundle 'digitaltoad/vim-jade' " Vim Jade template engine syntax highlighting and indention
 NeoBundle 'mattn/webapi-vim'
 NeoBundle 'mattn/gist-vim' " 4.9   vimscript for gist
-NeoBundle 'Blackrush/vim-gocode' " Go language autocompletion
-NeoBundle 'motus/pig.vim' " Pig syntax highlighting for vim
 NeoBundle 'editorconfig-vim' " 0.1.0 EditorConfig Plugin for Vim -- helps define and maintain consistent coding style
 NeoBundle 'nathanaelkane/vim-indent-guides' " A Vim plugin for visually displaying indent levels in code
 NeoBundle 'scrooloose/syntastic' " Syntax checking hacks for vim
 " fast HTML tag generation (in insert mode type tr*3CTL-Y, to make three <tr>s
 NeoBundle 'mattn/emmet-vim.git'
 NeoBundle 'tomtom/tcomment_vim' " An extensible & universal comment vim-plugin that also handles embedded filetypes
-NeoBundle 'kien/ctrlp.vim.git'
+NeoBundle 'ctrlvim/ctrlp.vim'
 NeoBundle 'JazzCore/ctrlp-cmatcher'
 NeoBundle 'sukima/xmledit'
 NeoBundle 'vim-scripts/applescript.vim'
@@ -73,8 +71,6 @@ NeoBundle 'Shougo/vimproc'
 NeoBundle 'jeroenbourgois/vim-actionscript'
 " use Cdo to quicklist argument modifications
 NeoBundle 'dsummersl/vim-cdo'
-" Go language autocompletion
-NeoBundle 'jnwhiteh/vim-golang'
 " NeoBundle 'tpope/vim-sleuth'
 " automatically detect the indent style of the document
 " TODO try https://github.com/roryokane/detectindent
@@ -142,6 +138,13 @@ NeoBundle 'vim-scripts/Vimball.git'
 " the surround plugin.
 "NeoBundle 'maxbrunsfeld/vim-yankstack'
 
+if has('nvim')
+  NeoBundle 'kassio/neoterm'
+
+  " easy escape from the terminal
+  tnoremap <Esc> <C-\><C-n>
+endif
+
 " TODO plugins to think about
 " https://github.com/vim-scripts/YankRing.vim
 " https://github.com/chrisbra/color_highlight
@@ -152,6 +155,8 @@ NeoBundle 'vim-scripts/Vimball.git'
 
 " for the latest version I am both gui/console enabled!
 if v:version >= 704
+  set t_Co=256
+  let g:solarized_termcolors=256
   let $NVIM_TUI_ENABLE_TRUE_COLOR=1
   " vi/ (last search)
   NeoBundle 'kana/vim-textobj-lastpat'
@@ -159,7 +164,9 @@ if v:version >= 704
   NeoBundle 'chriskempson/base16-vim'
   " A better powerline plugin:
   NeoBundle 'bling/vim-airline'
+  " NeoBundle 'ryanoasis/vim-devicons'
   NeoBundle 'Valloric/YouCompleteMe' " auto completion
+  NeoBundle 'SirVer/ultisnips.git'
 endif
 
 if v:version >= 703
@@ -168,7 +175,6 @@ if v:version >= 703
   " This f's with neovim
   " NeoBundle 'https://github.com/godlygeek/csapprox.git'
   NeoBundle 'dsummers/gundo.vim.git'
-  NeoBundle 'SirVer/ultisnips.git'
   NeoBundle 'honza/vim-snippets'
   " sluice side screen control
   NeoBundle 'dsummersl/vim-sluice'
@@ -199,27 +205,20 @@ NeoBundleCheck
 if v:version >= 704
   " I don't really care about trailing spaces so much as the indenting:
   let g:airline#extensions#whitespace#checks = [ 'indent' ]
-  if has('gui_running')
-    let g:airline_theme='base16'
-  endif
-  if !exists('g:airline_symbols')
-    let g:airline_symbols = {}
-  endif
-
   let g:airline_section_y = airline#util#wrap(airline#parts#ffenc() .' %#__accent_bold_red#%{&expandtab?"_":""}%#__restore__#%{&expandtab?"":"t"}%{&tabstop}',0)
+  let g:airline_powerline_fonts = 1
   set laststatus=2
 
   " show undo history
   nnoremap <F5> :GundoToggle<CR>
 
   let macvim_skip_colorscheme = 1
+  set background=light
+  colorscheme base16-solarized
 endif
-
-set background=dark
 
 if v:version >= 703
   if has("gui_running")
-    set background=light
     set macmeta
     set anti
     " TODO make the fold highlight non-underlined.
@@ -242,8 +241,9 @@ if v:version >= 703
     let g:airline_right_alt_sep = '⮃'
   endif
 
-  colorscheme base16-solarized
-
+  if !exists('g:airline_symbols')
+    let g:airline_symbols = {}
+  endif
   let g:airline_symbols.linenr = '␊'
   let g:airline_symbols.linenr = '␤'
   let g:airline_symbols.linenr = '¶'
@@ -269,7 +269,6 @@ set nolist
 " give a little context
 set scrolloff=1
 
-set t_Co=256
 set guioptions=egt  " GUI options
 syntax on
 
@@ -345,7 +344,7 @@ let g:syntastic_enable_signs = 0
 "       \ "passive_filetypes": [] }
 
 let g:indent_guides_enable_on_vim_startup = 1
-let g:indent_guides_color_change_percent = 3
+let g:indent_guides_color_change_percent = 2
 " don't include tabs in 'soft' tabs - I want to see when things are amiss.
 " let g:indent_guides_soft_pattern = ' '
 
@@ -499,6 +498,36 @@ nnoremap <F6> :Gvdiff<CR>
 " don't search included files by default - it can be fucked up slow:
 set complete-=i
 
+" correct my bad spelling mistakes
+Abolish teh{,se,m,re} the{}
+Abolish hte{,se,m,re} the{}
+Abolish r{s,se}ult{,s} r{es}ult{}
+Abolish ivm vim
+Abolish improt{,s} import{}
+Abolish ealie{r,st} earlie{}
+Abolish relaly really
+Abolish jsut just
+Abolish tah{t,nk,nks,t,ts} tha{}
+Abolish r{esu,eus}{tl,lt}{,s,ing} r{esu}{lt}{}
+Abolish flase false
+Abolish pytohn python
+Abolish ahv{e,ing} hav{}
+Abolish lcoal local
+Abolish ofr for
+Abolish fro for
+Abolish adn and
+Abolish instnace{,s} instance{}
+Abolish iwth with
+Abolish waht what
+Abolish foudn{,ing,er} found{}
+Abolish {w,sh}oudl {}ould
+Abolish unalbe unable
+Abolish reutrn{s,ing} return{}
+Abolish ture true
+Abolish {ch,r}nag{e,ed,es} {}ang{}
+Abolish DOTO TODO
+Abolish {,de}f{ua}lt{,s} {}f{au}lt{}
+
 " project loading functions"{{{
 
 function! LoadProject(type,directory)
@@ -650,6 +679,8 @@ map <Leader>gk <Plug>MoveUpGstatusAndDiff
 " yank a block by the whole line.
 map <Leader>ya} va}Vy
 map <Leader>yi} vi}Vy
+
+map <Leader>te :TREPLSend<CR>
 
 " Setup a delete out block function that supports repeatability.
 nnoremap <silent> <Plug>DeleteCurlyBlock va}Vd:call repeat#set("\<Plug>DeleteCurlyBlock")<CR>
