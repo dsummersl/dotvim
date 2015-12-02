@@ -442,6 +442,9 @@ let g:unite_enable_start_insert = 1
 let g:unite_enable_split_vertically=1
 let g:unite_winwidth=60
 
+" pathing for abolish
+set rtp+=~/.vim/after
+
 set rtp+=~/.vim/mysnips
 let g:UltiSnipsPythonPath="/usr/local/bin/python"
 let g:UltiSnipsListSnippets='<C-\>'
