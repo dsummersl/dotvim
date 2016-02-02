@@ -10,19 +10,20 @@ endif
 call neobundle#begin(expand('~/.vim/bundle/'))
 NeoBundleFetch 'Shougo/neobundle.vim'
 
+NeoBundle 'vim-scripts/repeatable-motions.vim'
+
 NeoBundle 'vim-scripts/highlight.vim'
 " NeoBundle 'wincent/ferret' " Enhanced multi-file search for Vim -- doesn't
 " support very good editing of the quickfix window.
 NeoBundle 'idanarye/vim-yankitute' " Yankitute to copy/paste into a buffer quick
 NeoBundle 'benmills/vimux' " Run golang tests using vimux
-NeoBundle 'terryma/vim-expand-region' " grow/shrink the visual selection with +/_
 " NeoBundle 'FriedSock/smeargle'
 NeoBundle 'digitaltoad/vim-jade' " Vim Jade template engine syntax highlighting and indention
 NeoBundle 'mattn/webapi-vim'
+NeoBundle 'benekastah/neomake'
 NeoBundle 'mattn/gist-vim' " 4.9   vimscript for gist
 NeoBundle 'editorconfig-vim' " 0.1.0 EditorConfig Plugin for Vim -- helps define and maintain consistent coding style
 NeoBundle 'nathanaelkane/vim-indent-guides' " A Vim plugin for visually displaying indent levels in code
-NeoBundle 'scrooloose/syntastic' " Syntax checking hacks for vim
 " fast HTML tag generation (in insert mode type tr*3CTL-Y, to make three <tr>s
 NeoBundle 'mattn/emmet-vim.git'
 NeoBundle 'tomtom/tcomment_vim' " An extensible & universal comment vim-plugin that also handles embedded filetypes
@@ -60,6 +61,7 @@ NeoBundle 'vim-scripts/visualrepeat'
 NeoBundle 'tpope/vim-abolish'
 " quick find method definitions:
 NeoBundle 'Shougo/unite.vim'
+NeoBundle 'osyo-manga/unite-quickfix'
 " Nice outline of a file's methods within Unite.
 NeoBundle 'Shougo/unite-outline'
 " allow the quicklist to be edited :cw, 'i'. :QFLoad and :LocSave
@@ -210,7 +212,7 @@ if v:version >= 704
   set laststatus=2
 
   " show undo history
-  nnoremap <F5> :GundoToggle<CR>
+  nnoremap <F5> :MundoToggle<CR>
 
   let macvim_skip_colorscheme = 1
   set background=light
@@ -331,17 +333,12 @@ hi Search ctermfg=black ctermbg=gray guifg=#839496 guibg=#dac47f
 " call unite#custom#profile('files', 'filters', ['sorter_rank'])
 " call unite#custom#profile('default', 'source/outline', { 'ignorecase': 1 })
 
-let g:gundo_verbose_graph = 0
-let g:gundo_mirror_graph = 1
-let g:gundo_inline_undo = 0
-let g:gundo_prefer_python3 = 1
+let g:neomake_airline = 1
 
-let g:syntastic_always_populate_loc_list = 1
-let g:syntastic_enable_signs = 0
-
-" let g:syntastic_mode_map = { "mode": "active",
-"       \ "active_filetypes": [ "javascript" ],
-"       \ "passive_filetypes": [] }
+let g:mundo_verbose_graph = 0
+let g:mundo_mirror_graph = 1
+let g:mundo_inline_undo = 0
+let g:mundo_prefer_python3 = 1
 
 let g:indent_guides_enable_on_vim_startup = 1
 let g:indent_guides_color_change_percent = 2
@@ -454,7 +451,6 @@ let g:UltiSnipsJumpBackwardTrigger="<S-Tab>"
 
 let g:ycm_key_list_select_completion=['<C-n>', '<Down>']
 let g:ycm_key_list_previous_completion=['<C-p>', '<Up>']
-let g:ycm_min_num_of_chars_for_completion=3
 let g:ycm_autoclose_preview_window_after_insertion=1
 
 " CtrlP plugin
@@ -474,7 +470,7 @@ let g:ctrlp_regexp = 1
 " use 'd'
 let g:ctrlp_mruf_relative = 1
 let g:ctrlp_use_caching = 1
-let g:ctrlp_clear_cache_on_exit = 0
+let g:ctrlp_clear_cache_on_exit = 1
 let g:ctrlp_cache_dir = $HOME.'/.cache/ctrlp'
 " just use the pwd when finding files.
 let g:ctrlp_working_path_mode = 'w'
@@ -596,6 +592,7 @@ cabbrev git Git
 
 " when switching between the alternate window, automatically save.
 inoremap <C-^> <C-O>:e #<CR>
+" quick autosave
 noremap <C-c> :w<CR>
 
 " instead of using this, I use 'gt'
@@ -728,7 +725,7 @@ endfunction
 " See GG and AA commands:
 function! s:ExecFileType(cmd,search)
   let extension = substitute(expand('%'),'\v^.*\.',"","")
-  exec printf("silent %s",printf(a:cmd,a:search,extension))
+  exec printf("silent %s | Unite quickfix -smartcase -horizontal -no-start-insert",printf(a:cmd,a:search,extension))
 endfunction
 
 command! -nargs=1 GG call s:ExecFileType("Ggrep %s -- '*.%s'",'<args>')
@@ -819,6 +816,7 @@ if has("autocmd") && !exists("autocommands_loaded")
   autocmd BufNewFile,BufRead *.tss set ft=javascript
   autocmd BufNewFile,BufRead *.coffee set ft=coffee
   autocmd BufNewFile,BufRead Cakefile set ft=coffee
+  autocmd BufEnter,BufWritePost *.js Neomake jshint
 
   " make commit messages formatted to 72 columns for optimal reading/history:
   autocmd BufNewFile,BufRead COMMIT_EDITMSG setlocal tw=72 fo=tc spell
