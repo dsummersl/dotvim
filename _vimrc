@@ -12,6 +12,8 @@ NeoBundleFetch 'Shougo/neobundle.vim'
 
 NeoBundle 'vim-scripts/repeatable-motions.vim'
 
+NeoBundle 'rizzatti/dash.vim'
+NeoBundle 'janko-m/vim-test'
 NeoBundle 'vim-scripts/highlight.vim'
 " NeoBundle 'wincent/ferret' " Enhanced multi-file search for Vim -- doesn't
 " support very good editing of the quickfix window.
@@ -77,7 +79,7 @@ NeoBundle 'dsummersl/vim-cdo'
 " automatically detect the indent style of the document
 " TODO try https://github.com/roryokane/detectindent
 NeoBundle 'raymond-w-ko/detectindent'
-NeoBundle 'jiangmiao/auto-pairs' " close quotes and such automatically
+NeoBundle 'Raimondi/delimitMate' " close quotes and such automatically
 "NeoBundle 'tpope/vim-rails'
 NeoBundle 'junegunn/vim-easy-align' " A simple Vim alignment plugin
 NeoBundle 'tpope/vim-eunuch' " eunuch.vim: cp/move/unlink commands
@@ -87,11 +89,11 @@ NeoBundle 'ervandew/ag' " vim plugin to search using the silver searcher (ag)
 NeoBundle 'tommcdo/vim-exchange' " Easy text exchange operator for Vim
 NeoBundle 'nelstrom/vim-visual-star-search' " use #/* in visual mode for searching
 NeoBundle 'bigfish/vim-js-context-coloring', {
-  \ 'build' : {
-  \     'mac' : 'npm install --update',
-  \     'unix' : 'npm install --update',
-  \    },
-  \ }
+      \ 'build' : {
+      \     'mac' : 'npm install --update',
+      \     'unix' : 'npm install --update',
+      \    },
+      \ }
 
 " via (visual inner arg)
 NeoBundle 'vim-scripts/argtextobj.vim'
@@ -144,7 +146,7 @@ if has('nvim')
   NeoBundle 'kassio/neoterm'
 
   " easy escape from the terminal
-  tnoremap <Esc> <C-\><C-n>
+  tnoremap ,tt <C-\><C-n>
 endif
 
 " TODO plugins to think about
@@ -165,7 +167,8 @@ if v:version >= 704
   " base16 color schemes
   NeoBundle 'chriskempson/base16-vim'
   " A better powerline plugin:
-  NeoBundle 'bling/vim-airline'
+  NeoBundle 'vim-airline/vim-airline'
+  NeoBundle 'vim-airline/vim-airline-themes'
   " NeoBundle 'ryanoasis/vim-devicons'
   NeoBundle 'Valloric/YouCompleteMe' " auto completion
   NeoBundle 'SirVer/ultisnips.git'
@@ -209,7 +212,7 @@ if v:version >= 704
   let g:airline#extensions#whitespace#checks = [ 'indent' ]
   let g:airline_section_y = airline#util#wrap(airline#parts#ffenc() .' %#__accent_bold_red#%{&expandtab?"_":""}%#__restore__#%{&expandtab?"":"t"}%{&tabstop}',0)
   let g:airline_powerline_fonts = 1
-  set laststatus=2
+  " set laststatus=2
 
   " show undo history
   nnoremap <F5> :MundoToggle<CR>
@@ -220,6 +223,8 @@ if v:version >= 704
 endif
 
 if v:version >= 703
+  let g:airline_theme = 'papercolor'
+
   if has("gui_running")
     set macmeta
     set anti
@@ -323,10 +328,12 @@ set linebreak
 " let macros go faster
 set lazyredraw
 
-hi Search ctermfg=black ctermbg=gray guifg=#839496 guibg=#dac47f
-
 "}}}
 " Plugin settings, changes."{{{
+
+let delimitMate_expand_cr = 2
+let delimitMate_jump_expansion = 1
+let delimitMate_expand_space = 1
 
 " call unite#filters#matcher_default#use(['matcher_fuzzy'])
 " call unite#filters#sorter_default#use(['sorter_rank'])
@@ -334,6 +341,7 @@ hi Search ctermfg=black ctermbg=gray guifg=#839496 guibg=#dac47f
 " call unite#custom#profile('default', 'source/outline', { 'ignorecase': 1 })
 
 let g:neomake_airline = 1
+" let g:neomake_javascript_enabled_makers = [ 'jshint' ]
 
 let g:mundo_verbose_graph = 0
 let g:mundo_mirror_graph = 1
@@ -341,7 +349,7 @@ let g:mundo_inline_undo = 0
 let g:mundo_prefer_python3 = 1
 
 let g:indent_guides_enable_on_vim_startup = 1
-let g:indent_guides_color_change_percent = 2
+let g:indent_guides_color_change_percent = 4
 " don't include tabs in 'soft' tabs - I want to see when things are amiss.
 " let g:indent_guides_soft_pattern = ' '
 
@@ -493,9 +501,11 @@ let g:sluice_default_macromode=1
 
 " show diff with git
 nnoremap <F6> :Gvdiff<CR>
+nnoremap <F7> :TestLast<CR>
 
 " don't search included files by default - it can be fucked up slow:
 set complete-=i
+set completeopt-=preview
 
 " project loading functions"{{{
 
@@ -608,16 +618,13 @@ map <F12> :only<CR>
 " Make Control up/down scroll up/down in the window...even in insert mode.
 imap <C-j> <C-x><C-e>
 imap <C-k> <C-x><C-y>
-
-" Mappings that I have been using
-" for moving between windows with ease:
 map <C-j> <C-w>j<C-w>_
 map <C-k> <C-w>k<C-w>_
 
 " jump to the end of the line
-" Used iterm2 to map alt-e to <f15>
+" Used iterm2 to map shift-ctrl-e to <f15>
 imap <F15> <C-O>$
-" Used iterm2 to map alt-a to <f16>
+" Used iterm2 to map shift-ctrl-a to <f16>
 imap <F16> <Home>
 
 " console copy to buffer
@@ -625,7 +632,7 @@ noremap <Leader>y "*y
 noremap <Leader>p :set paste<cr>:put<cr>:set nopaste<cr>
 
 " see all the search matches in a separate window (narrow region)
-noremap <Leader>/ :exec "Unite -input=". @/ ." -no-start-insert line -horizontal"<cr>
+noremap <Leader>/ :exec "Unite -input=". escape(@/,' ') ." -no-start-insert line -horizontal"<cr>
 " unimpaired like mapping for diff option for ignoring whitespace.
 noremap ]oI :set diffopt-=iwhite<cr>
 noremap [oI :set diffopt+=iwhite<cr>
@@ -664,16 +671,6 @@ nnoremap <expr> gp '`[' . strpart(getregtype(), 0, 1) . '`]'
 
 " Undo highlighting.
 nnoremap <Leader>s :nohls<Enter>
-
-" automatically
-" In Iterm2 I mapped C-S-' to <f14>
-imap <F14> <C-O>:let g:AutoPairsFlyMode=1<CR>"<C-O>:let g:AutoPairsFlyMode=0<CR>
-" Can't do anything about this - its ^M
-" imap <C-'> <C-O>:let g:AutoPairsFlyMode=1<CR>'<C-O>:let g:AutoPairsFlyMode=0<CR>
-imap <C-]> <C-O>:let g:AutoPairsFlyMode=1<CR>]<C-O>:let g:AutoPairsFlyMode=0<CR>
-" imap <C-0> <C-O>:let g:AutoPairsFlyMode=1<CR>)<C-O>:let g:AutoPairsFlyMode=0<CR>
-" In Iterm2 I mapped C-S-] to <f13>
-imap <F13> <C-O>:let g:AutoPairsFlyMode=1<CR>}<C-O>:let g:AutoPairsFlyMode=0<CR>
 
 " toggle Sluice gutters
 nnoremap <F3> :SluiceMacroOff <bar> SluiceToggle<CR>
@@ -720,14 +717,23 @@ function! DV()
   return old_value
 endfunction
 
+function! s:UniteQuickFix()
+  Unite quickfix -smartcase -horizontal -no-start-insert
+endfunction
+function! s:UniteLocationList()
+  Unite location_list -smartcase -horizontal -no-start-insert
+endfunction
 " Execute something on all files of the same kind:
 "
 " See GG and AA commands:
 function! s:ExecFileType(cmd,search)
   let extension = substitute(expand('%'),'\v^.*\.',"","")
-  exec printf("silent %s | Unite quickfix -smartcase -horizontal -no-start-insert",printf(a:cmd,a:search,extension))
+  exec printf("silent %s",printf(a:cmd,a:search,extension))
+  call s:UniteQuickFix()
 endfunction
 
+command! -nargs=0 GCL call s:UniteQuickFix()
+command! -nargs=0 GLL call s:UniteLocationList()
 command! -nargs=1 GG call s:ExecFileType("Ggrep %s -- '*.%s'",'<args>')
 command! -nargs=1 AA call s:ExecFileType("Ag %s **/*.%s",'<args>')
 command! -nargs=1 AA call s:ExecFileType("Ag %s **/*.%s",'<args>')
@@ -771,7 +777,6 @@ if has("autocmd") && !exists("autocommands_loaded")
 
   au WinLeave * setlocal nocursorline
   au WinEnter * setlocal cursorline
-  au BufNewFile,BufReadPost * :call AutoPairsInit()
 
   " Set a buffer variable and then only call this two time.
   autocmd BufReadPost * :DetectIndent
@@ -802,6 +807,7 @@ if has("autocmd") && !exists("autocommands_loaded")
   autocmd FileType groovy setlocal comments=sO:*\ -,mO:*\ \ ,exO:*/,s1:/*,mb:*,ex:*/,://,b:#,:%,:XCOMM,n:>,fb:-
   autocmd FileType groovy setlocal fo=croq
 
+  autocmd BufNewFile,BufRead * hi Search ctermfg=black ctermbg=gray guifg=#697b7d guibg=#839496
   autocmd BufNewFile,BufRead *.rabl setf eruby
   autocmd BufNewFile,BufRead *.eco setf eruby
   autocmd BufNewFile,BufRead *.md setf markdown
@@ -816,7 +822,7 @@ if has("autocmd") && !exists("autocommands_loaded")
   autocmd BufNewFile,BufRead *.tss set ft=javascript
   autocmd BufNewFile,BufRead *.coffee set ft=coffee
   autocmd BufNewFile,BufRead Cakefile set ft=coffee
-  autocmd BufEnter,BufWritePost *.js Neomake jshint
+  autocmd BufWritePost * Neomake
 
   " make commit messages formatted to 72 columns for optimal reading/history:
   autocmd BufNewFile,BufRead COMMIT_EDITMSG setlocal tw=72 fo=tc spell
