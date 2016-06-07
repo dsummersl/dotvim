@@ -159,6 +159,9 @@ endif
 
 " for the latest version I am both gui/console enabled!
 if v:version >= 704
+
+  set termguicolors
+
   set t_Co=256
   let g:solarized_termcolors=256
   let $NVIM_TUI_ENABLE_TRUE_COLOR=1
@@ -309,7 +312,10 @@ set backspace=2
 set nobackup
 set incsearch
 
-let mapleader='m'
+" file expansion in ex mode, caseless:
+set wildignorecase
+
+let mapleader='M'
 
 set viminfo='50,\"50,h
 set history=100 " keep 100 lines of command line history
@@ -470,7 +476,7 @@ let g:ctrlp_user_command = 'ag %s -i --nocolor --nogroup --hidden
       \ --ignore "**/*.pyc"
       \ -g ""'
 
-let g:ctrlp_cmd = 'CtrlPMRU'
+let g:ctrlp_cmd = 'CtrlPLastMode'
 
 let g:ctrlp_by_filename = 1
 " use 'r'
@@ -491,9 +497,9 @@ let g:ctrlp_extensions=['changes']
 let g:ctrlp_match_func = {'match' : 'matcher#cmatch' }
 
 " Unite outline mode
-nnoremap <C-T> :Unite outline -smartcase<CR>
+nnoremap <C-T> :Unite -direction=dynamicbottom outline -smartcase -auto-highlight<CR>
 " look into the current directory
-nnoremap <Leader>t :UniteWithBufferDir directory<CR>
+nnoremap <Leader>t :UniteWithBufferDir -direction=dynamicbottom directory<CR>
 
 let g:tagbar_left = 1
 
@@ -594,6 +600,22 @@ endfunction
 "}}}
 " Mappings"{{{
 
+"replace 'f' with 1-char Sneak
+nmap f <Plug>Sneak_f
+nmap F <Plug>Sneak_F
+xmap f <Plug>Sneak_f
+xmap F <Plug>Sneak_F
+omap f <Plug>Sneak_f
+omap F <Plug>Sneak_F
+
+"replace 't' with 1-char Sneak
+nmap t <Plug>Sneak_t
+nmap T <Plug>Sneak_T
+xmap t <Plug>Sneak_t
+xmap T <Plug>Sneak_T
+omap t <Plug>Sneak_t
+omap T <Plug>Sneak_T
+
 cabbrev bda call DeleteHiddenBuffers()
 cabbrev gitv Gitv
 cabbrev ag Ag
@@ -632,12 +654,12 @@ noremap <Leader>y "*y
 noremap <Leader>p :set paste<cr>:put<cr>:set nopaste<cr>
 
 " see all the search matches in a separate window (narrow region)
-noremap <Leader>/ :exec "Unite -input=". escape(@/,' ') ." -no-start-insert line -horizontal"<cr>
+noremap <Leader>/ :exec "Unite -auto-highlight -direction=dynamicbottom -input=". escape(@/,' ') ." -no-start-insert line"<cr>
 " unimpaired like mapping for diff option for ignoring whitespace.
 noremap ]oI :set diffopt-=iwhite<cr>
 noremap [oI :set diffopt+=iwhite<cr>
 
-" For function parameters, move the current parameter to the left or to the
+" For function arguments, move the current argument (parameter) to the left or to the
 " right.
 map <silent> <Plug>MoveTermLeft cxiaF,hcxia:call repeat#set("\<Plug>MoveTermLeft")<CR>
 map <Leader>ah <Plug>MoveTermLeft 
@@ -718,10 +740,10 @@ function! DV()
 endfunction
 
 function! s:UniteQuickFix()
-  Unite quickfix -smartcase -horizontal -no-start-insert
+  Unite quickfix -smartcase -direction=dynamicbottom -no-start-insert -auto-preview -auto-highlight
 endfunction
 function! s:UniteLocationList()
-  Unite location_list -smartcase -horizontal -no-start-insert
+  Unite location_list -smartcase -direction=dynamicbottom -no-start-insert -auto-preview -auto-highlight
 endfunction
 " Execute something on all files of the same kind:
 "
@@ -736,7 +758,8 @@ command! -nargs=0 GCL call s:UniteQuickFix()
 command! -nargs=0 GLL call s:UniteLocationList()
 command! -nargs=1 GG call s:ExecFileType("Ggrep %s -- '*.%s'",'<args>')
 command! -nargs=1 AA call s:ExecFileType("Ag %s **/*.%s",'<args>')
-command! -nargs=1 AA call s:ExecFileType("Ag %s **/*.%s",'<args>')
+command! -nargs=1 Gg exec "Ggrep ". '<args>' | GCL
+command! -nargs=1 Aa exec "Ag ". '<args>' | GCL
 
 " TODO automate this diffsplit two matching regions
 " let @m=j?<<<jV/^===k"aynjV/^>>>k"by:sp belowggdG"bp:vert diffs aboveggdG"apgglgg:diffupdate=
@@ -807,7 +830,7 @@ if has("autocmd") && !exists("autocommands_loaded")
   autocmd FileType groovy setlocal comments=sO:*\ -,mO:*\ \ ,exO:*/,s1:/*,mb:*,ex:*/,://,b:#,:%,:XCOMM,n:>,fb:-
   autocmd FileType groovy setlocal fo=croq
 
-  autocmd BufNewFile,BufRead * hi Search ctermfg=black ctermbg=gray guifg=#697b7d guibg=#839496
+  autocmd BufNewFile,BufRead * hi Search ctermfg=black ctermbg=gray guifg=#697b7d guibg=#93a4a6
   autocmd BufNewFile,BufRead *.rabl setf eruby
   autocmd BufNewFile,BufRead *.eco setf eruby
   autocmd BufNewFile,BufRead *.md setf markdown
