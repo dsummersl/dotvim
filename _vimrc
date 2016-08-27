@@ -193,11 +193,7 @@ if v:version >= 703
   NeoBundle 'honza/vim-snippets'
   " sluice side screen control
   NeoBundle 'dsummersl/vim-sluice'
-  if has("gui_running")
-    set cryptmethod=blowfish
-    " color css colors auto magically - VERY slow on the console.
-    NeoBundle 'skammer/vim-css-color'
-  endif
+  NeoBundle 'ap/vim-css-color'
 endif
 "}}}
 
