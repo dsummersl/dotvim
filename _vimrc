@@ -12,6 +12,9 @@ NeoBundleFetch 'Shougo/neobundle.vim'
 
 NeoBundle 'vim-scripts/repeatable-motions.vim'
 
+" A colorscheme that supports [ob and ]ob
+NeoBundle 'frankier/neovim-colors-solarized-truecolor-only'
+
 NeoBundle 'leafgarland/typescript-vim'
 NeoBundle 'rizzatti/dash.vim'
 NeoBundle 'janko-m/vim-test'
@@ -173,8 +176,6 @@ if v:version >= 704
   let $NVIM_TUI_ENABLE_TRUE_COLOR=1
   " vi/ (last search)
   NeoBundle 'kana/vim-textobj-lastpat'
-  " base16 color schemes
-  NeoBundle 'chriskempson/base16-vim'
   " A better powerline plugin:
   NeoBundle 'vim-airline/vim-airline'
   NeoBundle 'vim-airline/vim-airline-themes'
@@ -228,7 +229,7 @@ if v:version >= 704
 
   let macvim_skip_colorscheme = 1
   set background=light
-  colorscheme base16-solarized-light
+  colorscheme solarized
 endif
 
 if v:version >= 703
