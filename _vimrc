@@ -12,8 +12,11 @@ NeoBundleFetch 'Shougo/neobundle.vim'
 
 NeoBundle 'vim-scripts/repeatable-motions.vim'
 
+NeoBundle 'leafgarland/typescript-vim'
 NeoBundle 'rizzatti/dash.vim'
 NeoBundle 'janko-m/vim-test'
+" Lines to quickly resize splits (VSSplit)
+NeoBundle 'wellle/visual-split.vim'
 NeoBundle 'vim-scripts/highlight.vim'
 " NeoBundle 'wincent/ferret' " Enhanced multi-file search for Vim -- doesn't
 " support very good editing of the quickfix window.
@@ -42,7 +45,8 @@ NeoBundle 'dsummersl/vim-utf2ascii'
 NeoBundle 'tpope/vim-fugitive.git'
 " snippets
 NeoBundle 'derekwyatt/vim-scala.git'
-NeoBundle 'kchmck/vim-coffee-script'
+NeoBundle 'rust-lang/rust.vim'
+" NeoBundle 'kchmck/vim-coffee-script'
 " surround things with quotes, etc (csw - surround word)
 NeoBundle 'tpope/vim-surround.git'
 " TODO this? Its a dependency for a number of libs?
@@ -101,6 +105,8 @@ NeoBundle 'vim-scripts/argtextobj.vim'
 NeoBundle 'michaeljsmith/vim-indent-object'
 " user defined textobj implementations
 NeoBundle 'kana/vim-textobj-user'
+" vay viy to select syntax blocks
+NeoBundle 'kana/vim-textobj-syntax'
 " select comment with vic or vac.
 NeoBundle 'glts/vim-textobj-comment'
 " vib between any arbitrary object (vibX where X is the obj)
@@ -131,7 +137,7 @@ NeoBundle 'dsummersl/vimunit'
 " python omni completion
 " Its annoying b/c it automatically appears when I only want it when I
 " explicitly ask for it. Maybe there is a way to configure it that way:
-"NeoBundle 'davidhalter/jedi-vim'
+NeoBundle 'davidhalter/jedi-vim'
 
 " Probably going to remove these:
 " colorize ansi escaped text (console dumps)
@@ -142,12 +148,12 @@ NeoBundle 'vim-scripts/Vimball.git'
 " the surround plugin.
 "NeoBundle 'maxbrunsfeld/vim-yankstack'
 
-if has('nvim')
-  NeoBundle 'kassio/neoterm'
-
-  " easy escape from the terminal
-  tnoremap ,tt <C-\><C-n>
-endif
+" if has('nvim')
+"   NeoBundle 'kassio/neoterm'
+"
+"   " easy escape from the terminal
+"   tnoremap ,tt <C-\><C-n>
+" endif
 
 " TODO plugins to think about
 " https://github.com/vim-scripts/YankRing.vim
@@ -222,7 +228,7 @@ if v:version >= 704
 
   let macvim_skip_colorscheme = 1
   set background=light
-  colorscheme base16-solarized
+  colorscheme base16-solarized-light
 endif
 
 if v:version >= 703
@@ -480,7 +486,7 @@ let g:ctrlp_cmd = 'CtrlPLastMode'
 
 let g:ctrlp_by_filename = 1
 " use 'r'
-let g:ctrlp_regexp = 1
+let g:ctrlp_regexp = 0
 " use 'd'
 let g:ctrlp_mruf_relative = 1
 let g:ctrlp_use_caching = 1
@@ -626,6 +632,7 @@ cabbrev git Git
 inoremap <C-^> <C-O>:e #<CR>
 " quick autosave
 noremap <C-c> :w<CR>
+" inoremap <C-c> <Esc>
 
 " instead of using this, I use 'gt'
 map <nul> <esc>
@@ -820,6 +827,7 @@ if has("autocmd") && !exists("autocommands_loaded")
   autocmd FileType ruby,eruby setlocal omnifunc=rubycomplete#Complete
   autocmd FileType ruby,eruby setlocal fdm&
   autocmd FileType python     setlocal omnifunc=pythoncomplete#Complete
+  autocmd FileType python     setlocal ts=4
   autocmd FileType sh  setlocal omnifunc=syntaxcomplete#Complete
   autocmd FileType vim setlocal omnifunc=syntaxcomplete#Complete
 

@@ -31,45 +31,17 @@ snippet th "$this->" !w
 $this->$0
 endsnippet
 
-snippet pve "print var_export" !b
-print "\n\n $1: ". var_export(\$$1,true) ."\n\n";
-endsnippet
-
-snippet ppre "print w/ <pre> tags." !b
-print "<pre>". $1 ."</pre>";$0
-endsnippet
-
 #snippet erno "Print VT error number line (using register i)" !b
 #reportError(${1:'err:'. }get_backtrace_string());$0
 # * @author ${5:`!v g:snips_author`}
 #endsnippet
 
-snippet rp "VT report" !b
-reportError("${1}"$2);$0
-endsnippet
-
-snippet rpe "VT report a variable" !b
-reportError("${1:var}: ". $$1);$0
-endsnippet
-
-snippet rpev "VT report a variable w/ var_export" !b
-reportError("|$1: ". var_export($$1,true));$0
-endsnippet
-
-snippet pp "VT report" !b
-print "${1}\n"$2;$0
-endsnippet
-
-snippet ppe "VT report a variable" !b
+snippet lge "VT report a variable" !b
 print "${1:var}: ". $$1 ."\n";$0
 endsnippet
 
-snippet ppev "VT report a variable w/ var_export" !b
+snippet lgev "VT report a variable w/ var_export" !b
 print "${1:var}: ". var_export($$1,true) ."\n";$0
-endsnippet
-
-snippet trace "VT back trace" !b
-reportError("Trace","",true);
 endsnippet
 
 ## Snippets from SnipMate, taken from

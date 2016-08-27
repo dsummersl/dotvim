@@ -1,4 +1,5 @@
 extends html
+extends ruby
 extends javascript
 
 snippet vl "<% %> tags" !w
@@ -9,4 +10,12 @@ snippet blk "<%%> w/ end " !w
 <%$1 %>
 $0
 <% end %>
+endsnippet
+
+snippet lg "Log" !w
+<!-- $1 -->$0
+endsnippet
+
+snippet lge "Log variable" !w
+<!-- $1 = <%= $1 %> -->$0
 endsnippet
