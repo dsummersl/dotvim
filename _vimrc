@@ -2,9 +2,23 @@
 
 let g:plug_url_format="git@github.com:%s.git"
 so ~/.vim/autoload/plug.vim
-
 call plug#begin()
-Plug 'VundleVim/Vundle.vim'
+
+" git
+Plug 'tpope/vim-fugitive'
+" fix spelling errors
+Plug 'tpope/vim-abolish'
+" surround things with quotes, etc (csw - surround word)
+Plug 'tpope/vim-surround'
+" many additional mappings for ]q, etc
+Plug 'tpope/vim-unimpaired'
+" awesome: makes the surround plugin work with the '.' keys (repeatability!)
+Plug 'tpope/vim-repeat'
+Plug 'tpope/vim-eunuch' " eunuch.vim: cp/move/unlink commands
+"Plug 'tpope/vim-rails'
+" Plug 'tpope/vim-sleuth'
+" run make in the background. (used by vim-tags)
+" Plug 'tpope/vim-dispatch'
 
 Plug 'vim-scripts/repeatable-motions.vim'
 Plug 'dsummersl/conoline.vim', { 'branch': 'monitor_bg' }
@@ -12,7 +26,8 @@ Plug 'dsummersl/conoline.vim', { 'branch': 'monitor_bg' }
 " A colorscheme that supports [ob and ]ob
 Plug 'frankier/neovim-colors-solarized-truecolor-only'
 
-Plug 'leafgarland/typescript-vim'
+Plug 'leafgarland/typescript-vim', { 'for': 'typescript' }
+
 Plug 'rizzatti/dash.vim'
 Plug 'janko-m/vim-test'
 " Lines to quickly resize splits (VSSplit)
@@ -34,37 +49,25 @@ Plug 'mattn/emmet-vim'
 Plug 'tomtom/tcomment_vim' " An extensible & universal comment vim-plugin that also handles embedded filetypes
 Plug 'ctrlpvim/ctrlp.vim'
 Plug 'JazzCore/ctrlp-cmatcher', { 'do': 'CFLAGS=-Qunused-arguments CPPFLAGS=-Qunused-arguments ./install.sh' }
-Plug 'sukima/xmledit'
-Plug 'vim-scripts/applescript.vim'
+Plug 'vim-scripts/applescript.vim', { 'for': 'applescript' }
 " editing CSV docs, super handily.
 " TODO update this repo so that people know to look for chrisba
 Plug 'dsummersl/wikia-csv'
 " Plug 'chrisba/csv.vim'
 " simple utf2ascii function.
 Plug 'dsummersl/vim-utf2ascii'
-Plug 'tpope/vim-fugitive'
 " snippets
-Plug 'derekwyatt/vim-scala'
-Plug 'rust-lang/rust.vim'
+Plug 'derekwyatt/vim-scala', { 'for': 'scala' }
+Plug 'rust-lang/rust.vim', { 'for': 'rust' }
 " Plug 'kchmck/vim-coffee-script'
-" surround things with quotes, etc (csw - surround word)
-Plug 'tpope/vim-surround'
 " TODO this? Its a dependency for a number of libs?
 Plug 'PProvost/vim-ps1'
 " TODO this? Its a dependency for a number of libs?
 Plug 'L9'
 Plug 'vim-scripts/LargeFile'
 Plug 'vim-scripts/genutils'
-" TODO do I need both matchit and xmledit?
-Plug 'vim-scripts/matchit.zip'
-" many additional mappings for ]q, etc
-Plug 'tpope/vim-unimpaired'
 Plug 'gregsexton/gitv'
-" awesome: makes the surround plugin work with the '.' keys (repeatability!)
-Plug 'tpope/vim-repeat'
 Plug 'vim-scripts/visualrepeat'
-" fix spelling errors
-Plug 'tpope/vim-abolish'
 " quick find method definitions:
 Plug 'Shougo/unite.vim'
 Plug 'osyo-manga/unite-quickfix'
@@ -77,27 +80,16 @@ Plug 'marijnh/tern_for_vim'
 Plug 'Shougo/vimproc'
 " syntax hilighting for actionscript
 Plug 'jeroenbourgois/vim-actionscript'
-" use Cdo to quicklist argument modifications
-Plug 'dsummersl/vim-cdo'
-" Plug 'tpope/vim-sleuth'
 " automatically detect the indent style of the document
 " TODO try https://github.com/roryokane/detectindent
 Plug 'raymond-w-ko/detectindent'
 Plug 'Raimondi/delimitMate' " close quotes and such automatically
-"Plug 'tpope/vim-rails'
 Plug 'junegunn/vim-easy-align' " A simple Vim alignment plugin
-Plug 'tpope/vim-eunuch' " eunuch.vim: cp/move/unlink commands
 Plug 'justinmk/vim-sneak' " Sneak is a minimalist, versatile Vim motion plugin that jumps to any location specified by two characters
-Plug 'AndrewRadev/splitjoin.vim' " A vim plugin that simplifies the transition between multiline and single-line code
 Plug 'ervandew/ag' " vim plugin to search using the silver searcher (ag)
 Plug 'tommcdo/vim-exchange' " Easy text exchange operator for Vim
 Plug 'nelstrom/vim-visual-star-search' " use #/* in visual mode for searching
-Plug 'bigfish/vim-js-context-coloring', {
-      \ 'build' : {
-      \     'mac' : 'npm install --update',
-      \     'unix' : 'npm install --update',
-      \    },
-      \ }
+Plug 'bigfish/vim-js-context-coloring', { 'do': 'npm install --update' }
 
 " via (visual inner arg)
 Plug 'vim-scripts/argtextobj.vim'
@@ -114,15 +106,12 @@ Plug 'thinca/vim-textobj-between'
 
 " Easily toggle boolean values:
 Plug 'AndrewRadev/switch.vim'
-" run make in the background. (used by vim-tags)
-Plug 'tpope/vim-dispatch'
 " utility functions
 " a hash implementation - make it easy to compute the hash of a string in the
 " editor (ie, yank a block, then do :echo _#hash(@") )
 Plug 'dsummersl/vus'
 " unit testing for vim.
-Plug 'dsummersl/vimunit'
-"Plug 'ivanov/vim-ipython' " A two-way integration between Vim and IPython 0.11+
+Plug 'dsummersl/vimunit', { 'on': 'VURunAllTests' }
 
 " TODO jcfaria/Vim-R-plugin
 " TODO https://github.com/vim-scripts/PatternsOnText - delete/replace non
@@ -133,37 +122,18 @@ Plug 'dsummersl/vimunit'
 " python omni completion
 " Its annoying b/c it automatically appears when I only want it when I
 " explicitly ask for it. Maybe there is a way to configure it that way:
-Plug 'davidhalter/jedi-vim'
+Plug 'davidhalter/jedi-vim', { 'for': 'python' }
 
 " Probably going to remove these:
 " colorize ansi escaped text (console dumps)
-Plug 'vim-scripts/AnsiEsc.vim'
+Plug 'vim-scripts/AnsiEsc.vim', { 'on': 'AnsiEsc' }
 Plug 'vim-scripts/cecutil'
-Plug 'vim-scripts/Vimball'
-" TODO something like yankstack sounds nice but this breaks the vS feature of
-" the surround plugin.
-"Plug 'maxbrunsfeld/vim-yankstack'
-
-" if has('nvim')
-"   Plug 'kassio/neoterm'
-"
-"   " easy escape from the terminal
-"   tnoremap ,tt <C-\><C-n>
-" endif
-
-" TODO plugins to think about
-" https://github.com/vim-scripts/YankRing.vim
-" https://github.com/chrisbra/color_highlight
 
 " GUI & version specific settings (7+) "{{{
 
-" set nospell spelllang=en_us
-
 " for the latest version I am both gui/console enabled!
 if v:version >= 704
-
   set termguicolors
-
   set t_Co=256
   let g:solarized_termcolors=256
   let $NVIM_TUI_ENABLE_TRUE_COLOR=1
@@ -182,7 +152,7 @@ if v:version >= 703
   set undodir=~/.vim/undo
   " This f's with neovim
   " Plug 'https://github.com/godlygeek/csapprox'
-  Plug 'dsummersl/gundo.vim'
+  Plug 'dsummersl/gundo.vim', { 'branch': 'mundomaster' }
   Plug 'honza/vim-snippets'
   " sluice side screen control
   Plug 'dsummersl/vim-sluice'
@@ -190,19 +160,7 @@ if v:version >= 703
 endif
 "}}}
 
-"  my own lame SVN mappings:
-" Plug "git://github.com/dsummersl/svntools"
-"  this is no longer maintained by me:
-" "git://github.com/motemen/git-vim"
-" "git://github.com/dsummersl/lookupfile-grep"
-"  don't like how the tags are displayed. Its kinda annoying.
-" "git://github.com/kshenoy/vim-signature"
-
 call plug#end()
-
-filetype on
-filetype indent on    " Enable filetype-specific indenting
-filetype plugin on    " Enable filetype-specific plugins
 
 if v:version >= 704
   " I don't really care about trailing spaces so much as the indenting:
