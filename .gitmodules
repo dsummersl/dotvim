@@ -1,6 +1,3 @@
 [submodule "phpctags"]
 	path = phpctags
 	url = git://github.com/techlivezheng/phpctags.git
-[submodule "bundle/neobundle.vim"]
-	path = bundle/neobundle.vim
-	url = https://github.com/Shougo/neobundle.vim

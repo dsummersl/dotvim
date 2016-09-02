@@ -1,102 +1,98 @@
 " vundle plugin options {{{
-if has('vim_starting')
-  " vim mode!
-  set nocompatible
-  filetype off
 
-  set rtp+=~/.vim/bundle/neobundle.vim/
-endif
+let g:plug_url_format="git@github.com:%s.git"
+so ~/.vim/autoload/plug.vim
 
-call neobundle#begin(expand('~/.vim/bundle/'))
-NeoBundleFetch 'Shougo/neobundle.vim'
+call plug#begin()
+Plug 'VundleVim/Vundle.vim'
 
-NeoBundle 'vim-scripts/repeatable-motions.vim'
-NeoBundle 'miyakogi/conoline.vim'
+Plug 'vim-scripts/repeatable-motions.vim'
+Plug 'miyakogi/conoline.vim'
 
 " A colorscheme that supports [ob and ]ob
-NeoBundle 'frankier/neovim-colors-solarized-truecolor-only'
+Plug 'frankier/neovim-colors-solarized-truecolor-only'
 
-NeoBundle 'leafgarland/typescript-vim'
-NeoBundle 'rizzatti/dash.vim'
-NeoBundle 'janko-m/vim-test'
+Plug 'leafgarland/typescript-vim'
+Plug 'rizzatti/dash.vim'
+Plug 'janko-m/vim-test'
 " Lines to quickly resize splits (VSSplit)
-NeoBundle 'wellle/visual-split.vim'
-NeoBundle 'vim-scripts/highlight.vim'
-" NeoBundle 'wincent/ferret' " Enhanced multi-file search for Vim -- doesn't
+Plug 'wellle/visual-split.vim'
+Plug 'vim-scripts/highlight.vim'
+" Plug 'wincent/ferret' " Enhanced multi-file search for Vim -- doesn't
 " support very good editing of the quickfix window.
-NeoBundle 'idanarye/vim-yankitute' " Yankitute to copy/paste into a buffer quick
-NeoBundle 'benmills/vimux' " Run golang tests using vimux
-" NeoBundle 'FriedSock/smeargle'
-NeoBundle 'digitaltoad/vim-jade' " Vim Jade template engine syntax highlighting and indention
-NeoBundle 'mattn/webapi-vim'
-NeoBundle 'benekastah/neomake'
-NeoBundle 'mattn/gist-vim' " 4.9   vimscript for gist
-NeoBundle 'editorconfig-vim' " 0.1.0 EditorConfig Plugin for Vim -- helps define and maintain consistent coding style
-NeoBundle 'nathanaelkane/vim-indent-guides' " A Vim plugin for visually displaying indent levels in code
+Plug 'idanarye/vim-yankitute' " Yankitute to copy/paste into a buffer quick
+Plug 'benmills/vimux' " Run golang tests using vimux
+" Plug 'FriedSock/smeargle'
+Plug 'digitaltoad/vim-jade' " Vim Jade template engine syntax highlighting and indention
+Plug 'mattn/webapi-vim'
+Plug 'benekastah/neomake'
+Plug 'mattn/gist-vim' " 4.9   vimscript for gist
+Plug 'editorconfig-vim' " 0.1.0 EditorConfig Plugin for Vim -- helps define and maintain consistent coding style
+Plug 'nathanaelkane/vim-indent-guides' " A Vim plugin for visually displaying indent levels in code
 " fast HTML tag generation (in insert mode type tr*3CTL-Y, to make three <tr>s
-NeoBundle 'mattn/emmet-vim.git'
-NeoBundle 'tomtom/tcomment_vim' " An extensible & universal comment vim-plugin that also handles embedded filetypes
-NeoBundle 'ctrlvim/ctrlp.vim'
-NeoBundle 'JazzCore/ctrlp-cmatcher'
-NeoBundle 'sukima/xmledit'
-NeoBundle 'vim-scripts/applescript.vim'
+Plug 'mattn/emmet-vim'
+Plug 'tomtom/tcomment_vim' " An extensible & universal comment vim-plugin that also handles embedded filetypes
+Plug 'ctrlpvim/ctrlp.vim'
+Plug 'JazzCore/ctrlp-cmatcher'
+Plug 'sukima/xmledit'
+Plug 'vim-scripts/applescript.vim'
 " editing CSV docs, super handily.
 " TODO update this repo so that people know to look for chrisba
-NeoBundle 'dsummersl/wikia-csv.git'
-" NeoBundle 'chrisba/csv.vim.git'
+Plug 'dsummersl/wikia-csv'
+" Plug 'chrisba/csv.vim'
 " simple utf2ascii function.
-NeoBundle 'dsummersl/vim-utf2ascii'
-NeoBundle 'tpope/vim-fugitive.git'
+Plug 'dsummersl/vim-utf2ascii'
+Plug 'tpope/vim-fugitive'
 " snippets
-NeoBundle 'derekwyatt/vim-scala.git'
-NeoBundle 'rust-lang/rust.vim'
-" NeoBundle 'kchmck/vim-coffee-script'
+Plug 'derekwyatt/vim-scala'
+Plug 'rust-lang/rust.vim'
+" Plug 'kchmck/vim-coffee-script'
 " surround things with quotes, etc (csw - surround word)
-NeoBundle 'tpope/vim-surround.git'
+Plug 'tpope/vim-surround'
 " TODO this? Its a dependency for a number of libs?
-NeoBundle 'PProvost/vim-ps1'
+Plug 'PProvost/vim-ps1'
 " TODO this? Its a dependency for a number of libs?
-NeoBundle 'L9'
-NeoBundle 'vim-scripts/LargeFile.git'
-NeoBundle 'vim-scripts/genutils.git'
+Plug 'L9'
+Plug 'vim-scripts/LargeFile'
+Plug 'vim-scripts/genutils'
 " TODO do I need both matchit and xmledit?
-NeoBundle 'vim-scripts/matchit.zip.git'
+Plug 'vim-scripts/matchit.zip'
 " many additional mappings for ]q, etc
-NeoBundle 'tpope/vim-unimpaired.git'
-NeoBundle 'gregsexton/gitv'
+Plug 'tpope/vim-unimpaired'
+Plug 'gregsexton/gitv'
 " awesome: makes the surround plugin work with the '.' keys (repeatability!)
-NeoBundle 'tpope/vim-repeat'
-NeoBundle 'vim-scripts/visualrepeat'
+Plug 'tpope/vim-repeat'
+Plug 'vim-scripts/visualrepeat'
 " fix spelling errors
-NeoBundle 'tpope/vim-abolish'
+Plug 'tpope/vim-abolish'
 " quick find method definitions:
-NeoBundle 'Shougo/unite.vim'
-NeoBundle 'osyo-manga/unite-quickfix'
+Plug 'Shougo/unite.vim'
+Plug 'osyo-manga/unite-quickfix'
 " Nice outline of a file's methods within Unite.
-NeoBundle 'Shougo/unite-outline'
+Plug 'Shougo/unite-outline'
 " allow the quicklist to be edited :cw, 'i'. :QFLoad and :LocSave
-NeoBundle 'jceb/vim-editqf'
+Plug 'jceb/vim-editqf'
 " javascript omni integration
-NeoBundle 'marijnh/tern_for_vim'
-NeoBundle 'Shougo/vimproc'
+Plug 'marijnh/tern_for_vim'
+Plug 'Shougo/vimproc'
 " syntax hilighting for actionscript
-NeoBundle 'jeroenbourgois/vim-actionscript'
+Plug 'jeroenbourgois/vim-actionscript'
 " use Cdo to quicklist argument modifications
-NeoBundle 'dsummersl/vim-cdo'
-" NeoBundle 'tpope/vim-sleuth'
+Plug 'dsummersl/vim-cdo'
+" Plug 'tpope/vim-sleuth'
 " automatically detect the indent style of the document
 " TODO try https://github.com/roryokane/detectindent
-NeoBundle 'raymond-w-ko/detectindent'
-NeoBundle 'Raimondi/delimitMate' " close quotes and such automatically
-"NeoBundle 'tpope/vim-rails'
-NeoBundle 'junegunn/vim-easy-align' " A simple Vim alignment plugin
-NeoBundle 'tpope/vim-eunuch' " eunuch.vim: cp/move/unlink commands
-NeoBundle 'justinmk/vim-sneak' " Sneak is a minimalist, versatile Vim motion plugin that jumps to any location specified by two characters
-NeoBundle 'AndrewRadev/splitjoin.vim' " A vim plugin that simplifies the transition between multiline and single-line code
-NeoBundle 'ervandew/ag' " vim plugin to search using the silver searcher (ag)
-NeoBundle 'tommcdo/vim-exchange' " Easy text exchange operator for Vim
-NeoBundle 'nelstrom/vim-visual-star-search' " use #/* in visual mode for searching
-NeoBundle 'bigfish/vim-js-context-coloring', {
+Plug 'raymond-w-ko/detectindent'
+Plug 'Raimondi/delimitMate' " close quotes and such automatically
+"Plug 'tpope/vim-rails'
+Plug 'junegunn/vim-easy-align' " A simple Vim alignment plugin
+Plug 'tpope/vim-eunuch' " eunuch.vim: cp/move/unlink commands
+Plug 'justinmk/vim-sneak' " Sneak is a minimalist, versatile Vim motion plugin that jumps to any location specified by two characters
+Plug 'AndrewRadev/splitjoin.vim' " A vim plugin that simplifies the transition between multiline and single-line code
+Plug 'ervandew/ag' " vim plugin to search using the silver searcher (ag)
+Plug 'tommcdo/vim-exchange' " Easy text exchange operator for Vim
+Plug 'nelstrom/vim-visual-star-search' " use #/* in visual mode for searching
+Plug 'bigfish/vim-js-context-coloring', {
       \ 'build' : {
       \     'mac' : 'npm install --update',
       \     'unix' : 'npm install --update',
@@ -104,33 +100,33 @@ NeoBundle 'bigfish/vim-js-context-coloring', {
       \ }
 
 " via (visual inner arg)
-NeoBundle 'vim-scripts/argtextobj.vim'
+Plug 'vim-scripts/argtextobj.vim'
 " viI (visual inner Indent)
-NeoBundle 'michaeljsmith/vim-indent-object'
+Plug 'michaeljsmith/vim-indent-object'
 " user defined textobj implementations
-NeoBundle 'kana/vim-textobj-user'
+Plug 'kana/vim-textobj-user'
 " vay viy to select syntax blocks
-NeoBundle 'kana/vim-textobj-syntax'
+Plug 'kana/vim-textobj-syntax'
 " select comment with vic or vac.
-NeoBundle 'glts/vim-textobj-comment'
+Plug 'glts/vim-textobj-comment'
 " vib between any arbitrary object (vibX where X is the obj)
-NeoBundle 'thinca/vim-textobj-between'
+Plug 'thinca/vim-textobj-between'
 
 " provide focus of a selected block into its own buffer via 'NR' 
-NeoBundle 'chrisbra/NrrwRgn'
+Plug 'chrisbra/NrrwRgn'
 " Easily toggle boolean values:
-NeoBundle 'AndrewRadev/switch.vim'
+Plug 'AndrewRadev/switch.vim'
 " TODO automatic ctags generation doesn't seem to work, but I love the idea...
-NeoBundle 'hackaugusto/vim-tags'
+Plug 'hackaugusto/vim-tags'
 " run make in the background. (used by vim-tags)
-NeoBundle 'tpope/vim-dispatch'
+Plug 'tpope/vim-dispatch'
 " utility functions
 " a hash implementation - make it easy to compute the hash of a string in the
 " editor (ie, yank a block, then do :echo _#hash(@") )
-NeoBundle 'dsummersl/vus'
+Plug 'dsummersl/vus'
 " unit testing for vim.
-NeoBundle 'dsummersl/vimunit'
-"NeoBundle 'ivanov/vim-ipython' " A two-way integration between Vim and IPython 0.11+
+Plug 'dsummersl/vimunit'
+"Plug 'ivanov/vim-ipython' " A two-way integration between Vim and IPython 0.11+
 
 " TODO jcfaria/Vim-R-plugin
 " TODO https://github.com/vim-scripts/PatternsOnText - delete/replace non
@@ -141,19 +137,19 @@ NeoBundle 'dsummersl/vimunit'
 " python omni completion
 " Its annoying b/c it automatically appears when I only want it when I
 " explicitly ask for it. Maybe there is a way to configure it that way:
-NeoBundle 'davidhalter/jedi-vim'
+Plug 'davidhalter/jedi-vim'
 
 " Probably going to remove these:
 " colorize ansi escaped text (console dumps)
-NeoBundle 'vim-scripts/AnsiEsc.vim'
-NeoBundle 'vim-scripts/cecutil.git'
-NeoBundle 'vim-scripts/Vimball.git'
+Plug 'vim-scripts/AnsiEsc.vim'
+Plug 'vim-scripts/cecutil'
+Plug 'vim-scripts/Vimball'
 " TODO something like yankstack sounds nice but this breaks the vS feature of
 " the surround plugin.
-"NeoBundle 'maxbrunsfeld/vim-yankstack'
+"Plug 'maxbrunsfeld/vim-yankstack'
 
 " if has('nvim')
-"   NeoBundle 'kassio/neoterm'
+"   Plug 'kassio/neoterm'
 "
 "   " easy escape from the terminal
 "   tnoremap ,tt <C-\><C-n>
@@ -176,43 +172,41 @@ if v:version >= 704
   let g:solarized_termcolors=256
   let $NVIM_TUI_ENABLE_TRUE_COLOR=1
   " vi/ (last search)
-  NeoBundle 'kana/vim-textobj-lastpat'
+  Plug 'kana/vim-textobj-lastpat'
   " A better powerline plugin:
-  NeoBundle 'vim-airline/vim-airline'
-  NeoBundle 'vim-airline/vim-airline-themes'
-  " NeoBundle 'ryanoasis/vim-devicons'
-  NeoBundle 'Valloric/YouCompleteMe' " auto completion
-  NeoBundle 'SirVer/ultisnips.git'
+  Plug 'vim-airline/vim-airline'
+  Plug 'vim-airline/vim-airline-themes'
+  " Plug 'ryanoasis/vim-devicons'
+  Plug 'Valloric/YouCompleteMe' " auto completion
+  Plug 'SirVer/ultisnips'
 endif
 
 if v:version >= 703
   set undofile
   set undodir=~/.vim/undo
   " This f's with neovim
-  " NeoBundle 'https://github.com/godlygeek/csapprox.git'
-  NeoBundle 'dsummers/gundo.vim.git'
-  NeoBundle 'honza/vim-snippets'
+  " Plug 'https://github.com/godlygeek/csapprox'
+  Plug 'dsummersl/gundo.vim'
+  Plug 'honza/vim-snippets'
   " sluice side screen control
-  NeoBundle 'dsummersl/vim-sluice'
-  NeoBundle 'ap/vim-css-color'
+  Plug 'dsummersl/vim-sluice'
+  Plug 'ap/vim-css-color'
 endif
 "}}}
 
 "  my own lame SVN mappings:
-" NeoBundle "git://github.com/dsummersl/svntools"
+" Plug "git://github.com/dsummersl/svntools"
 "  this is no longer maintained by me:
 " "git://github.com/motemen/git-vim"
 " "git://github.com/dsummersl/lookupfile-grep"
 "  don't like how the tags are displayed. Its kinda annoying.
-" "git://github.com/kshenoy/vim-signature.git"
+" "git://github.com/kshenoy/vim-signature"
 
-call neobundle#end()
+call plug#end()
 
 filetype on
 filetype indent on    " Enable filetype-specific indenting
 filetype plugin on    " Enable filetype-specific plugins
-
-NeoBundleCheck
 
 if v:version >= 704
   " I don't really care about trailing spaces so much as the indenting:
