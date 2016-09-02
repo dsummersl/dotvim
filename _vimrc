@@ -7,7 +7,7 @@ call plug#begin()
 Plug 'VundleVim/Vundle.vim'
 
 Plug 'vim-scripts/repeatable-motions.vim'
-Plug 'miyakogi/conoline.vim'
+Plug 'dsummersl/conoline.vim', { 'branch': 'monitor_bg' }
 
 " A colorscheme that supports [ob and ]ob
 Plug 'frankier/neovim-colors-solarized-truecolor-only'
@@ -33,7 +33,7 @@ Plug 'nathanaelkane/vim-indent-guides' " A Vim plugin for visually displaying in
 Plug 'mattn/emmet-vim'
 Plug 'tomtom/tcomment_vim' " An extensible & universal comment vim-plugin that also handles embedded filetypes
 Plug 'ctrlpvim/ctrlp.vim'
-Plug 'JazzCore/ctrlp-cmatcher'
+Plug 'JazzCore/ctrlp-cmatcher', { 'do': 'CFLAGS=-Qunused-arguments CPPFLAGS=-Qunused-arguments ./install.sh' }
 Plug 'sukima/xmledit'
 Plug 'vim-scripts/applescript.vim'
 " editing CSV docs, super handily.
@@ -112,12 +112,8 @@ Plug 'glts/vim-textobj-comment'
 " vib between any arbitrary object (vibX where X is the obj)
 Plug 'thinca/vim-textobj-between'
 
-" provide focus of a selected block into its own buffer via 'NR' 
-Plug 'chrisbra/NrrwRgn'
 " Easily toggle boolean values:
 Plug 'AndrewRadev/switch.vim'
-" TODO automatic ctags generation doesn't seem to work, but I love the idea...
-Plug 'hackaugusto/vim-tags'
 " run make in the background. (used by vim-tags)
 Plug 'tpope/vim-dispatch'
 " utility functions
@@ -177,7 +173,7 @@ if v:version >= 704
   Plug 'vim-airline/vim-airline'
   Plug 'vim-airline/vim-airline-themes'
   " Plug 'ryanoasis/vim-devicons'
-  Plug 'Valloric/YouCompleteMe' " auto completion
+  Plug 'Valloric/YouCompleteMe', { 'do': './install.py' }
   Plug 'SirVer/ultisnips'
 endif
 
