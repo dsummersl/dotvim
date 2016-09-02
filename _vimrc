@@ -11,6 +11,7 @@ call neobundle#begin(expand('~/.vim/bundle/'))
 NeoBundleFetch 'Shougo/neobundle.vim'
 
 NeoBundle 'vim-scripts/repeatable-motions.vim'
+NeoBundle 'miyakogi/conoline.vim'
 
 " A colorscheme that supports [ob and ]ob
 NeoBundle 'frankier/neovim-colors-solarized-truecolor-only'
@@ -602,6 +603,9 @@ function! ShowMixedIndents()
 endfunction
 "}}}
 " Mappings"{{{
+
+nmap <silent> <leader>d <Plug>DashSearch
+nmap <silent> <leader>D <Plug>DashGlobalSearch
 
 "replace 'f' with 1-char Sneak
 nmap f <Plug>Sneak_f
