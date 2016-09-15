@@ -2,7 +2,7 @@
 
 let g:plug_url_format="git@github.com:%s.git"
 so ~/.vim/autoload/plug.vim
-call plug#begin()
+call plug#begin('~/.vim/bundle')
 
 " git
 Plug 'tpope/vim-fugitive'
@@ -21,7 +21,6 @@ Plug 'tpope/vim-eunuch' " eunuch.vim: cp/move/unlink commands
 " Plug 'tpope/vim-dispatch'
 
 Plug 'vim-scripts/repeatable-motions.vim'
-Plug 'dsummersl/conoline.vim', { 'branch': 'monitor_bg' }
 
 " A colorscheme that supports [ob and ]ob
 Plug 'frankier/neovim-colors-solarized-truecolor-only'
@@ -76,7 +75,7 @@ Plug 'Shougo/unite-outline'
 " allow the quicklist to be edited :cw, 'i'. :QFLoad and :LocSave
 Plug 'jceb/vim-editqf'
 " javascript omni integration
-Plug 'marijnh/tern_for_vim'
+Plug 'marijnh/tern_for_vim', { 'do': 'npm install' }
 Plug 'Shougo/vimproc'
 " syntax hilighting for actionscript
 Plug 'jeroenbourgois/vim-actionscript'
@@ -119,11 +118,6 @@ Plug 'dsummersl/vimunit', { 'on': 'VURunAllTests' }
 " TODO move text blocks easily through )}" : https://github.com/vim-scripts/easy-through-pairing.vim
 " TODO use count in front of jk control keys: https://github.com/vim-scripts/rel-jump
 
-" python omni completion
-" Its annoying b/c it automatically appears when I only want it when I
-" explicitly ask for it. Maybe there is a way to configure it that way:
-Plug 'davidhalter/jedi-vim', { 'for': 'python' }
-
 " Probably going to remove these:
 " colorize ansi escaped text (console dumps)
 Plug 'vim-scripts/AnsiEsc.vim', { 'on': 'AnsiEsc' }
@@ -136,7 +130,6 @@ if v:version >= 704
   set termguicolors
   set t_Co=256
   let g:solarized_termcolors=256
-  let $NVIM_TUI_ENABLE_TRUE_COLOR=1
   " vi/ (last search)
   Plug 'kana/vim-textobj-lastpat'
   " A better powerline plugin:
@@ -299,6 +292,7 @@ let delimitMate_expand_space = 1
 " call unite#custom#profile('default', 'source/outline', { 'ignorecase': 1 })
 
 let g:neomake_airline = 1
+let g:neomake_python_enabled_makers = [ 'flake8' ]
 " let g:neomake_javascript_enabled_makers = [ 'jshint' ]
 
 let g:mundo_verbose_graph = 0
@@ -642,7 +636,7 @@ nnoremap <silent> <Plug>DeleteCurlyBlock va}Vd:call repeat#set("\<Plug>DeleteCur
 map <Leader>da} <Plug>DeleteCurlyBlock 
 
 " Open the current directory (or make new directory)
-map <Leader>ep :e %:h/
+map <Leader>ep :e %:h/<C-d>
 
 " Use gp to select the last pasted region.
 nnoremap <expr> gp '`[' . strpart(getregtype(), 0, 1) . '`]'
@@ -696,10 +690,10 @@ function! DV()
 endfunction
 
 function! s:UniteQuickFix()
-  Unite quickfix -smartcase -direction=dynamicbottom -no-start-insert -auto-preview -auto-highlight
+  Unite quickfix -smartcase -direction=dynamicbottom -no-start-insert -auto-preview -auto-highlight -immediately
 endfunction
 function! s:UniteLocationList()
-  Unite location_list -smartcase -direction=dynamicbottom -no-start-insert -auto-preview -auto-highlight
+  Unite location_list -smartcase -direction=dynamicbottom -no-start-insert -auto-preview -auto-highlight -immediately
 endfunction
 " Execute something on all files of the same kind:
 "
@@ -775,8 +769,6 @@ if has("autocmd") && !exists("autocommands_loaded")
 
   autocmd FileType ruby,eruby setlocal omnifunc=rubycomplete#Complete
   autocmd FileType ruby,eruby setlocal fdm&
-  autocmd FileType python     setlocal omnifunc=pythoncomplete#Complete
-  autocmd FileType python     setlocal ts=4
   autocmd FileType sh  setlocal omnifunc=syntaxcomplete#Complete
   autocmd FileType vim setlocal omnifunc=syntaxcomplete#Complete
 
@@ -797,6 +789,7 @@ if has("autocmd") && !exists("autocommands_loaded")
   autocmd BufNewFile,BufRead *.tsv setf csv
   autocmd BufNewFile,BufRead *.tsv setlocal ts=20 sw=25
   autocmd BufNewFile,BufRead *.tsv Delimiter \t
+  autocmd BufNewFile,BufEnter *.py :SS s 4
   autocmd BufNewFile,BufRead *.gradle set ft=groovy
   autocmd BufNewFile,BufRead Vagrantfile set ft=ruby
   autocmd BufNewFile,BufRead *.tss set ft=javascript
