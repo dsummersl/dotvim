@@ -160,7 +160,7 @@ if v:version >= 704
   let g:airline#extensions#whitespace#checks = [ 'indent' ]
   let g:airline_section_y = airline#util#wrap(airline#parts#ffenc() .' %#__accent_bold_red#%{&expandtab?"_":""}%#__restore__#%{&expandtab?"":"t"}%{&tabstop}',0)
   let g:airline_powerline_fonts = 1
-  " set laststatus=2
+  set laststatus=2
 
   " show undo history
   nnoremap <F5> :MundoToggle<CR>
@@ -402,8 +402,8 @@ let g:unite_winwidth=60
 " pathing for abolish
 set rtp+=~/.vim/after
 
-set rtp+=~/.vim/mysnips
 let g:UltiSnipsPythonPath="/usr/local/bin/python"
+let g:UltiSnipsSnippetsDir="~/.vim/UltiSnips"
 let g:UltiSnipsListSnippets='<C-\>'
 let g:UltiSnipsExpandTrigger="<Tab>"
 let g:UltiSnipsJumpForwardTrigger="<Tab>"                                           
@@ -546,6 +546,7 @@ endfunction
 "}}}
 " Mappings"{{{
 
+map <Leader>dd :TernDef<cr>
 nmap <silent> <leader>d <Plug>DashSearch
 nmap <silent> <leader>D <Plug>DashGlobalSearch
 
@@ -615,9 +616,6 @@ map <silent> <Plug>MoveTermLeft cxiaF,hcxia:call repeat#set("\<Plug>MoveTermLeft
 map <Leader>ah <Plug>MoveTermLeft 
 map <silent> <Plug>MoveTermRight cxiaf,cxia:call repeat#set("\<Plug>MoveTermRight")<CR>
 map <Leader>al <Plug>MoveTermRight 
-
-map <Leader>dd :TernDef<cr>
-map <Leader>dp :TernDefPreview<cr>
 
 " When in Gstatus jump to the next file in the list and diff it.
 map <silent> <Plug>MoveDownGstatusAndDiff <C-w>l<C-w>kjdv:call repeat#set("\<Plug>MoveDownGstatusAndDiff")<CR>
