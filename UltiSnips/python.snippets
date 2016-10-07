@@ -8,20 +8,12 @@ sys.path.append(os.path.expanduser('~/.vim/python'))
 from ultisniphelpers import *
 endglobal
 
-snippet p "print " !b
-print "$1"$0
+snippet lg "print " !b
+print("$1")$0
 endsnippet
 
-snippet pe "print var" !b
-print "$1 = {0}".format($1)
-endsnippet
-
-snippet lg "logger.log" !b
-logger.$1`!p snip.rv=complete(t[1],['info','debug','error','warn'])`(${3:'${2:message}'}${4})$0
-endsnippet
-
-snippet lge "logger.log" !b
-logger.$1`!p snip.rv=complete(t[1],['info','debug','error','warn'])`('${2}: {}'.format(${3:$2}))$0
+snippet lge "print var" !b
+print("$1 = {0}".format($1))$0
 endsnippet
 
 snippet kv "key/value" !b

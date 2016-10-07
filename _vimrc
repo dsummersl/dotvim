@@ -4,10 +4,12 @@ let g:plug_url_format="git@github.com:%s.git"
 so ~/.vim/autoload/plug.vim
 call plug#begin('~/.vim/bundle')
 
-" git
-Plug 'tpope/vim-fugitive'
-" fix spelling errors
-Plug 'tpope/vim-abolish'
+" dim inactive windows
+Plug 'blueyed/vim-diminactive'
+
+Plug 'okcompute/vim-python-motions' " ]] ]C ]M to move between methods
+Plug 'tpope/vim-fugitive' " git
+Plug 'tpope/vim-abolish' " fix spelling errors
 " surround things with quotes, etc (csw - surround word)
 Plug 'tpope/vim-surround'
 " many additional mappings for ]q, etc
@@ -24,6 +26,10 @@ Plug 'vim-scripts/repeatable-motions.vim'
 
 " A colorscheme that supports [ob and ]ob
 Plug 'frankier/neovim-colors-solarized-truecolor-only'
+" Rainbow toggle colorscheme
+Plug 'luochen1990/rainbow'
+
+Plug 'kassio/neoterm'
 
 Plug 'leafgarland/typescript-vim', { 'for': 'typescript' }
 
@@ -110,7 +116,7 @@ Plug 'AndrewRadev/switch.vim'
 " editor (ie, yank a block, then do :echo _#hash(@") )
 Plug 'dsummersl/vus'
 " unit testing for vim.
-Plug 'dsummersl/vimunit', { 'on': 'VURunAllTests' }
+Plug 'dsummersl/vimunit'
 
 " TODO jcfaria/Vim-R-plugin
 " TODO https://github.com/vim-scripts/PatternsOnText - delete/replace non
@@ -171,7 +177,7 @@ if v:version >= 704
 endif
 
 if v:version >= 703
-  let g:airline_theme = 'papercolor'
+  let g:airline_theme = 'base16'
 
   if has("gui_running")
     set macmeta
@@ -230,16 +236,13 @@ syntax on
 " use folding by default
 set fdm=marker
 
-" improve syntax highlighting when we have long lines by not highlighting lines
-" over 360 columns:
-set synmaxcol=360
+" No mouse support:
+set mouse=
 
 " improve syntax highlighting speed in general
 syntax sync minlines=64
 syntax sync maxlines=128
-
-" So that I can use :put to paste from the * register
-" set clipboard=unnamed
+set synmaxcol=120
 
 set diffopt=filler,iwhite
 set nohls
@@ -281,6 +284,8 @@ set lazyredraw
 
 "}}}
 " Plugin settings, changes."{{{
+
+let g:rainbow_active = 1
 
 let delimitMate_expand_cr = 2
 let delimitMate_jump_expansion = 1
@@ -402,6 +407,7 @@ let g:unite_winwidth=60
 " pathing for abolish
 set rtp+=~/.vim/after
 
+let g:UltiSnipsSnippetDirectories=[$HOME.'/.vim/UltiSnips']
 let g:UltiSnipsPythonPath="/usr/local/bin/python"
 let g:UltiSnipsSnippetsDir="~/.vim/UltiSnips"
 let g:UltiSnipsListSnippets='<C-\>'
@@ -424,10 +430,7 @@ let g:ctrlp_user_command = 'ag %s -i --nocolor --nogroup --hidden
 
 let g:ctrlp_cmd = 'CtrlPLastMode'
 
-let g:ctrlp_by_filename = 1
-" use 'r'
-let g:ctrlp_regexp = 0
-" use 'd'
+" only show MRU files in the working directory
 let g:ctrlp_mruf_relative = 1
 let g:ctrlp_use_caching = 1
 let g:ctrlp_clear_cache_on_exit = 1
@@ -450,6 +453,7 @@ nnoremap <Leader>t :UniteWithBufferDir -direction=dynamicbottom directory<CR>
 let g:tagbar_left = 1
 
 let g:sluice_default_macromode=1
+" SluiceEnablePlugin undercursor
 
 " show diff with git
 nnoremap <F6> :Gvdiff<CR>
@@ -550,6 +554,9 @@ map <Leader>dd :TernDef<cr>
 nmap <silent> <leader>d <Plug>DashSearch
 nmap <silent> <leader>D <Plug>DashGlobalSearch
 
+" I like using sort in netrw
+let g:sneak#map_netrw = 0
+
 "replace 'f' with 1-char Sneak
 nmap f <Plug>Sneak_f
 nmap F <Plug>Sneak_F
@@ -575,8 +582,8 @@ cabbrev git Git
 " when switching between the alternate window, automatically save.
 inoremap <C-^> <C-O>:e #<CR>
 " quick autosave
-noremap <C-c> :w<CR>
-" inoremap <C-c> <Esc>
+nnoremap <C-c> :w<CR>
+inoremap <C-c> <Esc>
 
 " instead of using this, I use 'gt'
 map <nul> <esc>
@@ -627,11 +634,11 @@ map <Leader>gk <Plug>MoveUpGstatusAndDiff
 map <Leader>ya} va}Vy
 map <Leader>yi} vi}Vy
 
-map <Leader>te :TREPLSend<CR>
-
 " Setup a delete out block function that supports repeatability.
 nnoremap <silent> <Plug>DeleteCurlyBlock va}Vd:call repeat#set("\<Plug>DeleteCurlyBlock")<CR>
 map <Leader>da} <Plug>DeleteCurlyBlock 
+
+map <Leader>te :TREPLSendSelection<CR>
 
 " Open the current directory (or make new directory)
 map <Leader>ep :e %:h/<C-d>
