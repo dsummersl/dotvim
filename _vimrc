@@ -9,6 +9,7 @@ Plug 'blueyed/vim-diminactive'
 
 Plug 'okcompute/vim-python-motions' " ]] ]C ]M to move between methods
 Plug 'tpope/vim-fugitive' " git
+Plug 'ludovicchabant/vim-lawrencium' " mercurial (hg)
 Plug 'tpope/vim-abolish' " fix spelling errors
 " surround things with quotes, etc (csw - surround word)
 Plug 'tpope/vim-surround'
@@ -19,10 +20,11 @@ Plug 'tpope/vim-repeat'
 Plug 'tpope/vim-eunuch' " eunuch.vim: cp/move/unlink commands
 "Plug 'tpope/vim-rails'
 " Plug 'tpope/vim-sleuth'
-" run make in the background. (used by vim-tags)
-" Plug 'tpope/vim-dispatch'
+Plug 'szw/vim-tags'
+Plug 'tpope/vim-dispatch' " run make in the background. (used by vim-tags)
 
 Plug 'vim-scripts/repeatable-motions.vim'
+Plug 'AndrewRadev/splitjoin.vim'
 
 " A colorscheme that supports [ob and ]ob
 Plug 'frankier/neovim-colors-solarized-truecolor-only'
@@ -76,8 +78,7 @@ Plug 'vim-scripts/visualrepeat'
 " quick find method definitions:
 Plug 'Shougo/unite.vim'
 Plug 'osyo-manga/unite-quickfix'
-" Nice outline of a file's methods within Unite.
-Plug 'Shougo/unite-outline'
+Plug 'majutsushi/tagbar'
 " allow the quicklist to be edited :cw, 'i'. :QFLoad and :LocSave
 Plug 'jceb/vim-editqf'
 " javascript omni integration
@@ -215,14 +216,14 @@ if v:version >= 703
   let g:airline_symbols.whitespace = 'Ξ'
 
   set cursorline
-  " show column markers beyond the 80 char line.
-  set colorcolumn=+1,+2,+3
+  " show column markers beyond the 80, 100, 120
+  set colorcolumn=+0,-1,-2,+20,+40
 endif
 " }}}
 " basic options {{{
 
 set autowrite
-set number
+set nonumber
 " set relativenumber
 " I want to know about bad tab/space use:
 set nolist
@@ -284,6 +285,9 @@ set lazyredraw
 
 "}}}
 " Plugin settings, changes."{{{
+
+let g:vim_tags_use_vim_dispatch = 1
+let g:vim_tags_ignore_files = ['.gitignore', '.svnignore', '.cvsignore', '.hgignore']
 
 let g:rainbow_active = 1
 
@@ -386,7 +390,11 @@ autocmd FileType * let b:switch_custom_definitions =
     \ { 'last': 'first' },
     \ { 'public': 'private' },
     \ { 'private': 'protected' },
-    \ { 'protected': 'public' }
+    \ { 'protected': 'public' },
+    \ { 'INFO': 'DEBUG' },
+    \ { 'DEBUG': 'INFO' },
+    \ { 'info': 'debug' },
+    \ { 'debug': 'info' }
     \ ]
 
 " don't use vif (thats a function, duh!)
@@ -419,16 +427,19 @@ let g:ycm_key_list_select_completion=['<C-n>', '<Down>']
 let g:ycm_key_list_previous_completion=['<C-p>', '<Up>']
 let g:ycm_autoclose_preview_window_after_insertion=1
 
-" CtrlP plugin
-let g:ctrlp_user_command = 'ag %s -i --nocolor --nogroup --hidden
-      \ --ignore .git
-      \ --ignore .svn
-      \ --ignore .hg
-      \ --ignore .DS_Store
-      \ --ignore "**/*.pyc"
-      \ -g ""'
+" " CtrlP plugin
+" let g:ctrlp_user_command = 'ag %s -i --nocolor --nogroup --hidden
+"       \ --ignore .git
+"       \ --ignore .svn
+"       \ --ignore .hg
+"       \ --ignore .DS_Store
+"       \ --ignore "**/*.pyc"
+"       \ -g ""'
 
-let g:ctrlp_cmd = 'CtrlPLastMode'
+" Map <C-p> to most recent files
+let g:ctrlp_cmd = 'CtrlPMRUFiles'
+" Map <C-S-p> to all files (iTerm mapping of that combo to <F15>): 
+map <F15> :CtrlP
 
 " only show MRU files in the working directory
 let g:ctrlp_mruf_relative = 1
@@ -443,14 +454,17 @@ set wildignore+=*/*.sw?,*/*.pyc,*/*.class
 " enable the quickfix plugin source:
 let g:ctrlp_extensions=['changes']
 " Use cmatcher for faster matching.
-let g:ctrlp_match_func = {'match' : 'matcher#cmatch' }
+" let g:ctrlp_match_func = {'match' : 'matcher#cmatch' }
 
+
+let g:tagbar_autofocus = 1
 " Unite outline mode
-nnoremap <C-T> :Unite -direction=dynamicbottom outline -smartcase -auto-highlight<CR>
+nnoremap <C-t> :TagbarToggle<cr>
+map <M-t> :CtrlPBufTag<cr>
+" User iterm2 to map shift-ctrl-t to <f16>
+map <F16> :CtrlPTag<cr>
 " look into the current directory
 nnoremap <Leader>t :UniteWithBufferDir -direction=dynamicbottom directory<CR>
-
-let g:tagbar_left = 1
 
 let g:sluice_default_macromode=1
 " SluiceEnablePlugin undercursor
@@ -490,44 +504,6 @@ command! -nargs=? -bang -complete=dir ProjectGrails :call LoadProject("grails",<
 command! -nargs=? -bang -complete=dir ProjectScala  :call LoadProject("grails",<q-args>)
 command! -nargs=? -bang -complete=dir ProjectPython :call LoadProject("grails",<q-args>)
 "}}}
-" tagbar groovy/markdown/scala/php"{{{
-
-let g:tagbar_type_groovy = {
-    \ 'ctagstype' : 'groovy',
-    \ 'kinds'     : [
-        \ 'p:package',
-        \ 'c:class',
-        \ 'i:interface',
-        \ 'f:function',
-        \ 'v:variables',
-    \ ]
-\ }
-
-let g:tagbar_type_markdown = {
-  \ 'ctagstype' : 'markdown',
-  \ 'kinds' : [
-    \ 'h:Heading_L1',
-    \ 'i:Heading_L2',
-    \ 'k:Heading_L3'
-  \ ]
-\ }
-
-let g:tagbar_type_scala = {
-    \ 'ctagstype' : 'Scala',
-    \ 'kinds'     : [
-        \ 'p:packages:1',
-        \ 'V:values',
-        \ 'v:variables',
-        \ 'T:types',
-        \ 't:traits',
-        \ 'o:objects',
-        \ 'a:aclasses',
-        \ 'c:classes',
-        \ 'r:cclasses',
-        \ 'm:methods'
-    \ ]
-\ }
-"}}}
 
 " delete all buffers function
 function! DeleteHiddenBuffers()
@@ -549,6 +525,9 @@ function! ShowMixedIndents()
 endfunction
 "}}}
 " Mappings"{{{
+
+" I want to see all the options when I try to jump to a tag:
+nmap <C-]> g<C-]>
 
 map <Leader>dd :TernDef<cr>
 nmap <silent> <leader>d <Plug>DashSearch
@@ -578,6 +557,7 @@ cabbrev gitv Gitv
 cabbrev ag Ag
 cabbrev gg GG
 cabbrev git Git
+cabbrev dash Dash
 
 " when switching between the alternate window, automatically save.
 inoremap <C-^> <C-O>:e #<CR>
@@ -603,9 +583,9 @@ map <C-k> <C-w>k<C-w>_
 
 " jump to the end of the line
 " Used iterm2 to map shift-ctrl-e to <f15>
-imap <F15> <C-O>$
+imap <M-e> <C-O>$
 " Used iterm2 to map shift-ctrl-a to <f16>
-imap <F16> <Home>
+imap <M-a> <Home>
 
 " console copy to buffer
 noremap <Leader>y "*y
@@ -659,6 +639,9 @@ inoremap <C-U> <esc>O
 
 " automatically toggle with control-
 nnoremap <Leader>. :Switch<cr>
+
+" Search for occurrences of the word under the cursor:
+map <Leader>sw yiw:Ag <C-r>"<cr>
 
 "}}}
 " Commands"{{{
@@ -800,7 +783,7 @@ if has("autocmd") && !exists("autocommands_loaded")
   autocmd BufNewFile,BufRead *.tss set ft=javascript
   autocmd BufNewFile,BufRead *.coffee set ft=coffee
   autocmd BufNewFile,BufRead Cakefile set ft=coffee
-  autocmd BufWritePost * Neomake
+  autocmd BufReadPost,BufWritePost * Neomake
 
   " make commit messages formatted to 72 columns for optimal reading/history:
   autocmd BufNewFile,BufRead COMMIT_EDITMSG setlocal tw=72 fo=tc spell
