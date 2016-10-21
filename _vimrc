@@ -439,7 +439,7 @@ let g:ycm_autoclose_preview_window_after_insertion=1
 " Map <C-p> to most recent files
 let g:ctrlp_cmd = 'CtrlPMRUFiles'
 " Map <C-S-p> to all files (iTerm mapping of that combo to <F15>): 
-map <F15> :CtrlP
+map <F15> :CtrlP<cr>
 
 " only show MRU files in the working directory
 let g:ctrlp_mruf_relative = 1
@@ -458,6 +458,7 @@ let g:ctrlp_extensions=['changes']
 
 
 let g:tagbar_autofocus = 1
+let g:tagbar_autoclose = 1
 " Unite outline mode
 nnoremap <C-t> :TagbarToggle<cr>
 map <M-t> :CtrlPBufTag<cr>
