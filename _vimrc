@@ -767,6 +767,7 @@ if has("autocmd") && !exists("autocommands_loaded")
   autocmd FileType php compiler php
   autocmd FileType groovy setlocal comments=sO:*\ -,mO:*\ \ ,exO:*/,s1:/*,mb:*,ex:*/,://,b:#,:%,:XCOMM,n:>,fb:-
   autocmd FileType groovy setlocal fo=croq
+  autocmd FileType htmldjango SS s 4
 
   autocmd BufNewFile,BufRead * hi Search ctermfg=black ctermbg=gray guifg=#697b7d guibg=#93a4a6
   autocmd BufNewFile,BufRead *.rabl setf eruby
