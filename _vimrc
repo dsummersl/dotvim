@@ -42,7 +42,6 @@ Plug 'vim-scripts/highlight.vim'
 " support very good editing of the quickfix window.
 Plug 'idanarye/vim-yankitute' " Yankitute to copy/paste into a buffer quick
 Plug 'benmills/vimux' " Run golang tests using vimux
-Plug 'FriedSock/smeargle'
 Plug 'digitaltoad/vim-jade' " Vim Jade template engine syntax highlighting and indention
 Plug 'mattn/webapi-vim'
 Plug 'benekastah/neomake'
