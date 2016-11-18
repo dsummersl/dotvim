@@ -4,8 +4,6 @@ let g:plug_url_format="git@github.com:%s.git"
 so ~/.vim/autoload/plug.vim
 call plug#begin('~/.vim/bundle')
 
-" dim inactive windows
-Plug 'blueyed/vim-diminactive'
 Plug 'junegunn/goyo.vim' " Writer mode via :Goyu
 
 Plug 'okcompute/vim-python-motions' " ]] ]C ]M to move between methods
@@ -20,15 +18,13 @@ Plug 'tpope/vim-unimpaired'
 " awesome: makes the surround plugin work with the '.' keys (repeatability!)
 Plug 'tpope/vim-repeat'
 Plug 'tpope/vim-eunuch' " eunuch.vim: cp/move/unlink commands
-"Plug 'tpope/vim-rails'
-" Plug 'tpope/vim-sleuth'
 Plug 'szw/vim-tags'
 Plug 'tpope/vim-dispatch' " run make in the background. (used by vim-tags)
 
-Plug 'vim-scripts/repeatable-motions.vim'
+Plug 'vim-scripts/repeatable-motions.vim' " Repeat motions with C-[hjkl]
 Plug 'AndrewRadev/splitjoin.vim'
 
-" A colorscheme that supports [ob and ]ob
+" A colorscheme that supports fugitive's [ob and ]ob
 Plug 'frankier/neovim-colors-solarized-truecolor-only'
 " Rainbow toggle colorscheme
 Plug 'luochen1990/rainbow'
@@ -37,7 +33,7 @@ Plug 'kassio/neoterm'
 
 Plug 'leafgarland/typescript-vim', { 'for': 'typescript' }
 
-Plug 'rizzatti/dash.vim'
+Plug 'rizzatti/dash.vim' " :Dash to look up things
 Plug 'janko-m/vim-test'
 " Lines to quickly resize splits (VSSplit)
 Plug 'wellle/visual-split.vim'
@@ -46,7 +42,7 @@ Plug 'vim-scripts/highlight.vim'
 " support very good editing of the quickfix window.
 Plug 'idanarye/vim-yankitute' " Yankitute to copy/paste into a buffer quick
 Plug 'benmills/vimux' " Run golang tests using vimux
-" Plug 'FriedSock/smeargle'
+Plug 'FriedSock/smeargle'
 Plug 'digitaltoad/vim-jade' " Vim Jade template engine syntax highlighting and indention
 Plug 'mattn/webapi-vim'
 Plug 'benekastah/neomake'
@@ -57,7 +53,6 @@ Plug 'nathanaelkane/vim-indent-guides' " A Vim plugin for visually displaying in
 Plug 'mattn/emmet-vim'
 Plug 'tomtom/tcomment_vim' " An extensible & universal comment vim-plugin that also handles embedded filetypes
 Plug 'ctrlpvim/ctrlp.vim'
-Plug 'JazzCore/ctrlp-cmatcher', { 'do': 'CFLAGS=-Qunused-arguments CPPFLAGS=-Qunused-arguments ./install.sh' }
 Plug 'vim-scripts/applescript.vim', { 'for': 'applescript' }
 " editing CSV docs, super handily.
 " TODO update this repo so that people know to look for chrisba
@@ -454,8 +449,6 @@ let g:ctrlp_custom_ignore = '\.git$\|\.hg$\|\.svn|$'
 set wildignore+=*/*.sw?,*/*.pyc,*/*.class
 " enable the quickfix plugin source:
 let g:ctrlp_extensions=['changes']
-" Use cmatcher for faster matching.
-" let g:ctrlp_match_func = {'match' : 'matcher#cmatch' }
 
 
 let g:tagbar_autofocus = 1
