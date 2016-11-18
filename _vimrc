@@ -6,9 +6,11 @@ call plug#begin('~/.vim/bundle')
 
 " dim inactive windows
 Plug 'blueyed/vim-diminactive'
+Plug 'junegunn/goyo.vim' " Writer mode via :Goyu
 
 Plug 'okcompute/vim-python-motions' " ]] ]C ]M to move between methods
 Plug 'tpope/vim-fugitive' " git
+Plug 'godlygeek/csapprox' " neovim coloring for gblame
 Plug 'ludovicchabant/vim-lawrencium' " mercurial (hg)
 Plug 'tpope/vim-abolish' " fix spelling errors
 " surround things with quotes, etc (csw - surround word)
@@ -237,9 +239,6 @@ syntax on
 " use folding by default
 set fdm=marker
 
-" No mouse support:
-set mouse=
-
 " improve syntax highlighting speed in general
 syntax sync minlines=64
 syntax sync maxlines=128
@@ -264,7 +263,7 @@ set incsearch
 " file expansion in ex mode, caseless:
 set wildignorecase
 
-let mapleader='M'
+let mapleader=","
 
 set viminfo='50,\"50,h
 set history=100 " keep 100 lines of command line history
@@ -285,6 +284,8 @@ set lazyredraw
 
 "}}}
 " Plugin settings, changes."{{{
+
+let g:splitjoin_python_brackets_on_separate_lines = 1
 
 let g:vim_tags_use_vim_dispatch = 1
 let g:vim_tags_ignore_files = ['.gitignore', '.svnignore', '.cvsignore', '.hgignore']
@@ -465,7 +466,7 @@ map <M-t> :CtrlPBufTag<cr>
 " User iterm2 to map shift-ctrl-t to <f16>
 map <F16> :CtrlPTag<cr>
 " look into the current directory
-nnoremap <Leader>t :UniteWithBufferDir -direction=dynamicbottom directory<CR>
+nnoremap <Leader>t :UniteWithBufferDir -direction=dynamicbottom -horizontal directory<CR>
 
 let g:sluice_default_macromode=1
 " SluiceEnablePlugin undercursor
@@ -530,9 +531,8 @@ endfunction
 " I want to see all the options when I try to jump to a tag:
 nmap <C-]> g<C-]>
 
-map <Leader>dd :TernDef<cr>
-nmap <silent> <leader>d <Plug>DashSearch
-nmap <silent> <leader>D <Plug>DashGlobalSearch
+" map <Leader>dd :TernDef<cr>
+nmap <silent> <leader>D <Plug>DashSearch
 
 " I like using sort in netrw
 let g:sneak#map_netrw = 0
@@ -593,7 +593,7 @@ noremap <Leader>y "*y
 noremap <Leader>p :set paste<cr>:put<cr>:set nopaste<cr>
 
 " see all the search matches in a separate window (narrow region)
-noremap <Leader>/ :exec "Unite -auto-highlight -direction=dynamicbottom -input=". escape(@/,' ') ." -no-start-insert line"<cr>
+noremap <Leader>/ :exec "Unite -direction=dynamicbottom -horizontal -input=". escape(@/,' ') ." -no-start-insert line"<cr>
 " unimpaired like mapping for diff option for ignoring whitespace.
 noremap ]oI :set diffopt-=iwhite<cr>
 noremap [oI :set diffopt+=iwhite<cr>
@@ -679,10 +679,10 @@ function! DV()
 endfunction
 
 function! s:UniteQuickFix()
-  Unite quickfix -smartcase -direction=dynamicbottom -no-start-insert -auto-preview -auto-highlight -immediately
+  Unite quickfix -smartcase -no-start-insert -immediately -horizontal -direction=dynamicbottom
 endfunction
 function! s:UniteLocationList()
-  Unite location_list -smartcase -direction=dynamicbottom -no-start-insert -auto-preview -auto-highlight -immediately
+  Unite location_list -smartcase -direction=dynamicbottom -no-start-insert -immediately -horizontal
 endfunction
 " Execute something on all files of the same kind:
 "
