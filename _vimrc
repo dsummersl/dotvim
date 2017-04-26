@@ -702,6 +702,22 @@ map <Leader>dv :let @z=g:django_lookup_view_recording<cr>@zF,b<c-]>
 "}}}
 " Commands"{{{
 
+" Transforms for running tests in docker:
+let g:prepend = ''
+function! PrependTransform(cmd) abort
+  return g:prepend . a:cmd 
+endfunction
+
+function! DjangoTransform(cmd) abort
+  " strip out whatever django stuff there is and put in g:prepend
+  return g:prepend . substitute(a:cmd, '^.* \(\S\+\)$', '\1', '')
+endfunction
+
+let g:test#custom_transformations = {
+      \ 'prepend': function('PrependTransform'),
+      \ 'django': function('DjangoTransform') }
+" let g:test#transformation = 'prepend'
+
 " Set an arbitrary value to a number.
 "
 " Use this like so to change something, incrementing from 392:
