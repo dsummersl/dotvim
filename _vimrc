@@ -6,6 +6,7 @@ call plug#begin('~/.vim/bundle')
 
 Plug 'junegunn/goyo.vim' " Writer mode via :Goyu
 
+Plug 'davidhalter/jedi-vim' " python support <Leader>d to go to definition.
 Plug 'okcompute/vim-python-motions' " ]] ]C ]M to move between methods
 Plug 'tpope/vim-fugitive' " git
 Plug 'godlygeek/csapprox' " neovim coloring for gblame
@@ -26,15 +27,14 @@ Plug 'AndrewRadev/splitjoin.vim'
 
 " A colorscheme that supports fugitive's [ob and ]ob
 Plug 'frankier/neovim-colors-solarized-truecolor-only'
+Plug 'morhetz/gruvbox' " gruvbox colors
 " Rainbow toggle colorscheme
 Plug 'luochen1990/rainbow'
-
-Plug 'kassio/neoterm'
 
 Plug 'leafgarland/typescript-vim', { 'for': 'typescript' }
 
 Plug 'rizzatti/dash.vim' " :Dash to look up things
-Plug 'janko-m/vim-test'
+Plug 'janko-m/vim-test' " :TestNearest
 " Lines to quickly resize splits (VSSplit)
 Plug 'wellle/visual-split.vim'
 Plug 'vim-scripts/highlight.vim'
@@ -44,7 +44,6 @@ Plug 'idanarye/vim-yankitute' " Yankitute to copy/paste into a buffer quick
 Plug 'benmills/vimux' " Run golang tests using vimux
 Plug 'digitaltoad/vim-jade' " Vim Jade template engine syntax highlighting and indention
 Plug 'mattn/webapi-vim'
-Plug 'benekastah/neomake'
 Plug 'mattn/gist-vim' " 4.9   vimscript for gist
 Plug 'editorconfig-vim' " 0.1.0 EditorConfig Plugin for Vim -- helps define and maintain consistent coding style
 Plug 'nathanaelkane/vim-indent-guides' " A Vim plugin for visually displaying indent levels in code
@@ -77,6 +76,9 @@ Plug 'osyo-manga/unite-quickfix'
 Plug 'majutsushi/tagbar'
 " allow the quicklist to be edited :cw, 'i'. :QFLoad and :LocSave
 Plug 'jceb/vim-editqf'
+" JSX support
+Plug 'pangloss/vim-javascript'
+Plug 'mxw/vim-jsx'
 " javascript omni integration
 Plug 'marijnh/tern_for_vim', { 'do': 'npm install' }
 Plug 'Shougo/vimproc'
@@ -128,6 +130,13 @@ Plug 'vim-scripts/cecutil'
 
 " GUI & version specific settings (7+) "{{{
 
+if has('nvim')
+  Plug 'Shougo/deoplete.nvim', { 'do': ':UpdateRemotePlugins' }
+  Plug 'zchee/deoplete-jedi'
+  Plug 'kassio/neoterm'
+  Plug 'benekastah/neomake'
+endif
+
 " for the latest version I am both gui/console enabled!
 if v:version >= 704
   set termguicolors
@@ -139,7 +148,7 @@ if v:version >= 704
   Plug 'vim-airline/vim-airline'
   Plug 'vim-airline/vim-airline-themes'
   " Plug 'ryanoasis/vim-devicons'
-  Plug 'Valloric/YouCompleteMe', { 'do': './install.py' }
+  " Plug 'Valloric/YouCompleteMe', { 'do': './install.py' }
   Plug 'SirVer/ultisnips'
 endif
 
@@ -161,7 +170,13 @@ call plug#end()
 if v:version >= 704
   " I don't really care about trailing spaces so much as the indenting:
   let g:airline#extensions#whitespace#checks = [ 'indent' ]
+  " remove git branch - they can be long.
+  let g:airline_section_a = ''
+  let g:airline_section_b = ''
+  let g:airline_skip_empty_sections = 1
   let g:airline_section_y = airline#util#wrap(airline#parts#ffenc() .' %#__accent_bold_red#%{&expandtab?"_":""}%#__restore__#%{&expandtab?"":"t"}%{&tabstop}',0)
+  let g:airline#extensions#tagbar#enabled = 1
+  let g:airline#extensions#tagbar#flags = 'f'
   let g:airline_powerline_fonts = 1
   set laststatus=2
 
@@ -170,7 +185,9 @@ if v:version >= 704
 
   let macvim_skip_colorscheme = 1
   set background=light
-  colorscheme solarized
+  let g:gruvbox_italic = 0
+  let g:gruvbox_contrast_light = 'soft'
+  colorscheme gruvbox
 endif
 
 if v:version >= 703
@@ -213,7 +230,7 @@ if v:version >= 703
 
   set cursorline
   " show column markers beyond the 80, 100, 120
-  set colorcolumn=+0,-1,-2,+20,+40
+  set colorcolumn=+0,-1,-2,+20
 endif
 " }}}
 " basic options {{{
@@ -236,7 +253,7 @@ set fdm=marker
 " improve syntax highlighting speed in general
 syntax sync minlines=64
 syntax sync maxlines=128
-set synmaxcol=120
+set synmaxcol=256
 
 set diffopt=filler,iwhite
 set nohls
@@ -276,8 +293,22 @@ set linebreak
 " let macros go faster
 set lazyredraw
 
+" show replace previews
+if has('nvim')
+  set inccommand=split
+endif
+
 "}}}
 " Plugin settings, changes."{{{
+
+let g:jedi#completions_enabled = 0
+
+let g:deoplete#enable_at_startup = 1
+let g:deoplete#enable_ignore_case = 1
+let g:deoplete#enable_smart_case = 1
+let g:deoplete#enable_camel_case = 1
+let g:deoplete#max_list = 10
+let g:deoplete#auto_complete_delay = 250
 
 let g:splitjoin_python_brackets_on_separate_lines = 1
 
@@ -301,19 +332,16 @@ let g:neomake_python_enabled_makers = [ 'flake8' ]
 
 let g:mundo_verbose_graph = 0
 let g:mundo_mirror_graph = 1
-let g:mundo_inline_undo = 0
 let g:mundo_prefer_python3 = 1
+let g:mundo_help = 1
 
-let g:indent_guides_enable_on_vim_startup = 1
+let g:indent_guides_enable_on_vim_startup = 0
 let g:indent_guides_color_change_percent = 4
 " don't include tabs in 'soft' tabs - I want to see when things are amiss.
 " let g:indent_guides_soft_pattern = ' '
 
 let g:js_context_colors = [ 22, 28, 34, 106, 178, 166, 124 ]
 let g:js_context_colors_enabled = 0
-
-" the emmet mappings really f this up:
-"let g:user_emmet_leader_key = 'm'
 
 vmap <Enter> <Plug>(LiveEasyAlign)
 nmap <Leader>a <Plug>(LiveEasyAlign)
@@ -422,14 +450,15 @@ let g:ycm_key_list_select_completion=['<C-n>', '<Down>']
 let g:ycm_key_list_previous_completion=['<C-p>', '<Up>']
 let g:ycm_autoclose_preview_window_after_insertion=1
 
-" " CtrlP plugin
-" let g:ctrlp_user_command = 'ag %s -i --nocolor --nogroup --hidden
-"       \ --ignore .git
-"       \ --ignore .svn
-"       \ --ignore .hg
-"       \ --ignore .DS_Store
-"       \ --ignore "**/*.pyc"
-"       \ -g ""'
+" CtrlP plugin
+let g:ctrlp_user_command = 'ag %s -i --nocolor --nogroup --hidden
+      \ --ignore .git
+      \ --ignore .svn
+      \ --ignore .hg
+      \ --ignore .DS_Store
+      \ --ignore node_modules
+      \ --ignore "**/*.pyc"
+      \ -g ""'
 
 " Map <C-p> to most recent files
 let g:ctrlp_cmd = 'CtrlPMRUFiles'
@@ -452,13 +481,32 @@ let g:ctrlp_extensions=['changes']
 
 let g:tagbar_autofocus = 1
 let g:tagbar_autoclose = 1
+
+let g:tagbar_type_markdown = {
+    \ 'ctagstype': 'markdown',
+    \ 'ctagsbin' : '~/.vim/markdown2ctags/markdown2ctags.py',
+    \ 'ctagsargs' : '-f - --sort=yes',
+    \ 'kinds' : [
+        \ 's:sections',
+        \ 'i:images'
+    \ ],
+    \ 'sro' : '|',
+    \ 'kind2scope' : {
+        \ 's' : 'section',
+    \ },
+    \ 'sort': 0,
+    \ }
+
 " Unite outline mode
 nnoremap <C-t> :TagbarToggle<cr>
 map <M-t> :CtrlPBufTag<cr>
 " User iterm2 to map shift-ctrl-t to <f16>
 map <F16> :CtrlPTag<cr>
-" look into the current directory
-nnoremap <Leader>t :UniteWithBufferDir -direction=dynamicbottom -horizontal directory<CR>
+
+" save my right pinky some pain:
+nnoremap <Leader>t zt
+nnoremap <Leader>b zb
+nnoremap <Leader>, zz
 
 let g:sluice_default_macromode=1
 " SluiceEnablePlugin undercursor
@@ -528,6 +576,8 @@ nmap <silent> <leader>D <Plug>DashSearch
 
 " I like using sort in netrw
 let g:sneak#map_netrw = 0
+" and I like not having to do uppercases:
+let g:sneak#use_ic_scs = 1
 
 "replace 'f' with 1-char Sneak
 nmap f <Plug>Sneak_f
@@ -582,7 +632,8 @@ imap <M-a> <Home>
 
 " console copy to buffer
 noremap <Leader>y "*y
-noremap <Leader>p :set paste<cr>:put<cr>:set nopaste<cr>
+" copy the current filename and line number into the clipboard
+noremap <Leader>f :let @+=expand("%") .'#'. line(".")<CR>
 
 " see all the search matches in a separate window (narrow region)
 noremap <Leader>/ :exec "Unite -direction=dynamicbottom -horizontal -input=". escape(@/,' ') ." -no-start-insert line"<cr>
@@ -611,7 +662,8 @@ map <Leader>yi} vi}Vy
 nnoremap <silent> <Plug>DeleteCurlyBlock va}Vd:call repeat#set("\<Plug>DeleteCurlyBlock")<CR>
 map <Leader>da} <Plug>DeleteCurlyBlock 
 
-map <Leader>te :TREPLSendSelection<CR>
+" Send a selection to the terminal:
+map <Leader>ce :TREPLSendSelection<CR>
 
 " Open the current directory (or make new directory)
 map <Leader>ep :e %:h/<C-d>
@@ -634,17 +686,33 @@ inoremap <C-U> <esc>O
 nnoremap <Leader>. :Switch<cr>
 
 " Search for occurrences of the word under the cursor:
-map <Leader>sw yiw:Ag <C-r>"<cr>
+map <Leader>sw yiw:let @/=@"<cr>:Ag <C-r>"<cr>:GCL<cr>
+
+nnoremap <Leader>gl :GCL<cr>
+nnoremap <Leader>ll :GLL<cr>
+
+vmap <Leader>v :VSSplit<cr>
+
+" Django: find the urls.py definition of the 'url name' under the cursor
+let g:django_lookup_url_recording=":let b:isk_back=&isk\<cr>:set isk+=-\<cr>viwy:exe \"set isk=\". b:isk_back\<cr>:Ag \<c-r>\" -G urls.py\<cr>"
+let g:django_lookup_view_recording=":let b:isk_back=&isk\<cr>:set isk+=-\<cr>viwy:exe \"set isk=\". b:isk_back\<cr>:Ag \<c-r>\" -G urls.py\<cr>"
+map <Leader>du :let @z=g:django_lookup_url_recording<cr>@z
+map <Leader>dv :let @z=g:django_lookup_view_recording<cr>@zF,b<c-]>
 
 "}}}
 " Commands"{{{
 
 " Set an arbitrary value to a number.
 "
-" Use this like so:
+" Use this like so to change something, incrementing from 392:
 "
 " :call SV(392)
 " :%s/\v(something:)(\d+)/\=submatch(1) . UV()/
+
+" Similar command to decrement by one for each value:
+"
+" :call SV(392)
+" :%s/\v(something:)(\d+)/\=submatch(1) . DV()/
 "
 function! SV(v)
   let b:set_value = a:v
@@ -773,11 +841,14 @@ if has("autocmd") && !exists("autocommands_loaded")
   autocmd BufNewFile,BufRead *.tsv Delimiter \t
   autocmd BufNewFile,BufEnter *.py :SS s 4
   autocmd BufNewFile,BufRead *.gradle set ft=groovy
+  autocmd BufNewFile,BufRead *.rst set ft=markdown
   autocmd BufNewFile,BufRead Vagrantfile set ft=ruby
   autocmd BufNewFile,BufRead *.tss set ft=javascript
   autocmd BufNewFile,BufRead *.coffee set ft=coffee
   autocmd BufNewFile,BufRead Cakefile set ft=coffee
-  autocmd BufReadPost,BufWritePost * Neomake
+  if has('nvim')
+    autocmd BufReadPost,BufWritePost * Neomake
+  endif
 
   " make commit messages formatted to 72 columns for optimal reading/history:
   autocmd BufNewFile,BufRead COMMIT_EDITMSG setlocal tw=72 fo=tc spell
