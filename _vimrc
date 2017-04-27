@@ -301,6 +301,7 @@ endif
 "}}}
 " Plugin settings, changes."{{{
 
+let g:neoterm_automap_keys = 'crc'
 let g:jedi#completions_enabled = 0
 
 let g:deoplete#enable_at_startup = 1
@@ -663,7 +664,9 @@ nnoremap <silent> <Plug>DeleteCurlyBlock va}Vd:call repeat#set("\<Plug>DeleteCur
 map <Leader>da} <Plug>DeleteCurlyBlock 
 
 " Send a selection to the terminal:
-map <Leader>ce :TREPLSendSelection<CR>
+map <Leader>cs :TREPLSendSelection<CR>
+map <Leader>cl :TREPLSendLine<CR>
+map <Leader>cc :Ttoggle<CR>
 
 " Open the current directory (or make new directory)
 map <Leader>ep :e %:h/<C-d>
@@ -708,15 +711,19 @@ function! PrependTransform(cmd) abort
   return g:prepend . a:cmd 
 endfunction
 
-function! DjangoTransform(cmd) abort
-  " strip out whatever django stuff there is and put in g:prepend
+function! LastTransform(cmd) abort
+  " Keep only the last word, and combine with prepent - handy for the djangotest
+  " type test where I want to take advantage of its figuring out the test name
+  " (at the end of the cmd) but want to run it differently
   return g:prepend . substitute(a:cmd, '^.* \(\S\+\)$', '\1', '')
 endfunction
 
 let g:test#custom_transformations = {
       \ 'prepend': function('PrependTransform'),
-      \ 'django': function('DjangoTransform') }
+      \ 'last': function('LastTransform') }
+" let g:prepend = 'command to run tests'
 " let g:test#transformation = 'prepend'
+" let test#strategy = 'neoterm'
 
 " Set an arbitrary value to a number.
 "
