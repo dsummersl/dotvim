@@ -96,8 +96,6 @@ Plug 'tommcdo/vim-exchange' " Easy text exchange operator for Vim
 Plug 'nelstrom/vim-visual-star-search' " use #/* in visual mode for searching
 Plug 'bigfish/vim-js-context-coloring', { 'do': 'npm install --update' }
 
-" va`/vi` textobj for backticks
-Plug 'fvictorio/vim-textobj-backticks'
 " vaf/vif for functions
 Plug 'kana/vim-textobj-function'
 " via (visual inner arg)
