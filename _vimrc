@@ -35,6 +35,7 @@ Plug 'leafgarland/typescript-vim', { 'for': 'typescript' }
 
 Plug 'rizzatti/dash.vim' " :Dash to look up things
 Plug 'janko-m/vim-test' " :TestNearest
+Plug 'christoomey/vim-tmux-runner' " :Vtr_endCommandToRunner for tmux
 " Lines to quickly resize splits (VSSplit)
 Plug 'wellle/visual-split.vim'
 Plug 'vim-scripts/highlight.vim'
@@ -95,6 +96,10 @@ Plug 'tommcdo/vim-exchange' " Easy text exchange operator for Vim
 Plug 'nelstrom/vim-visual-star-search' " use #/* in visual mode for searching
 Plug 'bigfish/vim-js-context-coloring', { 'do': 'npm install --update' }
 
+" va`/vi` textobj for backticks
+Plug 'fvictorio/vim-textobj-backticks'
+" vaf/vif for functions
+Plug 'kana/vim-textobj-function'
 " via (visual inner arg)
 Plug 'vim-scripts/argtextobj.vim'
 " viI (visual inner Indent)
@@ -103,6 +108,7 @@ Plug 'michaeljsmith/vim-indent-object'
 Plug 'kana/vim-textobj-user'
 " vay viy to select syntax blocks
 Plug 'kana/vim-textobj-syntax'
+Plug 'landock/vim-expand-region'
 " select comment with vic or vac.
 Plug 'glts/vim-textobj-comment'
 " vib between any arbitrary object (vibX where X is the obj)
@@ -250,6 +256,9 @@ syntax on
 " use folding by default
 set fdm=marker
 
+" Turn on mouse for a normal mode only:
+set mouse=n
+
 " improve syntax highlighting speed in general
 syntax sync minlines=64
 syntax sync maxlines=128
@@ -301,7 +310,25 @@ endif
 "}}}
 " Plugin settings, changes."{{{
 
-let g:neoterm_automap_keys = 'crc'
+let g:expand_region_text_objects = {
+      \ 'iw'  :0,
+      \ 'iW'  :0,
+      \ 'i"'  :0,
+      \ 'i''' :0,
+      \ 'iB'  :1,
+      \ 'ip'  :0,
+      \ 'ii'  :0,
+      \ 'it'  :0,
+      \ 'at'  :1,
+      \ }
+
+" Run test commands in tmux - or neoterm, thats my other fav.
+let test#strategy = 'vtr'
+let test#transformation = 'last'
+let test#sub = './test_in_docker.sh {} | pygmentize -l pytb'
+let test#python#runner = 'djangotest'
+
+let g:neoterm_automap_keys = 'cic'
 let g:jedi#completions_enabled = 0
 
 let g:deoplete#enable_at_startup = 1
@@ -309,7 +336,7 @@ let g:deoplete#enable_ignore_case = 1
 let g:deoplete#enable_smart_case = 1
 let g:deoplete#enable_camel_case = 1
 let g:deoplete#max_list = 10
-let g:deoplete#auto_complete_delay = 250
+let g:deoplete#auto_complete_delay = 150
 
 let g:splitjoin_python_brackets_on_separate_lines = 1
 
@@ -664,9 +691,13 @@ nnoremap <silent> <Plug>DeleteCurlyBlock va}Vd:call repeat#set("\<Plug>DeleteCur
 map <Leader>da} <Plug>DeleteCurlyBlock 
 
 " Send a selection to the terminal:
-map <Leader>cs :TREPLSendSelection<CR>
-map <Leader>cl :TREPLSendLine<CR>
+map <Leader>cls :TREPLSendSelection<CR>
+map <Leader>cll :TREPLSendLine<CR>
 map <Leader>cc :Ttoggle<CR>
+map <Leader>ctn :TestNearest<CR>
+map <Leader>cts :TestSuite<CR>
+map <Leader>ctf :TestFile<CR>
+map <Leader>ctl :TestLast<CR>
 
 " Open the current directory (or make new directory)
 map <Leader>ep :e %:h/<C-d>
@@ -705,24 +736,27 @@ map <Leader>dv :let @z=g:django_lookup_view_recording<cr>@zF,b<c-]>
 "}}}
 " Commands"{{{
 
-" Transforms for running tests in docker:
-let g:prepend = ''
-function! PrependTransform(cmd) abort
-  return g:prepend . a:cmd 
+" Transforms for running tests in. {} is replaced. For example:
+" let test#sub = 'docker run --rm web python manage.py test {} | pygmentize -l pytb'
+" or, just pipe to something
+" let test#sub = '{} | pygmentize -l pytb'
+let g:test#sub = ''
+function! SubstituteTransform(cmd) abort
+  return substitute(g:test#sub, '{}', a:cmd, 'g')
 endfunction
 
 function! LastTransform(cmd) abort
-  " Keep only the last word, and combine with prepent - handy for the djangotest
-  " type test where I want to take advantage of its figuring out the test name
-  " (at the end of the cmd) but want to run it differently
-  return g:prepend . substitute(a:cmd, '^.* \(\S\+\)$', '\1', '')
+  " Keep only the last word, and combine with SubstituteTransform - handy for
+  " the djangotest type test where I want to take advantage of its figuring out
+  " the test name (at the end of the cmd) but want to run it differently
+  return SubstituteTransform(substitute(a:cmd, '^.* \(\S\+\)$', '\1', ''))
 endfunction
 
 let g:test#custom_transformations = {
-      \ 'prepend': function('PrependTransform'),
+      \ 'sub': function('SubstituteTransform'),
       \ 'last': function('LastTransform') }
-" let g:prepend = 'command to run tests'
-" let g:test#transformation = 'prepend'
+" let test#sub = 'command to run tests'
+" let test#transformation = 'last'
 " let test#strategy = 'neoterm'
 
 " Set an arbitrary value to a number.
@@ -852,7 +886,7 @@ if has("autocmd") && !exists("autocommands_loaded")
   autocmd FileType groovy setlocal fo=croq
   autocmd FileType htmldjango SS s 4
 
-  autocmd BufNewFile,BufRead * hi Search ctermfg=black ctermbg=gray guifg=#697b7d guibg=#93a4a6
+  " autocmd BufNewFile,BufRead * hi Search ctermfg=black ctermbg=gray guifg=#697b7d guibg=#93a4a6
   autocmd BufNewFile,BufRead *.rabl setf eruby
   autocmd BufNewFile,BufRead *.eco setf eruby
   autocmd BufNewFile,BufRead *.md setf markdown
