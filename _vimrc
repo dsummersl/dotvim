@@ -6,6 +6,7 @@ call plug#begin('~/.vim/bundle')
 
 Plug 'junegunn/goyo.vim' " Writer mode via :Goyu
 
+Plug 'MarcWeber/vim-addon-local-vimrc' " enable project local .vimrc files
 Plug 'davidhalter/jedi-vim' " python support <Leader>d to go to definition.
 Plug 'okcompute/vim-python-motions' " ]] ]C ]M to move between methods
 Plug 'tpope/vim-fugitive' " git
@@ -323,7 +324,7 @@ let g:expand_region_text_objects = {
 " Run test commands in tmux - or neoterm, thats my other fav.
 let test#strategy = 'vtr'
 let test#transformation = 'last'
-let test#sub = './test_in_docker.sh {} | pygmentize -l pytb'
+let g:test#sub = 'docker-compose run --rm python manage.py test {} | pygmentize -l pytb'
 let test#python#runner = 'djangotest'
 
 let g:neoterm_automap_keys = 'cic'
@@ -395,21 +396,6 @@ let g:detectindent_min_indent = 2
 let g:Gitv_TruncateCommitSubjects = 1
 let g:Gitv_OpenHorizontal = 1
 
-" Setup the VDebug options. Start and stop with f11/12.
-let g:vdebug_keymap = {
-\    "run" : "<F8>",
-\    "run_to_cursor" : "<F1>",
-\    "step_over" : "<F2>",
-\    "step_into" : "<F3>",
-\    "step_out" : "<F4>",
-\    "close" : "<F6>",
-\    "detach" : "<F7>",
-\    "set_breakpoint" : "<F10>",
-\    "get_context" : "<F11>",
-\    "eval_under_cursor" : "<F12>",
-\    "eval_visual" : "<Leader>e",
-\}
-
 " Toggle a setting on or off.
 function! Toggle(setting)
   exec "let b=". a:setting
@@ -443,7 +429,13 @@ autocmd FileType * let b:switch_custom_definitions =
     \ { 'INFO': 'DEBUG' },
     \ { 'DEBUG': 'INFO' },
     \ { 'info': 'debug' },
-    \ { 'debug': 'info' }
+    \ { 'debug': 'info' },
+    \ { 'assertFalse': 'assertTrue' },
+    \ { 'assertTrue': 'assertFalse' },
+    \ { 'assertIn': 'assertNotIn' },
+    \ { 'assertNotIn': 'assertIn' },
+    \ { 'assertContains': 'assertNotContains' },
+    \ { 'assertNotContains': 'assertContains' }
     \ ]
 
 " don't use vif (thats a function, duh!)
