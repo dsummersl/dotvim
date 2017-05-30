@@ -732,6 +732,13 @@ map <Leader>dv :let @z=g:django_lookup_view_recording<cr>@zF,b<c-]>
 map <leader>ch :call ToggleSearchConceal()<CR>
 
 function! ToggleSearchConceal()
+	if !exists("b:searchtext")
+    let b:searchtext = @/
+  endif
+  if b:searchtext != @/
+    silent syntax clear searchtext
+    let b:searchtext = @/
+  endif
   exe 'syntax match searchtext "'. @/ .'"'
   call ToggleGroupConceal('searchtext', '*')
 endfunction
