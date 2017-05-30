@@ -6,10 +6,13 @@ call plug#begin('~/.vim/bundle')
 
 Plug 'junegunn/goyo.vim' " Writer mode via :Goyu
 
+Plug 'pgdouyon/vim-evanesco' " Highlight search, clear after searching
+Plug 'junegunn/goyo.vim' " Writer mode via :Goyu
 Plug 'MarcWeber/vim-addon-local-vimrc' " enable project local .vimrc files
 Plug 'davidhalter/jedi-vim' " python support <Leader>d to go to definition.
 Plug 'okcompute/vim-python-motions' " ]] ]C ]M to move between methods
 Plug 'tpope/vim-fugitive' " git
+Plug 'tpope/vim-rhubarb' " Gbrowse 
 Plug 'godlygeek/csapprox' " neovim coloring for gblame
 Plug 'ludovicchabant/vim-lawrencium' " mercurial (hg)
 Plug 'tpope/vim-abolish' " fix spelling errors
@@ -94,7 +97,7 @@ Plug 'junegunn/vim-easy-align' " A simple Vim alignment plugin
 Plug 'justinmk/vim-sneak' " Sneak is a minimalist, versatile Vim motion plugin that jumps to any location specified by two characters
 Plug 'ervandew/ag' " vim plugin to search using the silver searcher (ag)
 Plug 'tommcdo/vim-exchange' " Easy text exchange operator for Vim
-Plug 'nelstrom/vim-visual-star-search' " use #/* in visual mode for searching
+" Plug 'nelstrom/vim-visual-star-search' " use #/* in visual mode for searching
 Plug 'bigfish/vim-js-context-coloring', { 'do': 'npm install --update' }
 
 " vaf/vif for functions
@@ -179,7 +182,7 @@ if v:version >= 704
   let g:airline_section_a = ''
   let g:airline_section_b = ''
   let g:airline_skip_empty_sections = 1
-  let g:airline_section_y = airline#util#wrap(airline#parts#ffenc() .' %#__accent_bold_red#%{&expandtab?"_":""}%#__restore__#%{&expandtab?"":"t"}%{&tabstop}',0)
+  let g:airline_section_y = airline#util#wrap(' %#__accent_bold_red#%{&expandtab?"_":""}%#__restore__#%{&expandtab?"":"t"}%{&tabstop}',0)
   let g:airline#extensions#tagbar#enabled = 1
   let g:airline#extensions#tagbar#flags = 'f'
   let g:airline_powerline_fonts = 1
@@ -240,6 +243,7 @@ endif
 " }}}
 " basic options {{{
 
+set conceallevel=1 " for ToggleGroupConceal
 set autowrite
 set nonumber
 " set relativenumber
@@ -617,7 +621,6 @@ cabbrev bda call DeleteHiddenBuffers()
 cabbrev gitv Gitv
 cabbrev ag Ag
 cabbrev gg GG
-cabbrev git Git
 cabbrev dash Dash
 
 " when switching between the alternate window, automatically save.
@@ -725,6 +728,42 @@ map <Leader>dv :let @z=g:django_lookup_view_recording<cr>@zF,b<c-]>
 
 "}}}
 " Commands"{{{
+
+map <leader>ch :call ToggleSearchConceal()<CR>
+
+function! ToggleSearchConceal()
+  exe 'syntax match searchtext "'. @/ .'"'
+  call ToggleGroupConceal('searchtext', '*')
+endfunction
+
+function! ToggleGroupConceal(group, cchar)
+    " Get the existing syntax definition
+    redir => syntax_def
+    exe 'silent syn list' a:group
+    redir END
+    " Split into multiple lines
+    let lines = split(syntax_def, "\n")
+    " Clear the existing syntax definitions
+    exe 'syn clear' a:group
+    for line in lines
+            " Only parse the lines that mention the desired group
+            " (so don't try to parse the "--- Syntax items ---" line)
+        if line =~ a:group
+            echom line
+                    " Get the required bits (the syntax type and the full definition)
+            let matcher = a:group . '\s\+xxx\s\+\(\k\+\)\s\+\(.*\)'
+            let type = substitute(line, matcher, '\1', '')
+            let definition = substitute(line, matcher, '\2', '')
+                    " Either add or remove 'conceal' from the definition
+            if definition =~ 'conceal'
+                let definition = substitute(definition, ' conceal\>', '', '')
+                exe 'syn' type a:group definition
+            else
+                exe 'syn' type a:group definition 'conceal cchar='. a:cchar
+            endif
+        endif
+    endfor
+endfunction
 
 " Transforms for running tests in. {} is replaced. For example:
 " let test#sub = 'docker run --rm web python manage.py test {} | pygmentize -l pytb'

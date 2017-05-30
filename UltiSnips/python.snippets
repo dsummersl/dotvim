@@ -12,12 +12,20 @@ snippet lg "print " !b
 print("$1")$0
 endsnippet
 
+snippet la "lambda" w
+lambda ${1:i}: $1${2}
+endsnippet
+
 snippet lge "print var" !b
 print("$1 = {0}".format($1))$0
 endsnippet
 
 snippet kv "key/value" !b
 '${1:key}': $2
+endsnippet
+
+snippet av "[key] = value" i
+[${1:key}] = $2
 endsnippet
 
 snippet def "function with docstrings" !b
@@ -28,7 +36,7 @@ endsnippet
 
 snippet for "for loop" !b
 for ${1:val} in ${2:`!p snip.rv=t[1]`s}:
-  ${3:# TODO ...}
+	${3:# TODO ...}
 endsnippet
 
 snippet if "if" !b
@@ -82,4 +90,9 @@ class Test${1:Class}(${2:unittest.TestCase}):
 
 	def test_${6:name}(self):
 		${7:pass}
+endsnippet
+
+snippet sub "django subTest" b
+with self.subTest('$1'):
+	${2:pass}
 endsnippet
