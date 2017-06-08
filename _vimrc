@@ -22,6 +22,7 @@ Plug 'tpope/vim-surround'
 Plug 'tpope/vim-unimpaired'
 " awesome: makes the surround plugin work with the '.' keys (repeatability!)
 Plug 'tpope/vim-repeat'
+Plug 'kreskij/Repeatable.vim'
 Plug 'tpope/vim-eunuch' " eunuch.vim: cp/move/unlink commands
 Plug 'szw/vim-tags'
 Plug 'tpope/vim-dispatch' " run make in the background. (used by vim-tags)
@@ -313,6 +314,8 @@ endif
 "}}}
 " Plugin settings, changes."{{{
 
+call repeatable#Setup()
+
 let g:expand_region_text_objects = {
       \ 'iw'  :0,
       \ 'iW'  :0,
@@ -344,7 +347,7 @@ let g:deoplete#auto_complete_delay = 150
 let g:splitjoin_python_brackets_on_separate_lines = 1
 
 let g:vim_tags_use_vim_dispatch = 1
-let g:vim_tags_ignore_files = ['.gitignore', '.svnignore', '.cvsignore', '.hgignore']
+let g:vim_tags_ignore_files = ['.gitignore', '.svnignore', '.cvsignore', '.hgignore', '.ctagsignore']
 
 let g:rainbow_active = 1
 
@@ -518,6 +521,24 @@ let g:tagbar_type_markdown = {
     \ },
     \ 'sort': 0,
     \ }
+let g:tagbar_type_typescript = {
+  \ 'ctagsbin' : 'tstags',                                                        
+  \ 'ctagsargs' : '-f-',                                                           
+  \ 'kinds': [                                                                     
+    \ 'e:enums:0:1',                                                               
+    \ 'f:function:0:1',                                                            
+    \ 't:typealias:0:1',                                                           
+    \ 'M:Module:0:1',                                                              
+    \ 'I:import:0:1',                                                              
+    \ 'i:interface:0:1',                                                           
+    \ 'C:class:0:1',                                                               
+    \ 'm:method:0:1',                                                              
+    \ 'p:property:0:1',                                                            
+    \ 'v:variable:0:1',                                                            
+    \ 'c:const:0:1',                                                              
+  \ ],                                                                            
+  \ 'sort' : 0                                                                    
+\ }  
 
 " Unite outline mode
 nnoremap <C-t> :TagbarToggle<cr>
@@ -600,27 +621,11 @@ nmap <silent> <leader>D <Plug>DashSearch
 let g:sneak#map_netrw = 0
 " and I like not having to do uppercases:
 let g:sneak#use_ic_scs = 1
-
-"replace 'f' with 1-char Sneak
-nmap f <Plug>Sneak_f
-nmap F <Plug>Sneak_F
-xmap f <Plug>Sneak_f
-xmap F <Plug>Sneak_F
-omap f <Plug>Sneak_f
-omap F <Plug>Sneak_F
-
-"replace 't' with 1-char Sneak
-nmap t <Plug>Sneak_t
-nmap T <Plug>Sneak_T
-xmap t <Plug>Sneak_t
-xmap T <Plug>Sneak_T
-omap t <Plug>Sneak_t
-omap T <Plug>Sneak_T
+let g:sneak#t_reset = 1
 
 cabbrev bda call DeleteHiddenBuffers()
 cabbrev gitv Gitv
 cabbrev ag Ag
-cabbrev gg GG
 cabbrev dash Dash
 
 " when switching between the alternate window, automatically save.
@@ -664,29 +669,24 @@ noremap [oI :set diffopt+=iwhite<cr>
 
 " For function arguments, move the current argument (parameter) to the left or to the
 " right.
-map <silent> <Plug>MoveTermLeft cxiaF,hcxia:call repeat#set("\<Plug>MoveTermLeft")<CR>
-map <Leader>ah <Plug>MoveTermLeft 
-map <silent> <Plug>MoveTermRight cxiaf,cxia:call repeat#set("\<Plug>MoveTermRight")<CR>
-map <Leader>al <Plug>MoveTermRight 
+Repeatable map <Leader>al cxiaf,cxia
+Repeatable map <Leader>ah cxiaF,hcxia
 
 " When in Gstatus jump to the next file in the list and diff it.
-map <silent> <Plug>MoveDownGstatusAndDiff <C-w>l<C-w>kjdv:call repeat#set("\<Plug>MoveDownGstatusAndDiff")<CR>
-map <Leader>gj <Plug>MoveDownGstatusAndDiff 
-map <silent> <Plug>MoveUpGstatusAndDiff <C-w>l<C-w>kkdv:call repeat#set("\<Plug>MoveUpGstatusAndDiff")<CR>
-map <Leader>gk <Plug>MoveUpGstatusAndDiff 
+Repeatable map <Leader>gj <C-w>l<C-w>kjdv
+Repeatable map <Leader>gk <C-w>l<C-w>kkdv
 
 " yank a block by the whole line.
 map <Leader>ya} va}Vy
 map <Leader>yi} vi}Vy
 
 " Setup a delete out block function that supports repeatability.
-nnoremap <silent> <Plug>DeleteCurlyBlock va}Vd:call repeat#set("\<Plug>DeleteCurlyBlock")<CR>
-map <Leader>da} <Plug>DeleteCurlyBlock 
+Repeatable nnoremap <Leader>da} va}Vd
 
 " Send a selection to the terminal:
 map <Leader>cls :TREPLSendSelection<CR>
 map <Leader>cll :TREPLSendLine<CR>
-map <Leader>cc :Ttoggle<CR>
+Repeatable map <Leader>cc :Ttoggle<CR>
 map <Leader>ctn :TestNearest<CR>
 map <Leader>cts :TestSuite<CR>
 map <Leader>ctf :TestFile<CR>
@@ -698,19 +698,12 @@ map <Leader>ep :e %:h/<C-d>
 " Use gp to select the last pasted region.
 nnoremap <expr> gp '`[' . strpart(getregtype(), 0, 1) . '`]'
 
-" Undo highlighting.
-nnoremap <Leader>s :nohls<Enter>
-
 " toggle Sluice gutters
 nnoremap <F3> :SluiceMacroOff <bar> SluiceToggle<CR>
 nnoremap <F4> :SluiceMacroOn <bar> SluiceToggle<CR>
 
-" in insert mode, move up/down two line and stay in insert mode.
-inoremap <C-D> <esc>o
-inoremap <C-U> <esc>O
-
 " automatically toggle with control-
-nnoremap <Leader>. :Switch<cr>
+Repeatable nnoremap <Leader>. :Switch<cr>
 
 " Search for occurrences of the word under the cursor:
 map <Leader>sw yiw:let @/=@"<cr>:Ag <C-r>"<cr>:GCL<cr>
