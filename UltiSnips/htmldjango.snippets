@@ -1,0 +1,18 @@
+extends xml
+extends javascript
+
+snippet dif "Django if block"
+{% if $1 %}
+	${VISUAL}
+{% endif %}
+endsnippet
+
+snippet dfor "Django for block"
+{% for $1 in ${2:$1s} %}
+	${VISUAL}
+{% endfor %}
+endsnippet
+
+snippet del "Django else tag"
+{% el${2:se }%}$1
+endsnippet

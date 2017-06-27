@@ -1,0 +1,15 @@
+snippet trace "dump a stack trace" b
+traceback()
+endsnippet
+
+snippet break "breakpoint" b
+break
+endsnippet
+
+snippet lg "log statement" !b
+write("$1", stdout())$0
+endsnippet
+
+snippet lge "log variable" !b
+write(paste("$1:", $1), stdout())$0
+endsnippet
