@@ -6,10 +6,11 @@ call plug#begin('~/.vim/bundle')
 
 Plug 'junegunn/goyo.vim' " Writer mode via :Goyu
 
+Plug 'chrisbra/vim-diff-enhanced' " PatiencDiff and EnhanceDiff
 Plug 'pgdouyon/vim-evanesco' " Highlight search, clear after searching
 Plug 'junegunn/goyo.vim' " Writer mode via :Goyu
 Plug 'MarcWeber/vim-addon-local-vimrc' " enable project local .vimrc files
-Plug 'davidhalter/jedi-vim' " python support <Leader>d to go to definition.
+Plug 'davidhalter/jedi-vim' " python support <leader>d to go to definition.
 Plug 'okcompute/vim-python-motions' " ]] ]C ]M to move between methods
 Plug 'tpope/vim-fugitive' " git
 Plug 'tpope/vim-rhubarb' " Gbrowse 
@@ -24,7 +25,7 @@ Plug 'tpope/vim-unimpaired'
 Plug 'tpope/vim-repeat'
 Plug 'kreskij/Repeatable.vim'
 Plug 'tpope/vim-eunuch' " eunuch.vim: cp/move/unlink commands
-Plug 'szw/vim-tags'
+Plug 'ludovicchabant/vim-gutentags'
 Plug 'tpope/vim-dispatch' " run make in the background. (used by vim-tags)
 
 Plug 'vim-scripts/repeatable-motions.vim' " Repeat motions with C-[hjkl]
@@ -43,7 +44,6 @@ Plug 'janko-m/vim-test' " :TestNearest
 Plug 'christoomey/vim-tmux-runner' " :Vtr_endCommandToRunner for tmux
 " Lines to quickly resize splits (VSSplit)
 Plug 'wellle/visual-split.vim'
-Plug 'vim-scripts/highlight.vim'
 " Plug 'wincent/ferret' " Enhanced multi-file search for Vim -- doesn't
 " support very good editing of the quickfix window.
 Plug 'idanarye/vim-yankitute' " Yankitute to copy/paste into a buffer quick
@@ -79,7 +79,8 @@ Plug 'vim-scripts/visualrepeat'
 " quick find method definitions:
 Plug 'Shougo/unite.vim'
 Plug 'osyo-manga/unite-quickfix'
-Plug 'majutsushi/tagbar'
+" Plug 'majutsushi/tagbar', { 'on': 'TagbarToggle' }
+" Plug 'majutsushi/tagbar'
 " allow the quicklist to be edited :cw, 'i'. :QFLoad and :LocSave
 Plug 'jceb/vim-editqf'
 " JSX support
@@ -316,6 +317,9 @@ endif
 
 call repeatable#Setup()
 
+" started In Diff-Mode set diffexpr (plugin not loaded yet)
+let &diffexpr='EnhancedDiff#Diff("git diff", "--diff-algorithm=patience")'
+
 let g:expand_region_text_objects = {
       \ 'iw'  :0,
       \ 'iW'  :0,
@@ -346,8 +350,8 @@ let g:deoplete#auto_complete_delay = 150
 
 let g:splitjoin_python_brackets_on_separate_lines = 1
 
-let g:vim_tags_use_vim_dispatch = 1
-let g:vim_tags_ignore_files = ['.gitignore', '.svnignore', '.cvsignore', '.hgignore', '.ctagsignore']
+let g:gutentags_cache_dir = '~/.vim/tags'
+let g:gutentags_ctags_exclude = [ '*.json', '*/node_modules/*', '*/bower_components/*' ]
 
 let g:rainbow_active = 1
 
@@ -378,14 +382,7 @@ let g:js_context_colors = [ 22, 28, 34, 106, 178, 166, 124 ]
 let g:js_context_colors_enabled = 0
 
 vmap <Enter> <Plug>(LiveEasyAlign)
-nmap <Leader>a <Plug>(LiveEasyAlign)
-
-" quit multicursor mode!
-let g:multi_cursor_use_default_mapping=0
-let g:multi_cursor_next_key='<C-n>'
-let g:multi_cursor_prev_key='<C-p>'
-let g:multi_cursor_skip_key='<C-x>'
-let g:multi_cursor_quit_key='<C-c>'
+nmap <leader>a <Plug>(LiveEasyAlign)
 
 " let the narrow region plugin NR functions automatically update the window
 " location on change:
@@ -547,9 +544,9 @@ map <M-t> :CtrlPBufTag<cr>
 map <F16> :CtrlPTag<cr>
 
 " save my right pinky some pain:
-nnoremap <Leader>t zt
-nnoremap <Leader>b zb
-nnoremap <Leader>, zz
+nnoremap <leader>t zt
+nnoremap <leader>b zb
+nnoremap <leader>, zz
 
 let g:sluice_default_macromode=1
 " SluiceEnablePlugin undercursor
@@ -614,7 +611,7 @@ endfunction
 " I want to see all the options when I try to jump to a tag:
 nmap <C-]> g<C-]>
 
-" map <Leader>dd :TernDef<cr>
+" map <leader>dd :TernDef<cr>
 nmap <silent> <leader>D <Plug>DashSearch
 
 " I like using sort in netrw
@@ -622,6 +619,8 @@ let g:sneak#map_netrw = 0
 " and I like not having to do uppercases:
 let g:sneak#use_ic_scs = 1
 let g:sneak#t_reset = 1
+" label mode
+let g:sneak#label = 1
 
 cabbrev bda call DeleteHiddenBuffers()
 cabbrev gitv Gitv
@@ -657,43 +656,43 @@ imap <M-e> <C-O>$
 imap <M-a> <Home>
 
 " console copy to buffer
-noremap <Leader>y "*y
-" copy the current filename and line number into the clipboard
-noremap <Leader>f :let @+=expand("%") .'#'. line(".")<CR>
+noremap <leader>y "*y
+" copy the current filename and line number into the clipboard and past register:
+noremap <leader>f :let @+=expand("%") .'#'. line(".")<bar>let @"=@+ ."\n"<CR>
 
 " see all the search matches in a separate window (narrow region)
-noremap <Leader>/ :exec "Unite -direction=dynamicbottom -horizontal -input=". escape(@/,' ') ." -no-start-insert line"<cr>
+noremap <leader>/ :exec "Unite -direction=dynamicbottom -horizontal -input=". escape(@/,' ') ." -no-start-insert line"<cr>
 " unimpaired like mapping for diff option for ignoring whitespace.
 noremap ]oI :set diffopt-=iwhite<cr>
 noremap [oI :set diffopt+=iwhite<cr>
 
 " For function arguments, move the current argument (parameter) to the left or to the
 " right.
-Repeatable map <Leader>al cxiaf,cxia
-Repeatable map <Leader>ah cxiaF,hcxia
+Repeatable map <leader>al cxiaf,cxia
+Repeatable map <leader>ah cxiaF,hcxia
 
 " When in Gstatus jump to the next file in the list and diff it.
-Repeatable map <Leader>gj <C-w>l<C-w>kjdv
-Repeatable map <Leader>gk <C-w>l<C-w>kkdv
+Repeatable map <leader>gj <C-w>l<C-w>kjdv
+Repeatable map <leader>gk <C-w>l<C-w>kkdv
 
 " yank a block by the whole line.
-map <Leader>ya} va}Vy
-map <Leader>yi} vi}Vy
+map <leader>ya} va}Vy
+map <leader>yi} vi}Vy
 
 " Setup a delete out block function that supports repeatability.
-Repeatable nnoremap <Leader>da} va}Vd
+Repeatable nnoremap <leader>da} va}Vd
 
 " Send a selection to the terminal:
-map <Leader>cls :TREPLSendSelection<CR>
-map <Leader>cll :TREPLSendLine<CR>
-Repeatable map <Leader>cc :Ttoggle<CR>
-map <Leader>ctn :TestNearest<CR>
-map <Leader>cts :TestSuite<CR>
-map <Leader>ctf :TestFile<CR>
-map <Leader>ctl :TestLast<CR>
+map <leader>cls :TREPLSendSelection<CR>
+map <leader>cll :TREPLSendLine<CR>
+Repeatable map <leader>cc :Ttoggle<CR>
+map <leader>ctn :TestNearest<CR>
+map <leader>cts :TestSuite<CR>
+map <leader>ctf :TestFile<CR>
+map <leader>ctl :TestLast<CR>
 
 " Open the current directory (or make new directory)
-map <Leader>ep :e %:h/<C-d>
+map <leader>ep :e %:h/<C-d>
 
 " Use gp to select the last pasted region.
 nnoremap <expr> gp '`[' . strpart(getregtype(), 0, 1) . '`]'
@@ -703,25 +702,28 @@ nnoremap <F3> :SluiceMacroOff <bar> SluiceToggle<CR>
 nnoremap <F4> :SluiceMacroOn <bar> SluiceToggle<CR>
 
 " automatically toggle with control-
-Repeatable nnoremap <Leader>. :Switch<cr>
+Repeatable nnoremap <leader>. :Switch<cr>
 
 " Search for occurrences of the word under the cursor:
-map <Leader>sw yiw:let @/=@"<cr>:Ag <C-r>"<cr>:GCL<cr>
+map <leader>sw yiw:let @/=@"<cr>:Ag <C-r>"<cr>:GCL<cr>
 
-nnoremap <Leader>gl :GCL<cr>
-nnoremap <Leader>ll :GLL<cr>
+nnoremap <leader>gl :GCL<cr>
+nnoremap <leader>ll :GLL<cr>
 
-vmap <Leader>v :VSSplit<cr>
+vmap <leader>v :VSSplit<cr>
 
 " Django: find the urls.py definition of the 'url name' under the cursor
 let g:django_lookup_url_recording=":let b:isk_back=&isk\<cr>:set isk+=-\<cr>viwy:exe \"set isk=\". b:isk_back\<cr>:Ag \<c-r>\" -G urls.py\<cr>"
 let g:django_lookup_view_recording=":let b:isk_back=&isk\<cr>:set isk+=-\<cr>viwy:exe \"set isk=\". b:isk_back\<cr>:Ag \<c-r>\" -G urls.py\<cr>"
-map <Leader>du :let @z=g:django_lookup_url_recording<cr>@z
-map <Leader>dv :let @z=g:django_lookup_view_recording<cr>@zF,b<c-]>
+map <leader>du :let @z=g:django_lookup_url_recording<cr>@z
+map <leader>dv :let @z=g:django_lookup_view_recording<cr>@zF,b<c-]>
 
 "}}}
 " Commands"{{{
 
+" TODO Note that this usually only works if 'syn off' is set - if the text you are
+" searching for is on a line with syntax coloring, then it likely will not be
+" folded.
 map <leader>ch :call ToggleSearchConceal()<CR>
 
 function! ToggleSearchConceal()
@@ -930,6 +932,7 @@ if has("autocmd") && !exists("autocommands_loaded")
   autocmd BufNewFile,BufRead *.rst set ft=markdown
   autocmd BufNewFile,BufRead Vagrantfile set ft=ruby
   autocmd BufNewFile,BufRead *.tss set ft=javascript
+  autocmd BufNewFile,BufRead *.html.ts set ft=html
   autocmd BufNewFile,BufRead *.coffee set ft=coffee
   autocmd BufNewFile,BufRead Cakefile set ft=coffee
   if has('nvim')
