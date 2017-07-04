@@ -6,6 +6,8 @@ call plug#begin('~/.vim/bundle')
 
 Plug 'junegunn/goyo.vim' " Writer mode via :Goyu
 
+Plug 'mhinz/vim-grepper' " Grepper searching
+Plug 'machakann/vim-highlightedyank' " highlight any text as it is yanked
 Plug 'chrisbra/vim-diff-enhanced' " PatiencDiff and EnhanceDiff
 Plug 'pgdouyon/vim-evanesco' " Highlight search, clear after searching
 Plug 'junegunn/goyo.vim' " Writer mode via :Goyu
@@ -32,7 +34,7 @@ Plug 'vim-scripts/repeatable-motions.vim' " Repeat motions with C-[hjkl]
 Plug 'AndrewRadev/splitjoin.vim'
 
 " A colorscheme that supports fugitive's [ob and ]ob
-Plug 'frankier/neovim-colors-solarized-truecolor-only'
+Plug 'lifepillar/vim-solarized8'
 Plug 'morhetz/gruvbox' " gruvbox colors
 " Rainbow toggle colorscheme
 Plug 'luochen1990/rainbow'
@@ -51,12 +53,14 @@ Plug 'benmills/vimux' " Run golang tests using vimux
 Plug 'digitaltoad/vim-jade' " Vim Jade template engine syntax highlighting and indention
 Plug 'mattn/webapi-vim'
 Plug 'mattn/gist-vim' " 4.9   vimscript for gist
-Plug 'editorconfig-vim' " 0.1.0 EditorConfig Plugin for Vim -- helps define and maintain consistent coding style
+Plug 'editorconfig/editorconfig-vim' " 0.1.0 EditorConfig Plugin for Vim -- helps define and maintain consistent coding style
 Plug 'nathanaelkane/vim-indent-guides' " A Vim plugin for visually displaying indent levels in code
 " fast HTML tag generation (in insert mode type tr*3CTL-Y, to make three <tr>s
 Plug 'mattn/emmet-vim'
 Plug 'tomtom/tcomment_vim' " An extensible & universal comment vim-plugin that also handles embedded filetypes
-Plug 'ctrlpvim/ctrlp.vim'
+Plug 'junegunn/fzf'
+Plug 'junegunn/fzf.vim'
+Plug 'tweekmonster/fzf-filemru'
 Plug 'vim-scripts/applescript.vim', { 'for': 'applescript' }
 " editing CSV docs, super handily.
 " TODO update this repo so that people know to look for chrisba
@@ -71,15 +75,15 @@ Plug 'rust-lang/rust.vim', { 'for': 'rust' }
 " TODO this? Its a dependency for a number of libs?
 Plug 'PProvost/vim-ps1'
 " TODO this? Its a dependency for a number of libs?
-Plug 'L9'
+Plug 'eparreno/l9'
 Plug 'vim-scripts/LargeFile'
 Plug 'vim-scripts/genutils'
 Plug 'gregsexton/gitv'
 Plug 'vim-scripts/visualrepeat'
 " quick find method definitions:
 Plug 'Shougo/unite.vim'
+Plug 'Shougo/denite.nvim'
 Plug 'osyo-manga/unite-quickfix'
-" Plug 'majutsushi/tagbar', { 'on': 'TagbarToggle' }
 " Plug 'majutsushi/tagbar'
 " allow the quicklist to be edited :cw, 'i'. :QFLoad and :LocSave
 Plug 'jceb/vim-editqf'
@@ -150,8 +154,6 @@ endif
 " for the latest version I am both gui/console enabled!
 if v:version >= 704
   set termguicolors
-  set t_Co=256
-  let g:solarized_termcolors=256
   " vi/ (last search)
   Plug 'kana/vim-textobj-lastpat'
   " A better powerline plugin:
@@ -193,11 +195,46 @@ if v:version >= 704
   " show undo history
   nnoremap <F5> :MundoToggle<CR>
 
-  let macvim_skip_colorscheme = 1
-  set background=light
-  let g:gruvbox_italic = 0
+  set background=dark
+  let g:gruvbox_italic = 1
   let g:gruvbox_contrast_light = 'soft'
   colorscheme gruvbox
+  " colorscheme solarized8_dark_high
+
+  " colors for the :terminal
+  if has('nvim')
+    " dark0 + gray
+    let g:terminal_color_0 = "#282828"
+    let g:terminal_color_8 = "#928374"
+
+    " neurtral_red + bright_red
+    let g:terminal_color_1 = "#cc241d"
+    let g:terminal_color_9 = "#fb4934"
+
+    " neutral_green + bright_green
+    let g:terminal_color_2 = "#98971a"
+    let g:terminal_color_10 = "#b8bb26"
+
+    " neutral_yellow + bright_yellow
+    let g:terminal_color_3 = "#d79921"
+    let g:terminal_color_11 = "#fabd2f"
+
+    " neutral_blue + bright_blue
+    let g:terminal_color_4 = "#458588"
+    let g:terminal_color_12 = "#83a598"
+
+    " neutral_purple + bright_purple
+    let g:terminal_color_5 = "#b16286"
+    let g:terminal_color_13 = "#d3869b"
+
+    " neutral_aqua + faded_aqua
+    let g:terminal_color_6 = "#689d6a"
+    let g:terminal_color_14 = "#8ec07c"
+
+    " light4 + light1
+    let g:terminal_color_7 = "#a89984"
+    let g:terminal_color_15 = "#ebdbb2"
+  endif
 endif
 
 if v:version >= 703
@@ -245,7 +282,7 @@ endif
 " }}}
 " basic options {{{
 
-set conceallevel=1 " for ToggleGroupConceal
+set conceallevel=2 " for ToggleGroupConceal
 set autowrite
 set nonumber
 " set relativenumber
@@ -317,6 +354,9 @@ endif
 
 call repeatable#Setup()
 
+nmap gs  <plug>(GrepperOperator)
+xmap gs  <plug>(GrepperOperator)
+
 " started In Diff-Mode set diffexpr (plugin not loaded yet)
 let &diffexpr='EnhancedDiff#Diff("git diff", "--diff-algorithm=patience")'
 
@@ -353,6 +393,7 @@ let g:splitjoin_python_brackets_on_separate_lines = 1
 let g:gutentags_cache_dir = '~/.vim/tags'
 let g:gutentags_ctags_exclude = [ '*.json', '*/node_modules/*', '*/bower_components/*' ]
 
+" Color brackets:
 let g:rainbow_active = 1
 
 let delimitMate_expand_cr = 2
@@ -371,15 +412,12 @@ let g:neomake_python_enabled_makers = [ 'flake8' ]
 let g:mundo_verbose_graph = 0
 let g:mundo_mirror_graph = 1
 let g:mundo_prefer_python3 = 1
-let g:mundo_help = 1
+let g:mundo_help = 0
 
 let g:indent_guides_enable_on_vim_startup = 0
 let g:indent_guides_color_change_percent = 4
 " don't include tabs in 'soft' tabs - I want to see when things are amiss.
 " let g:indent_guides_soft_pattern = ' '
-
-let g:js_context_colors = [ 22, 28, 34, 106, 178, 166, 124 ]
-let g:js_context_colors_enabled = 0
 
 vmap <Enter> <Plug>(LiveEasyAlign)
 nmap <leader>a <Plug>(LiveEasyAlign)
@@ -472,35 +510,6 @@ let g:ycm_key_list_select_completion=['<C-n>', '<Down>']
 let g:ycm_key_list_previous_completion=['<C-p>', '<Up>']
 let g:ycm_autoclose_preview_window_after_insertion=1
 
-" CtrlP plugin
-let g:ctrlp_user_command = 'ag %s -i --nocolor --nogroup --hidden
-      \ --ignore .git
-      \ --ignore .svn
-      \ --ignore .hg
-      \ --ignore .DS_Store
-      \ --ignore node_modules
-      \ --ignore "**/*.pyc"
-      \ -g ""'
-
-" Map <C-p> to most recent files
-let g:ctrlp_cmd = 'CtrlPMRUFiles'
-" Map <C-S-p> to all files (iTerm mapping of that combo to <F15>): 
-map <F15> :CtrlP<cr>
-
-" only show MRU files in the working directory
-let g:ctrlp_mruf_relative = 1
-let g:ctrlp_use_caching = 1
-let g:ctrlp_clear_cache_on_exit = 1
-let g:ctrlp_cache_dir = $HOME.'/.cache/ctrlp'
-" just use the pwd when finding files.
-let g:ctrlp_working_path_mode = 'w'
-let g:ctrlp_custom_ignore = '\.git$\|\.hg$\|\.svn|$'
-" by default ignore subversion things and swap file
-set wildignore+=*/*.sw?,*/*.pyc,*/*.class
-" enable the quickfix plugin source:
-let g:ctrlp_extensions=['changes']
-
-
 let g:tagbar_autofocus = 1
 let g:tagbar_autoclose = 1
 
@@ -539,9 +548,13 @@ let g:tagbar_type_typescript = {
 
 " Unite outline mode
 nnoremap <C-t> :TagbarToggle<cr>
-map <M-t> :CtrlPBufTag<cr>
+map <M-t> :BTags<cr>
 " User iterm2 to map shift-ctrl-t to <f16>
-map <F16> :CtrlPTag<cr>
+map <F16> :Tags<cr>
+" Map <C-S-p> to all files (iTerm mapping of that combo to <F15>): 
+map <F15> :Files<cr>
+nnoremap <C-p> :ProjectMru<cr>
+
 
 " save my right pinky some pain:
 nnoremap <leader>t zt
@@ -660,8 +673,12 @@ noremap <leader>y "*y
 " copy the current filename and line number into the clipboard and past register:
 noremap <leader>f :let @+=expand("%") .'#'. line(".")<bar>let @"=@+ ."\n"<CR>
 
+" Sort all the unite things in reverse order (b/c for some reason they're
+" backward for my quicklist and @/ results:
+call unite#filters#sorter_default#use(['sorter_reverse'])
+
 " see all the search matches in a separate window (narrow region)
-noremap <leader>/ :exec "Unite -direction=dynamicbottom -horizontal -input=". escape(@/,' ') ." -no-start-insert line"<cr>
+noremap <leader>/ :exec "DeniteCursorWord -mode=normal line"<cr>
 " unimpaired like mapping for diff option for ignoring whitespace.
 noremap ]oI :set diffopt-=iwhite<cr>
 noremap [oI :set diffopt+=iwhite<cr>
