@@ -6,7 +6,6 @@ call plug#begin('~/.vim/bundle')
 
 Plug 'junegunn/goyo.vim' " Writer mode via :Goyu
 
-Plug 'mhinz/vim-grepper' " Grepper searching
 Plug 'machakann/vim-highlightedyank' " highlight any text as it is yanked
 Plug 'chrisbra/vim-diff-enhanced' " PatiencDiff and EnhanceDiff
 Plug 'pgdouyon/vim-evanesco' " Highlight search, clear after searching
@@ -638,6 +637,8 @@ let g:sneak#label = 1
 cabbrev bda call DeleteHiddenBuffers()
 cabbrev gitv Gitv
 cabbrev ag Ag
+cabbrev aa AA
+cabbrev gg GG
 cabbrev dash Dash
 
 " when switching between the alternate window, automatically save.
