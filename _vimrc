@@ -52,12 +52,13 @@ Plug 'benmills/vimux' " Run golang tests using vimux
 Plug 'digitaltoad/vim-jade' " Vim Jade template engine syntax highlighting and indention
 Plug 'mattn/webapi-vim'
 Plug 'mattn/gist-vim' " 4.9   vimscript for gist
-Plug 'editorconfig-vim' " 0.1.0 EditorConfig Plugin for Vim -- helps define and maintain consistent coding style
+Plug 'editorconfig/editorconfig-vim' " 0.1.0 EditorConfig Plugin for Vim -- helps define and maintain consistent coding style
 Plug 'nathanaelkane/vim-indent-guides' " A Vim plugin for visually displaying indent levels in code
 " fast HTML tag generation (in insert mode type tr*3CTL-Y, to make three <tr>s
 Plug 'mattn/emmet-vim'
 Plug 'tomtom/tcomment_vim' " An extensible & universal comment vim-plugin that also handles embedded filetypes
 Plug 'ctrlpvim/ctrlp.vim'
+Plug 'nixprime/cpsm'
 Plug 'vim-scripts/applescript.vim', { 'for': 'applescript' }
 " editing CSV docs, super handily.
 " TODO update this repo so that people know to look for chrisba
@@ -72,16 +73,16 @@ Plug 'rust-lang/rust.vim', { 'for': 'rust' }
 " TODO this? Its a dependency for a number of libs?
 Plug 'PProvost/vim-ps1'
 " TODO this? Its a dependency for a number of libs?
-Plug 'L9'
+Plug 'eparreno/l9'
 Plug 'vim-scripts/LargeFile'
 Plug 'vim-scripts/genutils'
 Plug 'gregsexton/gitv'
 Plug 'vim-scripts/visualrepeat'
 " quick find method definitions:
+Plug 'Shougo/denite.nvim'
 Plug 'Shougo/unite.vim'
 Plug 'osyo-manga/unite-quickfix'
-" Plug 'majutsushi/tagbar', { 'on': 'TagbarToggle' }
-" Plug 'majutsushi/tagbar'
+Plug 'majutsushi/tagbar'
 " allow the quicklist to be edited :cw, 'i'. :QFLoad and :LocSave
 Plug 'jceb/vim-editqf'
 " JSX support
@@ -101,7 +102,7 @@ Plug 'justinmk/vim-sneak' " Sneak is a minimalist, versatile Vim motion plugin t
 Plug 'ervandew/ag' " vim plugin to search using the silver searcher (ag)
 Plug 'tommcdo/vim-exchange' " Easy text exchange operator for Vim
 " Plug 'nelstrom/vim-visual-star-search' " use #/* in visual mode for searching
-Plug 'bigfish/vim-js-context-coloring', { 'do': 'npm install --update' }
+" Plug 'bigfish/vim-js-context-coloring', { 'do': 'npm install --update' }
 
 " vaf/vif for functions
 Plug 'kana/vim-textobj-function'
@@ -151,8 +152,6 @@ endif
 " for the latest version I am both gui/console enabled!
 if v:version >= 704
   set termguicolors
-  set t_Co=256
-  let g:solarized_termcolors=256
   " vi/ (last search)
   Plug 'kana/vim-textobj-lastpat'
   " A better powerline plugin:
@@ -194,11 +193,47 @@ if v:version >= 704
   " show undo history
   nnoremap <F5> :MundoToggle<CR>
 
-  let macvim_skip_colorscheme = 1
-  set background=light
+  set background=dark
   let g:gruvbox_italic = 0
   let g:gruvbox_contrast_light = 'soft'
   colorscheme gruvbox
+
+  " colorscheme solarized8_dark_high
+
+  " colors for the :terminal
+  if has('nvim')
+    " dark0 + gray
+    let g:terminal_color_0 = "#282828"
+    let g:terminal_color_8 = "#928374"
+
+    " neurtral_red + bright_red
+    let g:terminal_color_1 = "#cc241d"
+    let g:terminal_color_9 = "#fb4934"
+
+    " neutral_green + bright_green
+    let g:terminal_color_2 = "#98971a"
+    let g:terminal_color_10 = "#b8bb26"
+
+    " neutral_yellow + bright_yellow
+    let g:terminal_color_3 = "#d79921"
+    let g:terminal_color_11 = "#fabd2f"
+
+    " neutral_blue + bright_blue
+    let g:terminal_color_4 = "#458588"
+    let g:terminal_color_12 = "#83a598"
+
+    " neutral_purple + bright_purple
+    let g:terminal_color_5 = "#b16286"
+    let g:terminal_color_13 = "#d3869b"
+
+    " neutral_aqua + faded_aqua
+    let g:terminal_color_6 = "#689d6a"
+    let g:terminal_color_14 = "#8ec07c"
+
+    " light4 + light1
+    let g:terminal_color_7 = "#a89984"
+    let g:terminal_color_15 = "#ebdbb2"
+  endif
 endif
 
 if v:version >= 703
@@ -246,7 +281,7 @@ endif
 " }}}
 " basic options {{{
 
-set conceallevel=1 " for ToggleGroupConceal
+set conceallevel=2 " for ToggleGroupConceal
 set autowrite
 set nonumber
 " set relativenumber
@@ -321,6 +356,8 @@ call repeatable#Setup()
 " started In Diff-Mode set diffexpr (plugin not loaded yet)
 let &diffexpr='EnhancedDiff#Diff("git diff", "--diff-algorithm=patience")'
 
+let g:highlightedyank_highlight_duration = 250
+
 let g:expand_region_text_objects = {
       \ 'iw'  :0,
       \ 'iW'  :0,
@@ -352,8 +389,9 @@ let g:deoplete#auto_complete_delay = 150
 let g:splitjoin_python_brackets_on_separate_lines = 1
 
 let g:gutentags_cache_dir = '~/.vim/tags'
-let g:gutentags_ctags_exclude = [ '*.json', '*/node_modules/*', '*/bower_components/*' ]
+let g:gutentags_ctags_exclude = [ '*.json', '*/node_modules/*', '*/bower_components/*', 'tags', '*.sql' ]
 
+" Color brackets:
 let g:rainbow_active = 1
 
 let delimitMate_expand_cr = 2
@@ -378,9 +416,6 @@ let g:indent_guides_enable_on_vim_startup = 0
 let g:indent_guides_color_change_percent = 4
 " don't include tabs in 'soft' tabs - I want to see when things are amiss.
 " let g:indent_guides_soft_pattern = ' '
-
-let g:js_context_colors = [ 22, 28, 34, 106, 178, 166, 124 ]
-let g:js_context_colors_enabled = 0
 
 vmap <Enter> <Plug>(LiveEasyAlign)
 nmap <leader>a <Plug>(LiveEasyAlign)
@@ -480,6 +515,7 @@ let g:ctrlp_user_command = 'ag %s -i --nocolor --nogroup --hidden
       \ --ignore .hg
       \ --ignore .DS_Store
       \ --ignore node_modules
+      \ --ignore htmlcov
       \ --ignore "**/*.pyc"
       \ -g ""'
 
@@ -496,7 +532,7 @@ let g:ctrlp_cache_dir = $HOME.'/.cache/ctrlp'
 " just use the pwd when finding files.
 let g:ctrlp_working_path_mode = 'w'
 let g:ctrlp_custom_ignore = '\.git$\|\.hg$\|\.svn|$'
-" by default ignore subversion things and swap file
+" by default ignore binary things and swap files
 set wildignore+=*/*.sw?,*/*.pyc,*/*.class
 " enable the quickfix plugin source:
 let g:ctrlp_extensions=['changes']
@@ -504,6 +540,7 @@ let g:ctrlp_extensions=['changes']
 
 let g:tagbar_autofocus = 1
 let g:tagbar_autoclose = 1
+let g:tagbar_foldlevel = 0
 
 let g:tagbar_type_markdown = {
     \ 'ctagstype': 'markdown',
@@ -669,8 +706,8 @@ noremap <leader>/ :exec "Unite -direction=dynamicbottom -horizontal -input=". es
 noremap ]oI :set diffopt-=iwhite<cr>
 noremap [oI :set diffopt+=iwhite<cr>
 
-" For function arguments, move the current argument (parameter) to the left or to the
-" right.
+" Swap function arguments, move the argument under the cursor to the left or to
+" the right.
 Repeatable map <leader>al cxiaf,cxia
 Repeatable map <leader>ah cxiaF,hcxia
 
@@ -720,6 +757,10 @@ let g:django_lookup_url_recording=":let b:isk_back=&isk\<cr>:set isk+=-\<cr>viwy
 let g:django_lookup_view_recording=":let b:isk_back=&isk\<cr>:set isk+=-\<cr>viwy:exe \"set isk=\". b:isk_back\<cr>:Ag \<c-r>\" -G urls.py\<cr>"
 map <leader>du :let @z=g:django_lookup_url_recording<cr>@z
 map <leader>dv :let @z=g:django_lookup_view_recording<cr>@zF,b<c-]>
+
+" From a 'diff view' in gitv, got back to the list of files one got there from.
+let g:gitv_revert_to_overview=""
+map <leader>gv <C-^><C-w>h:q<cr>
 
 "}}}
 " Commands"{{{
@@ -919,6 +960,8 @@ if has("autocmd") && !exists("autocommands_loaded")
   autocmd FileType groovy setlocal comments=sO:*\ -,mO:*\ \ ,exO:*/,s1:/*,mb:*,ex:*/,://,b:#,:%,:XCOMM,n:>,fb:-
   autocmd FileType groovy setlocal fo=croq
   autocmd FileType htmldjango SS s 4
+  " Rainbow tags look crappy in htmldjango
+  autocmd FileType htmldjango RainbowToggleOff
 
   " autocmd BufNewFile,BufRead * hi Search ctermfg=black ctermbg=gray guifg=#697b7d guibg=#93a4a6
   autocmd BufNewFile,BufRead *.rabl setf eruby
@@ -941,6 +984,9 @@ if has("autocmd") && !exists("autocommands_loaded")
   if has('nvim')
     autocmd BufReadPost,BufWritePost * Neomake
   endif
+
+  " Real broken for carstickers project:
+  autocmd BufNewFile,BufReadPost *.html.ts let b:tagbar_ignore = 1
 
   " make commit messages formatted to 72 columns for optimal reading/history:
   autocmd BufNewFile,BufRead COMMIT_EDITMSG setlocal tw=72 fo=tc spell
