@@ -647,7 +647,7 @@ endfunction
 " Mappings"{{{
 
 " I want to see all the options when I try to jump to a tag:
-nmap <C-]> g<C-]>
+nmap <C-]> g<C-]>zt
 
 " map <leader>dd :TernDef<cr>
 nmap <silent> <leader>D <Plug>DashSearch
@@ -702,6 +702,7 @@ noremap <leader>f :let @+=expand("%") .'#'. line(".")<bar>let @"=@+ ."\n"<CR>
 
 " see all the search matches in a separate window (narrow region)
 noremap <leader>/ :exec "Unite -direction=dynamicbottom -horizontal -input=". escape(@/,' ') ." -no-start-insert line"<cr>
+" exec "Denite -input=". substitute(escape(@/,' '),'\\[<>]\{1}','\\b','g') ." -mode=command line"
 " unimpaired like mapping for diff option for ignoring whitespace.
 noremap ]oI :set diffopt-=iwhite<cr>
 noremap [oI :set diffopt+=iwhite<cr>
