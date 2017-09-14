@@ -1,8 +1,10 @@
 Setup
 ====
 
-Check it out, and install the plugins:
+Check it out, and install the plugins in neovim:
 
-    git clone --recursive git://github.com/dsummersl/dotvim.git ~/.vim
+    mkdir -k ~/.config/nvim
+    git clone git://github.com/dsummersl/dotvim.git ~/.vim
     ln -s ~/.vim/_vimrc ~/.vimrc
-    vim +NeoBundleInstall
+    ln -s ~/.vim/_vimrc ~/.config/nvim/init.vim
+    vim +PlugInstall
