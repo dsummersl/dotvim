@@ -95,7 +95,7 @@ Plug 'Shougo/vimproc'
 Plug 'jeroenbourgois/vim-actionscript'
 " automatically detect the indent style of the document
 " TODO try https://github.com/roryokane/detectindent
-Plug 'raymond-w-ko/detectindent'
+Plug 'vim-scripts/detectindent'
 Plug 'Raimondi/delimitMate' " close quotes and such automatically
 Plug 'junegunn/vim-easy-align' " A simple Vim alignment plugin
 Plug 'justinmk/vim-sneak' " Sneak is a minimalist, versatile Vim motion plugin that jumps to any location specified by two characters
@@ -248,29 +248,13 @@ if v:version >= 703
     " set gfn=Liberation\ Mono\ for\ Powerline:h15
     set gfn=Monaco\ for\ Powerline:h13
     "set gfn=Monaco:h15
-
-    " unicode symbols
-    let g:airline_left_sep = ''
-    let g:airline_left_alt_sep = ''
-    let g:airline_right_sep = ''
-    let g:airline_right_alt_sep = ''
-  else
-    " unicode symbols
-    let g:airline_left_sep = '⮀'
-    let g:airline_left_alt_sep = '⮁'
-    let g:airline_right_sep = '⮂'
-    let g:airline_right_alt_sep = '⮃'
   endif
 
   if !exists('g:airline_symbols')
     let g:airline_symbols = {}
   endif
   let g:airline_symbols.linenr = '␊'
-  let g:airline_symbols.linenr = '␤'
-  let g:airline_symbols.linenr = '¶'
   let g:airline_symbols.branch = '⎇'
-  let g:airline_symbols.paste = 'ρ'
-  let g:airline_symbols.paste = 'Þ'
   let g:airline_symbols.paste = '∥'
   let g:airline_symbols.whitespace = 'Ξ'
 
@@ -425,7 +409,7 @@ nmap <leader>a <Plug>(LiveEasyAlign)
 let g:narrow_rgn_update_orig_win = 1
 let g:nrrw_rgn_update_orig_win = 1
 
-let g:fugitive_git_executable = '/usr/local/bin/git'
+" let g:fugitive_git_executable = '/usr/local/bin/git'
 
 let g:detectindent_preferred_indent = 2
 let g:detectindent_preferred_expandtab = 2
