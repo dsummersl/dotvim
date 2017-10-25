@@ -93,6 +93,7 @@ Plug 'marijnh/tern_for_vim', { 'do': 'npm install' }
 Plug 'Shougo/vimproc'
 " syntax hilighting for actionscript
 Plug 'jeroenbourgois/vim-actionscript'
+Plug 'wavded/vim-stylus' " syntax hilighting for stylus files
 " automatically detect the indent style of the document
 " TODO try https://github.com/roryokane/detectindent
 Plug 'vim-scripts/detectindent'
@@ -326,6 +327,12 @@ set linebreak
 
 " let macros go faster
 set lazyredraw
+
+" For file completion in command line mode, complete to the longest common
+" string of a file (and show the options), rather than auto picking the first
+" completion:
+set wildmenu
+set wildmode=longest:full,full
 
 " show replace previews
 if has('nvim')
@@ -685,8 +692,7 @@ noremap <leader>y "*y
 noremap <leader>f :let @+=expand("%") .'#'. line(".")<bar>let @"=@+ ."\n"<CR>
 
 " see all the search matches in a separate window (narrow region)
-noremap <leader>/ :exec "Unite -direction=dynamicbottom -horizontal -input=". escape(@/,' ') ." -no-start-insert line"<cr>
-" exec "Denite -input=". substitute(escape(@/,' '),'\\[<>]\{1}','\\b','g') ." -mode=command line"
+noremap <leader>/ :exec "Denite -auto-resize -input=". substitute(escape(@/,' '),'\\[<>]\{1}','\\b','g') ." -mode=normal line"<cr>
 " unimpaired like mapping for diff option for ignoring whitespace.
 noremap ]oI :set diffopt-=iwhite<cr>
 noremap [oI :set diffopt+=iwhite<cr>
@@ -856,10 +862,10 @@ function! DV()
 endfunction
 
 function! s:UniteQuickFix()
-  Unite quickfix -smartcase -no-start-insert -immediately -horizontal -direction=dynamicbottom
+  Denite unite:quickfix -mode=normal -auto-resize
 endfunction
 function! s:UniteLocationList()
-  Unite location_list -smartcase -direction=dynamicbottom -no-start-insert -immediately -horizontal
+  Denite unite:location_list -mode=normal -auto-resize
 endfunction
 " Execute something on all files of the same kind:
 "
