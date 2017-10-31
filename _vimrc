@@ -9,6 +9,7 @@ Plug 'junegunn/goyo.vim' " Writer mode via :Goyu
 Plug 'machakann/vim-highlightedyank' " highlight any text as it is yanked
 Plug 'chrisbra/vim-diff-enhanced' " PatiencDiff and EnhanceDiff
 Plug 'pgdouyon/vim-evanesco' " Highlight search, clear after searching
+Plug 'idanarye/vim-yankitute' " Yankitude for copying into registers
 Plug 'junegunn/goyo.vim' " Writer mode via :Goyu
 Plug 'MarcWeber/vim-addon-local-vimrc' " enable project local .vimrc files
 Plug 'davidhalter/jedi-vim' " python support <leader>d to go to definition.
@@ -739,6 +740,7 @@ Repeatable nnoremap <leader>. :Switch<cr>
 map <leader>sw yiw:let @/=@"<cr>:Ag <C-r>"<cr>:GCL<cr>
 
 nnoremap <leader>gl :GCL<cr>
+nnoremap <leader>gd :Denite -resume<cr>
 nnoremap <leader>ll :GLL<cr>
 
 vmap <leader>v :VSSplit<cr>
