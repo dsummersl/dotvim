@@ -81,6 +81,7 @@ Plug 'gregsexton/gitv'
 Plug 'vim-scripts/visualrepeat'
 " quick find method definitions:
 Plug 'Shougo/denite.nvim'
+Plug 'chemzqm/denite-extra'
 Plug 'Shougo/unite.vim'
 Plug 'osyo-manga/unite-quickfix'
 Plug 'majutsushi/tagbar'
@@ -169,7 +170,7 @@ if v:version >= 703
   set undodir=~/.vim/undo
   " This f's with neovim
   " Plug 'https://github.com/godlygeek/csapprox'
-  Plug 'dsummersl/gundo.vim', { 'branch': 'mundomaster' }
+  Plug 'dsummersl/gundo.vim'
   Plug 'honza/vim-snippets'
   " sluice side screen control
   Plug 'dsummersl/vim-sluice'
@@ -515,6 +516,7 @@ let g:ctrlp_user_command = 'ag %s -i --nocolor --nogroup --hidden
 let g:ctrlp_cmd = 'CtrlPMRUFiles'
 " Map <C-S-p> to all files (iTerm mapping of that combo to <F15>): 
 map <F15> :CtrlP<cr>
+map <M-p> :CtrlP<cr>
 
 " only show MRU files in the working directory
 let g:ctrlp_mruf_relative = 1
@@ -864,10 +866,10 @@ function! DV()
 endfunction
 
 function! s:UniteQuickFix()
-  Denite unite:quickfix -mode=normal -auto-resize
+  Denite quickfix -mode=normal -auto-resize
 endfunction
 function! s:UniteLocationList()
-  Denite unite:location_list -mode=normal -auto-resize
+  Denite location_list -mode=normal -auto-resize
 endfunction
 " Execute something on all files of the same kind:
 "
