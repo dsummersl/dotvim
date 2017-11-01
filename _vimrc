@@ -82,8 +82,6 @@ Plug 'vim-scripts/visualrepeat'
 " quick find method definitions:
 Plug 'Shougo/denite.nvim'
 Plug 'chemzqm/denite-extra'
-Plug 'Shougo/unite.vim'
-Plug 'osyo-manga/unite-quickfix'
 Plug 'majutsushi/tagbar'
 " allow the quicklist to be edited :cw, 'i'. :QFLoad and :LocSave
 Plug 'jceb/vim-editqf'
@@ -391,11 +389,6 @@ let delimitMate_expand_cr = 2
 let delimitMate_jump_expansion = 1
 let delimitMate_expand_space = 1
 
-" call unite#filters#matcher_default#use(['matcher_fuzzy'])
-" call unite#filters#sorter_default#use(['sorter_rank'])
-" call unite#custom#profile('files', 'filters', ['sorter_rank'])
-" call unite#custom#profile('default', 'source/outline', { 'ignorecase': 1 })
-
 let g:neomake_airline = 1
 let g:neomake_python_enabled_makers = [ 'flake8' ]
 " let g:neomake_javascript_enabled_makers = [ 'jshint' ]
@@ -478,13 +471,6 @@ xmap ab  <Plug>(textobj-between-a)
 omap ab  <Plug>(textobj-between-a)
 xmap ib  <Plug>(textobj-between-i)
 omap ib  <Plug>(textobj-between-i)
-
-" enable yanks!
-let g:unite_source_history_yank_enable = 1
-let g:unite_enable_start_insert = 1
-" I like the unite thing on the left side all get it going:
-let g:unite_enable_split_vertically=1
-let g:unite_winwidth=60
 
 " pathing for abolish
 set rtp+=~/.vim/after
