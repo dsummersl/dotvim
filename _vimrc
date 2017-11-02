@@ -28,10 +28,9 @@ Plug 'tpope/vim-repeat'
 Plug 'kreskij/Repeatable.vim'
 Plug 'tpope/vim-eunuch' " eunuch.vim: cp/move/unlink commands
 Plug 'ludovicchabant/vim-gutentags'
-Plug 'tpope/vim-dispatch' " run make in the background. (used by vim-tags)
 
 Plug 'vim-scripts/repeatable-motions.vim' " Repeat motions with C-[hjkl]
-Plug 'AndrewRadev/splitjoin.vim'
+Plug 'AndrewRadev/splitjoin.vim' " Gs to split long lines
 
 " A colorscheme that supports fugitive's [ob and ]ob
 Plug 'frankier/neovim-colors-solarized-truecolor-only'
@@ -45,10 +44,7 @@ Plug 'rizzatti/dash.vim' " :Dash to look up things
 Plug 'janko-m/vim-test' " :TestNearest
 Plug 'christoomey/vim-tmux-runner' " :Vtr_endCommandToRunner for tmux
 " Lines to quickly resize splits (VSSplit)
-Plug 'wellle/visual-split.vim'
-" Plug 'wincent/ferret' " Enhanced multi-file search for Vim -- doesn't
-" support very good editing of the quickfix window.
-Plug 'idanarye/vim-yankitute' " Yankitute to copy/paste into a buffer quick
+Plug 'wellle/visual-split.vim' " I've mapped this to <leader>v
 Plug 'benmills/vimux' " Run golang tests using vimux
 Plug 'digitaltoad/vim-jade' " Vim Jade template engine syntax highlighting and indention
 Plug 'mattn/webapi-vim'
@@ -83,8 +79,6 @@ Plug 'vim-scripts/visualrepeat'
 Plug 'Shougo/denite.nvim'
 Plug 'chemzqm/denite-extra'
 Plug 'majutsushi/tagbar'
-" allow the quicklist to be edited :cw, 'i'. :QFLoad and :LocSave
-Plug 'jceb/vim-editqf'
 " JSX support
 Plug 'pangloss/vim-javascript'
 Plug 'mxw/vim-jsx'
@@ -97,9 +91,9 @@ Plug 'wavded/vim-stylus' " syntax hilighting for stylus files
 " automatically detect the indent style of the document
 " TODO try https://github.com/roryokane/detectindent
 Plug 'vim-scripts/detectindent'
-Plug 'Raimondi/delimitMate' " close quotes and such automatically
+Plug 'jiangmiao/auto-pairs' " close quotes and such automatically
 Plug 'junegunn/vim-easy-align' " A simple Vim alignment plugin
-Plug 'justinmk/vim-sneak' " Sneak is a minimalist, versatile Vim motion plugin that jumps to any location specified by two characters
+Plug 'justinmk/vim-sneak' " f t s ; . mappings - jump to any location specified by two characters
 Plug 'ervandew/ag' " vim plugin to search using the silver searcher (ag)
 Plug 'tommcdo/vim-exchange' " Easy text exchange operator for Vim
 " Plug 'nelstrom/vim-visual-star-search' " use #/* in visual mode for searching
@@ -626,6 +620,17 @@ endfunction
 "}}}
 " Mappings"{{{
 
+let g:AutoPairsFlyMode=1
+
+" " In Iterm2 I mapped C-S-' to <f14>
+" imap <F14> <C-O>:let g:AutoPairsFlyMode=1<CR>"<C-O>:let g:AutoPairsFlyMode=0<CR>
+" " Can't do anything about this - its ^M
+" " imap <C-'> <C-O>:let g:AutoPairsFlyMode=1<CR>'<C-O>:let g:AutoPairsFlyMode=0<CR>
+" imap <C-]> <C-O>:let g:AutoPairsFlyMode=1<CR>]<C-O>:let g:AutoPairsFlyMode=0<CR>
+" " imap <C-0> <C-O>:let g:AutoPairsFlyMode=1<CR>)<C-O>:let g:AutoPairsFlyMode=0<CR>
+" " In Iterm2 I mapped C-S-] to <f13>
+" imap <F13> <C-O>:let g:AutoPairsFlyMode=1<CR>}<C-O>:let g:AutoPairsFlyMode=0<CR>
+
 " I want to see all the options when I try to jump to a tag:
 nmap <C-]> g<C-]>zt
 
@@ -701,6 +706,7 @@ map <leader>yi} vi}Vy
 
 " Setup a delete out block function that supports repeatability.
 Repeatable nnoremap <leader>da} va}Vd
+Repeatable nnoremap <leader>da) va)Vd
 
 " Send a selection to the terminal:
 map <leader>cls :TREPLSendSelection<CR>
@@ -915,6 +921,7 @@ if has("autocmd") && !exists("autocommands_loaded")
 
   " Set a buffer variable and then only call this two time.
   autocmd BufReadPost * :DetectIndent
+  autocmd BufNewFile,BufReadPost * :call AutoPairsInit()
 
   "function! s:SynOffInDiffMode()
   "  if &diff
