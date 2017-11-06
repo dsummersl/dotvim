@@ -35,6 +35,9 @@ Plug 'AndrewRadev/splitjoin.vim' " Gs to split long lines
 " A colorscheme that supports fugitive's [ob and ]ob
 Plug 'frankier/neovim-colors-solarized-truecolor-only'
 Plug 'morhetz/gruvbox' " gruvbox colors
+Plug 'romainl/Apprentice'
+Plug 'rakr/vim-one'
+Plug 'rakr/vim-two-firewatch'
 " Rainbow toggle colorscheme
 Plug 'luochen1990/rainbow'
 
@@ -189,9 +192,7 @@ if v:version >= 704
   nnoremap <F5> :MundoToggle<CR>
 
   set background=dark
-  let g:gruvbox_italic = 0
-  let g:gruvbox_contrast_light = 'soft'
-  colorscheme gruvbox
+  colorscheme one
 
   " colorscheme solarized8_dark_high
 
@@ -276,8 +277,8 @@ syntax on
 " use folding by default
 set fdm=marker
 
-" Turn on mouse for a normal mode only:
-set mouse=n
+" Turn on mouse for a visual mode only:
+set mouse=v
 
 " improve syntax highlighting speed in general
 syntax sync minlines=64
@@ -681,7 +682,7 @@ imap <M-e> <C-O>$
 imap <M-a> <Home>
 
 " console copy to buffer
-noremap <leader>y "*y
+noremap <leader>y "+y
 " copy the current filename and line number into the clipboard and past register:
 noremap <leader>f :let @+=expand("%") .'#'. line(".")<bar>let @"=@+ ."\n"<CR>
 
