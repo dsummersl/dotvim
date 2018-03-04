@@ -4,15 +4,24 @@ let g:plug_url_format="git@github.com:%s.git"
 so ~/.vim/autoload/plug.vim
 call plug#begin('~/.vim/bundle')
 
-Plug 'junegunn/goyo.vim' " Writer mode via :Goyu
-
-Plug 'machakann/vim-highlightedyank' " highlight any text as it is yanked
+" <---- plugins in testing ---->
+Plug 'joereynolds/gtags-scope'
+Plug 'jsfaint/gen_tags.vim'
+Plug 'mattboehm/vim-unstack'
 Plug 'chrisbra/vim-diff-enhanced' " PatiencDiff and EnhanceDiff
-Plug 'pgdouyon/vim-evanesco' " Highlight search, clear after searching
 Plug 'idanarye/vim-yankitute' " Yankitude for copying into registers
 Plug 'junegunn/goyo.vim' " Writer mode via :Goyu
+Plug 'brooth/far.vim' " :Far for easy search replace
+" TODO jcfaria/Vim-R-plugin
+" TODO https://github.com/vim-scripts/PatternsOnText - delete/replace non
+" matches (also has some quicklist looking stuff).
+" TODO move text blocks easily through )}" : https://github.com/vim-scripts/easy-through-pairing.vim
+" TODO use count in front of jk control keys: https://github.com/vim-scripts/rel-jump
+" <---- end plugins in testing ---->
+
+Plug 'machakann/vim-highlightedyank' " highlight any text as it is yanked
+Plug 'pgdouyon/vim-evanesco' " Highlight search, clear after searching
 Plug 'MarcWeber/vim-addon-local-vimrc' " enable project local .vimrc files
-Plug 'davidhalter/jedi-vim' " python support <leader>d to go to definition.
 Plug 'okcompute/vim-python-motions' " ]] ]C ]M to move between methods
 Plug 'tpope/vim-fugitive' " git
 Plug 'tpope/vim-rhubarb' " Gbrowse 
@@ -27,7 +36,6 @@ Plug 'tpope/vim-unimpaired'
 Plug 'tpope/vim-repeat'
 Plug 'kreskij/Repeatable.vim'
 Plug 'tpope/vim-eunuch' " eunuch.vim: cp/move/unlink commands
-Plug 'ludovicchabant/vim-gutentags'
 
 Plug 'vim-scripts/repeatable-motions.vim' " Repeat motions with C-[hjkl]
 Plug 'AndrewRadev/splitjoin.vim' " Gs to split long lines
@@ -38,37 +46,39 @@ Plug 'morhetz/gruvbox' " gruvbox colors
 Plug 'romainl/Apprentice'
 Plug 'rakr/vim-one'
 Plug 'rakr/vim-two-firewatch'
-" Rainbow toggle colorscheme
-Plug 'luochen1990/rainbow'
+Plug 'luochen1990/rainbow' " Rainbow toggle colorscheme
 
+" Language specific plugins:
 Plug 'leafgarland/typescript-vim', { 'for': 'typescript' }
+Plug 'vim-scripts/applescript.vim', { 'for': 'applescript' }
+Plug 'derekwyatt/vim-scala', { 'for': 'scala' }
+Plug 'rust-lang/rust.vim', { 'for': 'rust' }
+Plug 'davidhalter/jedi-vim' " python support <leader>d to go to definition.
+" TODO update this repo so that people know to look for chrisba
+Plug 'dsummersl/wikia-csv' " editing CSV docs, super handily.
+Plug 'pangloss/vim-javascript'
+Plug 'mxw/vim-jsx'
+Plug 'jeroenbourgois/vim-actionscript'
+Plug 'wavded/vim-stylus' " syntax hilighting for stylus files
+Plug 'marijnh/tern_for_vim', { 'do': 'npm install' }
 
-Plug 'rizzatti/dash.vim' " :Dash to look up things
 Plug 'janko-m/vim-test' " :TestNearest
 Plug 'christoomey/vim-tmux-runner' " :Vtr_endCommandToRunner for tmux
-" Lines to quickly resize splits (VSSplit)
-Plug 'wellle/visual-split.vim' " I've mapped this to <leader>v
 Plug 'benmills/vimux' " Run golang tests using vimux
+
+Plug 'wellle/visual-split.vim' " I've mapped this to <leader>v Lines to quickly resize splits (VSSplit)
 Plug 'digitaltoad/vim-jade' " Vim Jade template engine syntax highlighting and indention
 Plug 'mattn/webapi-vim'
 Plug 'mattn/gist-vim' " 4.9   vimscript for gist
 Plug 'editorconfig/editorconfig-vim' " 0.1.0 EditorConfig Plugin for Vim -- helps define and maintain consistent coding style
 Plug 'nathanaelkane/vim-indent-guides' " A Vim plugin for visually displaying indent levels in code
-" fast HTML tag generation (in insert mode type tr*3CTL-Y, to make three <tr>s
-Plug 'mattn/emmet-vim'
+Plug 'mattn/emmet-vim' " fast HTML tag generation (in insert mode type tr*3CTL-Y, to make three <tr>s
 Plug 'tomtom/tcomment_vim' " An extensible & universal comment vim-plugin that also handles embedded filetypes
 Plug 'ctrlpvim/ctrlp.vim'
 Plug 'nixprime/cpsm'
-Plug 'vim-scripts/applescript.vim', { 'for': 'applescript' }
-" editing CSV docs, super handily.
-" TODO update this repo so that people know to look for chrisba
-Plug 'dsummersl/wikia-csv'
 " Plug 'chrisba/csv.vim'
 " simple utf2ascii function.
 Plug 'dsummersl/vim-utf2ascii'
-" snippets
-Plug 'derekwyatt/vim-scala', { 'for': 'scala' }
-Plug 'rust-lang/rust.vim', { 'for': 'rust' }
 " Plug 'kchmck/vim-coffee-script'
 " TODO this? Its a dependency for a number of libs?
 Plug 'PProvost/vim-ps1'
@@ -80,17 +90,10 @@ Plug 'gregsexton/gitv'
 Plug 'vim-scripts/visualrepeat'
 " quick find method definitions:
 Plug 'Shougo/denite.nvim'
-Plug 'chemzqm/denite-extra'
+Plug 'dsummersl/denite-extra', { 'branch': 'store-quickfix-location' }
 Plug 'majutsushi/tagbar'
-" JSX support
-Plug 'pangloss/vim-javascript'
-Plug 'mxw/vim-jsx'
 " javascript omni integration
-Plug 'marijnh/tern_for_vim', { 'do': 'npm install' }
 Plug 'Shougo/vimproc'
-" syntax hilighting for actionscript
-Plug 'jeroenbourgois/vim-actionscript'
-Plug 'wavded/vim-stylus' " syntax hilighting for stylus files
 " automatically detect the indent style of the document
 " TODO try https://github.com/roryokane/detectindent
 Plug 'vim-scripts/detectindent'
@@ -102,21 +105,15 @@ Plug 'tommcdo/vim-exchange' " Easy text exchange operator for Vim
 " Plug 'nelstrom/vim-visual-star-search' " use #/* in visual mode for searching
 " Plug 'bigfish/vim-js-context-coloring', { 'do': 'npm install --update' }
 
-" vaf/vif for functions
-Plug 'kana/vim-textobj-function'
-" via (visual inner arg)
-Plug 'vim-scripts/argtextobj.vim'
-" viI (visual inner Indent)
-Plug 'michaeljsmith/vim-indent-object'
-" user defined textobj implementations
-Plug 'kana/vim-textobj-user'
-" vay viy to select syntax blocks
-Plug 'kana/vim-textobj-syntax'
-Plug 'landock/vim-expand-region'
-" select comment with vic or vac.
-Plug 'glts/vim-textobj-comment'
-" vib between any arbitrary object (vibX where X is the obj)
-Plug 'thinca/vim-textobj-between'
+Plug 'wellle/targets.vim' " many text objects
+Plug 'kana/vim-textobj-function' " vaf/vif for functions
+Plug 'michaeljsmith/vim-indent-object' " viI (visual inner Indent)
+Plug 'kana/vim-textobj-user' " user defined textobj implementations
+Plug 'kana/vim-textobj-syntax' " vay viy to select syntax blocks
+Plug 'landock/vim-expand-region' " use + and _ to expand the visual selection
+Plug 'glts/vim-textobj-comment' " select comment with vic or vac.
+Plug 'thinca/vim-textobj-between' " vib between any arbitrary object (vibX where X is the obj)
+Plug 'kana/vim-textobj-lastpat' " vi/ (last search)
 
 " Easily toggle boolean values:
 Plug 'AndrewRadev/switch.vim'
@@ -127,18 +124,15 @@ Plug 'dsummersl/vus'
 " unit testing for vim.
 Plug 'dsummersl/vimunit'
 
-" TODO jcfaria/Vim-R-plugin
-" TODO https://github.com/vim-scripts/PatternsOnText - delete/replace non
-" matches (also has some quicklist looking stuff).
-" TODO move text blocks easily through )}" : https://github.com/vim-scripts/easy-through-pairing.vim
-" TODO use count in front of jk control keys: https://github.com/vim-scripts/rel-jump
-
 " Probably going to remove these:
 " colorize ansi escaped text (console dumps)
 Plug 'vim-scripts/AnsiEsc.vim', { 'on': 'AnsiEsc' }
 Plug 'vim-scripts/cecutil'
 
-" GUI & version specific settings (7+) "{{{
+Plug 'dsummersl/gundo.vim'
+Plug 'honza/vim-snippets'
+Plug 'dsummersl/vim-sluice'
+Plug 'ap/vim-css-color'
 
 if has('nvim')
   Plug 'Shougo/deoplete.nvim', { 'do': ':UpdateRemotePlugins' }
@@ -147,31 +141,11 @@ if has('nvim')
   Plug 'benekastah/neomake'
 endif
 
-" for the latest version I am both gui/console enabled!
-if v:version >= 704
-  set termguicolors
-  " vi/ (last search)
-  Plug 'kana/vim-textobj-lastpat'
-  " A better powerline plugin:
-  Plug 'vim-airline/vim-airline'
-  Plug 'vim-airline/vim-airline-themes'
-  " Plug 'ryanoasis/vim-devicons'
-  " Plug 'Valloric/YouCompleteMe', { 'do': './install.py' }
-  Plug 'SirVer/ultisnips'
-endif
-
-if v:version >= 703
-  set undofile
-  set undodir=~/.vim/undo
-  " This f's with neovim
-  " Plug 'https://github.com/godlygeek/csapprox'
-  Plug 'dsummersl/gundo.vim'
-  Plug 'honza/vim-snippets'
-  " sluice side screen control
-  Plug 'dsummersl/vim-sluice'
-  Plug 'ap/vim-css-color'
-endif
-"}}}
+set termguicolors
+Plug 'vim-airline/vim-airline'
+Plug 'vim-airline/vim-airline-themes'
+" Plug 'ryanoasis/vim-devicons'
+Plug 'SirVer/ultisnips'
 
 call plug#end()
 
@@ -191,7 +165,6 @@ if v:version >= 704
   " show undo history
   nnoremap <F5> :MundoToggle<CR>
 
-  set background=dark
   colorscheme one
 
   " colorscheme solarized8_dark_high
@@ -261,6 +234,9 @@ endif
 " }}}
 " basic options {{{
 
+set undofile
+set undodir=~/.vim/undo
+
 set conceallevel=2 " for ToggleGroupConceal
 set autowrite
 set nonumber
@@ -277,8 +253,8 @@ syntax on
 " use folding by default
 set fdm=marker
 
-" Turn on mouse for a visual mode only:
-set mouse=v
+" Turn on mouse for a visual and normal mode only:
+set mouse=vn
 
 " improve syntax highlighting speed in general
 syntax sync minlines=64
@@ -372,12 +348,12 @@ let g:deoplete#enable_camel_case = 1
 let g:deoplete#max_list = 10
 let g:deoplete#auto_complete_delay = 150
 
-let g:splitjoin_python_brackets_on_separate_lines = 1
+let g:splitjoin_trailing_comma = 1
 
-let g:gutentags_cache_dir = '~/.vim/tags'
-let g:gutentags_ctags_exclude = [ '*.json', '*/node_modules/*', '*/bower_components/*', 'tags', '*.sql' ]
+let g:gen_tags#gtags_auto_gen = 1
+" let g:gen_tags#blacklist = ['$HOME']
 
-" Color brackets:
+" Color brackets and HTML/XML:
 let g:rainbow_active = 1
 
 let delimitMate_expand_cr = 2
@@ -392,6 +368,8 @@ let g:mundo_verbose_graph = 0
 let g:mundo_mirror_graph = 1
 let g:mundo_prefer_python3 = 1
 let g:mundo_help = 1
+let g:mundo_auto_preview_delay = 1000
+let g:mundo_inline_undo_delay = 1000
 
 let g:indent_guides_enable_on_vim_startup = 0
 let g:indent_guides_color_change_percent = 4
@@ -432,31 +410,23 @@ endfunction
 " left/right and up/down first/last
 autocmd FileType * let b:switch_custom_definitions =
     \ [
-    \ { '\([^=]\)===\([^=]\)': '\1==\2' },
-    \ { '\([^=]\)==\([^=]\)': '\1===\2' },
-    \ { 'FALSE': 'TRUE' },
-    \ { 'TRUE': 'FALSE' },
-    \ { 'left': 'right' },
-    \ { 'right': 'left' },
-    \ { 'up': 'down' },
-    \ { 'down': 'up' },
-    \ { 'top': 'bottom' },
-    \ { 'bottom': 'top' },
-    \ { 'first': 'last' },
-    \ { 'last': 'first' },
-    \ { 'public': 'private' },
-    \ { 'private': 'protected' },
-    \ { 'protected': 'public' },
-    \ { 'INFO': 'DEBUG' },
-    \ { 'DEBUG': 'INFO' },
-    \ { 'info': 'debug' },
-    \ { 'debug': 'info' },
-    \ { 'assertFalse': 'assertTrue' },
-    \ { 'assertTrue': 'assertFalse' },
-    \ { 'assertIn': 'assertNotIn' },
-    \ { 'assertNotIn': 'assertIn' },
-    \ { 'assertContains': 'assertNotContains' },
-    \ { 'assertNotContains': 'assertContains' }
+    \ { '\([^=]\)===\([^=]\)': '\1==\2' }, { '\([^=]\)==\([^=]\)': '\1===\2' },
+    \ { '&&': '||' }, { '||': '&&' },
+    \ { 'and': 'or' }, { 'or': 'and' },
+    \ { 'FALSE': 'TRUE' }, { 'TRUE': 'FALSE' },
+    \ { 'left': 'right' }, { 'right': 'left' },
+    \ { 'yes': 'no' }, { 'no': 'yes' },
+    \ { 'disabled': 'enabled' }, { 'enabled': 'disabled' },
+    \ { 'present': 'absent' }, { 'absent': 'present' },
+    \ { 'up': 'down' }, { 'down': 'up' },
+    \ { 'top': 'bottom' }, { 'bottom': 'top' },
+    \ { 'first': 'last' }, { 'last': 'first' },
+    \ { 'public': 'private' }, { 'private': 'protected' }, { 'protected': 'public' },
+    \ { 'INFO': 'DEBUG' }, { 'DEBUG': 'INFO' },
+    \ { 'info': 'debug' }, { 'debug': 'info' },
+    \ { 'assertFalse': 'assertTrue' }, { 'assertTrue': 'assertFalse' },
+    \ { 'assertIn': 'assertNotIn' }, { 'assertNotIn': 'assertIn' },
+    \ { 'assertContains': 'assertNotContains' }, { 'assertNotContains': 'assertContains' }
     \ ]
 
 " don't use vif (thats a function, duh!)
@@ -632,11 +602,13 @@ let g:AutoPairsFlyMode=1
 " " In Iterm2 I mapped C-S-] to <f13>
 " imap <F13> <C-O>:let g:AutoPairsFlyMode=1<CR>}<C-O>:let g:AutoPairsFlyMode=0<CR>
 
-" I want to see all the options when I try to jump to a tag:
-nmap <C-]> g<C-]>zt
-
 " map <leader>dd :TernDef<cr>
-nmap <silent> <leader>D <Plug>DashSearch
+" nmap <silent> <leader>D <Plug>DashSearch
+
+" Quickly edit the contents of a register (for macros, say); <leader>m or
+" "q<leader>m  to edit register q
+" From https://github.com/mhinz/vim-galore#quickly-edit-your-macros
+nnoremap <leader>m  :<c-u><c-r><c-r>='let @'. v:register .' = '. string(getreg(v:register))<cr><c-f><left>
 
 " I like using sort in netrw
 let g:sneak#map_netrw = 0
@@ -651,6 +623,7 @@ cabbrev gitv Gitv
 cabbrev ag Ag
 cabbrev aa AA
 cabbrev gg GG
+cabbrev man Man
 cabbrev dash Dash
 
 " when switching between the alternate window, automatically save.
@@ -758,8 +731,11 @@ map <leader>gv <C-^><C-w>h:q<cr>
 " folded.
 map <leader>ch :call ToggleSearchConceal()<CR>
 
+" Sort python imports:
+command! -range=% Isort :<line1>,<line2>! isort -
+
 function! ToggleSearchConceal()
-	if !exists("b:searchtext")
+  if !exists("b:searchtext")
     let b:searchtext = @/
   endif
   if b:searchtext != @/
@@ -771,32 +747,32 @@ function! ToggleSearchConceal()
 endfunction
 
 function! ToggleGroupConceal(group, cchar)
-    " Get the existing syntax definition
-    redir => syntax_def
-    exe 'silent syn list' a:group
-    redir END
-    " Split into multiple lines
-    let lines = split(syntax_def, "\n")
-    " Clear the existing syntax definitions
-    exe 'syn clear' a:group
-    for line in lines
-            " Only parse the lines that mention the desired group
-            " (so don't try to parse the "--- Syntax items ---" line)
-        if line =~ a:group
-            echom line
-                    " Get the required bits (the syntax type and the full definition)
-            let matcher = a:group . '\s\+xxx\s\+\(\k\+\)\s\+\(.*\)'
-            let type = substitute(line, matcher, '\1', '')
-            let definition = substitute(line, matcher, '\2', '')
-                    " Either add or remove 'conceal' from the definition
-            if definition =~ 'conceal'
-                let definition = substitute(definition, ' conceal\>', '', '')
-                exe 'syn' type a:group definition
-            else
-                exe 'syn' type a:group definition 'conceal cchar='. a:cchar
-            endif
-        endif
-    endfor
+  " Get the existing syntax definition
+  redir => syntax_def
+  exe 'silent syn list' a:group
+  redir END
+  " Split into multiple lines
+  let lines = split(syntax_def, "\n")
+  " Clear the existing syntax definitions
+  exe 'syn clear' a:group
+  for line in lines
+    " Only parse the lines that mention the desired group
+    " (so don't try to parse the "--- Syntax items ---" line)
+    if line =~ a:group
+      echom line
+      " Get the required bits (the syntax type and the full definition)
+      let matcher = a:group . '\s\+xxx\s\+\(\k\+\)\s\+\(.*\)'
+      let type = substitute(line, matcher, '\1', '')
+      let definition = substitute(line, matcher, '\2', '')
+      " Either add or remove 'conceal' from the definition
+      if definition =~ 'conceal'
+        let definition = substitute(definition, ' conceal\>', '', '')
+        exe 'syn' type a:group definition
+      else
+        exe 'syn' type a:group definition 'conceal cchar='. a:cchar
+      endif
+    endif
+  endfor
 endfunction
 
 " Transforms for running tests in. {} is replaced. For example:
@@ -953,11 +929,9 @@ if has("autocmd") && !exists("autocommands_loaded")
   autocmd FileType htmldjango RainbowToggleOff
 
   " autocmd BufNewFile,BufRead * hi Search ctermfg=black ctermbg=gray guifg=#697b7d guibg=#93a4a6
-  autocmd BufNewFile,BufRead *.rabl setf eruby
-  autocmd BufNewFile,BufRead *.eco setf eruby
+  autocmd BufNewFile,BufRead *.j2 setf jinja
   autocmd BufNewFile,BufRead *.md setf markdown
   autocmd BufNewFile,BufRead *.md setlocal spell fo-=tn wrap et
-  autocmd BufNewFile,BufRead *.pp setf ruby
   autocmd BufNewFile,BufRead *.csv setf csv
   autocmd BufNewFile,BufRead *.tsv setf csv
   autocmd BufNewFile,BufRead *.tsv setlocal ts=20 sw=25
