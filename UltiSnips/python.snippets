@@ -1,12 +1,17 @@
 clearsnippets
 priority 1
 
+
 global !p
 import os
 import sys
 sys.path.append(os.path.expanduser('~/.vim/python'))
 from ultisniphelpers import *
 endglobal
+
+snippet super "super() method" !b
+super(${1:class}, self).${2:method}($3)$0
+endsnippet
 
 snippet lg "print " !b
 print("$1")$0
@@ -29,14 +34,13 @@ snippet av "[key] = value" i
 endsnippet
 
 snippet def "function with docstrings" !b
-def ${1:function}(${2:params}):
+def ${1:function}(${2:self}):
 	${4:""" ${3:TODO document function} """}
 	${5:pass}
 endsnippet
 
 snippet test "test funtion (caktus)" !b
 def test_${1:function}(self):
-	""" """
 	${2:pass}
 endsnippet
 
@@ -84,7 +88,7 @@ import traceback
 traceback.print_stack()$0
 endsnippet
 
-snippet testcase "pyunit testcase" b
+snippet testclass "pyunit testcase" b
 class Test${1:Class}(${2:unittest.TestCase}):
 	"""${3:Test case docstring}"""
 
