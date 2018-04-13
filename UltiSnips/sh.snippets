@@ -11,6 +11,58 @@ set -x
 $0
 endsnippet
 
+snippet getopt "Setup getopt()" !b
+getopt --test > /dev/null
+if [[ $? -ne 4 ]]; then
+	echo "I’m sorry, getopt() will fail in this environment."
+	exit 1
+fi
+
+OPTIONS=o:v
+LONGOPTIONS=output:,verbose
+
+# -temporarily store output to be able to check for errors
+# -e.g. use “--options” parameter by name to activate quoting/enhanced mode
+# -pass arguments only via   -- "$@"   to separate them correctly
+PARSED=$(getopt --options=$OPTIONS --longoptions=$LONGOPTIONS --name "\$0" -- "$@")
+if [[ $? -ne 0 ]]; then
+	# e.g. $? == 1
+	#  then getopt has complained about wrong arguments to stdout
+	exit 2
+fi
+# read getopt’s output this way to handle the quoting right:
+eval set -- "$PARSED"
+while true; do
+	case "\$1" in
+		-v|--verbose)
+			v=y
+			shift
+			;;
+		-o|--output)
+			outFile="\$2"
+			shift 2
+			;;
+		--)
+			# split until we see --
+			shift
+			break
+			;;
+		*)
+			echo "Programming error"
+			exit 3
+			;;
+	esac
+done
+
+# handle non-option arguments
+if [[ $# -ne 1 ]]; then
+	echo "\$0: A single input file is required."
+	exit 4
+fi
+
+echo "verbose: $v, force: $f, debug: $d, in: \$1, out: $outFile"
+endsnippet 
+
 snippet if "if ... then (if)" !
 if ${2:[[ ${1:condition} ]]}
 then
@@ -23,4 +75,8 @@ while read line
 do
   ${2:# commands}
 done < ${1:filename}
+endsnippet
+
+snippet lge "print a value"
+echo "${1:var} = $$1"$0
 endsnippet

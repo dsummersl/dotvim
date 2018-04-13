@@ -51,6 +51,7 @@ Plug 'luochen1990/rainbow' " Rainbow toggle colorscheme
 " Language specific plugins:
 Plug 'leafgarland/typescript-vim', { 'for': 'typescript' }
 Plug 'vim-scripts/applescript.vim', { 'for': 'applescript' }
+Plug 'sirtaj/vim-openscad'
 Plug 'derekwyatt/vim-scala', { 'for': 'scala' }
 Plug 'rust-lang/rust.vim', { 'for': 'rust' }
 Plug 'davidhalter/jedi-vim' " python support <leader>d to go to definition.
@@ -94,9 +95,7 @@ Plug 'dsummersl/denite-extra', { 'branch': 'store-quickfix-location' }
 Plug 'majutsushi/tagbar'
 " javascript omni integration
 Plug 'Shougo/vimproc'
-" automatically detect the indent style of the document
-" TODO try https://github.com/roryokane/detectindent
-Plug 'vim-scripts/detectindent'
+Plug 'tpope/vim-sleuth' " automatically detect the indent style of the document
 Plug 'jiangmiao/auto-pairs' " close quotes and such automatically
 Plug 'junegunn/vim-easy-align' " A simple Vim alignment plugin
 Plug 'justinmk/vim-sneak' " f t s ; . mappings - jump to any location specified by two characters
@@ -165,7 +164,8 @@ if v:version >= 704
   " show undo history
   nnoremap <F5> :MundoToggle<CR>
 
-  colorscheme one
+  set background=dark
+  colorscheme gruvbox
 
   " colorscheme solarized8_dark_high
 
@@ -254,7 +254,7 @@ syntax on
 set fdm=marker
 
 " Turn on mouse for a visual and normal mode only:
-set mouse=vn
+set mouse=v
 
 " improve syntax highlighting speed in general
 syntax sync minlines=64
@@ -367,9 +367,10 @@ let g:neomake_python_enabled_makers = [ 'flake8' ]
 let g:mundo_verbose_graph = 0
 let g:mundo_mirror_graph = 1
 let g:mundo_prefer_python3 = 1
-let g:mundo_help = 1
-let g:mundo_auto_preview_delay = 1000
-let g:mundo_inline_undo_delay = 1000
+let g:mundo_help = 0
+let g:mundo_inline_undo = 1
+let g:mundo_auto_preview_delay = 100
+let g:mundo_inline_undo_delay = 100
 
 let g:indent_guides_enable_on_vim_startup = 0
 let g:indent_guides_color_change_percent = 4
@@ -385,11 +386,6 @@ let g:narrow_rgn_update_orig_win = 1
 let g:nrrw_rgn_update_orig_win = 1
 
 " let g:fugitive_git_executable = '/usr/local/bin/git'
-
-let g:detectindent_preferred_indent = 2
-let g:detectindent_preferred_expandtab = 2
-let g:detectindent_max_lines_to_analyse = 64
-let g:detectindent_min_indent = 2
 
 " we have very long commit lines - this helps!
 let g:Gitv_TruncateCommitSubjects = 1
@@ -656,6 +652,7 @@ imap <M-a> <Home>
 
 " console copy to buffer
 noremap <leader>y "+y
+noremap <leader>a ggVG"+y
 " copy the current filename and line number into the clipboard and past register:
 noremap <leader>f :let @+=expand("%") .'#'. line(".")<bar>let @"=@+ ."\n"<CR>
 
@@ -897,7 +894,6 @@ if has("autocmd") && !exists("autocommands_loaded")
   au WinEnter * setlocal cursorline
 
   " Set a buffer variable and then only call this two time.
-  autocmd BufReadPost * :DetectIndent
   autocmd BufNewFile,BufReadPost * :call AutoPairsInit()
 
   "function! s:SynOffInDiffMode()
