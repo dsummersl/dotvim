@@ -5,8 +5,6 @@ so ~/.vim/autoload/plug.vim
 call plug#begin('~/.vim/bundle')
 
 " <---- plugins in testing ---->
-Plug 'joereynolds/gtags-scope'
-Plug 'jsfaint/gen_tags.vim'
 Plug 'mattboehm/vim-unstack'
 Plug 'chrisbra/vim-diff-enhanced' " PatiencDiff and EnhanceDiff
 Plug 'idanarye/vim-yankitute' " Yankitude for copying into registers
@@ -36,6 +34,7 @@ Plug 'tpope/vim-unimpaired'
 Plug 'tpope/vim-repeat'
 Plug 'kreskij/Repeatable.vim'
 Plug 'tpope/vim-eunuch' " eunuch.vim: cp/move/unlink commands
+Plug 'ludovicchabant/vim-gutentags'
 
 Plug 'vim-scripts/repeatable-motions.vim' " Repeat motions with C-[hjkl]
 Plug 'AndrewRadev/splitjoin.vim' " Gs to split long lines
@@ -350,8 +349,8 @@ let g:deoplete#auto_complete_delay = 150
 
 let g:splitjoin_trailing_comma = 1
 
-let g:gen_tags#gtags_auto_gen = 1
-" let g:gen_tags#blacklist = ['$HOME']
+let g:gutentags_cache_dir = '~/.vim/tags'
+let g:gutentags_ctags_exclude = [ '*.json', '*/node_modules/*', '*/bower_components/*', 'tags', '*.sql' ]
 
 " Color brackets and HTML/XML:
 let g:rainbow_active = 1
@@ -597,6 +596,9 @@ let g:AutoPairsFlyMode=1
 " " imap <C-0> <C-O>:let g:AutoPairsFlyMode=1<CR>)<C-O>:let g:AutoPairsFlyMode=0<CR>
 " " In Iterm2 I mapped C-S-] to <f13>
 " imap <F13> <C-O>:let g:AutoPairsFlyMode=1<CR>}<C-O>:let g:AutoPairsFlyMode=0<CR>
+
+" I want to see all the options when I try to jump to a tag:
+nmap <C-]> g<C-]>zt
 
 " map <leader>dd :TernDef<cr>
 " nmap <silent> <leader>D <Plug>DashSearch
