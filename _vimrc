@@ -245,7 +245,7 @@ set nonumber
 set nolist
 
 " give a little context
-set scrolloff=1
+set scrolloff=2
 
 set guioptions=egt  " GUI options
 syntax on
@@ -621,6 +621,11 @@ cabbrev aa AA
 cabbrev gg GG
 cabbrev man Man
 cabbrev dash Dash
+
+" I like having zs to jump to the start of the line, but I'd really love a
+" zm to jump to the middle - I don't think I'll miss the original folding
+" function of zm:
+nnoremap zm zs
 
 " when switching between the alternate window, automatically save.
 inoremap <C-^> <C-O>:e #<CR>
