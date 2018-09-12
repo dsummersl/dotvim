@@ -9,7 +9,7 @@ Plug 'mattboehm/vim-unstack'
 Plug 'chrisbra/vim-diff-enhanced' " PatiencDiff and EnhanceDiff
 Plug 'idanarye/vim-yankitute' " Yankitude for copying into registers
 Plug 'junegunn/goyo.vim' " Writer mode via :Goyu
-Plug 'brooth/far.vim' " :Far for easy search replace
+
 " TODO jcfaria/Vim-R-plugin
 " TODO https://github.com/vim-scripts/PatternsOnText - delete/replace non
 " matches (also has some quicklist looking stuff).
@@ -21,7 +21,7 @@ Plug 'machakann/vim-highlightedyank' " highlight any text as it is yanked
 Plug 'pgdouyon/vim-evanesco' " Highlight search, clear after searching
 Plug 'MarcWeber/vim-addon-local-vimrc' " enable project local .vimrc files
 Plug 'okcompute/vim-python-motions' " ]] ]C ]M to move between methods
-Plug 'tpope/vim-fugitive' " git
+Plug 'tpope/vim-fugitive', { 'tag': 'v2.4' } " git
 Plug 'tpope/vim-rhubarb' " Gbrowse 
 Plug 'godlygeek/csapprox' " neovim coloring for gblame
 Plug 'ludovicchabant/vim-lawrencium' " mercurial (hg)
@@ -29,7 +29,7 @@ Plug 'tpope/vim-abolish' " fix spelling errors
 " surround things with quotes, etc (csw - surround word)
 Plug 'tpope/vim-surround'
 " many additional mappings for ]q, etc
-Plug 'tpope/vim-unimpaired'
+Plug 'tpope/vim-unimpaired', { 'tag': 'v2.0' }
 " awesome: makes the surround plugin work with the '.' keys (repeatability!)
 Plug 'tpope/vim-repeat'
 Plug 'kreskij/Repeatable.vim'
@@ -96,10 +96,10 @@ Plug 'majutsushi/tagbar'
 Plug 'Shougo/vimproc'
 Plug 'tpope/vim-sleuth' " automatically detect the indent style of the document
 Plug 'jiangmiao/auto-pairs' " close quotes and such automatically
-Plug 'junegunn/vim-easy-align' " A simple Vim alignment plugin
 Plug 'justinmk/vim-sneak' " f t s ; . mappings - jump to any location specified by two characters
 Plug 'ervandew/ag' " vim plugin to search using the silver searcher (ag)
 Plug 'tommcdo/vim-exchange' " Easy text exchange operator for Vim
+Plug 'tommcdo/vim-lion' " align with operator gL and gl (ie glip= to align paragraph by =)
 " Plug 'nelstrom/vim-visual-star-search' " use #/* in visual mode for searching
 " Plug 'bigfish/vim-js-context-coloring', { 'do': 'npm install --update' }
 
@@ -127,9 +127,9 @@ Plug 'dsummersl/vimunit'
 Plug 'vim-scripts/AnsiEsc.vim', { 'on': 'AnsiEsc' }
 Plug 'vim-scripts/cecutil'
 
-Plug 'dsummersl/gundo.vim'
+Plug 'dsummersl/gundo.vim', { 'branch': 'shaggyrogers-master' }
 Plug 'honza/vim-snippets'
-Plug 'dsummersl/vim-sluice'
+" Plug 'dsummersl/vim-sluice'
 Plug 'ap/vim-css-color'
 
 if has('nvim')
@@ -163,8 +163,8 @@ if v:version >= 704
   " show undo history
   nnoremap <F5> :MundoToggle<CR>
 
-  set background=dark
-  colorscheme gruvbox
+  set background=light
+  colorscheme one
 
   " colorscheme solarized8_dark_high
 
@@ -309,6 +309,10 @@ if has('nvim')
   set inccommand=split
 endif
 
+
+let g:python_host_prog='/usr/local/bin/python2'
+let g:python3_host_prog='/usr/local/bin/python3'
+
 "}}}
 " Plugin settings, changes."{{{
 
@@ -316,6 +320,11 @@ call repeatable#Setup()
 
 " started In Diff-Mode set diffexpr (plugin not loaded yet)
 let &diffexpr='EnhancedDiff#Diff("git diff", "--diff-algorithm=patience")'
+
+let g:gruvbox_italic = 1
+
+" When using gL and gl, squeeze any extra leading whitespace.
+let g:lion_squeeze_spaces = 1
 
 let g:highlightedyank_highlight_duration = 250
 
@@ -435,8 +444,8 @@ omap ib  <Plug>(textobj-between-i)
 " pathing for abolish
 set rtp+=~/.vim/after
 
-let g:UltiSnipsSnippetDirectories=[$HOME.'/.vim/UltiSnips']
-let g:UltiSnipsPythonPath="/usr/local/bin/python"
+let g:UltiSnipsSnippetDirectories=[$HOME.'/.vim/UltiSnips', $HOME.'/.vim/bundle/vim-snippets/UltiSnips']
+" let g:UltiSnipsPythonPath="/usr/local/bin/python"
 let g:UltiSnipsSnippetsDir="~/.vim/UltiSnips"
 let g:UltiSnipsListSnippets='<C-\>'
 let g:UltiSnipsExpandTrigger="<Tab>"
@@ -664,7 +673,7 @@ noremap <leader>a ggVG"+y
 noremap <leader>f :let @+=expand("%") .'#'. line(".")<bar>let @"=@+ ."\n"<CR>
 
 " see all the search matches in a separate window (narrow region)
-noremap <leader>/ :exec "Denite -auto-resize -input=". substitute(escape(@/,' '),'\\[<>]\{1}','\\b','g') ." -mode=normal line"<cr>
+noremap <leader>/ :exec "Denite -auto-resize -input=". substitute(escape(@/,' '),'\\[<>]\{1}','\\b','g') ." -mode=normal -matchers=\"matcher_regexp\" line"<cr>
 " unimpaired like mapping for diff option for ignoring whitespace.
 noremap ]oI :set diffopt-=iwhite<cr>
 noremap [oI :set diffopt+=iwhite<cr>
@@ -709,7 +718,10 @@ nnoremap <F4> :SluiceMacroOn <bar> SluiceToggle<CR>
 Repeatable nnoremap <leader>. :Switch<cr>
 
 " Search for occurrences of the word under the cursor:
-map <leader>sw yiw:let @/=@"<cr>:Ag <C-r>"<cr>:GCL<cr>
+nmap <leader>sw yiw:let @/=@"<cr>:Ag <C-r>"<cr>:GCL<cr>
+vmap <leader>sw y:let @/=@"<cr>:Ag <C-r>"<cr>:GCL<cr>
+nmap <leader>vw yiw:let @/=@"<cr>:Gg <C-r>"<cr>
+vmap <leader>vw y:let @/=@"<cr>:Gg <C-r>"<cr>
 
 nnoremap <leader>gl :GCL<cr>
 nnoremap <leader>gd :Denite -resume<cr>
@@ -724,7 +736,7 @@ map <leader>du :let @z=g:django_lookup_url_recording<cr>@z
 map <leader>dv :let @z=g:django_lookup_view_recording<cr>@zF,b<c-]>
 
 " From a 'diff view' in gitv, got back to the list of files one got there from.
-let g:gitv_revert_to_overview=""
+let g:gitv_revert_to_overview=''
 map <leader>gv <C-^><C-w>h:q<cr>
 
 "}}}
@@ -839,39 +851,42 @@ function! DV()
 endfunction
 
 function! s:UniteQuickFix()
-  Denite quickfix -mode=normal -auto-resize
+  Denite quickfix -mode=normal -auto-resize -matchers="matcher_regexp"
 endfunction
 function! s:UniteLocationList()
-  Denite location_list -mode=normal -auto-resize
+  Denite location_list -mode=normal -auto-resize -matchers="matcher_regexp"
 endfunction
+
 " Execute something on all files of the same kind:
 "
 " See GG and AA commands:
 function! s:ExecFileType(cmd,search)
-  let extension = substitute(expand('%'),'\v^.*\.',"","")
-  exec printf("silent %s",printf(a:cmd,a:search,extension))
+  let l:extension = substitute(expand('%'),'\v^.*\.','','')
+  " save the last search as this so that */# work:
+  let @/ = a:search
+  exec printf('silent %s',printf(a:cmd,a:search,l:extension))
   call s:UniteQuickFix()
 endfunction
 
 command! -nargs=0 GCL call s:UniteQuickFix()
 command! -nargs=0 GLL call s:UniteLocationList()
-command! -nargs=1 GG call s:ExecFileType("Ggrep %s -- '*.%s'",'<args>')
-command! -nargs=1 AA call s:ExecFileType("Ag %s **/*.%s",'<args>')
-command! -nargs=1 Gg exec "Ggrep ". '<args>' | GCL
-command! -nargs=1 Aa exec "Ag ". '<args>' | GCL
+command! -nargs=1 GG call s:ExecFileType("silent Ggrep %s -- '*.%s'",'<args>')
+command! -nargs=1 AA call s:ExecFileType("silent Ag %s **/*.%s",'<args>')
+command! -nargs=1 Gg exec "silent Ggrep ". '<args>' | GCL
+command! -nargs=1 Aa exec "silent Ag ". '<args>' | GCL
 
 " TODO automate this diffsplit two matching regions
 " let @m=j?<<<jV/^===k"aynjV/^>>>k"by:sp belowggdG"bp:vert diffs aboveggdG"apgglgg:diffupdate=
 
 function! s:SetStop(type,count)
-  if a:type == "t"
+  if a:type ==# 't'
     set noexpandtab
   else
     set expandtab
   end
-  exec "set sw=". a:count
-  exec "set ts=". a:count
-  exec "set sts=". a:count
+  exec 'set sw='. a:count
+  exec 'set ts='. a:count
+  exec 'set sts='. a:count
 endfunction
 
 command! -nargs=* SS call s:SetStop(<f-args>)

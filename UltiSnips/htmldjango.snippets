@@ -13,6 +13,14 @@ snippet dfor "Django for block"
 {% endfor %}
 endsnippet
 
+snippet durl "Django url block" !w
+{% url "$1" %}$0
+endsnippet
+
 snippet del "Django else tag"
 {% el${2:se }%}$1
+endsnippet
+
+snippet block "django block" !b
+{% block $1 %}$0{% endblock $1 %}
 endsnippet
