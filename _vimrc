@@ -9,6 +9,8 @@ Plug 'mattboehm/vim-unstack'
 Plug 'chrisbra/vim-diff-enhanced' " PatiencDiff and EnhanceDiff
 Plug 'idanarye/vim-yankitute' " Yankitude for copying into registers
 Plug 'junegunn/goyo.vim' " Writer mode via :Goyu
+Plug 'blueyed/vim-diminactive' " dim inactive windows. 
+Plug 'rizzatti/dash.vim' " Dash osx integration :DashSearch
 
 " TODO jcfaria/Vim-R-plugin
 " TODO https://github.com/vim-scripts/PatternsOnText - delete/replace non
@@ -57,6 +59,7 @@ Plug 'davidhalter/jedi-vim' " python support <leader>d to go to definition.
 " TODO update this repo so that people know to look for chrisba
 Plug 'dsummersl/wikia-csv' " editing CSV docs, super handily.
 Plug 'pangloss/vim-javascript'
+Plug 'gu-fan/riv.vim'  " syntax for rst files
 Plug 'mxw/vim-jsx'
 Plug 'jeroenbourgois/vim-actionscript'
 Plug 'wavded/vim-stylus' " syntax hilighting for stylus files
@@ -322,11 +325,30 @@ call repeatable#Setup()
 let &diffexpr='EnhancedDiff#Diff("git diff", "--diff-algorithm=patience")'
 
 let g:gruvbox_italic = 1
+let g:gruvbox_bold = 1
+let g:gruvbox_underline = 1
+let g:gruvbox_undercurl = 1
+let g:gruvbox_contrast_dark = 'soft'
+let g:gruvbox_contrast_light = 'soft'
+
+let g:riv_disable_folding = 1
 
 " When using gL and gl, squeeze any extra leading whitespace.
 let g:lion_squeeze_spaces = 1
 
 let g:highlightedyank_highlight_duration = 250
+
+function! Render_Only_File(...)
+  let l:builder = a:1
+  let l:context = a:2
+
+  call l:builder.add_section('file', '%F')
+
+  return 0   " the default: draw the rest of the statusline
+  " return -1  " do not modify the statusline
+  " return 1   " modify the statusline with the current contents of the builder
+endfunction
+call airline#add_inactive_statusline_func('Render_Only_File')
 
 let g:expand_region_text_objects = {
       \ 'iw'  :0,
@@ -609,8 +631,9 @@ let g:AutoPairsFlyMode=1
 " I want to see all the options when I try to jump to a tag:
 nmap <C-]> g<C-]>zt
 
+" TODO make this a filetype definition in JS
 " map <leader>dd :TernDef<cr>
-" nmap <silent> <leader>D <Plug>DashSearch
+nmap <silent> <leader>D <Plug>DashSearch
 
 " Quickly edit the contents of a register (for macros, say); <leader>m or
 " "q<leader>m  to edit register q
@@ -674,9 +697,14 @@ noremap <leader>f :let @+=expand("%") .'#'. line(".")<bar>let @"=@+ ."\n"<CR>
 
 " see all the search matches in a separate window (narrow region)
 noremap <leader>/ :exec "Denite -auto-resize -input=". substitute(escape(@/,' '),'\\[<>]\{1}','\\b','g') ." -mode=normal -matchers=\"matcher_regexp\" line"<cr>
+
 " unimpaired like mapping for diff option for ignoring whitespace.
 noremap ]oI :set diffopt-=iwhite<cr>
 noremap [oI :set diffopt+=iwhite<cr>
+
+" undo/redo to the previous write
+Repeatable map <leader>u :earlier 1f<cr>
+Repeatable map <leader>r :later 1f<cr>
 
 " Swap function arguments, move the argument under the cursor to the left or to
 " the right.
@@ -956,7 +984,6 @@ if has("autocmd") && !exists("autocommands_loaded")
   autocmd BufNewFile,BufRead *.tsv Delimiter \t
   autocmd BufNewFile,BufEnter *.py :SS s 4
   autocmd BufNewFile,BufRead *.gradle set ft=groovy
-  autocmd BufNewFile,BufRead *.rst set ft=markdown
   autocmd BufNewFile,BufRead Vagrantfile set ft=ruby
   autocmd BufNewFile,BufRead *.tss set ft=javascript
   autocmd BufNewFile,BufRead *.html.ts set ft=html
