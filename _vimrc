@@ -9,8 +9,11 @@ Plug 'mattboehm/vim-unstack'
 Plug 'chrisbra/vim-diff-enhanced' " PatiencDiff and EnhanceDiff
 Plug 'idanarye/vim-yankitute' " Yankitude for copying into registers
 Plug 'junegunn/goyo.vim' " Writer mode via :Goyu
-Plug 'blueyed/vim-diminactive' " dim inactive windows. 
+" Plug 'blueyed/vim-diminactive' " dim inactive windows. 
 Plug 'rizzatti/dash.vim' " Dash osx integration :DashSearch
+Plug 'terryma/vim-multiple-cursors' " C-n to start multiple cursors
+Plug 'andymass/vim-matchup' " Match with % plus textobj for match
+Plug 'jeetsukumaran/vim-indentwise' " Support indent motions ]ii
 
 " TODO jcfaria/Vim-R-plugin
 " TODO https://github.com/vim-scripts/PatternsOnText - delete/replace non
@@ -44,12 +47,15 @@ Plug 'AndrewRadev/splitjoin.vim' " Gs to split long lines
 " A colorscheme that supports fugitive's [ob and ]ob
 Plug 'frankier/neovim-colors-solarized-truecolor-only'
 Plug 'morhetz/gruvbox' " gruvbox colors
-Plug 'romainl/Apprentice'
 Plug 'rakr/vim-one'
 Plug 'rakr/vim-two-firewatch'
 Plug 'luochen1990/rainbow' " Rainbow toggle colorscheme
 
 " Language specific plugins:
+Plug 'tpope/vim-rails'
+Plug 'vim-ruby/vim-ruby'
+Plug 'slim-template/vim-slim'
+Plug 'posva/vim-vue'
 Plug 'leafgarland/typescript-vim', { 'for': 'typescript' }
 Plug 'vim-scripts/applescript.vim', { 'for': 'applescript' }
 Plug 'sirtaj/vim-openscad'
@@ -59,8 +65,9 @@ Plug 'davidhalter/jedi-vim' " python support <leader>d to go to definition.
 " TODO update this repo so that people know to look for chrisba
 Plug 'dsummersl/wikia-csv' " editing CSV docs, super handily.
 Plug 'pangloss/vim-javascript'
-Plug 'gu-fan/riv.vim'  " syntax for rst files
+Plug 'marshallward/vim-restructuredtext'  " syntax for rst files
 Plug 'mxw/vim-jsx'
+Plug 'digitaltoad/vim-jade' " Vim Jade template engine syntax highlighting and indention
 Plug 'jeroenbourgois/vim-actionscript'
 Plug 'wavded/vim-stylus' " syntax hilighting for stylus files
 Plug 'marijnh/tern_for_vim', { 'do': 'npm install' }
@@ -70,7 +77,6 @@ Plug 'christoomey/vim-tmux-runner' " :Vtr_endCommandToRunner for tmux
 Plug 'benmills/vimux' " Run golang tests using vimux
 
 Plug 'wellle/visual-split.vim' " I've mapped this to <leader>v Lines to quickly resize splits (VSSplit)
-Plug 'digitaltoad/vim-jade' " Vim Jade template engine syntax highlighting and indention
 Plug 'mattn/webapi-vim'
 Plug 'mattn/gist-vim' " 4.9   vimscript for gist
 Plug 'editorconfig/editorconfig-vim' " 0.1.0 EditorConfig Plugin for Vim -- helps define and maintain consistent coding style
@@ -78,7 +84,6 @@ Plug 'nathanaelkane/vim-indent-guides' " A Vim plugin for visually displaying in
 Plug 'mattn/emmet-vim' " fast HTML tag generation (in insert mode type tr*3CTL-Y, to make three <tr>s
 Plug 'tomtom/tcomment_vim' " An extensible & universal comment vim-plugin that also handles embedded filetypes
 Plug 'ctrlpvim/ctrlp.vim'
-Plug 'nixprime/cpsm'
 " Plug 'chrisba/csv.vim'
 " simple utf2ascii function.
 Plug 'dsummersl/vim-utf2ascii'
@@ -89,11 +94,11 @@ Plug 'PProvost/vim-ps1'
 Plug 'eparreno/l9'
 Plug 'vim-scripts/LargeFile'
 Plug 'vim-scripts/genutils'
-Plug 'gregsexton/gitv'
+Plug 'gregsexton/gitv', { 'tag': 'v1.4-rc1' }
 Plug 'vim-scripts/visualrepeat'
 " quick find method definitions:
 Plug 'Shougo/denite.nvim'
-Plug 'dsummersl/denite-extra', { 'branch': 'store-quickfix-location' }
+Plug 'neoclide/denite-extra'
 Plug 'majutsushi/tagbar'
 " javascript omni integration
 Plug 'Shougo/vimproc'
@@ -107,14 +112,12 @@ Plug 'tommcdo/vim-lion' " align with operator gL and gl (ie glip= to align parag
 " Plug 'bigfish/vim-js-context-coloring', { 'do': 'npm install --update' }
 
 Plug 'wellle/targets.vim' " many text objects
-Plug 'kana/vim-textobj-function' " vaf/vif for functions
-Plug 'michaeljsmith/vim-indent-object' " viI (visual inner Indent)
 Plug 'kana/vim-textobj-user' " user defined textobj implementations
 Plug 'kana/vim-textobj-syntax' " vay viy to select syntax blocks
-Plug 'landock/vim-expand-region' " use + and _ to expand the visual selection
 Plug 'glts/vim-textobj-comment' " select comment with vic or vac.
 Plug 'thinca/vim-textobj-between' " vib between any arbitrary object (vibX where X is the obj)
 Plug 'kana/vim-textobj-lastpat' " vi/ (last search)
+Plug 'michaeljsmith/vim-indent-object' " vii and viI (visual inner Indent)
 
 " Easily toggle boolean values:
 Plug 'AndrewRadev/switch.vim'
@@ -130,16 +133,20 @@ Plug 'dsummersl/vimunit'
 Plug 'vim-scripts/AnsiEsc.vim', { 'on': 'AnsiEsc' }
 Plug 'vim-scripts/cecutil'
 
-Plug 'dsummersl/gundo.vim', { 'branch': 'shaggyrogers-master' }
+Plug 'dsummersl/gundo.vim', { 'branch': 'mundo-master' }
 Plug 'honza/vim-snippets'
 " Plug 'dsummersl/vim-sluice'
 Plug 'ap/vim-css-color'
 
 if has('nvim')
-  Plug 'Shougo/deoplete.nvim', { 'do': ':UpdateRemotePlugins' }
-  Plug 'zchee/deoplete-jedi'
+  " Plug 'Shougo/deoplete.nvim', { 'do': ':UpdateRemotePlugins' }
+  " Plug 'zchee/deoplete-jedi'
   Plug 'kassio/neoterm'
   Plug 'benekastah/neomake'
+else
+  Plug 'Shougo/deoplete.nvim'
+  Plug 'roxma/nvim-yarp'
+  Plug 'roxma/vim-hug-neovim-rpc'
 endif
 
 set termguicolors
@@ -166,7 +173,7 @@ if v:version >= 704
   " show undo history
   nnoremap <F5> :MundoToggle<CR>
 
-  set background=light
+  set background=dark
   colorscheme one
 
   " colorscheme solarized8_dark_high
@@ -256,12 +263,12 @@ syntax on
 set fdm=marker
 
 " Turn on mouse for a visual and normal mode only:
-set mouse=v
+set mouse=nv
 
 " improve syntax highlighting speed in general
 syntax sync minlines=64
 syntax sync maxlines=128
-set synmaxcol=256
+set synmaxcol=150
 
 set diffopt=filler,iwhite
 set nohls
@@ -282,7 +289,7 @@ set incsearch
 " file expansion in ex mode, caseless:
 set wildignorecase
 
-let mapleader=","
+let g:mapleader=','
 
 set viminfo='50,\"50,h
 set history=100 " keep 100 lines of command line history
@@ -291,12 +298,10 @@ set showcmd     " Show (partial) command in status line.
 set showmatch   " Show matching brackets.
 set encoding=utf-8
 
-" Setup a vertical higlight for the 80+ column positions:
 set textwidth=80
-set fo=croq
-
-" when wrap is turned on, break on words
-set linebreak
+set formatoptions=croq
+set breakindent " match indenting when wrapping text
+set linebreak " when wrap is turned on, break on words
 
 " let macros go faster
 set lazyredraw
@@ -321,6 +326,14 @@ let g:python3_host_prog='/usr/local/bin/python3'
 
 call repeatable#Setup()
 
+" Map indent motions to a more indent-like key
+let g:indentwise_suppress_keymaps = 1
+map [ii <Plug>(IndentWiseBlockScopeBoundaryBegin)
+sunmap [ii
+map ]ii <Plug>(IndentWiseBlockScopeBoundaryEnd)
+sunmap ]ii
+
+
 " started In Diff-Mode set diffexpr (plugin not loaded yet)
 let &diffexpr='EnhancedDiff#Diff("git diff", "--diff-algorithm=patience")'
 
@@ -344,9 +357,9 @@ function! Render_Only_File(...)
 
   call l:builder.add_section('file', '%F')
 
-  return 0   " the default: draw the rest of the statusline
+  " return 0   " the default: draw the rest of the statusline
   " return -1  " do not modify the statusline
-  " return 1   " modify the statusline with the current contents of the builder
+  return 1   " modify the statusline with the current contents of the builder
 endfunction
 call airline#add_inactive_statusline_func('Render_Only_File')
 
@@ -363,10 +376,10 @@ let g:expand_region_text_objects = {
       \ }
 
 " Run test commands in tmux - or neoterm, thats my other fav.
-let test#strategy = 'vtr'
-let test#transformation = 'last'
+let g:test#strategy = 'vtr'
+let g:test#transformation = 'last'
 let g:test#sub = 'docker-compose run --rm python manage.py test {} | pygmentize -l pytb'
-let test#python#runner = 'djangotest'
+let g:test#python#runner = 'djangotest'
 
 let g:neoterm_automap_keys = 'cic'
 let g:jedi#completions_enabled = 0
@@ -381,14 +394,15 @@ let g:deoplete#auto_complete_delay = 150
 let g:splitjoin_trailing_comma = 1
 
 let g:gutentags_cache_dir = '~/.vim/tags'
-let g:gutentags_ctags_exclude = [ '*.json', '*/node_modules/*', '*/bower_components/*', 'tags', '*.sql' ]
+let g:gutentags_ctags_exclude = [ '*.json', '*/node_modules/*', '*/bower_components/*',
+      \ 'tags', '*.sql', '*.html', '*/public/assets/*']
 
 " Color brackets and HTML/XML:
 let g:rainbow_active = 1
 
-let delimitMate_expand_cr = 2
-let delimitMate_jump_expansion = 1
-let delimitMate_expand_space = 1
+let g:delimitMate_expand_cr = 2
+let g:delimitMate_jump_expansion = 1
+let g:delimitMate_expand_space = 1
 
 let g:neomake_airline = 1
 let g:neomake_python_enabled_makers = [ 'flake8' ]
@@ -399,16 +413,11 @@ let g:mundo_mirror_graph = 1
 let g:mundo_prefer_python3 = 1
 let g:mundo_help = 0
 let g:mundo_inline_undo = 1
-let g:mundo_auto_preview_delay = 100
-let g:mundo_inline_undo_delay = 100
 
 let g:indent_guides_enable_on_vim_startup = 0
 let g:indent_guides_color_change_percent = 4
 " don't include tabs in 'soft' tabs - I want to see when things are amiss.
 " let g:indent_guides_soft_pattern = ' '
-
-vmap <Enter> <Plug>(LiveEasyAlign)
-nmap <leader>a <Plug>(LiveEasyAlign)
 
 " let the narrow region plugin NR functions automatically update the window
 " location on change:
@@ -436,7 +445,7 @@ endfunction
 " left/right and up/down first/last
 autocmd FileType * let b:switch_custom_definitions =
     \ [
-    \ { '\([^=]\)===\([^=]\)': '\1==\2' }, { '\([^=]\)==\([^=]\)': '\1===\2' },
+    \ { '==': '!=' }, { '!=': '==' },
     \ { '&&': '||' }, { '||': '&&' },
     \ { 'and': 'or' }, { 'or': 'and' },
     \ { 'FALSE': 'TRUE' }, { 'TRUE': 'FALSE' },
@@ -452,7 +461,8 @@ autocmd FileType * let b:switch_custom_definitions =
     \ { 'info': 'debug' }, { 'debug': 'info' },
     \ { 'assertFalse': 'assertTrue' }, { 'assertTrue': 'assertFalse' },
     \ { 'assertIn': 'assertNotIn' }, { 'assertNotIn': 'assertIn' },
-    \ { 'assertContains': 'assertNotContains' }, { 'assertNotContains': 'assertContains' }
+    \ { 'assertContains': 'assertNotContains' }, { 'assertNotContains': 'assertContains' },
+    \ { '\.\(\S\+\)\>': "['\\1']" }, { '\[[''"]\(\S\+\)[''"]\]': '.\1' },
     \ ]
 
 " don't use vif (thats a function, duh!)
@@ -464,15 +474,15 @@ xmap ib  <Plug>(textobj-between-i)
 omap ib  <Plug>(textobj-between-i)
 
 " pathing for abolish
-set rtp+=~/.vim/after
+set runtimepath+=~/.vim/after
 
 let g:UltiSnipsSnippetDirectories=[$HOME.'/.vim/UltiSnips', $HOME.'/.vim/bundle/vim-snippets/UltiSnips']
 " let g:UltiSnipsPythonPath="/usr/local/bin/python"
-let g:UltiSnipsSnippetsDir="~/.vim/UltiSnips"
+let g:UltiSnipsSnippetsDir='~/.vim/UltiSnips'
 let g:UltiSnipsListSnippets='<C-\>'
-let g:UltiSnipsExpandTrigger="<Tab>"
-let g:UltiSnipsJumpForwardTrigger="<Tab>"                                           
-let g:UltiSnipsJumpBackwardTrigger="<S-Tab>"
+let g:UltiSnipsExpandTrigger='<Tab>'
+let g:UltiSnipsJumpForwardTrigger='<Tab>'                                           
+let g:UltiSnipsJumpBackwardTrigger='<S-Tab>'
 
 let g:ycm_key_list_select_completion=['<C-n>', '<Down>']
 let g:ycm_key_list_previous_completion=['<C-p>', '<Up>']
@@ -507,7 +517,6 @@ let g:ctrlp_custom_ignore = '\.git$\|\.hg$\|\.svn|$'
 set wildignore+=*/*.sw?,*/*.pyc,*/*.class
 " enable the quickfix plugin source:
 let g:ctrlp_extensions=['changes']
-
 
 let g:tagbar_autofocus = 1
 let g:tagbar_autoclose = 1
@@ -568,34 +577,6 @@ nnoremap <F7> :TestLast<CR>
 set complete-=i
 set completeopt-=preview
 
-" project loading functions"{{{
-
-function! LoadProject(type,directory)
-  " type      = the type of project.
-  " directory = Directory of the project to set up for.
-  "
-  " Load a project. This is a generic function that loads a script for a type
-  " of project. Each type of project keeps its functions in a directory
-  " named after the project (~/.vim/Project/{type}). When this function is
-  " called, the script ~/.vim/Project/{type}/in.vim is executed, with
-  " b:proj_cd set to the directory of the project that in.vim should setup
-  " for.
-  "
-  let b:proj_cd=getcwd()
-  if (a:directory != '')
-    let b:proj_cd=a:directory
-  endif
-  exec "source ~/.vim/bundle/lookupfile-grep/project/". a:type .".vim"
-endfunction
-command! -nargs=? -bang -complete=dir ProjectMaven  :call LoadProject("maven",<q-args>)
-command! -nargs=? -bang -complete=dir ProjectRails  :call LoadProject("rails",<q-args>)
-command! -nargs=? -bang -complete=dir ProjectJava   :call LoadProject("java",<q-args>)
-command! -nargs=? -bang -complete=dir ProjectScript :call LoadProject("script",<q-args>)
-command! -nargs=? -bang -complete=dir ProjectGrails :call LoadProject("grails",<q-args>)
-command! -nargs=? -bang -complete=dir ProjectScala  :call LoadProject("grails",<q-args>)
-command! -nargs=? -bang -complete=dir ProjectPython :call LoadProject("grails",<q-args>)
-"}}}
-
 " delete all buffers function
 function! DeleteHiddenBuffers()
     let tpbl=[]
@@ -619,6 +600,8 @@ endfunction
 
 let g:AutoPairsFlyMode=1
 
+" TODO VtrAttachToPane 1
+
 " " In Iterm2 I mapped C-S-' to <f14>
 " imap <F14> <C-O>:let g:AutoPairsFlyMode=1<CR>"<C-O>:let g:AutoPairsFlyMode=0<CR>
 " " Can't do anything about this - its ^M
@@ -630,6 +613,7 @@ let g:AutoPairsFlyMode=1
 
 " I want to see all the options when I try to jump to a tag:
 nmap <C-]> g<C-]>zt
+" TODO Create mappings to find tags that match this filetype.
 
 " TODO make this a filetype definition in JS
 " map <leader>dd :TernDef<cr>
@@ -666,6 +650,8 @@ inoremap <C-^> <C-O>:e #<CR>
 " quick autosave
 nnoremap <C-c> :w<CR>
 inoremap <C-c> <Esc>
+" quick jump up to the previous line in insert mode:
+" inoremap <C-e> <C-o>:norm k$\<Enter>
 
 " instead of using this, I use 'gt'
 map <nul> <esc>
@@ -750,6 +736,7 @@ nmap <leader>sw yiw:let @/=@"<cr>:Ag <C-r>"<cr>:GCL<cr>
 vmap <leader>sw y:let @/=@"<cr>:Ag <C-r>"<cr>:GCL<cr>
 nmap <leader>vw yiw:let @/=@"<cr>:Gg <C-r>"<cr>
 vmap <leader>vw y:let @/=@"<cr>:Gg <C-r>"<cr>
+nmap <leader>vf yiw:let @/=@"<cr>:Gg <C-r>"<cr>
 
 nnoremap <leader>gl :GCL<cr>
 nnoremap <leader>gd :Denite -resume<cr>
@@ -762,6 +749,9 @@ let g:django_lookup_url_recording=":let b:isk_back=&isk\<cr>:set isk+=-\<cr>viwy
 let g:django_lookup_view_recording=":let b:isk_back=&isk\<cr>:set isk+=-\<cr>viwy:exe \"set isk=\". b:isk_back\<cr>:Ag \<c-r>\" -G urls.py\<cr>"
 map <leader>du :let @z=g:django_lookup_url_recording<cr>@z
 map <leader>dv :let @z=g:django_lookup_view_recording<cr>@zF,b<c-]>
+" Python: replace a multiline # COMMENT with a """ COMMENT """
+let g:python_replace_pound_comment='gcacgpJ:s/\v^(\s+)(.*)$/\1""" \2 """gqq'
+map <leader>dc :let @z=g:python_replace_pound_comment<cr>@z
 
 " From a 'diff view' in gitv, got back to the list of files one got there from.
 let g:gitv_revert_to_overview=''
@@ -863,9 +853,9 @@ function! UV()
 	if !exists("b:set_value")
 		let b:set_value = 1
 	endif
-  let old_value = b:set_value
+  let l:old_value = b:set_value
   let b:set_value += 1
-  return old_value
+  return l:old_value
 endfunction
 
 " Get the next value, and decrement by two:
@@ -873,9 +863,9 @@ function! DV()
 	if !exists("b:set_value")
 		let b:set_value = 1
 	endif
-  let old_value = b:set_value
+  let l:old_value = b:set_value
   let b:set_value -= 1
-  return old_value
+  return l:old_value
 endfunction
 
 function! s:UniteQuickFix()
@@ -896,10 +886,21 @@ function! s:ExecFileType(cmd,search)
   call s:UniteQuickFix()
 endfunction
 
+function! s:ExecFileName(cmd,search)
+  " TODO make this substitue get the basename of the current file
+  let l:extension = substitute(expand('%'),'\v^.*\.','','')
+  " save the last search as this so that */# work:
+  let @/ = a:search
+  exec printf('silent %s',printf(a:cmd,a:search,l:extension))
+  call s:UniteQuickFix()
+endfunction
+
 command! -nargs=0 GCL call s:UniteQuickFix()
 command! -nargs=0 GLL call s:UniteLocationList()
 command! -nargs=1 GG call s:ExecFileType("silent Ggrep %s -- '*.%s'",'<args>')
 command! -nargs=1 AA call s:ExecFileType("silent Ag %s **/*.%s",'<args>')
+" TODO make Ggrep be test for the command...for non git projects, fallback on Ag
+" Something like :if exists(':Ggrep')
 command! -nargs=1 Gg exec "silent Ggrep ". '<args>' | GCL
 command! -nargs=1 Aa exec "silent Ag ". '<args>' | GCL
 
@@ -937,47 +938,30 @@ endfunction
 "}}}
 " Automappings"{{{
 
-if has("autocmd") && !exists("autocommands_loaded")
-  let autocommands_loaded = 1
+if has('autocmd') && !exists('g:autocommands_loaded')
+  let g:autocommands_loaded = 1
 
-  au WinLeave * setlocal nocursorline
-  au WinEnter * setlocal cursorline
+  autocmd WinLeave * setlocal nocursorline
+  autocmd WinEnter * setlocal cursorline
 
   " Set a buffer variable and then only call this two time.
   autocmd BufNewFile,BufReadPost * :call AutoPairsInit()
-
-  "function! s:SynOffInDiffMode()
-  "  if &diff
-  "    syntax off
-  "  else
-  "    syntax on
-  "  endif
-  "endfunction
-  "autocmd BufReadPost * call s:SynOffInDiffMode()
 
   " ensure that tabstop settings for file browsing is big enough for column
   " alignment:
   autocmd FileType netrw setlocal ts=30
 
-  autocmd FileType ruby,eruby setlocal omnifunc=rubycomplete#Complete
-  autocmd FileType ruby,eruby setlocal fdm&
   autocmd FileType sh  setlocal omnifunc=syntaxcomplete#Complete
   autocmd FileType vim setlocal omnifunc=syntaxcomplete#Complete
 
-  " use the same comment formatting in groovy/PHP that is used for java:
-  autocmd FileType php setlocal comments=sO:*\ -,mO:*\ \ ,exO:*/,s1:/*,mb:*,ex:*/,://,b:#,:%,:XCOMM,n:>,fb:-
-  autocmd FileType php setlocal fo=croq
-  autocmd FileType php compiler php
-  autocmd FileType groovy setlocal comments=sO:*\ -,mO:*\ \ ,exO:*/,s1:/*,mb:*,ex:*/,://,b:#,:%,:XCOMM,n:>,fb:-
-  autocmd FileType groovy setlocal fo=croq
   autocmd FileType htmldjango SS s 4
-  " Rainbow tags look crappy in htmldjango
+
+  " Rainbow tags look crappy in htmldjango -- this autocmd isn't really working :/
   autocmd FileType htmldjango RainbowToggleOff
 
-  " autocmd BufNewFile,BufRead * hi Search ctermfg=black ctermbg=gray guifg=#697b7d guibg=#93a4a6
   autocmd BufNewFile,BufRead *.j2 setf jinja
   autocmd BufNewFile,BufRead *.md setf markdown
-  autocmd BufNewFile,BufRead *.md setlocal spell fo-=tn wrap et
+  autocmd BufNewFile,BufRead *.md setlocal spell wrap et
   autocmd BufNewFile,BufRead *.csv setf csv
   autocmd BufNewFile,BufRead *.tsv setf csv
   autocmd BufNewFile,BufRead *.tsv setlocal ts=20 sw=25
@@ -989,6 +973,14 @@ if has("autocmd") && !exists("autocommands_loaded")
   autocmd BufNewFile,BufRead *.html.ts set ft=html
   autocmd BufNewFile,BufRead *.coffee set ft=coffee
   autocmd BufNewFile,BufRead Cakefile set ft=coffee
+
+  " Some other ruby project is tromping over the gutentags files - manually
+  " reload every time we enter:
+  autocmd BufRead *.rb  if exists('b:gutentags_files') | unlet b:gutentags_files | endif | call gutentags#setup_gutentags()
+
+  " show line numbers for tests:
+  autocmd BufNewFile,BufEnter test*.py,*test.py,*spec.rb :setlocal number
+
   if has('nvim')
     autocmd BufReadPost,BufWritePost * Neomake
   endif
@@ -1001,8 +993,6 @@ if has("autocmd") && !exists("autocommands_loaded")
 
   " get rid of any extra git fugitive buffers
   autocmd BufReadPost fugitive://* set bufhidden=delete
-
-  autocmd FileType groovy setlocal ai
 endif
 "}}}
 " vim: set ai fdm=marker cms="%s:
