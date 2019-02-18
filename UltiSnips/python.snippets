@@ -30,7 +30,7 @@ print("$1 = {0}".format($1))$0
 endsnippet
 
 snippet kv "key/value" !b
-'${1:key}': ${2:'$1'}$0
+'${1:key}': ${2:'$1'},$0
 endsnippet
 
 snippet av "[key] = value" i
@@ -38,9 +38,8 @@ snippet av "[key] = value" i
 endsnippet
 
 snippet def "function with docstrings" !b
-def ${1:function}(${2:self}):
-	${4:""" ${3:TODO document function} """}
-	${5:pass}
+def ${1:function}(${2:self}$3):
+	${4:${VISUAL:pass}}$0
 endsnippet
 
 snippet test "test funtion (caktus)" !b
@@ -50,12 +49,12 @@ endsnippet
 
 snippet for "for loop" !b
 for ${1:val} in ${2:`!p snip.rv=t[1]`s}:
-	${3:# TODO ...}
+	${3:${VISUAL:pass}}$0
 endsnippet
 
 snippet if "if" !b
 if ${1:condition}:
-	${2:# content}$0
+	${2:${VISUAL:pass}}$0
 endsnippet
 
 snippet ifmain "ifmain" b
@@ -81,6 +80,14 @@ endsnippet
 snippet with "with syntax" !b
 with $1 as $2:
 	$0
+endsnippet
+
+snippet brk "Set PDB breakpoint" b
+import pdb; pdb.set_trace()
+endsnippet
+
+snippet trk "Set trepan2 breakpoint" b
+from trepan.api import debug; debug()
 endsnippet
 
 snippet break "Set PDB breakpoint" b
