@@ -80,3 +80,11 @@ endsnippet
 snippet lge "print a value"
 echo "${1:var} = $$1"$0
 endsnippet
+
+snippet testarg "Test number of args"
+if [ "$#" -ne ${1:1} ]; then
+	echo "Usage: $2"
+	exit 1
+if
+${3:VAR}=$$1$0
+endsnippet

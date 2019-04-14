@@ -1,6 +1,6 @@
 " vundle plugin options {{{
 
-let g:plug_url_format="git@github.com:%s.git"
+let g:plug_url_format='git@github.com:%s.git'
 so ~/.vim/autoload/plug.vim
 call plug#begin('~/.vim/bundle')
 
@@ -11,7 +11,7 @@ Plug 'idanarye/vim-yankitute' " Yankitude for copying into registers
 Plug 'junegunn/goyo.vim' " Writer mode via :Goyu
 " Plug 'blueyed/vim-diminactive' " dim inactive windows. 
 Plug 'rizzatti/dash.vim' " Dash osx integration :DashSearch
-Plug 'terryma/vim-multiple-cursors' " C-n to start multiple cursors
+" Plug 'terryma/vim-multiple-cursors' " C-n to start multiple cursors -- caused problems in git diff!
 Plug 'andymass/vim-matchup' " Match with % plus textobj for match
 Plug 'jeetsukumaran/vim-indentwise' " Support indent motions ]ii
 
@@ -22,11 +22,12 @@ Plug 'jeetsukumaran/vim-indentwise' " Support indent motions ]ii
 " TODO use count in front of jk control keys: https://github.com/vim-scripts/rel-jump
 " <---- end plugins in testing ---->
 
+Plug 'tpope/vim-projectionist'
 Plug 'machakann/vim-highlightedyank' " highlight any text as it is yanked
 Plug 'pgdouyon/vim-evanesco' " Highlight search, clear after searching
 Plug 'MarcWeber/vim-addon-local-vimrc' " enable project local .vimrc files
 Plug 'okcompute/vim-python-motions' " ]] ]C ]M to move between methods
-Plug 'tpope/vim-fugitive', { 'tag': 'v2.4' } " git
+Plug 'tpope/vim-fugitive', { 'tag': 'v2.5' } " git
 Plug 'tpope/vim-rhubarb' " Gbrowse 
 Plug 'godlygeek/csapprox' " neovim coloring for gblame
 Plug 'ludovicchabant/vim-lawrencium' " mercurial (hg)
@@ -49,11 +50,11 @@ Plug 'frankier/neovim-colors-solarized-truecolor-only'
 Plug 'morhetz/gruvbox' " gruvbox colors
 Plug 'rakr/vim-one'
 Plug 'rakr/vim-two-firewatch'
-Plug 'luochen1990/rainbow' " Rainbow toggle colorscheme
+" Rainbow toggle colorscheme
+Plug 'luochen1990/rainbow', { 'frozen': 1 }
 
 " Language specific plugins:
-Plug 'tpope/vim-rails'
-Plug 'vim-ruby/vim-ruby'
+" Plug 'vim-ruby/vim-ruby'
 Plug 'slim-template/vim-slim'
 Plug 'posva/vim-vue'
 Plug 'leafgarland/typescript-vim', { 'for': 'typescript' }
@@ -61,15 +62,17 @@ Plug 'vim-scripts/applescript.vim', { 'for': 'applescript' }
 Plug 'sirtaj/vim-openscad'
 Plug 'derekwyatt/vim-scala', { 'for': 'scala' }
 Plug 'rust-lang/rust.vim', { 'for': 'rust' }
-Plug 'davidhalter/jedi-vim' " python support <leader>d to go to definition.
+" Plug 'davidhalter/jedi-vim' " python support <leader>d to go to definition.
 " TODO update this repo so that people know to look for chrisba
 Plug 'dsummersl/wikia-csv' " editing CSV docs, super handily.
-Plug 'pangloss/vim-javascript'
+Plug 'prabirshrestha/async.vim'
+Plug 'dsummersl/vim-sluice'
+" Plug 'pangloss/vim-javascript'
 Plug 'marshallward/vim-restructuredtext'  " syntax for rst files
-Plug 'mxw/vim-jsx'
+" Plug 'mxw/vim-jsx'
 Plug 'digitaltoad/vim-jade' " Vim Jade template engine syntax highlighting and indention
-Plug 'jeroenbourgois/vim-actionscript'
-Plug 'wavded/vim-stylus' " syntax hilighting for stylus files
+" Plug 'jeroenbourgois/vim-actionscript'
+" Plug 'wavded/vim-stylus' " syntax hilighting for stylus files
 Plug 'marijnh/tern_for_vim', { 'do': 'npm install' }
 
 Plug 'janko-m/vim-test' " :TestNearest
@@ -106,6 +109,7 @@ Plug 'tpope/vim-sleuth' " automatically detect the indent style of the document
 Plug 'jiangmiao/auto-pairs' " close quotes and such automatically
 Plug 'justinmk/vim-sneak' " f t s ; . mappings - jump to any location specified by two characters
 Plug 'ervandew/ag' " vim plugin to search using the silver searcher (ag)
+Plug 'mhinz/vim-grepper' " Grepper to search in lots of ways
 Plug 'tommcdo/vim-exchange' " Easy text exchange operator for Vim
 Plug 'tommcdo/vim-lion' " align with operator gL and gl (ie glip= to align paragraph by =)
 " Plug 'nelstrom/vim-visual-star-search' " use #/* in visual mode for searching
@@ -135,16 +139,15 @@ Plug 'vim-scripts/cecutil'
 
 Plug 'dsummersl/gundo.vim', { 'branch': 'mundo-master' }
 Plug 'honza/vim-snippets'
-" Plug 'dsummersl/vim-sluice'
 Plug 'ap/vim-css-color'
 
 if has('nvim')
-  " Plug 'Shougo/deoplete.nvim', { 'do': ':UpdateRemotePlugins' }
-  " Plug 'zchee/deoplete-jedi'
+  " language server type completion
+  " Plug 'neoclide/coc.nvim', {'tag': 'v0.0.60', 'do': { -> coc#util#install()}}
   Plug 'kassio/neoterm'
-  Plug 'benekastah/neomake'
+  Plug 'w0rp/ale', { 'tag': 'v2.4.0' }
 else
-  Plug 'Shougo/deoplete.nvim'
+  " Plug 'Shougo/deoplete.nvim'
   Plug 'roxma/nvim-yarp'
   Plug 'roxma/vim-hug-neovim-rpc'
 endif
@@ -174,7 +177,7 @@ if v:version >= 704
   nnoremap <F5> :MundoToggle<CR>
 
   set background=dark
-  colorscheme one
+  colorscheme gruvbox
 
   " colorscheme solarized8_dark_high
 
@@ -237,8 +240,8 @@ if v:version >= 703
   let g:airline_symbols.whitespace = 'Ξ'
 
   set cursorline
-  " show column markers beyond the 80, 100, 120
-  set colorcolumn=+0,-1,-2,+20
+  " show column markers beyond the 80, and 100
+  set colorcolumn=+0,+19,+20
 endif
 " }}}
 " basic options {{{
@@ -260,10 +263,10 @@ set guioptions=egt  " GUI options
 syntax on
 
 " use folding by default
-set fdm=marker
+set foldmethod=marker
 
 " Turn on mouse for a visual and normal mode only:
-set mouse=nv
+set mouse=v
 
 " improve syntax highlighting speed in general
 syntax sync minlines=64
@@ -271,14 +274,14 @@ syntax sync maxlines=128
 set synmaxcol=150
 
 set diffopt=filler,iwhite
-set nohls
+set nohlsearch
 set nowrap
 
 " TABS, and tab size of two characters
-set noet
-set sw=2
-set ts=2
-set sts=2
+set noexpandtab
+set shiftwidth=2
+set tabstop=2
+set softtabstop=2
 
 set visualbell
 " allow backspacing over everything in insert mode
@@ -312,9 +315,18 @@ set lazyredraw
 set wildmenu
 set wildmode=longest:full,full
 
+
+" Revisit the history on the command mode without leaving the home rows.
+cnoremap <c-n> <down>
+cnoremap <c-p> <up>
+
 " show replace previews
 if has('nvim')
   set inccommand=split
+  set pumblend=15
+  " completion for command mode suggestions
+  set wildoptions=pum
+  set signcolumn=yes:1
 endif
 
 
@@ -325,6 +337,27 @@ let g:python3_host_prog='/usr/local/bin/python3'
 " Plugin settings, changes."{{{
 
 call repeatable#Setup()
+
+let g:grepper = {}
+let g:grepper.open = 0
+let g:grepper.stop = 700
+let g:grepper.operator = {}
+let g:grepper.operator.prompt = 1
+
+nmap gs <plug>(GrepperOperator)
+xmap gs <plug>(GrepperOperator)
+
+let g:airline#extensions#ale#enabled=0
+let g:ale_completion_enabled = 0
+let g:ale_set_highlights = 0
+let g:ale_lint_on_text_changed = 'normal'
+Repeatable nmap [g <Plug>(ale_previous)
+Repeatable nmap ]g <Plug>(ale_next)
+nmap <leader>h :ALEHover<cr>
+let g:ale_linters = {
+      \ 'python': ['black', 'pyls', 'isort', 'trim_whitespace'],
+      \ 'javascript': ['eslint']
+      \ }
 
 " Map indent motions to a more indent-like key
 let g:indentwise_suppress_keymaps = 1
@@ -377,12 +410,14 @@ let g:expand_region_text_objects = {
 
 " Run test commands in tmux - or neoterm, thats my other fav.
 let g:test#strategy = 'vtr'
-let g:test#transformation = 'last'
-let g:test#sub = 'docker-compose run --rm python manage.py test {} | pygmentize -l pytb'
-let g:test#python#runner = 'djangotest'
+" let g:test#transformation = 'last'
+" let g:test#sub = 'docker-compose run --rm python manage.py test {} | pygmentize -l pytb'
+" let g:test#python#runner = 'djangotest'
 
 let g:neoterm_automap_keys = 'cic'
-let g:jedi#completions_enabled = 0
+
+" let g:jedi#completions_enabled = 0
+" let g:jedi#show_call_signatures = '2'
 
 let g:deoplete#enable_at_startup = 1
 let g:deoplete#enable_ignore_case = 1
@@ -403,10 +438,6 @@ let g:rainbow_active = 1
 let g:delimitMate_expand_cr = 2
 let g:delimitMate_jump_expansion = 1
 let g:delimitMate_expand_space = 1
-
-let g:neomake_airline = 1
-let g:neomake_python_enabled_makers = [ 'flake8' ]
-" let g:neomake_javascript_enabled_makers = [ 'jshint' ]
 
 let g:mundo_verbose_graph = 0
 let g:mundo_mirror_graph = 1
@@ -462,7 +493,7 @@ autocmd FileType * let b:switch_custom_definitions =
     \ { 'assertFalse': 'assertTrue' }, { 'assertTrue': 'assertFalse' },
     \ { 'assertIn': 'assertNotIn' }, { 'assertNotIn': 'assertIn' },
     \ { 'assertContains': 'assertNotContains' }, { 'assertNotContains': 'assertContains' },
-    \ { '\.\(\S\+\)\>': "['\\1']" }, { '\[[''"]\(\S\+\)[''"]\]': '.\1' },
+    \ { '\.\([a-zA-Z_-]\+\)\>': "['\\1']" }, { '\[[''"]\([a-zA-Z_-]\+\)[''"]\]': '.\1' },
     \ ]
 
 " don't use vif (thats a function, duh!)
@@ -504,6 +535,8 @@ let g:ctrlp_cmd = 'CtrlPMRUFiles'
 " Map <C-S-p> to all files (iTerm mapping of that combo to <F15>): 
 map <F15> :CtrlP<cr>
 map <M-p> :CtrlP<cr>
+" Let C-S-P happen in terminals (C-P already does helpful things in a terminal)
+tnoremap <F15> <C-\><C-N><C-O>:CtrlP<CR>
 
 " only show MRU files in the working directory
 let g:ctrlp_mruf_relative = 1
@@ -565,9 +598,9 @@ map <F16> :CtrlPTag<cr>
 nnoremap <leader>t zt
 nnoremap <leader>b zb
 nnoremap <leader>, zz
+nnoremap <leader><space>  <space><space>
 
 let g:sluice_default_macromode=1
-" SluiceEnablePlugin undercursor
 
 " show diff with git
 nnoremap <F6> :Gvdiff<CR>
@@ -585,7 +618,6 @@ function! DeleteHiddenBuffers()
         silent execute 'bwipeout' buf
     endfor
 endfunction
-"
 "}}}
   " Setup how in 'list' mode characters for white space and tabs appear"{{{
   " display tags and trailing white spaces in list mode.
@@ -615,8 +647,7 @@ let g:AutoPairsFlyMode=1
 nmap <C-]> g<C-]>zt
 " TODO Create mappings to find tags that match this filetype.
 
-" TODO make this a filetype definition in JS
-" map <leader>dd :TernDef<cr>
+map <leader>dd :ALEGoToDefinition<cr>
 nmap <silent> <leader>D <Plug>DashSearch
 
 " Quickly edit the contents of a register (for macros, say); <leader>m or
@@ -629,24 +660,31 @@ let g:sneak#map_netrw = 0
 " and I like not having to do uppercases:
 let g:sneak#use_ic_scs = 1
 let g:sneak#t_reset = 1
+let g:sneak#f_reset = 1
+" repeat previous search with clever sneak
+let g:sneak#s_next = 1
 " label mode
 let g:sneak#label = 1
 
 cabbrev bda call DeleteHiddenBuffers()
 cabbrev gitv Gitv
-cabbrev ag Ag
+cabbrev ag Grepper -tool ag<cr>
 cabbrev aa AA
 cabbrev gg GG
 cabbrev man Man
-cabbrev dash Dash
 
 " I like having zs to jump to the start of the line, but I'd really love a
 " zm to jump to the middle - I don't think I'll miss the original folding
 " function of zm:
 nnoremap zm zs
 
+" Use projectionist mapping when doing a C-7
+nnoremap <leader>6 :A<cr>
+
 " when switching between the alternate window, automatically save.
 inoremap <C-^> <C-O>:e #<CR>
+" do the same thing in terminal mode (even in insert mode)
+tnoremap <C-^> <C-\><C-N><C-O>:e #<CR>
 " quick autosave
 nnoremap <C-c> :w<CR>
 inoremap <C-c> <Esc>
@@ -680,6 +718,7 @@ noremap <leader>y "+y
 noremap <leader>a ggVG"+y
 " copy the current filename and line number into the clipboard and past register:
 noremap <leader>f :let @+=expand("%") .'#'. line(".")<bar>let @"=@+ ."\n"<CR>
+noremap <leader>gf :exec "Grepper -tool ag -noprompt -query ". expand("%:t:r")<cr>
 
 " see all the search matches in a separate window (narrow region)
 noremap <leader>/ :exec "Denite -auto-resize -input=". substitute(escape(@/,' '),'\\[<>]\{1}','\\b','g') ." -mode=normal -matchers=\"matcher_regexp\" line"<cr>
@@ -692,11 +731,6 @@ noremap [oI :set diffopt+=iwhite<cr>
 Repeatable map <leader>u :earlier 1f<cr>
 Repeatable map <leader>r :later 1f<cr>
 
-" Swap function arguments, move the argument under the cursor to the left or to
-" the right.
-Repeatable map <leader>al cxiaf,cxia
-Repeatable map <leader>ah cxiaF,hcxia
-
 " When in Gstatus jump to the next file in the list and diff it.
 Repeatable map <leader>gj <C-w>l<C-w>kjdv
 Repeatable map <leader>gk <C-w>l<C-w>kkdv
@@ -704,15 +738,23 @@ Repeatable map <leader>gk <C-w>l<C-w>kkdv
 " yank a block by the whole line.
 map <leader>ya} va}Vy
 map <leader>yi} vi}Vy
+map <leader>ya) va)Vy
+map <leader>yi) vi)Vy
+map <leader>ya] va]Vy
+map <leader>yi] vi]Vy
 
-" Setup a delete out block function that supports repeatability.
+" delete out block function that supports repeatability.
 Repeatable nnoremap <leader>da} va}Vd
+Repeatable nnoremap <leader>di} vi}Vd
 Repeatable nnoremap <leader>da) va)Vd
+Repeatable nnoremap <leader>di) vi)Vd
+Repeatable nnoremap <leader>da] va]Vd
+Repeatable nnoremap <leader>di] vi]Vd
 
 " Send a selection to the terminal:
 map <leader>cls :TREPLSendSelection<CR>
 map <leader>cll :TREPLSendLine<CR>
-Repeatable map <leader>cc :Ttoggle<CR>
+map <leader>cc :Ttoggle<CR>
 map <leader>ctn :TestNearest<CR>
 map <leader>cts :TestSuite<CR>
 map <leader>ctf :TestFile<CR>
@@ -729,14 +771,10 @@ nnoremap <F3> :SluiceMacroOff <bar> SluiceToggle<CR>
 nnoremap <F4> :SluiceMacroOn <bar> SluiceToggle<CR>
 
 " automatically toggle with control-
-Repeatable nnoremap <leader>. :Switch<cr>
+let g:switch_mapping = ',.'
 
-" Search for occurrences of the word under the cursor:
-nmap <leader>sw yiw:let @/=@"<cr>:Ag <C-r>"<cr>:GCL<cr>
-vmap <leader>sw y:let @/=@"<cr>:Ag <C-r>"<cr>:GCL<cr>
-nmap <leader>vw yiw:let @/=@"<cr>:Gg <C-r>"<cr>
-vmap <leader>vw y:let @/=@"<cr>:Gg <C-r>"<cr>
-nmap <leader>vf yiw:let @/=@"<cr>:Gg <C-r>"<cr>
+" TODO Serach for files with CtrlP for files matching the name of the file under
+" the cursor:
 
 nnoremap <leader>gl :GCL<cr>
 nnoremap <leader>gd :Denite -resume<cr>
@@ -745,17 +783,21 @@ nnoremap <leader>ll :GLL<cr>
 vmap <leader>v :VSSplit<cr>
 
 " Django: find the urls.py definition of the 'url name' under the cursor
-let g:django_lookup_url_recording=":let b:isk_back=&isk\<cr>:set isk+=-\<cr>viwy:exe \"set isk=\". b:isk_back\<cr>:Ag \<c-r>\" -G urls.py\<cr>"
-let g:django_lookup_view_recording=":let b:isk_back=&isk\<cr>:set isk+=-\<cr>viwy:exe \"set isk=\". b:isk_back\<cr>:Ag \<c-r>\" -G urls.py\<cr>"
+let g:django_lookup_url_recording=":let b:isk_back=&isk\<cr>:set isk+=-\<cr>viwy:exe \"set isk=\". b:isk_back\<cr>:GrepperAg \<c-r>\" -G urls.py\<cr>"
+let g:django_lookup_view_recording=":let b:isk_back=&isk\<cr>:set isk+=-\<cr>viwy:exe \"set isk=\". b:isk_back\<cr>:GrepperAg \<c-r>\" -G urls.py\<cr>"
 map <leader>du :let @z=g:django_lookup_url_recording<cr>@z
 map <leader>dv :let @z=g:django_lookup_view_recording<cr>@zF,b<c-]>
+
 " Python: replace a multiline # COMMENT with a """ COMMENT """
 let g:python_replace_pound_comment='gcacgpJ:s/\v^(\s+)(.*)$/\1""" \2 """gqq'
 map <leader>dc :let @z=g:python_replace_pound_comment<cr>@z
 
-" From a 'diff view' in gitv, got back to the list of files one got there from.
-let g:gitv_revert_to_overview=''
-map <leader>gv <C-^><C-w>h:q<cr>
+" Git: from a 'changes view', go to next diff
+" TODO support this from the main gitv screen (it works in diff at the moment.)
+let g:git_next_diff='tdvl'
+let g:git_previous_diff='tdvl'
+Repeatable map <leader>g] :let @z=g:git_next_diff<cr>@z
+Repeatable map <leader>g[ :let @z=g:git_previous_diff<cr>@z
 
 "}}}
 " Commands"{{{
@@ -768,8 +810,11 @@ map <leader>ch :call ToggleSearchConceal()<CR>
 " Sort python imports:
 command! -range=% Isort :<line1>,<line2>! isort -
 
+" Convert unicode to ASCII
+command! UTFToASCII :call utf2ascii#replaceUTF()<cr>
+
 function! ToggleSearchConceal()
-  if !exists("b:searchtext")
+  if !exists('b:searchtext')
     let b:searchtext = @/
   endif
   if b:searchtext != @/
@@ -850,9 +895,9 @@ endfunction
 
 " Get the next value of the value, and increment by two
 function! UV()
-	if !exists("b:set_value")
-		let b:set_value = 1
-	endif
+  if !exists('b:set_value')
+    let b:set_value = 1
+  endif
   let l:old_value = b:set_value
   let b:set_value += 1
   return l:old_value
@@ -860,19 +905,19 @@ endfunction
 
 " Get the next value, and decrement by two:
 function! DV()
-	if !exists("b:set_value")
-		let b:set_value = 1
-	endif
+  if !exists('b:set_value')
+    let b:set_value = 1
+  endif
   let l:old_value = b:set_value
   let b:set_value -= 1
   return l:old_value
 endfunction
 
 function! s:UniteQuickFix()
-  Denite quickfix -mode=normal -auto-resize -matchers="matcher_regexp"
+  Denite quickfix -mode=normal -auto-resize -matchers="matcher_regexp" -immediately-1
 endfunction
 function! s:UniteLocationList()
-  Denite location_list -mode=normal -auto-resize -matchers="matcher_regexp"
+  Denite location_list -mode=normal -auto-resize -matchers="matcher_regexp" -immediately-1
 endfunction
 
 " Execute something on all files of the same kind:
@@ -886,23 +931,14 @@ function! s:ExecFileType(cmd,search)
   call s:UniteQuickFix()
 endfunction
 
-function! s:ExecFileName(cmd,search)
-  " TODO make this substitue get the basename of the current file
-  let l:extension = substitute(expand('%'),'\v^.*\.','','')
-  " save the last search as this so that */# work:
-  let @/ = a:search
-  exec printf('silent %s',printf(a:cmd,a:search,l:extension))
-  call s:UniteQuickFix()
-endfunction
-
 command! -nargs=0 GCL call s:UniteQuickFix()
 command! -nargs=0 GLL call s:UniteLocationList()
 command! -nargs=1 GG call s:ExecFileType("silent Ggrep %s -- '*.%s'",'<args>')
-command! -nargs=1 AA call s:ExecFileType("silent Ag %s **/*.%s",'<args>')
+command! -nargs=1 AA call s:ExecFileType("silent GrepperAg %s **/*.%s",'<args>')
 " TODO make Ggrep be test for the command...for non git projects, fallback on Ag
 " Something like :if exists(':Ggrep')
 command! -nargs=1 Gg exec "silent Ggrep ". '<args>' | GCL
-command! -nargs=1 Aa exec "silent Ag ". '<args>' | GCL
+command! -nargs=1 Aa exec "silent GrepperAg ". '<args>' | GCL
 
 " TODO automate this diffsplit two matching regions
 " let @m=j?<<<jV/^===k"aynjV/^>>>k"by:sp belowggdG"bp:vert diffs aboveggdG"apgglgg:diffupdate=
@@ -977,13 +1013,11 @@ if has('autocmd') && !exists('g:autocommands_loaded')
   " Some other ruby project is tromping over the gutentags files - manually
   " reload every time we enter:
   autocmd BufRead *.rb  if exists('b:gutentags_files') | unlet b:gutentags_files | endif | call gutentags#setup_gutentags()
+  autocmd BufRead *.slim  if exists('b:gutentags_files') | unlet b:gutentags_files | endif | call gutentags#setup_gutentags()
+  autocmd BufRead *.haml  if exists('b:gutentags_files') | unlet b:gutentags_files | endif | call gutentags#setup_gutentags()
 
   " show line numbers for tests:
   autocmd BufNewFile,BufEnter test*.py,*test.py,*spec.rb :setlocal number
-
-  if has('nvim')
-    autocmd BufReadPost,BufWritePost * Neomake
-  endif
 
   " Real broken for carstickers project:
   autocmd BufNewFile,BufReadPost *.html.ts let b:tagbar_ignore = 1
@@ -993,6 +1027,8 @@ if has('autocmd') && !exists('g:autocommands_loaded')
 
   " get rid of any extra git fugitive buffers
   autocmd BufReadPost fugitive://* set bufhidden=delete
+
+  autocmd User Grepper :GCL
 endif
 "}}}
 " vim: set ai fdm=marker cms="%s:
