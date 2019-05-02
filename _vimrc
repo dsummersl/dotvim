@@ -6,13 +6,12 @@ call plug#begin('~/.vim/bundle')
 
 " <---- plugins in testing ---->
 Plug 'mattboehm/vim-unstack'
-Plug 'chrisbra/vim-diff-enhanced' " PatiencDiff and EnhanceDiff
 Plug 'idanarye/vim-yankitute' " Yankitude for copying into registers
-Plug 'junegunn/goyo.vim' " Writer mode via :Goyu
+" Plug 'junegunn/goyo.vim' " Writer mode via :Goyu
 " Plug 'blueyed/vim-diminactive' " dim inactive windows. 
 Plug 'rizzatti/dash.vim' " Dash osx integration :DashSearch
 " Plug 'terryma/vim-multiple-cursors' " C-n to start multiple cursors -- caused problems in git diff!
-Plug 'andymass/vim-matchup' " Match with % plus textobj for match
+" Plug 'andymass/vim-matchup' " Match with % plus textobj for match
 Plug 'jeetsukumaran/vim-indentwise' " Support indent motions ]ii
 
 " TODO jcfaria/Vim-R-plugin
@@ -23,6 +22,7 @@ Plug 'jeetsukumaran/vim-indentwise' " Support indent motions ]ii
 " <---- end plugins in testing ---->
 
 Plug 'tpope/vim-projectionist'
+Plug 'tpope/vim-vinegar'   " Use - to go up directiories in netrw
 Plug 'machakann/vim-highlightedyank' " highlight any text as it is yanked
 Plug 'pgdouyon/vim-evanesco' " Highlight search, clear after searching
 Plug 'MarcWeber/vim-addon-local-vimrc' " enable project local .vimrc files
@@ -108,7 +108,6 @@ Plug 'Shougo/vimproc'
 Plug 'tpope/vim-sleuth' " automatically detect the indent style of the document
 Plug 'jiangmiao/auto-pairs' " close quotes and such automatically
 Plug 'justinmk/vim-sneak' " f t s ; . mappings - jump to any location specified by two characters
-Plug 'ervandew/ag' " vim plugin to search using the silver searcher (ag)
 Plug 'mhinz/vim-grepper' " Grepper to search in lots of ways
 Plug 'tommcdo/vim-exchange' " Easy text exchange operator for Vim
 Plug 'tommcdo/vim-lion' " align with operator gL and gl (ie glip= to align paragraph by =)
@@ -273,7 +272,7 @@ syntax sync minlines=64
 syntax sync maxlines=128
 set synmaxcol=150
 
-set diffopt=filler,iwhite
+set diffopt=filler,iwhite,internal,algorithm:patience
 set nohlsearch
 set nowrap
 
@@ -291,6 +290,12 @@ set incsearch
 
 " file expansion in ex mode, caseless:
 set wildignorecase
+" For file completion in command line mode, complete to the longest common
+" string of a file (and show the options), rather than auto picking the first
+" completion:
+set wildmenu
+set wildmode=longest:full,full
+set wildcharm=<C-Z>
 
 let g:mapleader=','
 
@@ -308,13 +313,6 @@ set linebreak " when wrap is turned on, break on words
 
 " let macros go faster
 set lazyredraw
-
-" For file completion in command line mode, complete to the longest common
-" string of a file (and show the options), rather than auto picking the first
-" completion:
-set wildmenu
-set wildmode=longest:full,full
-
 
 " Revisit the history on the command mode without leaving the home rows.
 cnoremap <c-n> <down>
@@ -343,6 +341,7 @@ let g:grepper.open = 0
 let g:grepper.stop = 700
 let g:grepper.operator = {}
 let g:grepper.operator.prompt = 1
+let g:grepper.tools = ['git', 'ag']
 
 nmap gs <plug>(GrepperOperator)
 xmap gs <plug>(GrepperOperator)
@@ -366,9 +365,6 @@ sunmap [ii
 map ]ii <Plug>(IndentWiseBlockScopeBoundaryEnd)
 sunmap ]ii
 
-
-" started In Diff-Mode set diffexpr (plugin not loaded yet)
-let &diffexpr='EnhancedDiff#Diff("git diff", "--diff-algorithm=patience")'
 
 let g:gruvbox_italic = 1
 let g:gruvbox_bold = 1
@@ -493,7 +489,7 @@ autocmd FileType * let b:switch_custom_definitions =
     \ { 'assertFalse': 'assertTrue' }, { 'assertTrue': 'assertFalse' },
     \ { 'assertIn': 'assertNotIn' }, { 'assertNotIn': 'assertIn' },
     \ { 'assertContains': 'assertNotContains' }, { 'assertNotContains': 'assertContains' },
-    \ { '\.\([a-zA-Z_-]\+\)\>': "['\\1']" }, { '\[[''"]\([a-zA-Z_-]\+\)[''"]\]': '.\1' },
+    \ { 'padding': 'margin' }, { 'margin': 'padding' },
     \ ]
 
 " don't use vif (thats a function, duh!)
@@ -514,10 +510,6 @@ let g:UltiSnipsListSnippets='<C-\>'
 let g:UltiSnipsExpandTrigger='<Tab>'
 let g:UltiSnipsJumpForwardTrigger='<Tab>'                                           
 let g:UltiSnipsJumpBackwardTrigger='<S-Tab>'
-
-let g:ycm_key_list_select_completion=['<C-n>', '<Down>']
-let g:ycm_key_list_previous_completion=['<C-p>', '<Up>']
-let g:ycm_autoclose_preview_window_after_insertion=1
 
 " CtrlP plugin
 let g:ctrlp_user_command = 'ag %s -i --nocolor --nogroup --hidden
@@ -688,8 +680,9 @@ tnoremap <C-^> <C-\><C-N><C-O>:e #<CR>
 " quick autosave
 nnoremap <C-c> :w<CR>
 inoremap <C-c> <Esc>
-" quick jump up to the previous line in insert mode:
-" inoremap <C-e> <C-o>:norm k$\<Enter>
+" quick jump up to the previous line in insert mode: (this overrides the default
+" c-e that repeats the character above...but I don't use it that much)
+inoremap <C-e> <C-o>:norm k$<Enter>
 
 " instead of using this, I use 'gt'
 map <nul> <esc>
@@ -933,12 +926,12 @@ endfunction
 
 command! -nargs=0 GCL call s:UniteQuickFix()
 command! -nargs=0 GLL call s:UniteLocationList()
-command! -nargs=1 GG call s:ExecFileType("silent Ggrep %s -- '*.%s'",'<args>')
+command! -nargs=1 GG call s:ExecFileType("silent GrepperGit %s -- '*.%s'",'<args>')
 command! -nargs=1 AA call s:ExecFileType("silent GrepperAg %s **/*.%s",'<args>')
 " TODO make Ggrep be test for the command...for non git projects, fallback on Ag
 " Something like :if exists(':Ggrep')
-command! -nargs=1 Gg exec "silent Ggrep ". '<args>' | GCL
-command! -nargs=1 Aa exec "silent GrepperAg ". '<args>' | GCL
+command! -nargs=1 Gg exec "silent GrepperGit ". '<args>'
+command! -nargs=1 Aa exec "silent GrepperAg ". '<args>'
 
 " TODO automate this diffsplit two matching regions
 " let @m=j?<<<jV/^===k"aynjV/^>>>k"by:sp belowggdG"bp:vert diffs aboveggdG"apgglgg:diffupdate=
