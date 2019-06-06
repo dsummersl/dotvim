@@ -101,12 +101,6 @@ Plug 'vim-scripts/LargeFile'
 Plug 'vim-scripts/genutils'
 Plug 'gregsexton/gitv', { 'tag': 'v1.4-rc1' }
 Plug 'vim-scripts/visualrepeat'
-" quick find method definitions:
-Plug 'Shougo/denite.nvim'
-Plug 'neoclide/denite-extra'
-Plug 'majutsushi/tagbar'
-" javascript omni integration
-Plug 'Shougo/vimproc'
 Plug 'tpope/vim-sleuth' " automatically detect the indent style of the document
 Plug 'jiangmiao/auto-pairs' " close quotes and such automatically
 Plug 'justinmk/vim-sneak' " f t s ; . mappings - jump to any location specified by two characters
@@ -380,27 +374,6 @@ let g:gruvbox_underline = 1
 let g:gruvbox_undercurl = 1
 let g:gruvbox_contrast_dark = 'soft'
 let g:gruvbox_contrast_light = 'soft'
-
-" Define Denite mappings
-autocmd FileType denite call s:denite_my_settings()
-function! s:denite_my_settings() abort
-  nnoremap <silent><buffer><expr> <Tab>
-  \ denite#do_map('choose_action')
-  nnoremap <silent><buffer><expr> <CR>
-  \ denite#do_map('do_action')
-  nnoremap <silent><buffer><expr> d
-  \ denite#do_map('do_action', 'delete')
-  nnoremap <silent><buffer><expr> p
-  \ denite#do_map('do_action', 'preview')
-  nnoremap <silent><buffer><expr> q
-  \ denite#do_map('quit')
-  nnoremap <silent><buffer><expr> i
-  \ denite#do_map('open_filter_buffer')
-  nnoremap <silent><buffer><expr> <Space>
-  \ denite#do_map('toggle_select').'j'
-  nnoremap <silent><buffer><expr> *
-  \ denite#do_map('toggle_select_all')
-endfunction
 
 let g:riv_disable_folding = 1
 
@@ -735,7 +708,7 @@ noremap <leader>f :let @+=expand("%") .'#'. line(".")<bar>let @"=@+ ."\n"<CR>
 noremap <leader>gf :exec "Grepper -tool ag -noprompt -query ". expand("%:t:r")<cr>
 
 " see all the search matches in a separate window (narrow region)
-noremap <leader>/ :exec "Denite -auto-resize -input=". substitute(escape(@/,' '),'\\[<>]\{1}','\\b','g') ." -matchers=\"matcher_regexp\" line"<cr>
+noremap <leader>/ :exec "Grepper -tool ag -noprompt -query ". substitute(escape(@/,' '),'\\[<>]\{1}','\\\\b','g')<cr>
 
 " unimpaired like mapping for diff option for ignoring whitespace.
 noremap ]oI :set diffopt-=iwhiteall<cr>
@@ -789,10 +762,6 @@ let g:switch_mapping = ',.'
 
 " TODO Serach for files with CtrlP for files matching the name of the file under
 " the cursor:
-
-nnoremap <leader>gl :GCL<cr>
-nnoremap <leader>gd :Denite -resume<cr>
-nnoremap <leader>ll :GLL<cr>
 
 vmap <leader>v :VSSplit<cr>
 
@@ -927,13 +896,6 @@ function! DV()
   return l:old_value
 endfunction
 
-function! s:DeniteQuickFix()
-  Denite quickfix -auto-resize -matchers="matcher_regexp" -immediately-1
-endfunction
-function! s:DeniteLocationList()
-  Denite location_list -auto-resize -matchers="matcher_regexp" -immediately-1
-endfunction
-
 " Execute something on all files of the same kind:
 "
 " See GG and AA commands:
@@ -944,8 +906,6 @@ function! s:ExecFileType(cmd,search)
   exec printf('silent %s',printf(a:cmd,a:search,l:extension))
 endfunction
 
-command! -nargs=0 GCL call s:DeniteQuickFix()
-command! -nargs=0 GLL call s:DeniteLocationList()
 command! -nargs=1 GG call s:ExecFileType("silent GrepperGit %s -- '*.%s'",'<args>')
 command! -nargs=1 AA call s:ExecFileType("silent GrepperAg '%s' -G '.*.%s'",'<args>')
 " TODO make Ggrep be test for the command...for non git projects, fallback on Ag
@@ -1043,8 +1003,6 @@ if has('autocmd') && !exists('g:autocommands_loaded')
 
   " close the quickfix window when an item is selected.
   autocmd FileType qf nnoremap <buffer> <CR> <CR>:cclose<CR>
-
-  " autocmd User Grepper Denite -auto-resize -matchers=matcher/regexp -immediately-1 quickfix | wincmd p
 endif
 "}}}
 " vim: set ai fdm=marker cms="%s:
