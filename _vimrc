@@ -13,6 +13,9 @@ Plug 'rizzatti/dash.vim' " Dash osx integration :DashSearch
 " Plug 'terryma/vim-multiple-cursors' " C-n to start multiple cursors -- caused problems in git diff!
 " Plug 'andymass/vim-matchup' " Match with % plus textobj for match
 Plug 'jeetsukumaran/vim-indentwise' " Support indent motions ]ii
+Plug 'itchyny/lightline.vim'
+Plug 'rhysd/git-messenger.vim'  " <leader>gm to see last commit message at cursor
+Plug 'stefandtw/quickfix-reflector.vim' " edit the qf list directly with copen
 
 " TODO jcfaria/Vim-R-plugin
 " TODO https://github.com/vim-scripts/PatternsOnText - delete/replace non
@@ -54,7 +57,6 @@ Plug 'rakr/vim-two-firewatch'
 Plug 'luochen1990/rainbow', { 'frozen': 1 }
 
 " Language specific plugins:
-" Plug 'vim-ruby/vim-ruby'
 Plug 'slim-template/vim-slim'
 Plug 'posva/vim-vue'
 Plug 'leafgarland/typescript-vim', { 'for': 'typescript' }
@@ -138,7 +140,7 @@ Plug 'vim-scripts/cecutil'
 
 Plug 'dsummersl/gundo.vim', { 'branch': 'mundo-master' }
 Plug 'honza/vim-snippets'
-Plug 'ap/vim-css-color'
+" Plug 'ap/vim-css-color'
 
 if has('nvim')
   " language server type completion
@@ -152,26 +154,11 @@ else
 endif
 
 set termguicolors
-Plug 'vim-airline/vim-airline'
-Plug 'vim-airline/vim-airline-themes'
-" Plug 'ryanoasis/vim-devicons'
 Plug 'SirVer/ultisnips'
 
 call plug#end()
 
 if v:version >= 704
-  " I don't really care about trailing spaces so much as the indenting:
-  let g:airline#extensions#whitespace#checks = [ 'indent' ]
-  " remove git branch - they can be long.
-  let g:airline_section_a = ''
-  let g:airline_section_b = ''
-  let g:airline_skip_empty_sections = 1
-  let g:airline_section_y = airline#util#wrap(' %#__accent_bold_red#%{&expandtab?"_":""}%#__restore__#%{&expandtab?"":"t"}%{&tabstop}',0)
-  let g:airline#extensions#tagbar#enabled = 1
-  let g:airline#extensions#tagbar#flags = 'f'
-  let g:airline_powerline_fonts = 1
-  set laststatus=2
-
   " show undo history
   nnoremap <F5> :MundoToggle<CR>
 
@@ -217,8 +204,6 @@ if v:version >= 704
 endif
 
 if v:version >= 703
-  let g:airline_theme = 'base16'
-
   if has("gui_running")
     set macmeta
     set anti
@@ -229,14 +214,6 @@ if v:version >= 703
     set gfn=Monaco\ for\ Powerline:h13
     "set gfn=Monaco:h15
   endif
-
-  if !exists('g:airline_symbols')
-    let g:airline_symbols = {}
-  endif
-  let g:airline_symbols.linenr = '␊'
-  let g:airline_symbols.branch = '⎇'
-  let g:airline_symbols.paste = '∥'
-  let g:airline_symbols.whitespace = 'Ξ'
 
   set cursorline
   " show column markers beyond the 80, and 100
@@ -255,6 +232,9 @@ set nonumber
 " I want to know about bad tab/space use:
 set nolist
 
+" Let airline show the mode
+set noshowmode
+
 " give a little context
 set scrolloff=2
 
@@ -269,10 +249,10 @@ set mouse=v
 
 " improve syntax highlighting speed in general
 syntax sync minlines=64
-syntax sync maxlines=128
-set synmaxcol=150
+syntax sync maxlines=120
+set synmaxcol=120
 
-set diffopt=filler,iwhite,internal,algorithm:patience
+set diffopt=filler,iwhiteall,vertical,hiddenoff,internal,indent-heuristic,algorithm:patience
 set nohlsearch
 set nowrap
 
@@ -336,17 +316,41 @@ let g:python3_host_prog='/usr/local/bin/python3'
 
 call repeatable#Setup()
 
+function! LightlineMode()
+  return lightline#mode()[0:0]
+endfunction
+function! LightlineFilename()
+  let filename = expand('%:t') !=# '' ? expand('%:t') : '[No Name]'
+  let modified = &modified ? ' +' : ''
+  return filename . modified
+endfunction
+let g:lightline = {
+      \ 'colorscheme': 'jellybeans',
+      \ 'active': {
+      \   'left': [ [ 'mode', 'paste' ],
+      \             [ 'readonly', 'filename' ] ],
+      \   'right': [ [ 'lineinfo' ], [ 'percent' ],
+      \             [ 'indent', 'fileformat', 'filetype' ] ]
+      \ },
+      \ 'component': {
+      \   'indent': '%{&expandtab?"s":"t"}%{&tabstop}',
+      \ },
+      \ 'component_function': {
+      \   'mode': 'LightlineMode',
+      \   'filename': 'LightlineFilename',
+      \ },
+      \ }
+
 let g:grepper = {}
 let g:grepper.open = 0
 let g:grepper.stop = 700
 let g:grepper.operator = {}
 let g:grepper.operator.prompt = 1
-let g:grepper.tools = ['git', 'ag']
+let g:grepper.tools = ['git', 'ag', 'sift']
 
 nmap gs <plug>(GrepperOperator)
 xmap gs <plug>(GrepperOperator)
 
-let g:airline#extensions#ale#enabled=0
 let g:ale_completion_enabled = 0
 let g:ale_set_highlights = 0
 let g:ale_lint_on_text_changed = 'normal'
@@ -360,10 +364,14 @@ let g:ale_linters = {
 
 " Map indent motions to a more indent-like key
 let g:indentwise_suppress_keymaps = 1
+map [iI <Plug>(IndentWisePreviousLesserIndent)
 map [ii <Plug>(IndentWiseBlockScopeBoundaryBegin)
 sunmap [ii
+sunmap [iI
+map ]iI <Plug>(IndentWiseNextLesserIndent)
 map ]ii <Plug>(IndentWiseBlockScopeBoundaryEnd)
 sunmap ]ii
+sunmap ]iI
 
 
 let g:gruvbox_italic = 1
@@ -373,24 +381,33 @@ let g:gruvbox_undercurl = 1
 let g:gruvbox_contrast_dark = 'soft'
 let g:gruvbox_contrast_light = 'soft'
 
+" Define Denite mappings
+autocmd FileType denite call s:denite_my_settings()
+function! s:denite_my_settings() abort
+  nnoremap <silent><buffer><expr> <Tab>
+  \ denite#do_map('choose_action')
+  nnoremap <silent><buffer><expr> <CR>
+  \ denite#do_map('do_action')
+  nnoremap <silent><buffer><expr> d
+  \ denite#do_map('do_action', 'delete')
+  nnoremap <silent><buffer><expr> p
+  \ denite#do_map('do_action', 'preview')
+  nnoremap <silent><buffer><expr> q
+  \ denite#do_map('quit')
+  nnoremap <silent><buffer><expr> i
+  \ denite#do_map('open_filter_buffer')
+  nnoremap <silent><buffer><expr> <Space>
+  \ denite#do_map('toggle_select').'j'
+  nnoremap <silent><buffer><expr> *
+  \ denite#do_map('toggle_select_all')
+endfunction
+
 let g:riv_disable_folding = 1
 
 " When using gL and gl, squeeze any extra leading whitespace.
 let g:lion_squeeze_spaces = 1
 
 let g:highlightedyank_highlight_duration = 250
-
-function! Render_Only_File(...)
-  let l:builder = a:1
-  let l:context = a:2
-
-  call l:builder.add_section('file', '%F')
-
-  " return 0   " the default: draw the rest of the statusline
-  " return -1  " do not modify the statusline
-  return 1   " modify the statusline with the current contents of the builder
-endfunction
-call airline#add_inactive_statusline_func('Render_Only_File')
 
 let g:expand_region_text_objects = {
       \ 'iw'  :0,
@@ -470,17 +487,19 @@ function! Toggle(setting)
 endfunction
 
 " left/right and up/down first/last
-autocmd FileType * let b:switch_custom_definitions =
+let g:switch_custom_definitions =
     \ [
     \ { '==': '!=' }, { '!=': '==' },
     \ { '&&': '||' }, { '||': '&&' },
     \ { 'and': 'or' }, { 'or': 'and' },
     \ { 'FALSE': 'TRUE' }, { 'TRUE': 'FALSE' },
     \ { 'left': 'right' }, { 'right': 'left' },
+    \ { 'width': 'height' }, { 'height': 'width' },
     \ { 'yes': 'no' }, { 'no': 'yes' },
     \ { 'disabled': 'enabled' }, { 'enabled': 'disabled' },
     \ { 'present': 'absent' }, { 'absent': 'present' },
     \ { 'up': 'down' }, { 'down': 'up' },
+    \ { 'even': 'odd' }, { 'odd': 'even' },
     \ { 'top': 'bottom' }, { 'bottom': 'top' },
     \ { 'first': 'last' }, { 'last': 'first' },
     \ { 'public': 'private' }, { 'private': 'protected' }, { 'protected': 'public' },
@@ -642,6 +661,8 @@ nmap <C-]> g<C-]>zt
 map <leader>dd :ALEGoToDefinition<cr>
 nmap <silent> <leader>D <Plug>DashSearch
 
+map <leader>co :copen<cr>
+
 " Quickly edit the contents of a register (for macros, say); <leader>m or
 " "q<leader>m  to edit register q
 " From https://github.com/mhinz/vim-galore#quickly-edit-your-macros
@@ -682,7 +703,7 @@ nnoremap <C-c> :w<CR>
 inoremap <C-c> <Esc>
 " quick jump up to the previous line in insert mode: (this overrides the default
 " c-e that repeats the character above...but I don't use it that much)
-inoremap <C-e> <C-o>:norm k$<Enter>
+inoremap <C-e> <C-o>:norm k$<Enter>
 
 " instead of using this, I use 'gt'
 map <nul> <esc>
@@ -714,11 +735,11 @@ noremap <leader>f :let @+=expand("%") .'#'. line(".")<bar>let @"=@+ ."\n"<CR>
 noremap <leader>gf :exec "Grepper -tool ag -noprompt -query ". expand("%:t:r")<cr>
 
 " see all the search matches in a separate window (narrow region)
-noremap <leader>/ :exec "Denite -auto-resize -input=". substitute(escape(@/,' '),'\\[<>]\{1}','\\b','g') ." -mode=normal -matchers=\"matcher_regexp\" line"<cr>
+noremap <leader>/ :exec "Denite -auto-resize -input=". substitute(escape(@/,' '),'\\[<>]\{1}','\\b','g') ." -matchers=\"matcher_regexp\" line"<cr>
 
 " unimpaired like mapping for diff option for ignoring whitespace.
-noremap ]oI :set diffopt-=iwhite<cr>
-noremap [oI :set diffopt+=iwhite<cr>
+noremap ]oI :set diffopt-=iwhiteall<cr>
+noremap [oI :set diffopt+=iwhiteall<cr>
 
 " undo/redo to the previous write
 Repeatable map <leader>u :earlier 1f<cr>
@@ -906,11 +927,11 @@ function! DV()
   return l:old_value
 endfunction
 
-function! s:UniteQuickFix()
-  Denite quickfix -mode=normal -auto-resize -matchers="matcher_regexp" -immediately-1
+function! s:DeniteQuickFix()
+  Denite quickfix -auto-resize -matchers="matcher_regexp" -immediately-1
 endfunction
-function! s:UniteLocationList()
-  Denite location_list -mode=normal -auto-resize -matchers="matcher_regexp" -immediately-1
+function! s:DeniteLocationList()
+  Denite location_list -auto-resize -matchers="matcher_regexp" -immediately-1
 endfunction
 
 " Execute something on all files of the same kind:
@@ -921,13 +942,12 @@ function! s:ExecFileType(cmd,search)
   " save the last search as this so that */# work:
   let @/ = a:search
   exec printf('silent %s',printf(a:cmd,a:search,l:extension))
-  call s:UniteQuickFix()
 endfunction
 
-command! -nargs=0 GCL call s:UniteQuickFix()
-command! -nargs=0 GLL call s:UniteLocationList()
+command! -nargs=0 GCL call s:DeniteQuickFix()
+command! -nargs=0 GLL call s:DeniteLocationList()
 command! -nargs=1 GG call s:ExecFileType("silent GrepperGit %s -- '*.%s'",'<args>')
-command! -nargs=1 AA call s:ExecFileType("silent GrepperAg %s **/*.%s",'<args>')
+command! -nargs=1 AA call s:ExecFileType("silent GrepperAg '%s' -G '.*.%s'",'<args>')
 " TODO make Ggrep be test for the command...for non git projects, fallback on Ag
 " Something like :if exists(':Ggrep')
 command! -nargs=1 Gg exec "silent GrepperGit ". '<args>'
@@ -1021,7 +1041,10 @@ if has('autocmd') && !exists('g:autocommands_loaded')
   " get rid of any extra git fugitive buffers
   autocmd BufReadPost fugitive://* set bufhidden=delete
 
-  autocmd User Grepper :GCL
+  " close the quickfix window when an item is selected.
+  autocmd FileType qf nnoremap <buffer> <CR> <CR>:cclose<CR>
+
+  " autocmd User Grepper Denite -auto-resize -matchers=matcher/regexp -immediately-1 quickfix | wincmd p
 endif
 "}}}
 " vim: set ai fdm=marker cms="%s:
