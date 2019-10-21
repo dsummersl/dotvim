@@ -5,17 +5,11 @@ so ~/.vim/autoload/plug.vim
 call plug#begin('~/.vim/bundle')
 
 " <---- plugins in testing ---->
-Plug 'mattboehm/vim-unstack'
-Plug 'idanarye/vim-yankitute' " Yankitude for copying into registers
-" Plug 'junegunn/goyo.vim' " Writer mode via :Goyu
-" Plug 'blueyed/vim-diminactive' " dim inactive windows. 
-Plug 'rizzatti/dash.vim' " Dash osx integration :DashSearch
-" Plug 'terryma/vim-multiple-cursors' " C-n to start multiple cursors -- caused problems in git diff!
-" Plug 'andymass/vim-matchup' " Match with % plus textobj for match
-Plug 'jeetsukumaran/vim-indentwise' " Support indent motions ]ii
-Plug 'itchyny/lightline.vim'
-Plug 'rhysd/git-messenger.vim'  " <leader>gm to see last commit message at cursor
-Plug 'stefandtw/quickfix-reflector.vim' " edit the qf list directly with copen
+" Plug 'mg979/vim-visual-multi', { 'tag': '*' } " multiple cursors with 
+Plug 'sheerun/vim-polyglot'
+Plug 'lumiliet/vim-twig'
+Plug 'norcalli/nvim-colorizer.lua'
+" Plug 'vim-vdebug/vdebug'
 
 " TODO jcfaria/Vim-R-plugin
 " TODO https://github.com/vim-scripts/PatternsOnText - delete/replace non
@@ -24,21 +18,25 @@ Plug 'stefandtw/quickfix-reflector.vim' " edit the qf list directly with copen
 " TODO use count in front of jk control keys: https://github.com/vim-scripts/rel-jump
 " <---- end plugins in testing ---->
 
+Plug 'rizzatti/dash.vim' " Lookup docs in Dash
+Plug 'idanarye/vim-yankitute' " Yankitude for copying into registers
+Plug 'jeetsukumaran/vim-indentwise' " Support indent motions ]ii
+Plug 'andymass/vim-matchup' " Match with % plus textobj for match
+Plug 'itchyny/lightline.vim'
+Plug 'stefandtw/quickfix-reflector.vim' " edit the qf list directly with copen
 Plug 'tpope/vim-projectionist'
-Plug 'tpope/vim-vinegar'   " Use - to go up directiories in netrw
 Plug 'machakann/vim-highlightedyank' " highlight any text as it is yanked
 Plug 'pgdouyon/vim-evanesco' " Highlight search, clear after searching
 Plug 'MarcWeber/vim-addon-local-vimrc' " enable project local .vimrc files
 Plug 'okcompute/vim-python-motions' " ]] ]C ]M to move between methods
-Plug 'tpope/vim-fugitive', { 'tag': 'v2.5' } " git
+Plug 'tpope/vim-fugitive', { 'tag': '*' } " git
 Plug 'tpope/vim-rhubarb' " Gbrowse 
-Plug 'godlygeek/csapprox' " neovim coloring for gblame
 Plug 'ludovicchabant/vim-lawrencium' " mercurial (hg)
 Plug 'tpope/vim-abolish' " fix spelling errors
 " surround things with quotes, etc (csw - surround word)
 Plug 'tpope/vim-surround'
 " many additional mappings for ]q, etc
-Plug 'tpope/vim-unimpaired', { 'tag': 'v2.0' }
+Plug 'tpope/vim-unimpaired', { 'tag': '*' }
 " awesome: makes the surround plugin work with the '.' keys (repeatability!)
 Plug 'tpope/vim-repeat'
 Plug 'kreskij/Repeatable.vim'
@@ -59,23 +57,7 @@ Plug 'luochen1990/rainbow', { 'frozen': 1 }
 " Language specific plugins:
 Plug 'slim-template/vim-slim'
 Plug 'posva/vim-vue'
-Plug 'leafgarland/typescript-vim', { 'for': 'typescript' }
-Plug 'vim-scripts/applescript.vim', { 'for': 'applescript' }
-Plug 'sirtaj/vim-openscad'
-Plug 'derekwyatt/vim-scala', { 'for': 'scala' }
-Plug 'rust-lang/rust.vim', { 'for': 'rust' }
-" Plug 'davidhalter/jedi-vim' " python support <leader>d to go to definition.
-" TODO update this repo so that people know to look for chrisba
-Plug 'dsummersl/wikia-csv' " editing CSV docs, super handily.
 Plug 'prabirshrestha/async.vim'
-Plug 'dsummersl/vim-sluice'
-" Plug 'pangloss/vim-javascript'
-Plug 'marshallward/vim-restructuredtext'  " syntax for rst files
-" Plug 'mxw/vim-jsx'
-Plug 'digitaltoad/vim-jade' " Vim Jade template engine syntax highlighting and indention
-" Plug 'jeroenbourgois/vim-actionscript'
-" Plug 'wavded/vim-stylus' " syntax hilighting for stylus files
-Plug 'marijnh/tern_for_vim', { 'do': 'npm install' }
 
 Plug 'janko-m/vim-test' " :TestNearest
 Plug 'christoomey/vim-tmux-runner' " :Vtr_endCommandToRunner for tmux
@@ -89,17 +71,12 @@ Plug 'nathanaelkane/vim-indent-guides' " A Vim plugin for visually displaying in
 Plug 'mattn/emmet-vim' " fast HTML tag generation (in insert mode type tr*3CTL-Y, to make three <tr>s
 Plug 'tomtom/tcomment_vim' " An extensible & universal comment vim-plugin that also handles embedded filetypes
 Plug 'ctrlpvim/ctrlp.vim'
-" Plug 'chrisba/csv.vim'
-" simple utf2ascii function.
-Plug 'dsummersl/vim-utf2ascii'
-" Plug 'kchmck/vim-coffee-script'
-" TODO this? Its a dependency for a number of libs?
-Plug 'PProvost/vim-ps1'
-" TODO this? Its a dependency for a number of libs?
-Plug 'eparreno/l9'
+Plug 'dsummersl/vim-utf2ascii' " simple utf2ascii function.
+Plug 'PProvost/vim-ps1' " TODO this? Its a dependency for a number of libs?
+Plug 'eparreno/l9' " TODO this? Its a dependency for a number of libs?
 Plug 'vim-scripts/LargeFile'
 Plug 'vim-scripts/genutils'
-Plug 'gregsexton/gitv', { 'tag': 'v1.4-rc1' }
+Plug 'gregsexton/gitv', { 'tag': '*' }
 Plug 'vim-scripts/visualrepeat'
 Plug 'tpope/vim-sleuth' " automatically detect the indent style of the document
 Plug 'jiangmiao/auto-pairs' " close quotes and such automatically
@@ -107,8 +84,6 @@ Plug 'justinmk/vim-sneak' " f t s ; . mappings - jump to any location specified 
 Plug 'mhinz/vim-grepper' " Grepper to search in lots of ways
 Plug 'tommcdo/vim-exchange' " Easy text exchange operator for Vim
 Plug 'tommcdo/vim-lion' " align with operator gL and gl (ie glip= to align paragraph by =)
-" Plug 'nelstrom/vim-visual-star-search' " use #/* in visual mode for searching
-" Plug 'bigfish/vim-js-context-coloring', { 'do': 'npm install --update' }
 
 Plug 'wellle/targets.vim' " many text objects
 Plug 'kana/vim-textobj-user' " user defined textobj implementations
@@ -134,15 +109,12 @@ Plug 'vim-scripts/cecutil'
 
 Plug 'dsummersl/gundo.vim', { 'branch': 'mundo-master' }
 Plug 'honza/vim-snippets'
-" Plug 'ap/vim-css-color'
 
 if has('nvim')
   " language server type completion
-  " Plug 'neoclide/coc.nvim', {'tag': 'v0.0.60', 'do': { -> coc#util#install()}}
-  Plug 'kassio/neoterm'
-  Plug 'w0rp/ale', { 'tag': 'v2.4.0' }
+  Plug 'w0rp/ale'
+  Plug 'neoclide/coc.nvim', {'tag': '*'}
 else
-  " Plug 'Shougo/deoplete.nvim'
   Plug 'roxma/nvim-yarp'
   Plug 'roxma/vim-hug-neovim-rpc'
 endif
@@ -211,7 +183,7 @@ if v:version >= 703
 
   set cursorline
   " show column markers beyond the 80, and 100
-  set colorcolumn=+0,+19,+20
+  set colorcolumn=+1,+20,+21,+22,+23
 endif
 " }}}
 " basic options {{{
@@ -242,9 +214,9 @@ set foldmethod=marker
 set mouse=v
 
 " improve syntax highlighting speed in general
-syntax sync minlines=64
-syntax sync maxlines=120
-set synmaxcol=120
+" syntax sync minlines=64
+" syntax sync maxlines=120
+" set synmaxcol=255
 
 set diffopt=filler,iwhiteall,vertical,hiddenoff,internal,indent-heuristic,algorithm:patience
 set nohlsearch
@@ -462,26 +434,30 @@ endfunction
 " left/right and up/down first/last
 let g:switch_custom_definitions =
     \ [
-    \ { '==': '!=' }, { '!=': '==' },
     \ { '&&': '||' }, { '||': '&&' },
-    \ { 'and': 'or' }, { 'or': 'and' },
+    \ { '==': '!=' }, { '!=': '==' },
     \ { 'FALSE': 'TRUE' }, { 'TRUE': 'FALSE' },
-    \ { 'left': 'right' }, { 'right': 'left' },
-    \ { 'width': 'height' }, { 'height': 'width' },
-    \ { 'yes': 'no' }, { 'no': 'yes' },
-    \ { 'disabled': 'enabled' }, { 'enabled': 'disabled' },
-    \ { 'present': 'absent' }, { 'absent': 'present' },
-    \ { 'up': 'down' }, { 'down': 'up' },
-    \ { 'even': 'odd' }, { 'odd': 'even' },
-    \ { 'top': 'bottom' }, { 'bottom': 'top' },
-    \ { 'first': 'last' }, { 'last': 'first' },
-    \ { 'public': 'private' }, { 'private': 'protected' }, { 'protected': 'public' },
     \ { 'INFO': 'DEBUG' }, { 'DEBUG': 'INFO' },
-    \ { 'info': 'debug' }, { 'debug': 'info' },
+    \ { 'align': 'justify' }, { 'justify': 'align' },
+    \ { 'and': 'or' }, { 'or': 'and' },
+    \ { 'assertContains': 'assertNotContains' }, { 'assertNotContains': 'assertContains' },
     \ { 'assertFalse': 'assertTrue' }, { 'assertTrue': 'assertFalse' },
     \ { 'assertIn': 'assertNotIn' }, { 'assertNotIn': 'assertIn' },
-    \ { 'assertContains': 'assertNotContains' }, { 'assertNotContains': 'assertContains' },
+    \ { 'before': 'after' }, { 'after': 'before' },
+    \ { 'columns': 'rows' }, { 'rows': 'columns' },
+    \ { 'disabled': 'enabled' }, { 'enabled': 'disabled' },
+    \ { 'even': 'odd' }, { 'odd': 'even' },
+    \ { 'first': 'last' }, { 'last': 'first' },
+    \ { 'info': 'debug' }, { 'debug': 'info' },
+    \ { 'left': 'right' }, { 'right': 'left' },
+    \ { 'max': 'min' }, { 'min': 'max' },
     \ { 'padding': 'margin' }, { 'margin': 'padding' },
+    \ { 'present': 'absent' }, { 'absent': 'present' },
+    \ { 'public': 'private' }, { 'private': 'protected' }, { 'protected': 'public' },
+    \ { 'top': 'bottom' }, { 'bottom': 'top' },
+    \ { 'up': 'down' }, { 'down': 'up' },
+    \ { 'width': 'height' }, { 'height': 'width' },
+    \ { 'yes': 'no' }, { 'no': 'yes' },
     \ ]
 
 " don't use vif (thats a function, duh!)
@@ -516,16 +492,15 @@ let g:ctrlp_user_command = 'ag %s -i --nocolor --nogroup --hidden
 
 " Map <C-p> to most recent files
 let g:ctrlp_cmd = 'CtrlPMRUFiles'
-" Map <C-S-p> to all files (iTerm mapping of that combo to <F15>): 
-map <F15> :CtrlP<cr>
-map <M-p> :CtrlP<cr>
-" Let C-S-P happen in terminals (C-P already does helpful things in a terminal)
-tnoremap <F15> <C-\><C-N><C-O>:CtrlP<CR>
+map <C-t> :CtrlPTag<cr>
+" User iterm2 to map shift-ctrl-t to <f16>
+map <F16> :CtrlPBufTag<cr>
+
 
 " only show MRU files in the working directory
 let g:ctrlp_mruf_relative = 1
 let g:ctrlp_use_caching = 1
-let g:ctrlp_clear_cache_on_exit = 1
+let g:ctrlp_clear_cache_on_exit = 0
 let g:ctrlp_cache_dir = $HOME.'/.cache/ctrlp'
 " just use the pwd when finding files.
 let g:ctrlp_working_path_mode = 'w'
@@ -533,7 +508,8 @@ let g:ctrlp_custom_ignore = '\.git$\|\.hg$\|\.svn|$'
 " by default ignore binary things and swap files
 set wildignore+=*/*.sw?,*/*.pyc,*/*.class
 " enable the quickfix plugin source:
-let g:ctrlp_extensions=['changes']
+let g:ctrlp_extensions=[]
+let g:ctrlp_types = ['mru', 'fil']
 
 let g:tagbar_autofocus = 1
 let g:tagbar_autoclose = 1
@@ -572,12 +548,6 @@ let g:tagbar_type_typescript = {
   \ 'sort' : 0                                                                    
 \ }  
 
-" Unite outline mode
-nnoremap <C-t> :TagbarToggle<cr>
-map <M-t> :CtrlPBufTag<cr>
-" User iterm2 to map shift-ctrl-t to <f16>
-map <F16> :CtrlPTag<cr>
-
 " save my right pinky some pain:
 nnoremap <leader>t zt
 nnoremap <leader>b zb
@@ -615,6 +585,7 @@ endfunction
 " Mappings"{{{
 
 let g:AutoPairsFlyMode=1
+let g:AutoPairsMultilineClose=0
 
 " TODO VtrAttachToPane 1
 
@@ -631,9 +602,22 @@ let g:AutoPairsFlyMode=1
 nmap <C-]> g<C-]>zt
 " TODO Create mappings to find tags that match this filetype.
 
-map <leader>dd :ALEGoToDefinition<cr>
 nmap <silent> <leader>D <Plug>DashSearch
+nnoremap <silent> <leader>dd :call <SID>show_documentation()<CR>
+nnoremap <silent> <leader>df <Plug>(coc-definition)<cr>
+command! -nargs=0 Prettier :call CocAction('runCommand', 'prettier.formatFile')
+function! s:show_documentation()
+  if (index(['vim','help'], &filetype) >= 0)
+    execute 'h '.expand('<cword>')
+  else
+    call CocAction('doHover')
+  endif
+endfunction
 
+nnoremap <leader>o :only<cr>
+nnoremap <leader>' :q<cr>
+nnoremap <leader>- <c-w>_
+nnoremap <leader>' :q<cr>
 map <leader>co :copen<cr>
 
 " Quickly edit the contents of a register (for macros, say); <leader>m or
@@ -654,7 +638,7 @@ let g:sneak#label = 1
 
 cabbrev bda call DeleteHiddenBuffers()
 cabbrev gitv Gitv
-cabbrev ag Grepper -tool ag<cr>
+cabbrev ag Grepper -jump -tool ag<cr>
 cabbrev aa AA
 cabbrev gg GG
 cabbrev man Man
@@ -705,10 +689,10 @@ noremap <leader>y "+y
 noremap <leader>a ggVG"+y
 " copy the current filename and line number into the clipboard and past register:
 noremap <leader>f :let @+=expand("%") .'#'. line(".")<bar>let @"=@+ ."\n"<CR>
-noremap <leader>gf :exec "Grepper -tool ag -noprompt -query ". expand("%:t:r")<cr>
+noremap <leader>gf :exec "Grepper -jump -tool ag -noprompt -query ". expand("%:t:r")<CR>
 
 " see all the search matches in a separate window (narrow region)
-noremap <leader>/ :exec "Grepper -tool ag -noprompt -query ". substitute(escape(@/,' '),'\\[<>]\{1}','\\\\b','g')<cr>
+noremap <leader>/ :exec "Grepper -jump -tool ag -noprompt -query ". substitute(escape(@/,' '),'\\[<>]\{1}','\\\\b','g') ." ". expand('%')<CR>
 
 " unimpaired like mapping for diff option for ignoring whitespace.
 noremap ]oI :set diffopt-=iwhiteall<cr>
@@ -748,7 +732,7 @@ map <leader>ctf :TestFile<CR>
 map <leader>ctl :TestLast<CR>
 
 " Open the current directory (or make new directory)
-map <leader>ep :e %:h/<C-d>
+map - :e %:h/<CR>
 
 " Use gp to select the last pasted region.
 nnoremap <expr> gp '`[' . strpart(getregtype(), 0, 1) . '`]'
@@ -864,6 +848,7 @@ let g:test#custom_transformations = {
 "
 " Use this like so to change something, incrementing from 392:
 "
+" :set inccommand=
 " :call SV(392)
 " :%s/\v(something:)(\d+)/\=submatch(1) . UV()/
 
@@ -910,8 +895,8 @@ command! -nargs=1 GG call s:ExecFileType("silent GrepperGit %s -- '*.%s'",'<args
 command! -nargs=1 AA call s:ExecFileType("silent GrepperAg '%s' -G '.*.%s'",'<args>')
 " TODO make Ggrep be test for the command...for non git projects, fallback on Ag
 " Something like :if exists(':Ggrep')
-command! -nargs=1 Gg exec "silent GrepperGit ". '<args>'
-command! -nargs=1 Aa exec "silent GrepperAg ". '<args>'
+command! -nargs=1 Gg exec "silent GrepperGit -jump ". '<args>'
+command! -nargs=1 Aa exec "silent GrepperAg -jump ". '<args>'
 
 " TODO automate this diffsplit two matching regions
 " let @m=j?<<<jV/^===k"aynjV/^>>>k"by:sp belowggdG"bp:vert diffs aboveggdG"apgglgg:diffupdate=
@@ -944,6 +929,25 @@ function! Once(cmd)
   exe a:cmd
 endfunction
 
+function! s:DiffRegisters(register_a, register_b)
+  " Diff two registers. Example:
+  " DiffRegisters a b
+  new
+  setlocal buftype=nofile
+  setlocal bufhidden=delete
+  setlocal noswapfile
+  exec "silent put ". a:register_a
+  diffthis
+  vnew
+  setlocal buftype=nofile
+  setlocal bufhidden=delete
+  setlocal noswapfile
+  exec "silent put ". a:register_b
+  diffthis
+  resize 100
+endfunction
+command! -nargs=* DiffRegisters call s:DiffRegisters(<f-args>)
+
 "}}}
 " Automappings"{{{
 
@@ -968,6 +972,7 @@ if has('autocmd') && !exists('g:autocommands_loaded')
   " Rainbow tags look crappy in htmldjango -- this autocmd isn't really working :/
   autocmd FileType htmldjango RainbowToggleOff
 
+  autocmd BufNewFile,BufRead *.scss,*.css lua require'colorizer'.setup()
   autocmd BufNewFile,BufRead *.j2 setf jinja
   autocmd BufNewFile,BufRead *.md setf markdown
   autocmd BufNewFile,BufRead *.md setlocal spell wrap et
@@ -1003,6 +1008,9 @@ if has('autocmd') && !exists('g:autocommands_loaded')
 
   " close the quickfix window when an item is selected.
   autocmd FileType qf nnoremap <buffer> <CR> <CR>:cclose<CR>
+  " autocmd FileType qf syntax match ConcealedPath /\v^[^|]*\// conceal
+  " autocmd FileType qf syntax match VisiblePath /\v^([^|]+\|){2}/
+  " autocmd FileType qf highlight link VisiblePath Folded
 endif
 "}}}
 " vim: set ai fdm=marker cms="%s:
