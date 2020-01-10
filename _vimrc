@@ -7,13 +7,12 @@ call plug#begin('~/.vim/bundle')
 " <---- plugins in testing ---->
 " Plug 'mg979/vim-visual-multi', { 'tag': '*' } " multiple cursors with 
 Plug 'sheerun/vim-polyglot'
-Plug 'lumiliet/vim-twig'
 Plug 'norcalli/nvim-colorizer.lua'
-" Plug 'vim-vdebug/vdebug'
+" Plug 'wellle/context.vim' -- automatically show context. Pretty cool, but
+" seems to be mucked up with 2-character wells on the left of the screen :(
 
 " TODO jcfaria/Vim-R-plugin
-" TODO https://github.com/vim-scripts/PatternsOnText - delete/replace non
-" matches (also has some quicklist looking stuff).
+" TODO https://github.com/inkarkat/PatternsOnText - delete/replace non matches (also has some quicklist looking stuff).
 " TODO move text blocks easily through )}" : https://github.com/vim-scripts/easy-through-pairing.vim
 " TODO use count in front of jk control keys: https://github.com/vim-scripts/rel-jump
 " <---- end plugins in testing ---->
@@ -24,21 +23,17 @@ Plug 'jeetsukumaran/vim-indentwise' " Support indent motions ]ii
 Plug 'andymass/vim-matchup' " Match with % plus textobj for match
 Plug 'itchyny/lightline.vim'
 Plug 'stefandtw/quickfix-reflector.vim' " edit the qf list directly with copen
-Plug 'tpope/vim-projectionist'
+Plug 'tpope/vim-projectionist' " :E* commands for a project
 Plug 'machakann/vim-highlightedyank' " highlight any text as it is yanked
 Plug 'pgdouyon/vim-evanesco' " Highlight search, clear after searching
 Plug 'MarcWeber/vim-addon-local-vimrc' " enable project local .vimrc files
 Plug 'okcompute/vim-python-motions' " ]] ]C ]M to move between methods
-Plug 'tpope/vim-fugitive', { 'tag': '*' } " git
+Plug 'tpope/vim-fugitive' " git
 Plug 'tpope/vim-rhubarb' " Gbrowse 
-Plug 'ludovicchabant/vim-lawrencium' " mercurial (hg)
 Plug 'tpope/vim-abolish' " fix spelling errors
-" surround things with quotes, etc (csw - surround word)
-Plug 'tpope/vim-surround'
-" many additional mappings for ]q, etc
-Plug 'tpope/vim-unimpaired', { 'tag': '*' }
-" awesome: makes the surround plugin work with the '.' keys (repeatability!)
-Plug 'tpope/vim-repeat'
+Plug 'tpope/vim-surround' " surround things with quotes, etc (csw - surround word)
+Plug 'tpope/vim-unimpaired' " many additional mappings for ]q, etc
+Plug 'tpope/vim-repeat' " awesome: makes the surround plugin work with the '.' keys (repeatability!)
 Plug 'kreskij/Repeatable.vim'
 Plug 'tpope/vim-eunuch' " eunuch.vim: cp/move/unlink commands
 Plug 'ludovicchabant/vim-gutentags'
@@ -61,7 +56,7 @@ Plug 'prabirshrestha/async.vim'
 
 Plug 'janko-m/vim-test' " :TestNearest
 Plug 'christoomey/vim-tmux-runner' " :Vtr_endCommandToRunner for tmux
-Plug 'benmills/vimux' " Run golang tests using vimux
+Plug 'benmills/vimux' " Run tests using vimux
 
 Plug 'wellle/visual-split.vim' " I've mapped this to <leader>v Lines to quickly resize splits (VSSplit)
 Plug 'mattn/webapi-vim'
@@ -70,7 +65,7 @@ Plug 'editorconfig/editorconfig-vim' " 0.1.0 EditorConfig Plugin for Vim -- help
 Plug 'nathanaelkane/vim-indent-guides' " A Vim plugin for visually displaying indent levels in code
 Plug 'mattn/emmet-vim' " fast HTML tag generation (in insert mode type tr*3CTL-Y, to make three <tr>s
 Plug 'tomtom/tcomment_vim' " An extensible & universal comment vim-plugin that also handles embedded filetypes
-Plug 'ctrlpvim/ctrlp.vim'
+Plug 'Yggdroot/LeaderF', { 'do': './install.sh' }
 Plug 'dsummersl/vim-utf2ascii' " simple utf2ascii function.
 Plug 'PProvost/vim-ps1' " TODO this? Its a dependency for a number of libs?
 Plug 'eparreno/l9' " TODO this? Its a dependency for a number of libs?
@@ -99,8 +94,7 @@ Plug 'AndrewRadev/switch.vim'
 " a hash implementation - make it easy to compute the hash of a string in the
 " editor (ie, yank a block, then do :echo _#hash(@") )
 Plug 'dsummersl/vus'
-" unit testing for vim.
-Plug 'dsummersl/vimunit'
+Plug 'dsummersl/vimunit' " unit testing for vim.
 
 " Probably going to remove these:
 " colorize ansi escaped text (console dumps)
@@ -113,7 +107,8 @@ Plug 'honza/vim-snippets'
 if has('nvim')
   " language server type completion
   Plug 'w0rp/ale'
-  Plug 'neoclide/coc.nvim', {'tag': '*'}
+  Plug 'neovim/nvim-lsp'
+  Plug 'neoclide/coc.nvim'
 else
   Plug 'roxma/nvim-yarp'
   Plug 'roxma/vim-hug-neovim-rpc'
@@ -201,7 +196,7 @@ set nolist
 " Let airline show the mode
 set noshowmode
 
-" give a little context
+" give a little context when at the top/bottom of the file.
 set scrolloff=2
 
 set guioptions=egt  " GUI options
@@ -212,11 +207,6 @@ set foldmethod=marker
 
 " Turn on mouse for a visual and normal mode only:
 set mouse=v
-
-" improve syntax highlighting speed in general
-" syntax sync minlines=64
-" syntax sync maxlines=120
-" set synmaxcol=255
 
 set diffopt=filler,iwhiteall,vertical,hiddenoff,internal,indent-heuristic,algorithm:patience
 set nohlsearch
@@ -233,6 +223,9 @@ set visualbell
 set backspace=2
 set nobackup
 set incsearch
+
+" complete commands that are uppercase in command mode.
+set smartcase
 
 " file expansion in ex mode, caseless:
 set wildignorecase
@@ -322,10 +315,11 @@ let g:ale_set_highlights = 0
 let g:ale_lint_on_text_changed = 'normal'
 Repeatable nmap [g <Plug>(ale_previous)
 Repeatable nmap ]g <Plug>(ale_next)
-nmap <leader>h :ALEHover<cr>
+" nmap <leader>h :ALEHover<cr>
 let g:ale_linters = {
       \ 'python': ['black', 'pyls', 'isort', 'trim_whitespace'],
-      \ 'javascript': ['eslint']
+      \ 'javascript': ['eslint'],
+      \ 'scss': ['stylelint']
       \ }
 
 " Map indent motions to a more indent-like key
@@ -387,15 +381,11 @@ let g:deoplete#auto_complete_delay = 150
 let g:splitjoin_trailing_comma = 1
 
 let g:gutentags_cache_dir = '~/.vim/tags'
-let g:gutentags_ctags_exclude = [ '*.json', '*/node_modules/*', '*/bower_components/*',
+let g:gutentags_ctags_exclude = [ '*.json', '*.md', '*/node_modules/*', '*/bower_components/*',
       \ 'tags', '*.sql', '*.html', '*/public/assets/*']
 
 " Color brackets and HTML/XML:
 let g:rainbow_active = 1
-
-let g:delimitMate_expand_cr = 2
-let g:delimitMate_jump_expansion = 1
-let g:delimitMate_expand_space = 1
 
 let g:mundo_verbose_graph = 0
 let g:mundo_mirror_graph = 1
@@ -407,13 +397,6 @@ let g:indent_guides_enable_on_vim_startup = 0
 let g:indent_guides_color_change_percent = 4
 " don't include tabs in 'soft' tabs - I want to see when things are amiss.
 " let g:indent_guides_soft_pattern = ' '
-
-" let the narrow region plugin NR functions automatically update the window
-" location on change:
-let g:narrow_rgn_update_orig_win = 1
-let g:nrrw_rgn_update_orig_win = 1
-
-" let g:fugitive_git_executable = '/usr/local/bin/git'
 
 " we have very long commit lines - this helps!
 let g:Gitv_TruncateCommitSubjects = 1
@@ -479,80 +462,17 @@ let g:UltiSnipsExpandTrigger='<Tab>'
 let g:UltiSnipsJumpForwardTrigger='<Tab>'                                           
 let g:UltiSnipsJumpBackwardTrigger='<S-Tab>'
 
-" CtrlP plugin
-let g:ctrlp_user_command = 'ag %s -i --nocolor --nogroup --hidden
-      \ --ignore .git
-      \ --ignore .svn
-      \ --ignore .hg
-      \ --ignore .DS_Store
-      \ --ignore node_modules
-      \ --ignore htmlcov
-      \ --ignore "**/*.pyc"
-      \ -g ""'
-
-" Map <C-p> to most recent files
-let g:ctrlp_cmd = 'CtrlPMRUFiles'
-map <C-t> :CtrlPTag<cr>
+nnoremap <C-p> :Leaderf file --popup<CR>
+" User iterm2 to map shift-ctrl-p to <f15>
+nnoremap <F15> :Leaderf mru --cwd --popup<CR>
+nnoremap <C-t> :Leaderf tag --popup<CR>
 " User iterm2 to map shift-ctrl-t to <f16>
-map <F16> :CtrlPBufTag<cr>
-
-
-" only show MRU files in the working directory
-let g:ctrlp_mruf_relative = 1
-let g:ctrlp_use_caching = 1
-let g:ctrlp_clear_cache_on_exit = 0
-let g:ctrlp_cache_dir = $HOME.'/.cache/ctrlp'
-" just use the pwd when finding files.
-let g:ctrlp_working_path_mode = 'w'
-let g:ctrlp_custom_ignore = '\.git$\|\.hg$\|\.svn|$'
-" by default ignore binary things and swap files
-set wildignore+=*/*.sw?,*/*.pyc,*/*.class
-" enable the quickfix plugin source:
-let g:ctrlp_extensions=[]
-let g:ctrlp_types = ['mru', 'fil']
-
-let g:tagbar_autofocus = 1
-let g:tagbar_autoclose = 1
-let g:tagbar_foldlevel = 0
-
-let g:tagbar_type_markdown = {
-    \ 'ctagstype': 'markdown',
-    \ 'ctagsbin' : '~/.vim/markdown2ctags/markdown2ctags.py',
-    \ 'ctagsargs' : '-f - --sort=yes',
-    \ 'kinds' : [
-        \ 's:sections',
-        \ 'i:images'
-    \ ],
-    \ 'sro' : '|',
-    \ 'kind2scope' : {
-        \ 's' : 'section',
-    \ },
-    \ 'sort': 0,
-    \ }
-let g:tagbar_type_typescript = {
-  \ 'ctagsbin' : 'tstags',                                                        
-  \ 'ctagsargs' : '-f-',                                                           
-  \ 'kinds': [                                                                     
-    \ 'e:enums:0:1',                                                               
-    \ 'f:function:0:1',                                                            
-    \ 't:typealias:0:1',                                                           
-    \ 'M:Module:0:1',                                                              
-    \ 'I:import:0:1',                                                              
-    \ 'i:interface:0:1',                                                           
-    \ 'C:class:0:1',                                                               
-    \ 'm:method:0:1',                                                              
-    \ 'p:property:0:1',                                                            
-    \ 'v:variable:0:1',                                                            
-    \ 'c:const:0:1',                                                              
-  \ ],                                                                            
-  \ 'sort' : 0                                                                    
-\ }  
+nnoremap <F16> :Leaderf bufTag --popup<CR>
 
 " save my right pinky some pain:
 nnoremap <leader>t zt
 nnoremap <leader>b zb
 nnoremap <leader>, zz
-nnoremap <leader><space>  <space><space>
 
 let g:sluice_default_macromode=1
 
@@ -602,23 +522,21 @@ let g:AutoPairsMultilineClose=0
 nmap <C-]> g<C-]>zt
 " TODO Create mappings to find tags that match this filetype.
 
-nmap <silent> <leader>D <Plug>DashSearch
-nnoremap <silent> <leader>dd :call <SID>show_documentation()<CR>
-nnoremap <silent> <leader>df <Plug>(coc-definition)<cr>
-command! -nargs=0 Prettier :call CocAction('runCommand', 'prettier.formatFile')
-function! s:show_documentation()
-  if (index(['vim','help'], &filetype) >= 0)
-    execute 'h '.expand('<cword>')
-  else
-    call CocAction('doHover')
-  endif
-endfunction
+" nnoremap <silent> <leader>dc :call lsp#text_document_declaration()<CR>
+" nnoremap <silent> <leader>dd :call lsp#text_document_definition()<CR>
+" nnoremap <silent> <leader>dh  :call lsp#text_document_hover()<CR>
+" nnoremap <silent> <leader>di  :call lsp#text_document_implementation()<CR>
+" nnoremap <silent> <leader>ds  :call lsp#text_document_signature_help()<CR>
+" nnoremap <silent> <leader>dt :call lsp#text_document_type_definition()<CR>
+nnoremap <silent> <leader>dD <Plug>DashSearch
 
 nnoremap <leader>o :only<cr>
 nnoremap <leader>' :q<cr>
-nnoremap <leader>- <c-w>_
-nnoremap <leader>' :q<cr>
+nnoremap <leader>n <c-w>_
+nnoremap <leader>gg :G<cr>
+nnoremap <leader>. :E
 map <leader>co :copen<cr>
+map <leader>lo :lopen<cr>
 
 " Quickly edit the contents of a register (for macros, say); <leader>m or
 " "q<leader>m  to edit register q
@@ -638,10 +556,6 @@ let g:sneak#label = 1
 
 cabbrev bda call DeleteHiddenBuffers()
 cabbrev gitv Gitv
-cabbrev ag Grepper -jump -tool ag<cr>
-cabbrev aa AA
-cabbrev gg GG
-cabbrev man Man
 
 " I like having zs to jump to the start of the line, but I'd really love a
 " zm to jump to the middle - I don't think I'll miss the original folding
@@ -689,10 +603,10 @@ noremap <leader>y "+y
 noremap <leader>a ggVG"+y
 " copy the current filename and line number into the clipboard and past register:
 noremap <leader>f :let @+=expand("%") .'#'. line(".")<bar>let @"=@+ ."\n"<CR>
-noremap <leader>gf :exec "Grepper -jump -tool ag -noprompt -query ". expand("%:t:r")<CR>
-
-" see all the search matches in a separate window (narrow region)
-noremap <leader>/ :exec "Grepper -jump -tool ag -noprompt -query ". substitute(escape(@/,' '),'\\[<>]\{1}','\\\\b','g') ." ". expand('%')<CR>
+noremap <leader>/f :exec "Grepper -jump -tool ag -noprompt -query ". expand("%:t:r")<CR>
+noremap <leader>/a :Grepper -tool ag -jump<cr>
+" see all the search matches in a separate window
+noremap <leader>// :exec "Grepper -jump -tool ag -noprompt -query ". substitute(escape(@/,' '),'\\[<>]\{1}','\\\\b','g') ." ". expand('%')<CR>
 
 " unimpaired like mapping for diff option for ignoring whitespace.
 noremap ]oI :set diffopt-=iwhiteall<cr>
@@ -742,7 +656,7 @@ nnoremap <F3> :SluiceMacroOff <bar> SluiceToggle<CR>
 nnoremap <F4> :SluiceMacroOn <bar> SluiceToggle<CR>
 
 " automatically toggle with control-
-let g:switch_mapping = ',.'
+let g:switch_mapping = ',gs'
 
 " TODO Serach for files with CtrlP for files matching the name of the file under
 " the cursor:
@@ -750,14 +664,14 @@ let g:switch_mapping = ',.'
 vmap <leader>v :VSSplit<cr>
 
 " Django: find the urls.py definition of the 'url name' under the cursor
-let g:django_lookup_url_recording=":let b:isk_back=&isk\<cr>:set isk+=-\<cr>viwy:exe \"set isk=\". b:isk_back\<cr>:GrepperAg \<c-r>\" -G urls.py\<cr>"
-let g:django_lookup_view_recording=":let b:isk_back=&isk\<cr>:set isk+=-\<cr>viwy:exe \"set isk=\". b:isk_back\<cr>:GrepperAg \<c-r>\" -G urls.py\<cr>"
-map <leader>du :let @z=g:django_lookup_url_recording<cr>@z
-map <leader>dv :let @z=g:django_lookup_view_recording<cr>@zF,b<c-]>
-
-" Python: replace a multiline # COMMENT with a """ COMMENT """
-let g:python_replace_pound_comment='gcacgpJ:s/\v^(\s+)(.*)$/\1""" \2 """gqq'
-map <leader>dc :let @z=g:python_replace_pound_comment<cr>@z
+" let g:django_lookup_url_recording=":let b:isk_back=&isk\<cr>:set isk+=-\<cr>viwy:exe \"set isk=\". b:isk_back\<cr>:GrepperAg \<c-r>\" -G urls.py\<cr>"
+" let g:django_lookup_view_recording=":let b:isk_back=&isk\<cr>:set isk+=-\<cr>viwy:exe \"set isk=\". b:isk_back\<cr>:GrepperAg \<c-r>\" -G urls.py\<cr>"
+" map <leader>ju :let @z=g:django_lookup_url_recording<cr>@z
+" map <leader>jv :let @z=g:django_lookup_view_recording<cr>@zF,b<c-]>
+"
+" " Python: replace a multiline # COMMENT with a """ COMMENT """
+" let g:python_replace_pound_comment='gcacgpJ:s/\v^(\s+)(.*)$/\1""" \2 """\gqq'
+" map <leader>jc :let @z=g:python_replace_pound_comment<cr>@z
 
 " Git: from a 'changes view', go to next diff
 " TODO support this from the main gitv screen (it works in diff at the moment.)
@@ -964,13 +878,12 @@ if has('autocmd') && !exists('g:autocommands_loaded')
   " alignment:
   autocmd FileType netrw setlocal ts=30
 
-  autocmd FileType sh  setlocal omnifunc=syntaxcomplete#Complete
-  autocmd FileType vim setlocal omnifunc=syntaxcomplete#Complete
-
   autocmd FileType htmldjango SS s 4
 
   " Rainbow tags look crappy in htmldjango -- this autocmd isn't really working :/
   autocmd FileType htmldjango RainbowToggleOff
+
+  " autocmd Filetype javascript setl omnifunc=lsp#omnifunc
 
   autocmd BufNewFile,BufRead *.scss,*.css lua require'colorizer'.setup()
   autocmd BufNewFile,BufRead *.j2 setf jinja
