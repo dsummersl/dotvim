@@ -301,10 +301,8 @@ let g:lightline = {
       \ }
 
 let g:grepper = {}
-let g:grepper.open = 0
-let g:grepper.stop = 700
-let g:grepper.operator = {}
-let g:grepper.operator.prompt = 1
+let g:grepper.open = 1
+let g:grepper.stop = 300
 let g:grepper.tools = ['git', 'ag', 'sift']
 
 nmap gs <plug>(GrepperOperator)
@@ -462,12 +460,13 @@ let g:UltiSnipsExpandTrigger='<Tab>'
 let g:UltiSnipsJumpForwardTrigger='<Tab>'                                           
 let g:UltiSnipsJumpBackwardTrigger='<S-Tab>'
 
-nnoremap <C-p> :Leaderf file --popup<CR>
+let g:Lf_PopupWidth = 0.9
+nnoremap <C-p> :Leaderf file --popup --nowrap<CR>
 " User iterm2 to map shift-ctrl-p to <f15>
-nnoremap <F15> :Leaderf mru --cwd --popup<CR>
-nnoremap <C-t> :Leaderf tag --popup<CR>
+nnoremap <F15> :Leaderf mru --cwd --popup --nowrap<CR>
+nnoremap <C-t> :Leaderf tag --popup --nowrap<CR>
 " User iterm2 to map shift-ctrl-t to <f16>
-nnoremap <F16> :Leaderf bufTag --popup<CR>
+nnoremap <F16> :Leaderf bufTag --popup --nowrap<CR>
 
 " save my right pinky some pain:
 nnoremap <leader>t zt
@@ -529,6 +528,17 @@ nmap <C-]> g<C-]>zt
 " nnoremap <silent> <leader>ds  :call lsp#text_document_signature_help()<CR>
 " nnoremap <silent> <leader>dt :call lsp#text_document_type_definition()<CR>
 nnoremap <silent> <leader>dD <Plug>DashSearch
+nnoremap <silent> <leader>dd :call <SID>show_documentation()<CR>
+nnoremap <silent> <leader>df <Plug>(coc-definition)<cr>
+nnoremap <silent> <leader>dc <Plug>(coc-declaration)<cr>
+command! -nargs=0 Prettier :call CocAction('runCommand', 'prettier.formatFile')
+function! s:show_documentation()
+  if (index(['vim','help'], &filetype) >= 0)
+    execute 'h '.expand('<cword>')
+  else
+    call CocAction('doHover')
+  endif
+endfunction
 
 nnoremap <leader>o :only<cr>
 nnoremap <leader>' :q<cr>
