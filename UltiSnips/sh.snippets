@@ -85,6 +85,15 @@ snippet testarg "Test number of args"
 if [ "$#" -ne ${1:1} ]; then
 	echo "Usage: $2"
 	exit 1
-if
-${3:VAR}=$$1$0
+fi
+
+`!p
+snip.rv = ''
+try:
+    if int(t[1]) > 0:
+        for num in range(1, int(t[1]) + 1):
+            snip.rv += 'VAR%d=$%d\n' % (num, num)
+except ValueError:
+    pass
+`
 endsnippet

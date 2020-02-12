@@ -96,8 +96,18 @@ before${1:Each}(function() {
 });
 endsnippet
 
+# expect($1).$2`!p snip.rv=complete(t[2],['to','not'])`;$0
 snippet exp "expect()" !b
-expect($1).to.$2`!p snip.rv=complete(t[2],['equal','be.an.instanceof','deep.equal','contain'])`($3);$0
+expect($1).$2
+endsnippet
+
+snippet test "test()" !b
+test('$1', () => {
+	const component = shallow(
+		<$2 />
+	);
+	$3
+});
 endsnippet
 
 snippet log "logger.something()" !b
