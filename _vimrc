@@ -8,7 +8,8 @@ call plug#begin('~/.vim/bundle')
 " Plug 'mg979/vim-visual-multi', { 'tag': '*' } " multiple cursors with 
 Plug 'sheerun/vim-polyglot'
 Plug 'norcalli/nvim-colorizer.lua'
-" Plug 'wellle/context.vim' -- automatically show context. Pretty cool, but
+Plug 'rhysd/git-messenger.vim'
+" Plug 'wellle/context.vim' " automatically show context. Pretty cool, but
 " seems to be mucked up with 2-character wells on the left of the screen :(
 
 " TODO jcfaria/Vim-R-plugin
@@ -17,18 +18,18 @@ Plug 'norcalli/nvim-colorizer.lua'
 " TODO use count in front of jk control keys: https://github.com/vim-scripts/rel-jump
 " <---- end plugins in testing ---->
 
-Plug 'rizzatti/dash.vim' " Lookup docs in Dash
+" Plug 'rizzatti/dash.vim' " Lookup docs in Dash
 Plug 'idanarye/vim-yankitute' " Yankitude for copying into registers
 Plug 'jeetsukumaran/vim-indentwise' " Support indent motions ]ii
-Plug 'andymass/vim-matchup' " Match with % plus textobj for match
+" Plug 'andymass/vim-matchup' " Match with % plus textobj for match
 Plug 'itchyny/lightline.vim'
 Plug 'stefandtw/quickfix-reflector.vim' " edit the qf list directly with copen
 Plug 'tpope/vim-projectionist' " :E* commands for a project
-Plug 'machakann/vim-highlightedyank' " highlight any text as it is yanked
+" Plug 'machakann/vim-highlightedyank' " highlight any text as it is yanked
 Plug 'pgdouyon/vim-evanesco' " Highlight search, clear after searching
 Plug 'MarcWeber/vim-addon-local-vimrc' " enable project local .vimrc files
 Plug 'okcompute/vim-python-motions' " ]] ]C ]M to move between methods
-Plug 'tpope/vim-fugitive' " git
+Plug 'tpope/vim-fugitive', { 'tag': '*' } " git
 Plug 'tpope/vim-rhubarb' " Gbrowse 
 Plug 'tpope/vim-abolish' " fix spelling errors
 Plug 'tpope/vim-surround' " surround things with quotes, etc (csw - surround word)
@@ -38,14 +39,14 @@ Plug 'kreskij/Repeatable.vim'
 Plug 'tpope/vim-eunuch' " eunuch.vim: cp/move/unlink commands
 Plug 'ludovicchabant/vim-gutentags'
 
-Plug 'vim-scripts/repeatable-motions.vim' " Repeat motions with C-[hjkl]
+" Plug 'vim-scripts/repeatable-motions.vim' " Repeat motions with C-[hjkl]
 Plug 'AndrewRadev/splitjoin.vim' " Gs to split long lines
 
 " A colorscheme that supports fugitive's [ob and ]ob
 Plug 'frankier/neovim-colors-solarized-truecolor-only'
 Plug 'morhetz/gruvbox' " gruvbox colors
-Plug 'rakr/vim-one'
-Plug 'rakr/vim-two-firewatch'
+" Plug 'rakr/vim-one'
+" Plug 'rakr/vim-two-firewatch'
 " Rainbow toggle colorscheme
 Plug 'luochen1990/rainbow', { 'frozen': 1 }
 
@@ -60,19 +61,19 @@ Plug 'benmills/vimux' " Run tests using vimux
 
 Plug 'wellle/visual-split.vim' " I've mapped this to <leader>v Lines to quickly resize splits (VSSplit)
 Plug 'mattn/webapi-vim'
-Plug 'mattn/gist-vim' " 4.9   vimscript for gist
+Plug 'mattn/gist-vim' " vimscript for Gist
 Plug 'editorconfig/editorconfig-vim' " 0.1.0 EditorConfig Plugin for Vim -- helps define and maintain consistent coding style
 Plug 'nathanaelkane/vim-indent-guides' " A Vim plugin for visually displaying indent levels in code
 Plug 'mattn/emmet-vim' " fast HTML tag generation (in insert mode type tr*3CTL-Y, to make three <tr>s
 Plug 'tomtom/tcomment_vim' " An extensible & universal comment vim-plugin that also handles embedded filetypes
 Plug 'Yggdroot/LeaderF', { 'do': './install.sh' }
 Plug 'dsummersl/vim-utf2ascii' " simple utf2ascii function.
-Plug 'PProvost/vim-ps1' " TODO this? Its a dependency for a number of libs?
-Plug 'eparreno/l9' " TODO this? Its a dependency for a number of libs?
-Plug 'vim-scripts/LargeFile'
-Plug 'vim-scripts/genutils'
+" Plug 'PProvost/vim-ps1' " TODO this? Its a dependency for a number of libs?
+" Plug 'eparreno/l9' " TODO this? Its a dependency for a number of libs?
+" Plug 'vim-scripts/LargeFile'
+" Plug 'vim-scripts/genutils'
 Plug 'gregsexton/gitv', { 'tag': '*' }
-Plug 'vim-scripts/visualrepeat'
+" Plug 'vim-scripts/visualrepeat'
 Plug 'tpope/vim-sleuth' " automatically detect the indent style of the document
 Plug 'jiangmiao/auto-pairs' " close quotes and such automatically
 Plug 'justinmk/vim-sneak' " f t s ; . mappings - jump to any location specified by two characters
@@ -87,6 +88,7 @@ Plug 'glts/vim-textobj-comment' " select comment with vic or vac.
 Plug 'thinca/vim-textobj-between' " vib between any arbitrary object (vibX where X is the obj)
 Plug 'kana/vim-textobj-lastpat' " vi/ (last search)
 Plug 'michaeljsmith/vim-indent-object' " vii and viI (visual inner Indent)
+Plug 'nelstrom/vim-textobj-rubyblock' "vir for ruby blocks
 
 " Easily toggle boolean values:
 Plug 'AndrewRadev/switch.vim'
@@ -98,8 +100,8 @@ Plug 'dsummersl/vimunit' " unit testing for vim.
 
 " Probably going to remove these:
 " colorize ansi escaped text (console dumps)
-Plug 'vim-scripts/AnsiEsc.vim', { 'on': 'AnsiEsc' }
-Plug 'vim-scripts/cecutil'
+" Plug 'vim-scripts/AnsiEsc.vim', { 'on': 'AnsiEsc' }
+" Plug 'vim-scripts/cecutil'
 
 Plug 'dsummersl/gundo.vim', { 'branch': 'mundo-master' }
 Plug 'honza/vim-snippets'
@@ -527,11 +529,10 @@ nmap <C-]> g<C-]>zt
 " nnoremap <silent> <leader>di  :call lsp#text_document_implementation()<CR>
 " nnoremap <silent> <leader>ds  :call lsp#text_document_signature_help()<CR>
 " nnoremap <silent> <leader>dt :call lsp#text_document_type_definition()<CR>
-nnoremap <silent> <leader>dD <Plug>DashSearch
+" nnoremap <silent> <leader>dD <Plug>DashSearch
 nnoremap <silent> <leader>dd :call <SID>show_documentation()<CR>
 nnoremap <silent> <leader>df <Plug>(coc-definition)<cr>
 nnoremap <silent> <leader>dc <Plug>(coc-declaration)<cr>
-command! -nargs=0 Prettier :call CocAction('runCommand', 'prettier.formatFile')
 function! s:show_documentation()
   if (index(['vim','help'], &filetype) >= 0)
     execute 'h '.expand('<cword>')
@@ -904,24 +905,16 @@ if has('autocmd') && !exists('g:autocommands_loaded')
   autocmd BufNewFile,BufRead *.tsv setlocal ts=20 sw=25
   autocmd BufNewFile,BufRead *.tsv Delimiter \t
   autocmd BufNewFile,BufEnter *.py :SS s 4
-  autocmd BufNewFile,BufRead *.gradle set ft=groovy
   autocmd BufNewFile,BufRead Vagrantfile set ft=ruby
-  autocmd BufNewFile,BufRead *.tss set ft=javascript
-  autocmd BufNewFile,BufRead *.html.ts set ft=html
-  autocmd BufNewFile,BufRead *.coffee set ft=coffee
-  autocmd BufNewFile,BufRead Cakefile set ft=coffee
 
   " Some other ruby project is tromping over the gutentags files - manually
   " reload every time we enter:
-  autocmd BufRead *.rb  if exists('b:gutentags_files') | unlet b:gutentags_files | endif | call gutentags#setup_gutentags()
-  autocmd BufRead *.slim  if exists('b:gutentags_files') | unlet b:gutentags_files | endif | call gutentags#setup_gutentags()
-  autocmd BufRead *.haml  if exists('b:gutentags_files') | unlet b:gutentags_files | endif | call gutentags#setup_gutentags()
+  autocmd BufRead *.rb  :GutentagsReset
+  autocmd BufRead *.slim  :GutentagsReset
+  autocmd BufRead *.haml  :GutentagsReset
 
   " show line numbers for tests:
-  autocmd BufNewFile,BufEnter test*.py,*test.py,*spec.rb :setlocal number
-
-  " Real broken for carstickers project:
-  autocmd BufNewFile,BufReadPost *.html.ts let b:tagbar_ignore = 1
+  autocmd BufNewFile,BufReadPost test*.py,*test.py,*spec.rb :setlocal number
 
   " make commit messages formatted to 72 columns for optimal reading/history:
   autocmd BufNewFile,BufRead COMMIT_EDITMSG setlocal tw=72 fo=tc spell
