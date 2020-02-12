@@ -462,13 +462,14 @@ let g:UltiSnipsExpandTrigger='<Tab>'
 let g:UltiSnipsJumpForwardTrigger='<Tab>'                                           
 let g:UltiSnipsJumpBackwardTrigger='<S-Tab>'
 
+let g:Lf_WindowHeight = 0.2
 let g:Lf_PopupWidth = 0.9
-nnoremap <C-p> :Leaderf file --popup --nowrap<CR>
+nnoremap <C-p> :Leaderf file --nowrap<CR>
 " User iterm2 to map shift-ctrl-p to <f15>
-nnoremap <F15> :Leaderf mru --cwd --popup --nowrap<CR>
-nnoremap <C-t> :Leaderf tag --popup --nowrap<CR>
+nnoremap <F15> :Leaderf mru --cwd --nowrap<CR>
+nnoremap <C-t> :Leaderf tag --nowrap<CR>
 " User iterm2 to map shift-ctrl-t to <f16>
-nnoremap <F16> :Leaderf bufTag --popup --nowrap<CR>
+nnoremap <F16> :Leaderf bufTag --nowrap<CR>
 
 " save my right pinky some pain:
 nnoremap <leader>t zt
@@ -614,8 +615,9 @@ noremap <leader>y "+y
 noremap <leader>a ggVG"+y
 " copy the current filename and line number into the clipboard and past register:
 noremap <leader>f :let @+=expand("%") .'#'. line(".")<bar>let @"=@+ ."\n"<CR>
-noremap <leader>/f :exec "Grepper -jump -tool ag -noprompt -query ". expand("%:t:r")<CR>
-noremap <leader>/a :Grepper -tool ag -jump<cr>
+noremap <leader>/f :exec "Grepper -jump -tool ag -noprompt -query ". expand("%:t:r:r")<CR>
+noremap <leader>/g :Grepper -tool ag -jump<cr>
+noremap <leader>/a :AA 
 " see all the search matches in a separate window
 noremap <leader>// :exec "Grepper -jump -tool ag -noprompt -query ". substitute(escape(@/,' '),'\\[<>]\{1}','\\\\b','g') ." ". expand('%')<CR>
 
@@ -816,6 +818,7 @@ function! s:ExecFileType(cmd,search)
   exec printf('silent %s',printf(a:cmd,a:search,l:extension))
 endfunction
 
+cnoremap AG GrepperAg
 command! -nargs=1 GG call s:ExecFileType("silent GrepperGit %s -- '*.%s'",'<args>')
 command! -nargs=1 AA call s:ExecFileType("silent GrepperAg '%s' -G '.*.%s'",'<args>')
 " TODO make Ggrep be test for the command...for non git projects, fallback on Ag
@@ -872,6 +875,15 @@ function! s:DiffRegisters(register_a, register_b)
   resize 100
 endfunction
 command! -nargs=* DiffRegisters call s:DiffRegisters(<f-args>)
+
+function! s:ResetGutentags()
+  if exists('b:gutentags_files')
+    unlet b:gutentags_files
+  endif
+  call gutentags#setup_gutentags()
+endfunction
+
+command! -nargs=0 GutentagsReset call s:ResetGutentags()
 
 "}}}
 " Automappings"{{{
