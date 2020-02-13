@@ -6,7 +6,7 @@ call plug#begin('~/.vim/bundle')
 
 " <---- plugins in testing ---->
 " Plug 'mg979/vim-visual-multi', { 'tag': '*' } " multiple cursors with 
-Plug 'sheerun/vim-polyglot'
+" Plug 'sheerun/vim-polyglot'
 Plug 'norcalli/nvim-colorizer.lua'
 Plug 'rhysd/git-messenger.vim'
 " Plug 'wellle/context.vim' " automatically show context. Pretty cool, but
@@ -74,7 +74,7 @@ Plug 'dsummersl/vim-utf2ascii' " simple utf2ascii function.
 " Plug 'vim-scripts/genutils'
 Plug 'gregsexton/gitv', { 'tag': '*' }
 " Plug 'vim-scripts/visualrepeat'
-Plug 'tpope/vim-sleuth' " automatically detect the indent style of the document
+" Plug 'tpope/vim-sleuth' " automatically detect the indent style of the document
 Plug 'jiangmiao/auto-pairs' " close quotes and such automatically
 Plug 'justinmk/vim-sneak' " f t s ; . mappings - jump to any location specified by two characters
 Plug 'mhinz/vim-grepper' " Grepper to search in lots of ways
@@ -310,6 +310,8 @@ let g:grepper.tools = ['git', 'ag', 'sift']
 nmap gs <plug>(GrepperOperator)
 xmap gs <plug>(GrepperOperator)
 
+let g:ale_lint_delay = 500
+let g:ale_lint_on_enter = 0
 let g:ale_completion_enabled = 0
 let g:ale_set_highlights = 0
 let g:ale_lint_on_text_changed = 'normal'
@@ -936,6 +938,7 @@ if has('autocmd') && !exists('g:autocommands_loaded')
 
   " close the quickfix window when an item is selected.
   autocmd FileType qf nnoremap <buffer> <CR> <CR>:cclose<CR>
+  autocmd FileType qf setlocal colorcolumn=
   " autocmd FileType qf syntax match ConcealedPath /\v^[^|]*\// conceal
   " autocmd FileType qf syntax match VisiblePath /\v^([^|]+\|){2}/
   " autocmd FileType qf highlight link VisiblePath Folded
