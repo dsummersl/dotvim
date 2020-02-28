@@ -6,7 +6,7 @@ call plug#begin('~/.vim/bundle')
 
 " <---- plugins in testing ---->
 " Plug 'mg979/vim-visual-multi', { 'tag': '*' } " multiple cursors with 
-" Plug 'sheerun/vim-polyglot'
+Plug 'sheerun/vim-polyglot', { 'for': 'coffee' }
 Plug 'norcalli/nvim-colorizer.lua'
 Plug 'rhysd/git-messenger.vim'
 " Plug 'wellle/context.vim' " automatically show context. Pretty cool, but
@@ -89,6 +89,7 @@ Plug 'thinca/vim-textobj-between' " vib between any arbitrary object (vibX where
 Plug 'kana/vim-textobj-lastpat' " vi/ (last search)
 Plug 'michaeljsmith/vim-indent-object' " vii and viI (visual inner Indent)
 Plug 'nelstrom/vim-textobj-rubyblock' "vir for ruby blocks
+Plug 'saaguero/vim-textobj-pastedtext' " vgb for last pasted text.
 
 " Easily toggle boolean values:
 Plug 'AndrewRadev/switch.vim'
@@ -214,8 +215,8 @@ set diffopt=filler,iwhiteall,vertical,hiddenoff,internal,indent-heuristic,algori
 set nohlsearch
 set nowrap
 
-" TABS, and tab size of two characters
-set noexpandtab
+" SPACES, and tab size of two characters
+set expandtab
 set shiftwidth=2
 set tabstop=2
 set softtabstop=2
@@ -663,9 +664,6 @@ map <leader>ctl :TestLast<CR>
 " Open the current directory (or make new directory)
 map - :e %:h/<CR>
 
-" Use gp to select the last pasted region.
-nnoremap <expr> gp '`[' . strpart(getregtype(), 0, 1) . '`]'
-
 " toggle Sluice gutters
 nnoremap <F3> :SluiceMacroOff <bar> SluiceToggle<CR>
 nnoremap <F4> :SluiceMacroOn <bar> SluiceToggle<CR>
@@ -903,8 +901,6 @@ if has('autocmd') && !exists('g:autocommands_loaded')
   " alignment:
   autocmd FileType netrw setlocal ts=30
 
-  autocmd FileType htmldjango SS s 4
-
   " Rainbow tags look crappy in htmldjango -- this autocmd isn't really working :/
   autocmd FileType htmldjango RainbowToggleOff
 
@@ -918,7 +914,6 @@ if has('autocmd') && !exists('g:autocommands_loaded')
   autocmd BufNewFile,BufRead *.tsv setf csv
   autocmd BufNewFile,BufRead *.tsv setlocal ts=20 sw=25
   autocmd BufNewFile,BufRead *.tsv Delimiter \t
-  autocmd BufNewFile,BufEnter *.py :SS s 4
   autocmd BufNewFile,BufRead Vagrantfile set ft=ruby
 
   " Some other ruby project is tromping over the gutentags files - manually
