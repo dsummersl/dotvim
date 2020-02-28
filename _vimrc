@@ -5,108 +5,48 @@ so ~/.vim/autoload/plug.vim
 call plug#begin('~/.vim/bundle')
 
 " <---- plugins in testing ---->
-" Plug 'mg979/vim-visual-multi', { 'tag': '*' } " multiple cursors with 
 Plug 'sheerun/vim-polyglot', { 'for': 'coffee' }
 Plug 'norcalli/nvim-colorizer.lua'
 Plug 'rhysd/git-messenger.vim'
-" Plug 'wellle/context.vim' " automatically show context. Pretty cool, but
-" seems to be mucked up with 2-character wells on the left of the screen :(
-
-" TODO jcfaria/Vim-R-plugin
-" TODO https://github.com/inkarkat/PatternsOnText - delete/replace non matches (also has some quicklist looking stuff).
-" TODO move text blocks easily through )}" : https://github.com/vim-scripts/easy-through-pairing.vim
-" TODO use count in front of jk control keys: https://github.com/vim-scripts/rel-jump
 " <---- end plugins in testing ---->
 
-" Plug 'rizzatti/dash.vim' " Lookup docs in Dash
-Plug 'idanarye/vim-yankitute' " Yankitude for copying into registers
+" Motions
 Plug 'jeetsukumaran/vim-indentwise' " Support indent motions ]ii
-" Plug 'andymass/vim-matchup' " Match with % plus textobj for match
-Plug 'itchyny/lightline.vim'
-Plug 'stefandtw/quickfix-reflector.vim' " edit the qf list directly with copen
-Plug 'tpope/vim-projectionist' " :E* commands for a project
-" Plug 'machakann/vim-highlightedyank' " highlight any text as it is yanked
-Plug 'pgdouyon/vim-evanesco' " Highlight search, clear after searching
-Plug 'MarcWeber/vim-addon-local-vimrc' " enable project local .vimrc files
-Plug 'okcompute/vim-python-motions' " ]] ]C ]M to move between methods
-Plug 'tpope/vim-fugitive', { 'tag': '*' } " git
-Plug 'tpope/vim-rhubarb' " Gbrowse 
-Plug 'tpope/vim-abolish' " fix spelling errors
-Plug 'tpope/vim-surround' " surround things with quotes, etc (csw - surround word)
+Plug 'okcompute/vim-python-motions', { 'for': 'python' } " ]] ]C ]M to move between methods
+Plug 'AndrewRadev/splitjoin.vim' " Gs to split long lines
 Plug 'tpope/vim-unimpaired' " many additional mappings for ]q, etc
 Plug 'tpope/vim-repeat' " awesome: makes the surround plugin work with the '.' keys (repeatability!)
+Plug 'mattn/gist-vim' " vimscript for Gist
 Plug 'kreskij/Repeatable.vim'
+Plug 'tommcdo/vim-exchange' " Easy text exchange operator for Vim
+Plug 'tommcdo/vim-lion' " align with operator gL and gl (ie glip= to align paragraph by =)
+Plug 'justinmk/vim-sneak' " f t s ; . mappings - jump to any location specified by two characters
+
+" Git & Project
+Plug 'stefandtw/quickfix-reflector.vim' " edit the qf list directly with copen
+Plug 'tpope/vim-projectionist' " :E* commands for a project
+Plug 'MarcWeber/vim-addon-local-vimrc' " enable project local .vimrc files
+Plug 'tpope/vim-fugitive', { 'tag': '*' } " git
+Plug 'tpope/vim-rhubarb' " Gbrowse 
+Plug 'tpope/vim-surround' " surround things with quotes, etc (csw - surround word)
 Plug 'tpope/vim-eunuch' " eunuch.vim: cp/move/unlink commands
 Plug 'ludovicchabant/vim-gutentags'
-
-" Plug 'vim-scripts/repeatable-motions.vim' " Repeat motions with C-[hjkl]
-Plug 'AndrewRadev/splitjoin.vim' " Gs to split long lines
-
-" A colorscheme that supports fugitive's [ob and ]ob
-Plug 'frankier/neovim-colors-solarized-truecolor-only'
-Plug 'morhetz/gruvbox' " gruvbox colors
-" Plug 'rakr/vim-one'
-" Plug 'rakr/vim-two-firewatch'
-" Rainbow toggle colorscheme
-Plug 'luochen1990/rainbow', { 'frozen': 1 }
-
-" Language specific plugins:
-Plug 'slim-template/vim-slim'
-Plug 'posva/vim-vue'
-Plug 'prabirshrestha/async.vim'
-
-Plug 'janko-m/vim-test' " :TestNearest
 Plug 'christoomey/vim-tmux-runner' " :Vtr_endCommandToRunner for tmux
 Plug 'benmills/vimux' " Run tests using vimux
-
-Plug 'wellle/visual-split.vim' " I've mapped this to <leader>v Lines to quickly resize splits (VSSplit)
-Plug 'mattn/webapi-vim'
-Plug 'mattn/gist-vim' " vimscript for Gist
+Plug 'tpope/vim-abolish' " fix spelling errors
 Plug 'editorconfig/editorconfig-vim' " 0.1.0 EditorConfig Plugin for Vim -- helps define and maintain consistent coding style
-Plug 'nathanaelkane/vim-indent-guides' " A Vim plugin for visually displaying indent levels in code
 Plug 'mattn/emmet-vim' " fast HTML tag generation (in insert mode type tr*3CTL-Y, to make three <tr>s
 Plug 'tomtom/tcomment_vim' " An extensible & universal comment vim-plugin that also handles embedded filetypes
 Plug 'Yggdroot/LeaderF', { 'do': './install.sh' }
-Plug 'dsummersl/vim-utf2ascii' " simple utf2ascii function.
-" Plug 'PProvost/vim-ps1' " TODO this? Its a dependency for a number of libs?
-" Plug 'eparreno/l9' " TODO this? Its a dependency for a number of libs?
-" Plug 'vim-scripts/LargeFile'
-" Plug 'vim-scripts/genutils'
 Plug 'gregsexton/gitv', { 'tag': '*' }
-" Plug 'vim-scripts/visualrepeat'
-" Plug 'tpope/vim-sleuth' " automatically detect the indent style of the document
-Plug 'jiangmiao/auto-pairs' " close quotes and such automatically
-Plug 'justinmk/vim-sneak' " f t s ; . mappings - jump to any location specified by two characters
 Plug 'mhinz/vim-grepper' " Grepper to search in lots of ways
-Plug 'tommcdo/vim-exchange' " Easy text exchange operator for Vim
-Plug 'tommcdo/vim-lion' " align with operator gL and gl (ie glip= to align paragraph by =)
-
-Plug 'wellle/targets.vim' " many text objects
-Plug 'kana/vim-textobj-user' " user defined textobj implementations
-Plug 'kana/vim-textobj-syntax' " vay viy to select syntax blocks
-Plug 'glts/vim-textobj-comment' " select comment with vic or vac.
-Plug 'thinca/vim-textobj-between' " vib between any arbitrary object (vibX where X is the obj)
-Plug 'kana/vim-textobj-lastpat' " vi/ (last search)
-Plug 'michaeljsmith/vim-indent-object' " vii and viI (visual inner Indent)
-Plug 'nelstrom/vim-textobj-rubyblock' "vir for ruby blocks
-Plug 'saaguero/vim-textobj-pastedtext' " vgb for last pasted text.
-
-" Easily toggle boolean values:
-Plug 'AndrewRadev/switch.vim'
-" utility functions
-" a hash implementation - make it easy to compute the hash of a string in the
-" editor (ie, yank a block, then do :echo _#hash(@") )
-Plug 'dsummersl/vus'
-Plug 'dsummersl/vimunit' " unit testing for vim.
-
-" Probably going to remove these:
-" colorize ansi escaped text (console dumps)
+Plug 'jiangmiao/auto-pairs' " close quotes and such automatically
+Plug 'dsummersl/vim-utf2ascii' " simple utf2ascii function.
+Plug 'AndrewRadev/switch.vim' " Easily toggle boolean values:
 " Plug 'vim-scripts/AnsiEsc.vim', { 'on': 'AnsiEsc' }
-" Plug 'vim-scripts/cecutil'
-
 Plug 'dsummersl/gundo.vim', { 'branch': 'mundo-master' }
+Plug 'SirVer/ultisnips'
 Plug 'honza/vim-snippets'
-
 if has('nvim')
   " language server type completion
   Plug 'w0rp/ale'
@@ -117,8 +57,37 @@ else
   Plug 'roxma/vim-hug-neovim-rpc'
 endif
 
+" Colorschemes & colors
+Plug 'frankier/neovim-colors-solarized-truecolor-only' " A colorscheme that supports fugitive's [ob and ]ob
+Plug 'morhetz/gruvbox' " gruvbox colors
+Plug 'luochen1990/rainbow', { 'frozen': 1 } " Rainbow toggle colorscheme
+Plug 'itchyny/lightline.vim'
+Plug 'machakann/vim-highlightedyank' " highlight any text as it is yanked
+Plug 'pgdouyon/vim-evanesco' " Highlight search, clear after searching
+Plug 'nathanaelkane/vim-indent-guides' " A Vim plugin for visually displaying indent levels in code
+
+" Language specific plugins:
+Plug 'slim-template/vim-slim', { 'for': 'slim' }
+Plug 'posva/vim-vue', { 'for': 'vue' }
+Plug 'prabirshrestha/async.vim'
+Plug 'janko-m/vim-test' " :TestNearest
+Plug 'wellle/visual-split.vim' " I've mapped this to <leader>v Lines to quickly resize splits (VSSplit)
+Plug 'mattn/webapi-vim'
+Plug 'dsummersl/vus'
+Plug 'dsummersl/vimunit' " unit testing for vim.
+
+" Textobj plugins
+Plug 'wellle/targets.vim' " many text objects
+Plug 'kana/vim-textobj-user' " user defined textobj implementations
+Plug 'kana/vim-textobj-syntax' " vay viy to select syntax blocks
+Plug 'glts/vim-textobj-comment' " select comment with vic or vac.
+Plug 'thinca/vim-textobj-between' " vib between any arbitrary object (vibX where X is the obj)
+Plug 'kana/vim-textobj-lastpat' " vi/ (last search)
+Plug 'michaeljsmith/vim-indent-object' " vii and viI (visual inner Indent)
+Plug 'nelstrom/vim-textobj-rubyblock' "vir for ruby blocks
+Plug 'saaguero/vim-textobj-pastedtext' " vgb for last pasted text.
+
 set termguicolors
-Plug 'SirVer/ultisnips'
 
 call plug#end()
 
@@ -128,8 +97,6 @@ if v:version >= 704
 
   set background=dark
   colorscheme gruvbox
-
-  " colorscheme solarized8_dark_high
 
   " colors for the :terminal
   if has('nvim')
@@ -165,9 +132,7 @@ if v:version >= 704
     let g:terminal_color_7 = "#a89984"
     let g:terminal_color_15 = "#ebdbb2"
   endif
-endif
 
-if v:version >= 703
   if has("gui_running")
     set macmeta
     set anti
