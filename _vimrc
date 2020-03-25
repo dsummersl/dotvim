@@ -8,6 +8,7 @@ call plug#begin('~/.vim/bundle')
 Plug 'sheerun/vim-polyglot', { 'for': 'coffee' }
 Plug 'norcalli/nvim-colorizer.lua'
 Plug 'rhysd/git-messenger.vim'
+Plug 'pechorin/any-jump.vim'
 " <---- end plugins in testing ---->
 
 " Motions
@@ -19,20 +20,22 @@ Plug 'tpope/vim-repeat' " awesome: makes the surround plugin work with the '.' k
 Plug 'mattn/gist-vim' " vimscript for Gist
 Plug 'kreskij/Repeatable.vim'
 Plug 'tommcdo/vim-exchange' " Easy text exchange operator for Vim
-Plug 'tommcdo/vim-lion' " align with operator gL and gl (ie glip= to align paragraph by =)
 Plug 'justinmk/vim-sneak' " f t s ; . mappings - jump to any location specified by two characters
+
+" Operators
+Plug 'tommcdo/vim-lion' " align with operator gL and gl (ie glip= to align paragraph by =)
+Plug 'tommcdo/vim-express' " custom g* operations.
 
 " Git & Project
 Plug 'stefandtw/quickfix-reflector.vim' " edit the qf list directly with copen
 Plug 'tpope/vim-projectionist' " :E* commands for a project
 Plug 'MarcWeber/vim-addon-local-vimrc' " enable project local .vimrc files
-Plug 'tpope/vim-fugitive', { 'tag': '*' } " git
+Plug 'tpope/vim-fugitive', {} " git
 Plug 'tpope/vim-rhubarb' " Gbrowse 
 Plug 'tpope/vim-surround' " surround things with quotes, etc (csw - surround word)
 Plug 'tpope/vim-eunuch' " eunuch.vim: cp/move/unlink commands
 Plug 'ludovicchabant/vim-gutentags'
-Plug 'christoomey/vim-tmux-runner' " :Vtr_endCommandToRunner for tmux
-Plug 'benmills/vimux' " Run tests using vimux
+Plug 'vinodkri/vim-tmux-runner', { 'branch': 'vtr-embrace-vim' } " :VtrSendCommandToRunner for tmux
 Plug 'tpope/vim-abolish' " fix spelling errors
 Plug 'editorconfig/editorconfig-vim' " 0.1.0 EditorConfig Plugin for Vim -- helps define and maintain consistent coding style
 Plug 'mattn/emmet-vim' " fast HTML tag generation (in insert mode type tr*3CTL-Y, to make three <tr>s
@@ -50,7 +53,7 @@ Plug 'honza/vim-snippets'
 if has('nvim')
   " language server type completion
   Plug 'w0rp/ale'
-  Plug 'neovim/nvim-lsp'
+  " Plug 'neovim/nvim-lsp'
   Plug 'neoclide/coc.nvim'
 else
   Plug 'roxma/nvim-yarp'
@@ -350,7 +353,8 @@ let g:splitjoin_trailing_comma = 1
 
 let g:gutentags_cache_dir = '~/.vim/tags'
 let g:gutentags_ctags_exclude = [ '*.json', '*.md', '*/node_modules/*', '*/bower_components/*',
-      \ 'tags', '*.sql', '*.html', '*/public/assets/*']
+      \ '*/public/assets/*', '*/public/packs/*', '*/public/packs-test/*', '*/vendor/*',
+      \ 'tags', '*.sql', '*.html']
 
 " Color brackets and HTML/XML:
 let g:rainbow_active = 1
@@ -477,16 +481,10 @@ endfunction
 let g:AutoPairsFlyMode=1
 let g:AutoPairsMultilineClose=0
 
-" TODO VtrAttachToPane 1
+nnoremap <leader>vs :set opfunc=<SID>VtrSendLinesWithMotion<CR>g@
+vnoremap <leader>vs :<C-U>call <SID>VtrSendLinesWithMotion(visualmode(), 1)<CR>
 
-" " In Iterm2 I mapped C-S-' to <f14>
-" imap <F14> <C-O>:let g:AutoPairsFlyMode=1<CR>"<C-O>:let g:AutoPairsFlyMode=0<CR>
-" " Can't do anything about this - its ^M
-" " imap <C-'> <C-O>:let g:AutoPairsFlyMode=1<CR>'<C-O>:let g:AutoPairsFlyMode=0<CR>
-" imap <C-]> <C-O>:let g:AutoPairsFlyMode=1<CR>]<C-O>:let g:AutoPairsFlyMode=0<CR>
-" " imap <C-0> <C-O>:let g:AutoPairsFlyMode=1<CR>)<C-O>:let g:AutoPairsFlyMode=0<CR>
-" " In Iterm2 I mapped C-S-] to <f13>
-" imap <F13> <C-O>:let g:AutoPairsFlyMode=1<CR>}<C-O>:let g:AutoPairsFlyMode=0<CR>
+" TODO VtrAttachToPane 1
 
 " I want to see all the options when I try to jump to a tag:
 nmap <C-]> g<C-]>zt
@@ -618,9 +616,6 @@ Repeatable nnoremap <leader>da] va]Vd
 Repeatable nnoremap <leader>di] vi]Vd
 
 " Send a selection to the terminal:
-map <leader>cls :TREPLSendSelection<CR>
-map <leader>cll :TREPLSendLine<CR>
-map <leader>cc :Ttoggle<CR>
 map <leader>ctn :TestNearest<CR>
 map <leader>cts :TestSuite<CR>
 map <leader>ctf :TestFile<CR>
