@@ -21,6 +21,7 @@ Plug 'mattn/gist-vim' " vimscript for Gist
 Plug 'kreskij/Repeatable.vim'
 Plug 'tommcdo/vim-exchange' " Easy text exchange operator for Vim
 Plug 'justinmk/vim-sneak' " f t s ; . mappings - jump to any location specified by two characters
+Plug 'wellle/visual-split.vim' " I've mapped this to <leader>v Lines to quickly resize splits (VSSplit)
 
 " Operators
 Plug 'tommcdo/vim-lion' " align with operator gL and gl (ie glip= to align paragraph by =)
@@ -304,6 +305,7 @@ map ]ii <Plug>(IndentWiseBlockScopeBoundaryEnd)
 sunmap ]ii
 sunmap ]iI
 
+vmap <leader>v :VSSplit<cr>
 
 let g:gruvbox_italic = 1
 let g:gruvbox_bold = 1
