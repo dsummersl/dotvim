@@ -20,7 +20,8 @@ Plug 'tpope/vim-repeat' " awesome: makes the surround plugin work with the '.' k
 Plug 'mattn/gist-vim' " vimscript for Gist
 Plug 'kreskij/Repeatable.vim'
 Plug 'tommcdo/vim-exchange' " Easy text exchange operator for Vim
-Plug 'justinmk/vim-sneak' " f t s ; . mappings - jump to any location specified by two characters
+Plug 'easymotion/vim-easymotion' " ...
+" Plug 'justinmk/vim-sneak' " f t s ; . mappings - jump to any location specified by two characters
 Plug 'wellle/visual-split.vim' " I've mapped this to <leader>v Lines to quickly resize splits (VSSplit)
 
 " Operators
@@ -54,7 +55,7 @@ Plug 'honza/vim-snippets'
 if has('nvim')
   " language server type completion
   Plug 'w0rp/ale'
-  " Plug 'neovim/nvim-lsp'
+  Plug 'neovim/nvim-lsp'
   Plug 'neoclide/coc.nvim'
 else
   Plug 'roxma/nvim-yarp'
@@ -90,6 +91,9 @@ Plug 'kana/vim-textobj-lastpat' " vi/ (last search)
 Plug 'michaeljsmith/vim-indent-object' " vii and viI (visual inner Indent)
 Plug 'nelstrom/vim-textobj-rubyblock' "vir for ruby blocks
 Plug 'saaguero/vim-textobj-pastedtext' " vgb for last pasted text.
+
+" Extra 
+Plug 'ryanoasis/vim-devicons'
 
 set termguicolors
 
@@ -255,6 +259,12 @@ function! LightlineFilename()
   let modified = &modified ? ' +' : ''
   return filename . modified
 endfunction
+function! LightlineFiletype()
+  return winwidth(0) > 70 ? (strlen(&filetype) ? WebDevIconsGetFileTypeSymbol() . ' ' . &filetype : 'no ft') : ''
+endfunction
+function! LightlineFileformat()
+  return WebDevIconsGetFileFormatSymbol()
+endfunction
 let g:lightline = {
       \ 'colorscheme': 'jellybeans',
       \ 'active': {
@@ -269,6 +279,8 @@ let g:lightline = {
       \ 'component_function': {
       \   'mode': 'LightlineMode',
       \   'filename': 'LightlineFilename',
+      \   'filetype': 'LightlineFiletype',
+      \   'fileformat': 'LightlineFileformat',
       \ },
       \ }
 
@@ -492,16 +504,19 @@ vnoremap <leader>vs :<C-U>call <SID>VtrSendLinesWithMotion(visualmode(), 1)<CR>
 nmap <C-]> g<C-]>zt
 " TODO Create mappings to find tags that match this filetype.
 
-" nnoremap <silent> <leader>dc :call lsp#text_document_declaration()<CR>
-" nnoremap <silent> <leader>dd :call lsp#text_document_definition()<CR>
-" nnoremap <silent> <leader>dh  :call lsp#text_document_hover()<CR>
-" nnoremap <silent> <leader>di  :call lsp#text_document_implementation()<CR>
-" nnoremap <silent> <leader>ds  :call lsp#text_document_signature_help()<CR>
-" nnoremap <silent> <leader>dt :call lsp#text_document_type_definition()<CR>
-" nnoremap <silent> <leader>dD <Plug>DashSearch
+" lua require'nvim_lsp'.solargraph.setup{}
+" nnoremap <silent> <leader>dc <cmd>lua vim.lsp.buf.declaration()<CR>
+" nnoremap <silent> <leader>dd <cmd>lua vim.lsp.buf.definition()<CR>
+" nnoremap <silent> <leader>dh <cmd>lua vim.lsp.buf.hover()<CR>
+" nnoremap <silent> <leader>di <cmd>lua vim.lsp.buf.implementation()<CR>
+" nnoremap <silent> <leader>ds <cmd>lua vim.lsp.buf.signature_help()<CR>
+" nnoremap <silent> <leader>dt <cmd>lua vim.lsp.buf.type_definition()<CR>
+" nnoremap <silent> <leader>dr <cmd>lua vim.lsp.buf.references()<CR>
+" nnoremap <silent> <leader>dS <cmd>lua vim.lsp.buf.document_symbol()<CR>
 nnoremap <silent> <leader>dd :call <SID>show_documentation()<CR>
 nnoremap <silent> <leader>df <Plug>(coc-definition)<cr>
 nnoremap <silent> <leader>dc <Plug>(coc-declaration)<cr>
+nnoremap <silent> <leader>di <Plug>(coc-implementation)<cr>
 function! s:show_documentation()
   if (index(['vim','help'], &filetype) >= 0)
     execute 'h '.expand('<cword>')
@@ -523,16 +538,9 @@ map <leader>lo :lopen<cr>
 " From https://github.com/mhinz/vim-galore#quickly-edit-your-macros
 nnoremap <leader>m  :<c-u><c-r><c-r>='let @'. v:register .' = '. string(getreg(v:register))<cr><c-f><left>
 
-" I like using sort in netrw
-let g:sneak#map_netrw = 0
-" and I like not having to do uppercases:
-let g:sneak#use_ic_scs = 1
-let g:sneak#t_reset = 1
-let g:sneak#f_reset = 1
-" repeat previous search with clever sneak
-let g:sneak#s_next = 1
-" label mode
-let g:sneak#label = 1
+let g:EasyMotion_do_mapping=0
+let g:EasyMotion_smartcase=1
+nmap s <Plug>(easymotion-s2)
 
 cabbrev bda call DeleteHiddenBuffers()
 cabbrev gitv Gitv
