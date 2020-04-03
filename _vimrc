@@ -23,6 +23,7 @@ Plug 'tommcdo/vim-exchange' " Easy text exchange operator for Vim
 Plug 'easymotion/vim-easymotion' " ...
 " Plug 'justinmk/vim-sneak' " f t s ; . mappings - jump to any location specified by two characters
 Plug 'wellle/visual-split.vim' " I've mapped this to <leader>v Lines to quickly resize splits (VSSplit)
+Plug 'chrisbra/NrrwRgn' " provide focus of a selected block into its own buffer via 'NR'
 
 " Operators
 Plug 'tommcdo/vim-lion' " align with operator gL and gl (ie glip= to align paragraph by =)
