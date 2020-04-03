@@ -24,6 +24,7 @@ Plug 'easymotion/vim-easymotion' " ...
 " Plug 'justinmk/vim-sneak' " f t s ; . mappings - jump to any location specified by two characters
 Plug 'wellle/visual-split.vim' " I've mapped this to <leader>v Lines to quickly resize splits (VSSplit)
 Plug 'chrisbra/NrrwRgn' " provide focus of a selected block into its own buffer via 'NR'
+Plug 'kana/vim-operator-user' " Define my own operators for motions.
 
 " Operators
 Plug 'tommcdo/vim-lion' " align with operator gL and gl (ie glip= to align paragraph by =)
@@ -290,6 +291,10 @@ let g:grepper.open = 1
 let g:grepper.stop = 300
 let g:grepper.tools = ['git', 'ag', 'sift']
 
+let g:nrrw_rgn_wdth = 100
+map <leader>gn  <Plug>(operator-nrrw)
+call operator#user#define_ex_command('nrrw', 'NR')
+
 nmap gs <plug>(GrepperOperator)
 xmap gs <plug>(GrepperOperator)
 
@@ -496,8 +501,8 @@ endfunction
 let g:AutoPairsFlyMode=1
 let g:AutoPairsMultilineClose=0
 
-nnoremap <leader>vs :set opfunc=<SID>VtrSendLinesWithMotion<CR>g@
-vnoremap <leader>vs :<C-U>call <SID>VtrSendLinesWithMotion(visualmode(), 1)<CR>
+map <leader>gv  <Plug>(operator-vtr)
+call operator#user#define_ex_command('vtr', 'VtrSendLinesToRunner')
 
 " TODO VtrAttachToPane 1
 
