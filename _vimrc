@@ -8,7 +8,6 @@ call plug#begin('~/.vim/bundle')
 Plug 'sheerun/vim-polyglot', { 'for': 'coffee' }
 Plug 'norcalli/nvim-colorizer.lua'
 Plug 'rhysd/git-messenger.vim'
-Plug 'pechorin/any-jump.vim'
 Plug 'nvim-treesitter/nvim-treesitter'
 " <---- end plugins in testing ---->
 
@@ -40,8 +39,8 @@ Plug 'tpope/vim-rhubarb' " Gbrowse
 Plug 'tpope/vim-surround' " surround things with quotes, etc (csw - surround word)
 Plug 'tpope/vim-eunuch' " eunuch.vim: cp/move/unlink commands
 Plug 'ludovicchabant/vim-gutentags'
-Plug 'vinodkri/vim-tmux-runner', { 'branch': 'vtr-embrace-vim' } " :VtrSendCommandToRunner for tmux
 Plug 'skywind3000/gutentags_plus'
+Plug 'vinodkri/vim-tmux-runner' " :VtrSendCommandToRunner for tmux
 Plug 'tpope/vim-abolish' " fix spelling errors
 Plug 'editorconfig/editorconfig-vim' " 0.1.0 EditorConfig Plugin for Vim -- helps define and maintain consistent coding style
 Plug 'mattn/emmet-vim' " fast HTML tag generation (in insert mode type tr*3CTL-Y, to make three <tr>s
@@ -51,19 +50,17 @@ Plug 'gregsexton/gitv', { 'tag': '*' }
 Plug 'mhinz/vim-grepper' " Grepper to search in lots of ways
 Plug 'jiangmiao/auto-pairs' " close quotes and such automatically
 Plug 'dsummersl/vim-utf2ascii' " simple utf2ascii function.
-Plug 'AndrewRadev/switch.vim' " Easily toggle boolean values:
+Plug 'AndrewRadev/switch.vim', { 'tag': 'ccd4f43' } " Easily toggle boolean values:
 " Plug 'vim-scripts/AnsiEsc.vim', { 'on': 'AnsiEsc' }
 Plug 'dsummersl/gundo.vim', { 'branch': 'mundo-master' }
 Plug 'SirVer/ultisnips'
 Plug 'honza/vim-snippets'
+Plug 'w0rp/ale'
 if has('nvim')
   " language server type completion
-  Plug 'w0rp/ale'
   Plug 'neovim/nvim-lsp'
+  Plug 'haorenW1025/diagnostic-nvim'
   Plug 'neoclide/coc.nvim'
-else
-  Plug 'roxma/nvim-yarp'
-  Plug 'roxma/vim-hug-neovim-rpc'
 endif
 
 " Colorschemes & colors
@@ -327,18 +324,20 @@ let g:grepper.tools = ['git', 'ag', 'sift']
 let g:nrrw_rgn_wdth = 100
 map <leader>gn  <Plug>(operator-nrrw)
 call operator#user#define_ex_command('nrrw', 'NR')
+let g:nrrw_rgn_nomap_nr = 1
+let g:nrrw_rgn_nomap_Nr = 1
 
 nmap gs <plug>(GrepperOperator)
 xmap gs <plug>(GrepperOperator)
 
-let g:ale_lint_delay = 500
-let g:ale_lint_on_enter = 0
 let g:ale_completion_enabled = 0
+let g:ale_set_balloons = 1
+let g:ale_set_signs = 1
+let g:ale_sign_highlight_linenrs = 1
 let g:ale_set_highlights = 0
-let g:ale_lint_on_text_changed = 'normal'
+" let g:ale_lint_on_text_changed = 'normal'
 Repeatable nmap [g <Plug>(ale_previous)
 Repeatable nmap ]g <Plug>(ale_next)
-" nmap <leader>h :ALEHover<cr>
 let g:ale_linters = {
       \ 'python': ['black', 'pyls', 'isort', 'trim_whitespace'],
       \ 'javascript': ['eslint'],
@@ -389,8 +388,6 @@ let g:test#strategy = 'vtr'
 " let g:test#transformation = 'last'
 " let g:test#sub = 'docker-compose run --rm python manage.py test {} | pygmentize -l pytb'
 " let g:test#python#runner = 'djangotest'
-
-let g:neoterm_automap_keys = 'cic'
 
 " let g:jedi#completions_enabled = 0
 " let g:jedi#show_call_signatures = '2'
@@ -633,7 +630,7 @@ imap <M-a> <Home>
 
 " console copy to buffer
 noremap <leader>y "+y
-noremap <leader>a ggVG"+y
+" noremap <leader>a ggVG"+y
 " copy the current filename and line number into the clipboard and past register:
 noremap <leader>f :let @+=expand("%") .'#'. line(".")<bar>let @"=@+ ."\n"<CR>
 noremap <leader>/f :exec "Grepper -jump -tool ag -noprompt -query ". expand("%:t:r:r")<CR>
@@ -647,8 +644,8 @@ noremap ]oI :set diffopt-=iwhiteall<cr>
 noremap [oI :set diffopt+=iwhiteall<cr>
 
 " undo/redo to the previous write
-Repeatable map <leader>u :earlier 1f<cr>
-Repeatable map <leader>r :later 1f<cr>
+" Repeatable map <leader>u :earlier 1f<cr>
+" Repeatable map <leader>r :later 1f<cr>
 
 " When in Gstatus jump to the next file in the list and diff it.
 Repeatable map <leader>gj <C-w>l<C-w>kjdv
@@ -918,8 +915,6 @@ if has('autocmd') && !exists('g:autocommands_loaded')
 
   " Rainbow tags look crappy in htmldjango -- this autocmd isn't really working :/
   autocmd FileType htmldjango RainbowToggleOff
-
-  " autocmd Filetype javascript setl omnifunc=lsp#omnifunc
 
   autocmd BufNewFile,BufRead *.scss,*.css lua require'colorizer'.setup()
   autocmd BufNewFile,BufRead *.j2 setf jinja
