@@ -1,7 +1,6 @@
 clearsnippets
 priority 1
 
-
 global !p
 import os
 import sys
@@ -17,16 +16,24 @@ snippet super "super() method" !b
 super(${1:class}, self).${2:method}($3)$0
 endsnippet
 
+snippet log "logger " !b
+logger.$1("$2")$0
+endsnippet
+
+snippet loge "logger var" !b
+logger.$1("|$2 = {0}".format($2))$0
+endsnippet
+
 snippet lg "print " !b
 print("$1")$0
 endsnippet
 
-snippet la "lambda" w
-lambda ${1:i}: $1${2}
-endsnippet
-
 snippet lge "print var" !b
 print("|$1 = {0}".format($1))$0
+endsnippet
+
+snippet la "lambda" w
+lambda ${1:i}: $1${2}
 endsnippet
 
 snippet kv "key/value" !b
@@ -68,8 +75,8 @@ endsnippet
 
 snippet try "Try / Except / Else / Finally" b
 try:
-	${1:pass}
-except${2: ${3:Exception}, ${4:e}}:
+	${1:${VISUAL:pass}}
+except${2: ${3:Exception} as ${4:e}}:
 	${5:raise}
 else:
 	${6:pass}
