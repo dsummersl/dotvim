@@ -9,6 +9,7 @@ Plug 'sheerun/vim-polyglot', { 'for': 'coffee' }
 Plug 'norcalli/nvim-colorizer.lua'
 Plug 'rhysd/git-messenger.vim'
 Plug 'pechorin/any-jump.vim'
+Plug 'nvim-treesitter/nvim-treesitter'
 " <---- end plugins in testing ---->
 
 " Motions
@@ -252,6 +253,37 @@ let g:python3_host_prog='/usr/local/bin/python3'
 " Plugin settings, changes."{{{
 
 call repeatable#Setup()
+
+lua <<EOF
+require'nvim-treesitter.configs'.setup {
+    highlight = {
+        enable = true, -- false will disable the whole extension
+        disable = { }, -- list of language that will be disabled
+    },
+    incremental_selection = {             -- this enables incremental selection
+        enable = true,
+        disable = {  },
+        keymaps = {                       -- mappings for incremental selection (visual mappings)
+          node_incremental = "<leader>ue", -- "grn" by default,
+          scope_incremental = "<leader>uf" -- "grc" by default
+        }
+    },
+    node_movement = {                     -- this enables cursor movement in node hierarchy
+        enable = true,
+        disable = {},
+        keymaps = {                       -- mappings for node movement (normal mappings)
+          move_up = "<a-k>",              -- default is to move with alt key hold
+          move_down = "<a-j>",
+          move_left = "<a-h>",
+          move_right = "<a-l>",
+        }
+    },
+    ensure_installed = 'all' -- one of 'all', 'language', or a list of languages
+}
+EOF
+
+" git blame:
+nmap <leader>gb :GitMessenger<cr>
 
 function! LightlineMode()
   return lightline#mode()[0:0]
