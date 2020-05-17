@@ -41,6 +41,7 @@ Plug 'tpope/vim-surround' " surround things with quotes, etc (csw - surround wor
 Plug 'tpope/vim-eunuch' " eunuch.vim: cp/move/unlink commands
 Plug 'ludovicchabant/vim-gutentags'
 Plug 'vinodkri/vim-tmux-runner', { 'branch': 'vtr-embrace-vim' } " :VtrSendCommandToRunner for tmux
+Plug 'skywind3000/gutentags_plus'
 Plug 'tpope/vim-abolish' " fix spelling errors
 Plug 'editorconfig/editorconfig-vim' " 0.1.0 EditorConfig Plugin for Vim -- helps define and maintain consistent coding style
 Plug 'mattn/emmet-vim' " fast HTML tag generation (in insert mode type tr*3CTL-Y, to make three <tr>s
@@ -403,6 +404,8 @@ let g:deoplete#auto_complete_delay = 150
 
 let g:splitjoin_trailing_comma = 1
 
+let g:gutentags_plus_nomap = 1
+let g:gutentags_modules = ['ctags', 'gtags_cscope']
 let g:gutentags_cache_dir = '~/.vim/tags'
 let g:gutentags_ctags_exclude = [ '*.json', '*.md', '*/node_modules/*', '*/bower_components/*',
       \ '*/public/assets/*', '*/public/packs/*', '*/public/packs-test/*', '*/vendor/*',
@@ -494,6 +497,8 @@ nnoremap <F15> :Leaderf mru --cwd --nowrap<CR>
 nnoremap <C-t> :Leaderf tag --nowrap<CR>
 " User iterm2 to map shift-ctrl-t to <f16>
 nnoremap <F16> :Leaderf bufTag --nowrap<CR>
+" Find references to the symbol under the cursor (C-S-])
+nnoremap <F14> :GscopeFind c <C-R><C-W><cr>
 
 " save my right pinky some pain:
 nnoremap <leader>t zt
@@ -535,33 +540,35 @@ let g:AutoPairsMultilineClose=0
 
 map <leader>gv  <Plug>(operator-vtr)
 call operator#user#define_ex_command('vtr', 'VtrSendLinesToRunner')
-
 " TODO VtrAttachToPane 1
 
-" I want to see all the options when I try to jump to a tag:
-nmap <C-]> g<C-]>zt
-" TODO Create mappings to find tags that match this filetype.
+" easily access f-keys -- not easy on a macbookpro with 'touch bar'
+map <leader>f6 :Gvdiffsplit<cr>
+map <leader>f4 :MundoToggle<cr>
 
-" lua require'nvim_lsp'.solargraph.setup{}
-" nnoremap <silent> <leader>dc <cmd>lua vim.lsp.buf.declaration()<CR>
-" nnoremap <silent> <leader>dd <cmd>lua vim.lsp.buf.definition()<CR>
-" nnoremap <silent> <leader>dh <cmd>lua vim.lsp.buf.hover()<CR>
-" nnoremap <silent> <leader>di <cmd>lua vim.lsp.buf.implementation()<CR>
-" nnoremap <silent> <leader>ds <cmd>lua vim.lsp.buf.signature_help()<CR>
-" nnoremap <silent> <leader>dt <cmd>lua vim.lsp.buf.type_definition()<CR>
-" nnoremap <silent> <leader>dr <cmd>lua vim.lsp.buf.references()<CR>
-" nnoremap <silent> <leader>dS <cmd>lua vim.lsp.buf.document_symbol()<CR>
-nnoremap <silent> <leader>dd :call <SID>show_documentation()<CR>
-nnoremap <silent> <leader>df <Plug>(coc-definition)<cr>
-nnoremap <silent> <leader>dc <Plug>(coc-declaration)<cr>
-nnoremap <silent> <leader>di <Plug>(coc-implementation)<cr>
-function! s:show_documentation()
-  if (index(['vim','help'], &filetype) >= 0)
-    execute 'h '.expand('<cword>')
-  else
-    call CocAction('doHover')
-  endif
-endfunction
+" I want to see all the options when I try to jump to a tag:
+nmap <C-]> :GutentagsReset<cr>g<C-]>zt
+
+lua require'nvim_lsp'.solargraph.setup{on_attach=require'diagnostic'.on_attach}
+nnoremap <silent> <leader>dc <cmd>lua vim.lsp.buf.declaration()<CR>
+nnoremap <silent> <leader>dd <cmd>lua vim.lsp.buf.definition()<CR>
+nnoremap <silent> <leader>dh <cmd>lua vim.lsp.buf.hover()<CR>
+nnoremap <silent> <leader>di <cmd>lua vim.lsp.buf.implementation()<CR>
+nnoremap <silent> <leader>ds <cmd>lua vim.lsp.buf.signature_help()<CR>
+nnoremap <silent> <leader>dt <cmd>lua vim.lsp.buf.type_definition()<CR>
+nnoremap <silent> <leader>dr <cmd>lua vim.lsp.buf.references()<CR>
+nnoremap <silent> <leader>dS <cmd>lua vim.lsp.buf.document_symbol()<CR>
+" nnoremap <silent> <leader>dd :call <SID>show_documentation()<CR>
+" nnoremap <silent> <leader>df <Plug>(coc-definition)<cr>
+" nnoremap <silent> <leader>dc <Plug>(coc-declaration)<cr>
+" nnoremap <silent> <leader>di <Plug>(coc-implementation)<cr>
+" function! s:show_documentation()
+"   if (index(['vim','help'], &filetype) >= 0)
+"     execute 'h '.expand('<cword>')
+"   else
+"     call CocAction('doHover')
+"   endif
+" endfunction
 
 nnoremap <leader>o :only<cr>
 nnoremap <leader>' :q<cr>
