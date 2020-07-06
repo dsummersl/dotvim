@@ -30,3 +30,4 @@ Abolish {ch,r}nag{e,ed,es} {}ang{}
 Abolish DOTO TODO
 Abolish {,de}f{ua}lt{,s} {}f{au}lt{}
 Abolish lession lesson
+Abolish improtant important
