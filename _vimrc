@@ -1,4 +1,4 @@
-" vundle plugin options {{{
+" vundle plugin options 
 
 let g:plug_url_format='git@github.com:%s.git'
 so ~/.vim/autoload/plug.vim
@@ -39,18 +39,18 @@ Plug 'tpope/vim-rhubarb' " Gbrowse
 Plug 'tpope/vim-surround' " surround things with quotes, etc (csw - surround word)
 Plug 'tpope/vim-eunuch' " eunuch.vim: cp/move/unlink commands
 Plug 'ludovicchabant/vim-gutentags'
-Plug 'skywind3000/gutentags_plus'
 Plug 'vinodkri/vim-tmux-runner' " :VtrSendCommandToRunner for tmux
 Plug 'tpope/vim-abolish' " fix spelling errors
 Plug 'editorconfig/editorconfig-vim' " 0.1.0 EditorConfig Plugin for Vim -- helps define and maintain consistent coding style
 Plug 'mattn/emmet-vim' " fast HTML tag generation (in insert mode type tr*3CTL-Y, to make three <tr>s
 Plug 'tomtom/tcomment_vim' " An extensible & universal comment vim-plugin that also handles embedded filetypes
-Plug 'Yggdroot/LeaderF', { 'do': './install.sh' }
-Plug 'gregsexton/gitv', { 'tag': '*' }
+Plug 'Yggdroot/LeaderF', { 'do': './install.sh', 'commit': '7af9129'}
+Plug 'gregsexton/gitv'
+Plug 'rbong/vim-flog'
 Plug 'mhinz/vim-grepper' " Grepper to search in lots of ways
 Plug 'jiangmiao/auto-pairs' " close quotes and such automatically
 Plug 'dsummersl/vim-utf2ascii' " simple utf2ascii function.
-Plug 'AndrewRadev/switch.vim', { 'tag': 'ccd4f43' } " Easily toggle boolean values:
+Plug 'AndrewRadev/switch.vim', {} " Easily toggle boolean values:
 " Plug 'vim-scripts/AnsiEsc.vim', { 'on': 'AnsiEsc' }
 Plug 'dsummersl/gundo.vim', { 'branch': 'mundo-master' }
 Plug 'SirVer/ultisnips'
@@ -60,7 +60,7 @@ if has('nvim')
   " language server type completion
   Plug 'neovim/nvim-lsp'
   Plug 'haorenW1025/diagnostic-nvim'
-  Plug 'neoclide/coc.nvim'
+  Plug 'neoclide/coc.nvim', { 'tag': '*' }
 endif
 
 " Colorschemes & colors
@@ -157,7 +157,7 @@ if v:version >= 704
   " show column markers beyond the 80, and 100
   set colorcolumn=+1,+20,+21,+22,+23
 endif
-" }}}
+" 
 " basic options {{{
 
 set undofile
@@ -183,7 +183,7 @@ syntax on
 set foldmethod=marker
 
 " Turn on mouse for a visual and normal mode only:
-set mouse=v
+set mouse=nv
 
 set diffopt=filler,iwhiteall,vertical,hiddenoff,internal,indent-heuristic,algorithm:patience
 set nohlsearch
@@ -245,44 +245,39 @@ endif
 
 
 let g:python_host_prog='/usr/local/bin/python2'
-let g:python3_host_prog='/usr/local/bin/python3'
+let g:python3_host_prog='/Users/danesummers/.pyenv/shims/python'
 
 "}}}
 " Plugin settings, changes."{{{
 
 call repeatable#Setup()
 
-lua <<EOF
-require'nvim-treesitter.configs'.setup {
-    highlight = {
-        enable = true, -- false will disable the whole extension
-        disable = { }, -- list of language that will be disabled
-    },
-    incremental_selection = {             -- this enables incremental selection
-        enable = true,
-        disable = {  },
-        keymaps = {                       -- mappings for incremental selection (visual mappings)
-          node_incremental = "<leader>ue", -- "grn" by default,
-          scope_incremental = "<leader>uf" -- "grc" by default
-        }
-    },
-    node_movement = {                     -- this enables cursor movement in node hierarchy
-        enable = true,
-        disable = {},
-        keymaps = {                       -- mappings for node movement (normal mappings)
-          move_up = "<a-k>",              -- default is to move with alt key hold
-          move_down = "<a-j>",
-          move_left = "<a-h>",
-          move_right = "<a-l>",
-        }
-    },
-    ensure_installed = 'all' -- one of 'all', 'language', or a list of languages
-}
-EOF
+" lua <<EOF
+" require'nvim-treesitter.configs'.setup {
+"   highlight = {
+"       enable = true, -- false will disable the whole extension
+"       disable = {},  -- list of language that will be disabled
+"   },
+"   incremental_selection = {
+"       enable = true,
+"       disable = {},
+"       keymaps = {                       -- mappings for incremental selection (visual mappings)
+"         init_selection = 'gnn',         -- maps in normal mode to init the node/scope selection
+"         node_incremental = "grn",       -- increment to the upper named parent
+"         scope_incremental = "grc",      -- increment to the upper scope (as defined in locals.scm)
+"         scope_decremental = "grm",      -- decrement to the previous scope
+"       }
+"   },
+"   ensure_installed = 'all' -- one of 'all', 'language', or a list of languages
+" }
+" EOF
 
 " git blame:
 nmap <leader>gb :GitMessenger<cr>
 
+function! CocCurrentFunction()
+  return get(b:, 'coc_current_function', '')
+endfunction
 function! LightlineMode()
   return lightline#mode()[0:0]
 endfunction
@@ -292,7 +287,7 @@ function! LightlineFilename()
   return filename . modified
 endfunction
 function! LightlineFiletype()
-  return winwidth(0) > 70 ? (strlen(&filetype) ? WebDevIconsGetFileTypeSymbol() . ' ' . &filetype : 'no ft') : ''
+  return winwidth(0) > 70 ? (strlen(&filetype) ? WebDevIconsGetFileTypeSymbol() . ' ': 'no ft') : ''
 endfunction
 function! LightlineFileformat()
   return WebDevIconsGetFileFormatSymbol()
@@ -303,16 +298,18 @@ let g:lightline = {
       \   'left': [ [ 'mode', 'paste' ],
       \             [ 'readonly', 'filename' ] ],
       \   'right': [ [ 'lineinfo' ], [ 'percent' ],
-      \             [ 'indent', 'fileformat', 'filetype' ] ]
+      \             [ 'currentfunction', 'indent', 'fileformat', 'filetype' ] ]
       \ },
       \ 'component': {
-      \   'indent': '%{&expandtab?"s":"t"}%{&tabstop}',
+      \   'indent': '%{&expandtab?"":"t"}%{&tabstop}',
       \ },
       \ 'component_function': {
       \   'mode': 'LightlineMode',
       \   'filename': 'LightlineFilename',
       \   'filetype': 'LightlineFiletype',
       \   'fileformat': 'LightlineFileformat',
+      \   'cocstatus': 'coc#status',
+      \   'currentfunction': 'CocCurrentFunction'
       \ },
       \ }
 
@@ -401,8 +398,7 @@ let g:deoplete#auto_complete_delay = 150
 
 let g:splitjoin_trailing_comma = 1
 
-let g:gutentags_plus_nomap = 1
-let g:gutentags_modules = ['ctags', 'gtags_cscope']
+let g:gutentags_modules = ['ctags']
 let g:gutentags_cache_dir = '~/.vim/tags'
 let g:gutentags_ctags_exclude = [ '*.json', '*.md', '*/node_modules/*', '*/bower_components/*',
       \ '*/public/assets/*', '*/public/packs/*', '*/public/packs-test/*', '*/vendor/*',
@@ -425,6 +421,7 @@ let g:indent_guides_color_change_percent = 4
 " we have very long commit lines - this helps!
 let g:Gitv_TruncateCommitSubjects = 1
 let g:Gitv_OpenHorizontal = 1
+let g:flog_default_arguments={ 'date': 'short' }
 
 " Toggle a setting on or off.
 function! Toggle(setting)
@@ -465,6 +462,7 @@ let g:switch_custom_definitions =
     \ { 'up': 'down' }, { 'down': 'up' },
     \ { 'width': 'height' }, { 'height': 'width' },
     \ { 'yes': 'no' }, { 'no': 'yes' },
+    \ { 'row': 'column' }, { 'column': 'row' },
     \ ]
 
 " don't use vif (thats a function, duh!)
@@ -495,7 +493,7 @@ nnoremap <C-t> :Leaderf tag --nowrap<CR>
 " User iterm2 to map shift-ctrl-t to <f16>
 nnoremap <F16> :Leaderf bufTag --nowrap<CR>
 " Find references to the symbol under the cursor (C-S-])
-nnoremap <F14> :GscopeFind c <C-R><C-W><cr>
+" nnoremap <F14> :GscopeFind c <C-R><C-W><cr>
 
 " save my right pinky some pain:
 nnoremap <leader>t zt
@@ -546,7 +544,10 @@ map <leader>f4 :MundoToggle<cr>
 " I want to see all the options when I try to jump to a tag:
 nmap <C-]> :GutentagsReset<cr>g<C-]>zt
 
+lua require'nvim_lsp'.vimls.setup{on_attach=require'diagnostic'.on_attach}
 lua require'nvim_lsp'.solargraph.setup{on_attach=require'diagnostic'.on_attach}
+lua require'nvim_lsp'.pyls.setup{on_attach=require'diagnostic'.on_attach}
+lua require'nvim_lsp'.tsserver.setup{on_attach=require'diagnostic'.on_attach}
 nnoremap <silent> <leader>dc <cmd>lua vim.lsp.buf.declaration()<CR>
 nnoremap <silent> <leader>dd <cmd>lua vim.lsp.buf.definition()<CR>
 nnoremap <silent> <leader>dh <cmd>lua vim.lsp.buf.hover()<CR>
@@ -555,17 +556,17 @@ nnoremap <silent> <leader>ds <cmd>lua vim.lsp.buf.signature_help()<CR>
 nnoremap <silent> <leader>dt <cmd>lua vim.lsp.buf.type_definition()<CR>
 nnoremap <silent> <leader>dr <cmd>lua vim.lsp.buf.references()<CR>
 nnoremap <silent> <leader>dS <cmd>lua vim.lsp.buf.document_symbol()<CR>
-" nnoremap <silent> <leader>dd :call <SID>show_documentation()<CR>
-" nnoremap <silent> <leader>df <Plug>(coc-definition)<cr>
+nnoremap <silent> <leader>df :call <SID>show_documentation()<CR>
+" nnoremap <silent> <leader>dd <Plug>(coc-definition)<cr>
 " nnoremap <silent> <leader>dc <Plug>(coc-declaration)<cr>
 " nnoremap <silent> <leader>di <Plug>(coc-implementation)<cr>
-" function! s:show_documentation()
-"   if (index(['vim','help'], &filetype) >= 0)
-"     execute 'h '.expand('<cword>')
-"   else
-"     call CocAction('doHover')
-"   endif
-" endfunction
+function! s:show_documentation()
+  if (index(['vim','help'], &filetype) >= 0)
+    execute 'h '.expand('<cword>')
+  else
+    call CocAction('doHover')
+  endif
+endfunction
 
 nnoremap <leader>o :only<cr>
 nnoremap <leader>' :q<cr>
@@ -586,6 +587,7 @@ nmap s <Plug>(easymotion-s2)
 
 cabbrev bda call DeleteHiddenBuffers()
 cabbrev gitv Gitv
+cabbrev flog Flog
 
 " I like having zs to jump to the start of the line, but I'd really love a
 " zm to jump to the middle - I don't think I'll miss the original folding
