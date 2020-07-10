@@ -21,7 +21,6 @@ Plug 'mattn/gist-vim' " vimscript for Gist
 Plug 'kreskij/Repeatable.vim'
 Plug 'tommcdo/vim-exchange' " Easy text exchange operator for Vim
 Plug 'easymotion/vim-easymotion' " ...
-" Plug 'justinmk/vim-sneak' " f t s ; . mappings - jump to any location specified by two characters
 Plug 'wellle/visual-split.vim' " I've mapped this to <leader>v Lines to quickly resize splits (VSSplit)
 Plug 'chrisbra/NrrwRgn' " provide focus of a selected block into its own buffer via 'NR'
 Plug 'kana/vim-operator-user' " Define my own operators for motions.
@@ -584,6 +583,7 @@ nnoremap <leader>m  :<c-u><c-r><c-r>='let @'. v:register .' = '. string(getreg(v
 let g:EasyMotion_do_mapping=0
 let g:EasyMotion_smartcase=1
 nmap s <Plug>(easymotion-s2)
+nmap <leader>; <Plug>(easymotion-next)
 
 cabbrev bda call DeleteHiddenBuffers()
 cabbrev gitv Gitv
