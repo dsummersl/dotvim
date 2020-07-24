@@ -1,4 +1,4 @@
-" vundle plugin options 
+" vundle plugin options {{{
 
 let g:plug_url_format='git@github.com:%s.git'
 so ~/.vim/autoload/plug.vim
@@ -13,14 +13,13 @@ Plug 'nvim-treesitter/nvim-treesitter'
 
 " Motions
 Plug 'jeetsukumaran/vim-indentwise' " Support indent motions ]ii
-Plug 'okcompute/vim-python-motions', { 'for': 'python' } " ]] ]C ]M to move between methods
 Plug 'AndrewRadev/splitjoin.vim' " Gs to split long lines
 Plug 'tpope/vim-unimpaired' " many additional mappings for ]q, etc
 Plug 'tpope/vim-repeat' " awesome: makes the surround plugin work with the '.' keys (repeatability!)
 Plug 'mattn/gist-vim' " vimscript for Gist
 Plug 'kreskij/Repeatable.vim'
 Plug 'tommcdo/vim-exchange' " Easy text exchange operator for Vim
-Plug 'easymotion/vim-easymotion' " ...
+Plug 'easymotion/vim-easymotion' " mapped to s for two letter searching.
 Plug 'wellle/visual-split.vim' " I've mapped this to <leader>v Lines to quickly resize splits (VSSplit)
 Plug 'chrisbra/NrrwRgn' " provide focus of a selected block into its own buffer via 'NR'
 Plug 'kana/vim-operator-user' " Define my own operators for motions.
@@ -31,7 +30,7 @@ Plug 'tommcdo/vim-express' " custom g* operations.
 
 " Git & Project
 Plug 'stefandtw/quickfix-reflector.vim' " edit the qf list directly with copen
-Plug 'tpope/vim-projectionist' " :E* commands for a project
+Plug 'dsummersl/vim-projectionist', { 'branch': 'issue-94' } " :E* commands for a project
 Plug 'MarcWeber/vim-addon-local-vimrc' " enable project local .vimrc files
 Plug 'tpope/vim-fugitive', {} " git
 Plug 'tpope/vim-rhubarb' " Gbrowse 
@@ -65,7 +64,6 @@ endif
 " Colorschemes & colors
 Plug 'frankier/neovim-colors-solarized-truecolor-only' " A colorscheme that supports fugitive's [ob and ]ob
 Plug 'morhetz/gruvbox' " gruvbox colors
-Plug 'luochen1990/rainbow', { 'frozen': 1 } " Rainbow toggle colorscheme
 Plug 'itchyny/lightline.vim'
 Plug 'machakann/vim-highlightedyank' " highlight any text as it is yanked
 Plug 'pgdouyon/vim-evanesco' " Highlight search, clear after searching
@@ -84,12 +82,11 @@ Plug 'dsummersl/vimunit' " unit testing for vim.
 " Textobj plugins
 Plug 'wellle/targets.vim' " many text objects
 Plug 'kana/vim-textobj-user' " user defined textobj implementations
-Plug 'kana/vim-textobj-syntax' " vay viy to select syntax blocks
+Plug 'kana/vim-textobj-syntax' " vay/viy to select syntax blocks
 Plug 'glts/vim-textobj-comment' " select comment with vic or vac.
 Plug 'thinca/vim-textobj-between' " vib between any arbitrary object (vibX where X is the obj)
 Plug 'kana/vim-textobj-lastpat' " vi/ (last search)
 Plug 'michaeljsmith/vim-indent-object' " vii and viI (visual inner Indent)
-Plug 'nelstrom/vim-textobj-rubyblock' "vir for ruby blocks
 Plug 'saaguero/vim-textobj-pastedtext' " vgb for last pasted text.
 
 " Extra 
@@ -156,7 +153,7 @@ if v:version >= 704
   " show column markers beyond the 80, and 100
   set colorcolumn=+1,+20,+21,+22,+23
 endif
-" 
+" }}}
 " basic options {{{
 
 set undofile
@@ -182,7 +179,7 @@ syntax on
 set foldmethod=marker
 
 " Turn on mouse for a visual and normal mode only:
-set mouse=nv
+set mouse=v
 
 set diffopt=filler,iwhiteall,vertical,hiddenoff,internal,indent-heuristic,algorithm:patience
 set nohlsearch
@@ -254,18 +251,56 @@ call repeatable#Setup()
 " lua <<EOF
 " require'nvim-treesitter.configs'.setup {
 "   highlight = {
-"       enable = true, -- false will disable the whole extension
-"       disable = {},  -- list of language that will be disabled
+"       enable = true,                    -- false will disable the whole extension
+"       disable = { 'c', 'rust' },        -- list of language that will be disabled
+"       custom_captures = {               -- mapping of user defined captures to highlight groups
+"         -- ["foo.bar"] = "Identifier"   -- highlight own capture @foo.bar with highlight group "Identifier", see :h nvim-treesitter-query-extensions
+"       },            
 "   },
 "   incremental_selection = {
 "       enable = true,
-"       disable = {},
+"       disable = { 'cpp', 'lua' },
 "       keymaps = {                       -- mappings for incremental selection (visual mappings)
 "         init_selection = 'gnn',         -- maps in normal mode to init the node/scope selection
 "         node_incremental = "grn",       -- increment to the upper named parent
 "         scope_incremental = "grc",      -- increment to the upper scope (as defined in locals.scm)
-"         scope_decremental = "grm",      -- decrement to the previous scope
+"         node_decremental = "grm",      -- decrement to the previous node
 "       }
+"   },
+"   refactor = {
+"     highlight_definitions = {
+"       enable = true
+"     },
+"     highlight_current_scope = {
+"       enable = true
+"     },
+"     smart_rename = {
+"       enable = true,
+"       smart_rename = "grr"              -- mapping to rename reference under cursor
+"     },
+"     navigation = {
+"       enable = true,
+"       goto_definition = "gnd",          -- mapping to go to definition of symbol under cursor
+"       list_definitions = "gnD"          -- mapping to list all definitions in current file
+"     }
+"   },
+"   textobjects = { -- syntax-aware textobjects
+"     enable = true,
+"     disable = {},
+"     keymaps = {
+"       ["iL"] = { -- you can define your own textobjects directly here
+"         python = "(function_definition) @function",
+"       },
+"       -- or you use the queries from supported languages with textobjects.scm
+"       ["af"] = "@function.outer",
+"       ["if"] = "@function.inner",
+"       ["ac"] = "@conditional.outer",
+"       ["ic"] = "@conditional.inner",
+"       ["ae"] = "@block.outer",
+"       ["ie"] = "@block.inner",
+"       ["is"] = "@statement.inner",
+"       ["as"] = "@statement.outer"
+"     }
 "   },
 "   ensure_installed = 'all' -- one of 'all', 'language', or a list of languages
 " }
@@ -402,9 +437,6 @@ let g:gutentags_cache_dir = '~/.vim/tags'
 let g:gutentags_ctags_exclude = [ '*.json', '*.md', '*/node_modules/*', '*/bower_components/*',
       \ '*/public/assets/*', '*/public/packs/*', '*/public/packs-test/*', '*/vendor/*',
       \ 'tags', '*.sql', '*.html']
-
-" Color brackets and HTML/XML:
-let g:rainbow_active = 1
 
 let g:mundo_verbose_graph = 0
 let g:mundo_mirror_graph = 1
@@ -652,22 +684,6 @@ noremap [oI :set diffopt+=iwhiteall<cr>
 " When in Gstatus jump to the next file in the list and diff it.
 Repeatable map <leader>gj <C-w>l<C-w>kjdv
 Repeatable map <leader>gk <C-w>l<C-w>kkdv
-
-" yank a block by the whole line.
-map <leader>ya} va}Vy
-map <leader>yi} vi}Vy
-map <leader>ya) va)Vy
-map <leader>yi) vi)Vy
-map <leader>ya] va]Vy
-map <leader>yi] vi]Vy
-
-" delete out block function that supports repeatability.
-Repeatable nnoremap <leader>da} va}Vd
-Repeatable nnoremap <leader>di} vi}Vd
-Repeatable nnoremap <leader>da) va)Vd
-Repeatable nnoremap <leader>di) vi)Vd
-Repeatable nnoremap <leader>da] va]Vd
-Repeatable nnoremap <leader>di] vi]Vd
 
 " Send a selection to the terminal:
 map <leader>ctn :TestNearest<CR>
