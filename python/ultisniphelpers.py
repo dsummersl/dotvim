@@ -19,3 +19,5 @@ def complete(t,opts):
     return opts[0]
   return '('+ '|'.join(opts) +')'
 
+def capitalize(t):
+    return t[:1].capitalize() + t[1:] if len(t) > 0 else t

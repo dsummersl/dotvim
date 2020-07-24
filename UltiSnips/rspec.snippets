@@ -7,9 +7,19 @@ it '$1' do
 end
 endsnippet
 
+snippet cont "rspec context '...'" !b
+context '$1' do
+  $0
+end
+endsnippet
+
 snippet desc "rspec describe '...'" !b
 describe '$1' do
   $0
 end
+endsnippet
+
+snippet exp "rspec expect(). " !b
+expect($1).$2
 endsnippet
 
