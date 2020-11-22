@@ -41,10 +41,12 @@ Summary: $2
 ## Vocabulary
 ## Architectural Decision Records
     echo "docs/adr" > .adr-dir
-    git add .adr-dir
     adr init
-    # generate the TOC and copy here:
+    git add .adr-dir docs
     adr generate toc
+
+* [1. Record architecture decisions](docs/adr/0001-record-architecture-decisions.md)
+
 ## Development
 ## Deployment
 ## Provisioning
