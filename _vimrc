@@ -5,23 +5,33 @@ so ~/.vim/autoload/plug.vim
 call plug#begin('~/.vim/bundle')
 
 " <---- plugins in testing ---->
-Plug 'sheerun/vim-polyglot', { 'for': 'coffee' }
-Plug 'norcalli/nvim-colorizer.lua'
-Plug 'rhysd/git-messenger.vim'
-Plug 'nvim-treesitter/nvim-treesitter'
+Plug 'sheerun/vim-polyglot', { 'for': 'coffee', 'tag': 'v4.17.0' }
+Plug 'airblade/vim-gitgutter'
+Plug 'romgrk/nvim-treesitter-context'
+" Plug 'junegunn/vim-slash' -- for search and * search.
 " <---- end plugins in testing ---->
+" <---- plugins to probably remove ---->
+" Plug 'kana/vim-textobj-syntax' " vay/viy to select syntax blocks
+" Plug 'dsummersl/vus'
+" Plug 'dsummersl/vimunit' " unit testing for vim.
+" Plug 'frankier/neovim-colors-solarized-truecolor-only' " A colorscheme that supports fugitive's [ob and ]ob
+" Plug 'slim-template/vim-slim', { 'for': 'slim' }
+" Plug 'posva/vim-vue', { 'for': 'vue' }
+" Plug 'AndrewRadev/splitjoin.vim' " Gs to split long lines
+" Plug 'mattn/gist-vim' " vimscript for Gist
+" Plug 'tommcdo/vim-exchange' " Easy text exchange operator for Vim
+" Plug 'chrisbra/NrrwRgn' " provide focus of a selected block into its own buffer via 'NR'
+" Plug 'vim-scripts/AnsiEsc.vim', { 'on': 'AnsiEsc' }
+" Plug 'honza/vim-snippets'
+" <---- plugins to probably remove ---->
 
 " Motions
 Plug 'jeetsukumaran/vim-indentwise' " Support indent motions ]ii
-Plug 'AndrewRadev/splitjoin.vim' " Gs to split long lines
 Plug 'tpope/vim-unimpaired' " many additional mappings for ]q, etc
 Plug 'tpope/vim-repeat' " awesome: makes the surround plugin work with the '.' keys (repeatability!)
-Plug 'mattn/gist-vim' " vimscript for Gist
 Plug 'kreskij/Repeatable.vim'
-Plug 'tommcdo/vim-exchange' " Easy text exchange operator for Vim
 Plug 'easymotion/vim-easymotion' " mapped to s for two letter searching.
 Plug 'wellle/visual-split.vim' " I've mapped this to <leader>v Lines to quickly resize splits (VSSplit)
-Plug 'chrisbra/NrrwRgn' " provide focus of a selected block into its own buffer via 'NR'
 Plug 'kana/vim-operator-user' " Define my own operators for motions.
 
 " Operators
@@ -42,27 +52,30 @@ Plug 'tpope/vim-abolish' " fix spelling errors
 Plug 'editorconfig/editorconfig-vim' " 0.1.0 EditorConfig Plugin for Vim -- helps define and maintain consistent coding style
 Plug 'mattn/emmet-vim' " fast HTML tag generation (in insert mode type tr*3CTL-Y, to make three <tr>s
 Plug 'tomtom/tcomment_vim' " An extensible & universal comment vim-plugin that also handles embedded filetypes
-Plug 'Yggdroot/LeaderF', { 'do': './install.sh', 'commit': '7af9129'}
+Plug 'Yggdroot/LeaderF', { 'do': './install.sh'}
 Plug 'gregsexton/gitv'
 Plug 'rbong/vim-flog'
 Plug 'mhinz/vim-grepper' " Grepper to search in lots of ways
 Plug 'jiangmiao/auto-pairs' " close quotes and such automatically
 Plug 'dsummersl/vim-utf2ascii' " simple utf2ascii function.
 Plug 'AndrewRadev/switch.vim', {} " Easily toggle boolean values:
-" Plug 'vim-scripts/AnsiEsc.vim', { 'on': 'AnsiEsc' }
 Plug 'dsummersl/gundo.vim', { 'branch': 'mundo-master' }
-Plug 'SirVer/ultisnips'
-Plug 'honza/vim-snippets'
 Plug 'w0rp/ale'
 if has('nvim')
+  Plug 'RRethy/vim-hexokinase', { 'do': 'make hexokinase' }
+  Plug 'dsummersl/nvim-sluice'
+  Plug 'SirVer/ultisnips'
   " language server type completion
-  Plug 'neovim/nvim-lsp'
-  Plug 'haorenW1025/diagnostic-nvim'
-  Plug 'neoclide/coc.nvim', { 'tag': '*' }
+  " Plug 'neovim/nvim-lsp'
+  " Plug 'neoclide/coc.nvim', { 'tag': '*' }
+  Plug 'nvim-lua/completion-nvim'
+  Plug 'nvim-lua/lsp-status.nvim'
+  Plug 'neovim/nvim-lspconfig'
+  Plug 'nvim-treesitter/nvim-treesitter', { 'commit': '1c3fb20' }
+  " Plug 'nvim-treesitter/completion-treesitter'
 endif
 
 " Colorschemes & colors
-Plug 'frankier/neovim-colors-solarized-truecolor-only' " A colorscheme that supports fugitive's [ob and ]ob
 Plug 'morhetz/gruvbox' " gruvbox colors
 Plug 'itchyny/lightline.vim'
 Plug 'machakann/vim-highlightedyank' " highlight any text as it is yanked
@@ -70,19 +83,13 @@ Plug 'pgdouyon/vim-evanesco' " Highlight search, clear after searching
 Plug 'nathanaelkane/vim-indent-guides' " A Vim plugin for visually displaying indent levels in code
 
 " Language specific plugins:
-Plug 'slim-template/vim-slim', { 'for': 'slim' }
-Plug 'posva/vim-vue', { 'for': 'vue' }
 Plug 'prabirshrestha/async.vim'
 Plug 'janko-m/vim-test' " :TestNearest
-Plug 'wellle/visual-split.vim' " I've mapped this to <leader>v Lines to quickly resize splits (VSSplit)
 Plug 'mattn/webapi-vim'
-Plug 'dsummersl/vus'
-Plug 'dsummersl/vimunit' " unit testing for vim.
 
 " Textobj plugins
 Plug 'wellle/targets.vim' " many text objects
 Plug 'kana/vim-textobj-user' " user defined textobj implementations
-Plug 'kana/vim-textobj-syntax' " vay/viy to select syntax blocks
 Plug 'glts/vim-textobj-comment' " select comment with vic or vac.
 Plug 'thinca/vim-textobj-between' " vib between any arbitrary object (vibX where X is the obj)
 Plug 'kana/vim-textobj-lastpat' " vi/ (last search)
@@ -96,63 +103,24 @@ set termguicolors
 
 call plug#end()
 
-if v:version >= 704
-  " show undo history
-  nnoremap <F5> :MundoToggle<CR>
+set background=dark
+colorscheme gruvbox
 
-  set background=dark
-  colorscheme gruvbox
-
-  " colors for the :terminal
-  if has('nvim')
-    " dark0 + gray
-    let g:terminal_color_0 = "#282828"
-    let g:terminal_color_8 = "#928374"
-
-    " neurtral_red + bright_red
-    let g:terminal_color_1 = "#cc241d"
-    let g:terminal_color_9 = "#fb4934"
-
-    " neutral_green + bright_green
-    let g:terminal_color_2 = "#98971a"
-    let g:terminal_color_10 = "#b8bb26"
-
-    " neutral_yellow + bright_yellow
-    let g:terminal_color_3 = "#d79921"
-    let g:terminal_color_11 = "#fabd2f"
-
-    " neutral_blue + bright_blue
-    let g:terminal_color_4 = "#458588"
-    let g:terminal_color_12 = "#83a598"
-
-    " neutral_purple + bright_purple
-    let g:terminal_color_5 = "#b16286"
-    let g:terminal_color_13 = "#d3869b"
-
-    " neutral_aqua + faded_aqua
-    let g:terminal_color_6 = "#689d6a"
-    let g:terminal_color_14 = "#8ec07c"
-
-    " light4 + light1
-    let g:terminal_color_7 = "#a89984"
-    let g:terminal_color_15 = "#ebdbb2"
-  endif
-
-  if has("gui_running")
-    set macmeta
-    set anti
-    " TODO make the fold highlight non-underlined.
-    " a powerline friendly font might look like
-    " set gfn=Source\ Code\ Pro\ for\ Powerline:h17
-    " set gfn=Liberation\ Mono\ for\ Powerline:h15
-    set gfn=Monaco\ for\ Powerline:h13
-    "set gfn=Monaco:h15
-  endif
-
-  set cursorline
-  " show column markers beyond the 80, and 100
-  set colorcolumn=+1,+20,+21,+22,+23
+if has("gui_running")
+  set macmeta
+  set anti
+  " TODO make the fold highlight non-underlined.
+  " a powerline friendly font might look like
+  " set gfn=Source\ Code\ Pro\ for\ Powerline:h17
+  " set gfn=Liberation\ Mono\ for\ Powerline:h15
+  set gfn=Monaco\ for\ Powerline:h13
+  "set gfn=Monaco:h15
 endif
+
+set cursorline
+" show column markers beyond the 80, and 100
+set colorcolumn=+20,+21,+22,+23
+
 " }}}
 " basic options {{{
 
@@ -162,7 +130,6 @@ set undodir=~/.vim/undo
 set conceallevel=2 " for ToggleGroupConceal
 set autowrite
 set nonumber
-" set relativenumber
 " I want to know about bad tab/space use:
 set nolist
 
@@ -181,7 +148,9 @@ set foldmethod=marker
 " Turn on mouse for a visual and normal mode only:
 set mouse=v
 
-set diffopt=filler,iwhiteall,vertical,hiddenoff,internal,indent-heuristic,algorithm:patience
+if has('nvim')
+  set diffopt=filler,iwhiteall,vertical,hiddenoff,internal,indent-heuristic,algorithm:patience
+end
 set nohlsearch
 set nowrap
 
@@ -226,6 +195,10 @@ set linebreak " when wrap is turned on, break on words
 " let macros go faster
 set lazyredraw
 
+" For coc current function refreshes
+set updatetime=500
+set timeoutlen=300
+
 " Revisit the history on the command mode without leaving the home rows.
 cnoremap <c-n> <down>
 cnoremap <c-p> <up>
@@ -246,71 +219,117 @@ let g:python3_host_prog='/Users/danesummers/.pyenv/shims/python'
 "}}}
 " Plugin settings, changes."{{{
 
+" let g:Hexokinase_virtualText = ''
+" let g:Hexokinase_virtualText = ' '
+" let g:Hexokinase_virtualText = ''
+" let g:Hexokinase_virtualText = ' '
+" let g:Hexokinase_virtualText = ' '
+" let g:Hexokinase_virtualText = ' '
+let g:Hexokinase_virtualText = '廓'
+let g:kite_supported_languages = ['*']
+let g:Hexokinase_optInPatterns = 'full_hex,rgb,rgba,hsl,hsla'
+" let g:kite_snippets = 0
+
 call repeatable#Setup()
 
-" lua <<EOF
-" require'nvim-treesitter.configs'.setup {
-"   highlight = {
-"       enable = true,                    -- false will disable the whole extension
-"       disable = { 'c', 'rust' },        -- list of language that will be disabled
-"       custom_captures = {               -- mapping of user defined captures to highlight groups
-"         -- ["foo.bar"] = "Identifier"   -- highlight own capture @foo.bar with highlight group "Identifier", see :h nvim-treesitter-query-extensions
-"       },            
-"   },
-"   incremental_selection = {
-"       enable = true,
-"       disable = { 'cpp', 'lua' },
-"       keymaps = {                       -- mappings for incremental selection (visual mappings)
-"         init_selection = 'gnn',         -- maps in normal mode to init the node/scope selection
-"         node_incremental = "grn",       -- increment to the upper named parent
-"         scope_incremental = "grc",      -- increment to the upper scope (as defined in locals.scm)
-"         node_decremental = "grm",      -- decrement to the previous node
-"       }
-"   },
-"   refactor = {
-"     highlight_definitions = {
-"       enable = true
-"     },
-"     highlight_current_scope = {
-"       enable = true
-"     },
-"     smart_rename = {
-"       enable = true,
-"       smart_rename = "grr"              -- mapping to rename reference under cursor
-"     },
-"     navigation = {
-"       enable = true,
-"       goto_definition = "gnd",          -- mapping to go to definition of symbol under cursor
-"       list_definitions = "gnD"          -- mapping to list all definitions in current file
-"     }
-"   },
-"   textobjects = { -- syntax-aware textobjects
-"     enable = true,
-"     disable = {},
-"     keymaps = {
-"       ["iL"] = { -- you can define your own textobjects directly here
-"         python = "(function_definition) @function",
-"       },
-"       -- or you use the queries from supported languages with textobjects.scm
-"       ["af"] = "@function.outer",
-"       ["if"] = "@function.inner",
-"       ["ac"] = "@conditional.outer",
-"       ["ic"] = "@conditional.inner",
-"       ["ae"] = "@block.outer",
-"       ["ie"] = "@block.inner",
-"       ["is"] = "@statement.inner",
-"       ["as"] = "@statement.outer"
-"     }
-"   },
-"   ensure_installed = 'all' -- one of 'all', 'language', or a list of languages
-" }
-" EOF
+if has('nvim')
+lua <<EOF
+require'nvim-treesitter.configs'.setup {
+  ensure_installed = "maintained",
+  highlight = {
+    enable = true,              -- false will disable the whole extension
+    disable = { "c", "rust" },  -- list of language that will be disabled
+  },
+  incremental_selection = { enable = true },
+  textobjects = { enable = true },
+  indent = { enable = true },
+}
+
+local lspconfig = require('lspconfig')
+-- local lsp_status = require('lsp-status')
+-- local completion = require('completion')
+-- require'lspconfig'.diagnosticls.setup{}
+
+vim.lsp.handlers["textDocument/publishDiagnostics"] = vim.lsp.with(
+  vim.lsp.diagnostic.on_publish_diagnostics, {
+    virtual_text = true,
+    signs = true,
+    update_in_insert = false,
+  }
+)
+
+require('lsp-status').register_progress()
+
+local on_attach = function(client, bufnr)
+  local function buf_set_keymap(...) vim.api.nvim_buf_set_keymap(bufnr, ...) end
+  local function buf_set_option(...) vim.api.nvim_buf_set_option(bufnr, ...) end
+
+  buf_set_option('omnifunc', 'v:lua.vim.lsp.omnifunc')
+
+  -- Mappings.
+  local opts = { noremap=true, silent=true }
+  buf_set_keymap('n', 'dc', '<Cmd>lua vim.lsp.buf.declaration()<CR>', opts)
+  buf_set_keymap('n', 'dd', '<Cmd>lua vim.lsp.buf.definition()<CR>', opts)
+  buf_set_keymap('n', 'dh', '<Cmd>lua vim.lsp.buf.hover()<CR>', opts)
+  buf_set_keymap('n', 'di', '<cmd>lua vim.lsp.buf.implementation()<CR>', opts)
+  buf_set_keymap('n', 'ds', '<cmd>lua vim.lsp.buf.signature_help()<CR>', opts)
+  buf_set_keymap('n', 'dR', '<cmd>lua vim.lsp.buf.references()<CR>', opts)
+  buf_set_keymap('n', 'dr', '<cmd>lua vim.lsp.buf.rename()<CR>', opts)
+  buf_set_keymap('n', 'da', '<cmd>lua vim.lsp.buf.code_action()<CR>', opts)
+  buf_set_keymap('n', '[d', '<cmd>lua vim.lsp.diagnostic.goto_prev()<CR>', opts)
+  buf_set_keymap('n', ']d', '<cmd>lua vim.lsp.diagnostic.goto_next()<CR>', opts)
+  buf_set_keymap('n', 'dq', '<cmd>lua vim.lsp.diagnostic.set_loclist()<CR>', opts)
+
+  -- Set some keybinds conditional on server capabilities
+  if client.resolved_capabilities.document_formatting then
+    buf_set_keymap("n", "df", "<cmd>lua vim.lsp.buf.formatting()<CR>", opts)
+  elseif client.resolved_capabilities.document_range_formatting then
+    buf_set_keymap("n", "df", "<cmd>lua vim.lsp.buf.formatting()<CR>", opts)
+  end
+  
+  -- Set autocommands conditional on server_capabilities
+  if client.resolved_capabilities.document_highlight then
+    lspconfig.util.nvim_multiline_command [[
+      :hi link LspReferenceRead Search
+      :hi link LspReferenceText Search
+      :hi link LspReferenceWrite IncSearch
+      augroup lsp_document_highlight
+        autocmd!
+        autocmd CursorHold <buffer> lua vim.lsp.buf.document_highlight()
+        autocmd CursorMoved <buffer> lua vim.lsp.buf.clear_references()
+      augroup END
+    ]]
+  end
+end
+
+lspconfig.tsserver.setup{ on_attach=on_attach }
+lspconfig.yamlls.setup{ on_attach=on_attach }
+lspconfig.jsonls.setup{ on_attach=on_attach }
+lspconfig.html.setup{ on_attach=on_attach }
+lspconfig.cssls.setup{ on_attach=on_attach }
+lspconfig.vimls.setup{ on_attach=on_attach }
+lspconfig.solargraph.setup{ on_attach=on_attach }
+lspconfig.sumneko_lua.setup{
+  cmd = {"Users","danesummers",".cache","nvim","lspconfig","sumneko_lua","lua-language-server","bin","macOS","lua-language-server"}
+}
+lspconfig.pyright.setup{ on_attach=on_attach, }
+EOF
+endif
+
+let g:gitgutter_enabled=1
+nmap ]h <Plug>(GitGutterNextHunk)
+nmap [h <Plug>(GitGutterPrevHunk)
 
 " git blame:
 nmap <leader>gb :GitMessenger<cr>
 
-function! CocCurrentFunction()
-  return get(b:, 'coc_current_function', '')
+function! LspStatus()
+  return ""
+  " if luaeval('#vim.lsp.buf_get_clients() > 0')
+  "   return luaeval("require('lsp-status').status()")
+  " endif
+  " let currentFunctionSymbol = get(b:, 'coc_current_function', '')
+  " return currentFunctionSymbol !=# '' ? "\uf6a6 " .currentFunctionSymbol : ''
 endfunction
 function! LightlineMode()
   return lightline#mode()[0:0]
@@ -343,7 +362,7 @@ let g:lightline = {
       \   'filetype': 'LightlineFiletype',
       \   'fileformat': 'LightlineFileformat',
       \   'cocstatus': 'coc#status',
-      \   'currentfunction': 'CocCurrentFunction'
+      \   'currentfunction': 'LspStatus'
       \ },
       \ }
 
@@ -507,6 +526,15 @@ omap ib  <Plug>(textobj-between-i)
 " pathing for abolish
 set runtimepath+=~/.vim/after
 
+" " let g:completion_enable_snippet = 'UltiSnips'
+" let g:completion_matching_ignore_case = 1
+" " let g:completion_trigger_keyword_length = 2
+" let g:completion_enable_auto_paren = 1
+" let g:completion_enable_auto_popup = 0
+" let g:completion_matching_strategy_list = ['exact', 'substring', 'fuzzy', 'all']
+" let g:completion_sorting = 'length'
+" imap <silent> <c-n> <Plug>(completion_trigger)
+
 let g:UltiSnipsSnippetDirectories=[$HOME.'/.vim/UltiSnips', $HOME.'/.vim/bundle/vim-snippets/UltiSnips']
 " let g:UltiSnipsPythonPath="/usr/local/bin/python"
 let g:UltiSnipsSnippetsDir='~/.vim/UltiSnips'
@@ -534,12 +562,14 @@ nnoremap <leader>, zz
 let g:sluice_default_macromode=1
 
 " show diff with git
+nnoremap <F5> :MundoToggle<CR>
 nnoremap <F6> :Gvdiff<CR>
 nnoremap <F7> :TestLast<CR>
 
 " don't search included files by default - it can be fucked up slow:
 set complete-=i
-set completeopt-=preview
+set completeopt=menuone,noinsert,noselect
+set shortmess+=c
 
 " delete all buffers function
 function! DeleteHiddenBuffers()
@@ -574,30 +604,6 @@ map <leader>f4 :MundoToggle<cr>
 
 " I want to see all the options when I try to jump to a tag:
 nmap <C-]> :GutentagsReset<cr>g<C-]>zt
-
-lua require'nvim_lsp'.vimls.setup{on_attach=require'diagnostic'.on_attach}
-lua require'nvim_lsp'.solargraph.setup{on_attach=require'diagnostic'.on_attach}
-lua require'nvim_lsp'.pyls.setup{on_attach=require'diagnostic'.on_attach}
-lua require'nvim_lsp'.tsserver.setup{on_attach=require'diagnostic'.on_attach}
-nnoremap <silent> <leader>dc <cmd>lua vim.lsp.buf.declaration()<CR>
-nnoremap <silent> <leader>dd <cmd>lua vim.lsp.buf.definition()<CR>
-nnoremap <silent> <leader>dh <cmd>lua vim.lsp.buf.hover()<CR>
-nnoremap <silent> <leader>di <cmd>lua vim.lsp.buf.implementation()<CR>
-nnoremap <silent> <leader>ds <cmd>lua vim.lsp.buf.signature_help()<CR>
-nnoremap <silent> <leader>dt <cmd>lua vim.lsp.buf.type_definition()<CR>
-nnoremap <silent> <leader>dr <cmd>lua vim.lsp.buf.references()<CR>
-nnoremap <silent> <leader>dS <cmd>lua vim.lsp.buf.document_symbol()<CR>
-nnoremap <silent> <leader>df :call <SID>show_documentation()<CR>
-" nnoremap <silent> <leader>dd <Plug>(coc-definition)<cr>
-" nnoremap <silent> <leader>dc <Plug>(coc-declaration)<cr>
-" nnoremap <silent> <leader>di <Plug>(coc-implementation)<cr>
-function! s:show_documentation()
-  if (index(['vim','help'], &filetype) >= 0)
-    execute 'h '.expand('<cword>')
-  else
-    call CocAction('doHover')
-  endif
-endfunction
 
 nnoremap <leader>o :only<cr>
 nnoremap <leader>' :q<cr>
@@ -636,9 +642,6 @@ tnoremap <C-^> <C-\><C-N><C-O>:e #<CR>
 " quick autosave
 nnoremap <C-c> :w<CR>
 inoremap <C-c> <Esc>
-" quick jump up to the previous line in insert mode: (this overrides the default
-" c-e that repeats the character above...but I don't use it that much)
-inoremap <C-e> <C-o>:norm k$<Enter>
 
 " instead of using this, I use 'gt'
 map <nul> <esc>
@@ -701,9 +704,6 @@ nnoremap <F4> :SluiceMacroOn <bar> SluiceToggle<CR>
 " automatically toggle with control-
 let g:switch_mapping = ',gs'
 
-" TODO Serach for files with CtrlP for files matching the name of the file under
-" the cursor:
-
 vmap <leader>v :VSSplit<cr>
 
 " Django: find the urls.py definition of the 'url name' under the cursor
@@ -713,9 +713,8 @@ vmap <leader>v :VSSplit<cr>
 " map <leader>jv :let @z=g:django_lookup_view_recording<cr>@zF,b<c-]>
 "
 " " Python: replace a multiline # COMMENT with a """ COMMENT """
-" let g:python_replace_pound_comment='gcacgpJ:s/\v^(\s+)(.*)$/\1""" \2 """\gqq'
+" let g:python_replace_pound_comment='gcacgpJ:s/\v^(\s+)(.*)$/\1""" \2 """\\gqq'
 " map <leader>jc :let @z=g:python_replace_pound_comment<cr>@z
-
 " Git: from a 'changes view', go to next diff
 " TODO support this from the main gitv screen (it works in diff at the moment.)
 let g:git_next_diff='tdvl'
@@ -857,7 +856,7 @@ command! -nargs=1 Gg exec "silent GrepperGit -jump ". '<args>'
 command! -nargs=1 Aa exec "silent GrepperAg -jump ". '<args>'
 
 " TODO automate this diffsplit two matching regions
-" let @m=j?<<<jV/^===k"aynjV/^>>>k"by:sp belowggdG"bp:vert diffs aboveggdG"apgglgg:diffupdate=
+" let @m=j?<<<\jV/^===\k"aynjV/^>>>\k"by:sp below\ggdG"bp:vert diffs above\ggdG"apgglgg:diffupdate\=
 
 function! s:SetStop(type,count)
   if a:type ==# 't'
@@ -921,20 +920,19 @@ command! -nargs=0 GutentagsReset call s:ResetGutentags()
 if has('autocmd') && !exists('g:autocommands_loaded')
   let g:autocommands_loaded = 1
 
-  autocmd WinLeave * setlocal nocursorline
-  autocmd WinEnter * setlocal cursorline
-
-  " Set a buffer variable and then only call this two time.
-  autocmd BufNewFile,BufReadPost * :call AutoPairsInit()
+  " autocmd WinLeave * setlocal nocursorline
+  " autocmd WinEnter * setlocal cursorline
+  "
+  " " Set a buffer variable and then only call this two time.
+  " autocmd BufNewFile,BufReadPost * :call AutoPairsInit()
 
   " ensure that tabstop settings for file browsing is big enough for column
   " alignment:
   autocmd FileType netrw setlocal ts=30
 
-  " Rainbow tags look crappy in htmldjango -- this autocmd isn't really working :/
-  autocmd FileType htmldjango RainbowToggleOff
-
-  autocmd BufNewFile,BufRead *.scss,*.css lua require'colorizer'.setup()
+  if has('nvim')
+    autocmd BufNewFile,BufRead *.scss,*.css lua require'colorizer'.setup()
+  end
   autocmd BufNewFile,BufRead *.j2 setf jinja
   autocmd BufNewFile,BufRead *.md setf markdown
   autocmd BufNewFile,BufRead *.md setlocal spell wrap et
@@ -949,9 +947,6 @@ if has('autocmd') && !exists('g:autocommands_loaded')
   autocmd BufRead *.rb  :GutentagsReset
   autocmd BufRead *.slim  :GutentagsReset
   autocmd BufRead *.haml  :GutentagsReset
-
-  " show line numbers for tests:
-  autocmd BufNewFile,BufReadPost test*.py,*test.py,*spec.rb :setlocal number
 
   " make commit messages formatted to 72 columns for optimal reading/history:
   autocmd BufNewFile,BufRead COMMIT_EDITMSG setlocal tw=72 fo=tc spell
