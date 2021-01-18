@@ -8,21 +8,10 @@ call plug#begin('~/.vim/bundle')
 Plug 'sheerun/vim-polyglot', { 'for': 'coffee', 'tag': 'v4.17.0' }
 Plug 'airblade/vim-gitgutter'
 Plug 'romgrk/nvim-treesitter-context'
+Plug 'rbong/vim-flog' " :Flog to view git logs
 " Plug 'junegunn/vim-slash' -- for search and * search.
 " <---- end plugins in testing ---->
 " <---- plugins to probably remove ---->
-" Plug 'kana/vim-textobj-syntax' " vay/viy to select syntax blocks
-" Plug 'dsummersl/vus'
-" Plug 'dsummersl/vimunit' " unit testing for vim.
-" Plug 'frankier/neovim-colors-solarized-truecolor-only' " A colorscheme that supports fugitive's [ob and ]ob
-" Plug 'slim-template/vim-slim', { 'for': 'slim' }
-" Plug 'posva/vim-vue', { 'for': 'vue' }
-" Plug 'AndrewRadev/splitjoin.vim' " Gs to split long lines
-" Plug 'mattn/gist-vim' " vimscript for Gist
-" Plug 'tommcdo/vim-exchange' " Easy text exchange operator for Vim
-" Plug 'chrisbra/NrrwRgn' " provide focus of a selected block into its own buffer via 'NR'
-" Plug 'vim-scripts/AnsiEsc.vim', { 'on': 'AnsiEsc' }
-" Plug 'honza/vim-snippets'
 " <---- plugins to probably remove ---->
 
 " Motions
@@ -36,7 +25,7 @@ Plug 'kana/vim-operator-user' " Define my own operators for motions.
 
 " Operators
 Plug 'tommcdo/vim-lion' " align with operator gL and gl (ie glip= to align paragraph by =)
-Plug 'tommcdo/vim-express' " custom g* operations.
+Plug 'tommcdo/vim-express' " custom g* operations (g=iw - prompt 'get_'.v:val.'()' to change a word to a func)
 
 " Git & Project
 Plug 'stefandtw/quickfix-reflector.vim' " edit the qf list directly with copen
@@ -54,7 +43,6 @@ Plug 'mattn/emmet-vim' " fast HTML tag generation (in insert mode type tr*3CTL-Y
 Plug 'tomtom/tcomment_vim' " An extensible & universal comment vim-plugin that also handles embedded filetypes
 Plug 'Yggdroot/LeaderF', { 'do': './install.sh'}
 Plug 'gregsexton/gitv'
-Plug 'rbong/vim-flog'
 Plug 'mhinz/vim-grepper' " Grepper to search in lots of ways
 Plug 'jiangmiao/auto-pairs' " close quotes and such automatically
 Plug 'dsummersl/vim-utf2ascii' " simple utf2ascii function.
@@ -62,17 +50,13 @@ Plug 'AndrewRadev/switch.vim', {} " Easily toggle boolean values:
 Plug 'dsummersl/gundo.vim', { 'branch': 'mundo-master' }
 Plug 'w0rp/ale'
 if has('nvim')
-  Plug 'RRethy/vim-hexokinase', { 'do': 'make hexokinase' }
+  Plug 'RRethy/vim-hexokinase', { 'do': 'make hexokinase' } " Colors for red/green/#123123
   Plug 'dsummersl/nvim-sluice'
   Plug 'SirVer/ultisnips'
-  " language server type completion
-  " Plug 'neovim/nvim-lsp'
-  " Plug 'neoclide/coc.nvim', { 'tag': '*' }
   Plug 'nvim-lua/completion-nvim'
   Plug 'nvim-lua/lsp-status.nvim'
   Plug 'neovim/nvim-lspconfig'
   Plug 'nvim-treesitter/nvim-treesitter', { 'commit': '1c3fb20' }
-  " Plug 'nvim-treesitter/completion-treesitter'
 endif
 
 " Colorschemes & colors
@@ -245,8 +229,10 @@ require'nvim-treesitter.configs'.setup {
   indent = { enable = true },
 }
 
+local lsp_status = require('lsp-status')
+lsp_status.register_progress()
+
 local lspconfig = require('lspconfig')
--- local lsp_status = require('lsp-status')
 -- local completion = require('completion')
 -- require'lspconfig'.diagnosticls.setup{}
 
@@ -258,12 +244,11 @@ vim.lsp.handlers["textDocument/publishDiagnostics"] = vim.lsp.with(
   }
 )
 
-require('lsp-status').register_progress()
-
 local on_attach = function(client, bufnr)
   local function buf_set_keymap(...) vim.api.nvim_buf_set_keymap(bufnr, ...) end
   local function buf_set_option(...) vim.api.nvim_buf_set_option(bufnr, ...) end
 
+  lsp_status.on_attach(client)
   buf_set_option('omnifunc', 'v:lua.vim.lsp.omnifunc')
 
   -- Mappings.
@@ -302,17 +287,18 @@ local on_attach = function(client, bufnr)
   end
 end
 
-lspconfig.tsserver.setup{ on_attach=on_attach }
-lspconfig.yamlls.setup{ on_attach=on_attach }
-lspconfig.jsonls.setup{ on_attach=on_attach }
-lspconfig.html.setup{ on_attach=on_attach }
-lspconfig.cssls.setup{ on_attach=on_attach }
-lspconfig.vimls.setup{ on_attach=on_attach }
-lspconfig.solargraph.setup{ on_attach=on_attach }
+lspconfig.tsserver.setup{ on_attach=on_attach, capabilities=lsp_status.capabilities }
+lspconfig.yamlls.setup{ on_attach=on_attach, capabilities=lsp_status.capabilities }
+lspconfig.jsonls.setup{ on_attach=on_attach, capabilities=lsp_status.capabilities }
+lspconfig.html.setup{ on_attach=on_attach, capabilities=lsp_status.capabilities }
+lspconfig.cssls.setup{ on_attach=on_attach, capabilities=lsp_status.capabilities }
+lspconfig.vimls.setup{ on_attach=on_attach, capabilities=lsp_status.capabilities }
+lspconfig.solargraph.setup{ on_attach=on_attach, capabilities=lsp_status.capabilities }
 lspconfig.sumneko_lua.setup{
+  on_attach=on_attach, capabilities=lsp_status.capabilities,
   cmd = {"Users","danesummers",".cache","nvim","lspconfig","sumneko_lua","lua-language-server","bin","macOS","lua-language-server"}
 }
-lspconfig.pyright.setup{ on_attach=on_attach, }
+lspconfig.pyright.setup{ on_attach=on_attach, capabilities=lsp_status.capabilities }
 EOF
 endif
 
@@ -324,12 +310,10 @@ nmap [h <Plug>(GitGutterPrevHunk)
 nmap <leader>gb :GitMessenger<cr>
 
 function! LspStatus()
+  if luaeval('#vim.lsp.buf_get_clients() > 0')
+    return luaeval("vim.b.lsp_current_function")
+  endif
   return ""
-  " if luaeval('#vim.lsp.buf_get_clients() > 0')
-  "   return luaeval("require('lsp-status').status()")
-  " endif
-  " let currentFunctionSymbol = get(b:, 'coc_current_function', '')
-  " return currentFunctionSymbol !=# '' ? "\uf6a6 " .currentFunctionSymbol : ''
 endfunction
 function! LightlineMode()
   return lightline#mode()[0:0]
