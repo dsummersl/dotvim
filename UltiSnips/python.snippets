@@ -17,11 +17,11 @@ super(${1:class}, self).${2:method}($3)$0
 endsnippet
 
 snippet log "logger " !b
-logger.$1("$2")$0
+logger.$1`!p snip.rv=complete(t[1],['debug','info','warning','error'])`("$2")$0
 endsnippet
 
 snippet loge "logger var" !b
-logger.$1("|$2 = {0}".format($2))$0
+logger.$1`!p snip.rv=complete(t[1],['debug','info','warning','error'])`("|$2 = %s", $2)$0
 endsnippet
 
 snippet lg "print " !b

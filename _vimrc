@@ -6,9 +6,8 @@ call plug#begin('~/.vim/bundle')
 
 " <---- plugins in testing ---->
 Plug 'sheerun/vim-polyglot', { 'for': 'coffee', 'tag': 'v4.17.0' }
-Plug 'airblade/vim-gitgutter'
-Plug 'romgrk/nvim-treesitter-context'
-Plug 'rbong/vim-flog' " :Flog to view git logs
+Plug 'mhinz/vim-signify'
+Plug 'AndrewRadev/splitjoin.vim'
 " Plug 'junegunn/vim-slash' -- for search and * search.
 " <---- end plugins in testing ---->
 " <---- plugins to probably remove ---->
@@ -22,6 +21,7 @@ Plug 'kreskij/Repeatable.vim'
 Plug 'easymotion/vim-easymotion' " mapped to s for two letter searching.
 Plug 'wellle/visual-split.vim' " I've mapped this to <leader>v Lines to quickly resize splits (VSSplit)
 Plug 'kana/vim-operator-user' " Define my own operators for motions.
+Plug 'tommcdo/vim-exchange'
 
 " Operators
 Plug 'tommcdo/vim-lion' " align with operator gL and gl (ie glip= to align paragraph by =)
@@ -53,10 +53,10 @@ if has('nvim')
   Plug 'RRethy/vim-hexokinase', { 'do': 'make hexokinase' } " Colors for red/green/#123123
   Plug 'dsummersl/nvim-sluice'
   Plug 'SirVer/ultisnips'
-  Plug 'nvim-lua/completion-nvim'
   Plug 'nvim-lua/lsp-status.nvim'
   Plug 'neovim/nvim-lspconfig'
-  Plug 'nvim-treesitter/nvim-treesitter', { 'commit': '1c3fb20' }
+  Plug 'nvim-treesitter/nvim-treesitter', {}
+  Plug 'glepnir/lspsaga.nvim'
 endif
 
 " Colorschemes & colors
@@ -90,19 +90,9 @@ call plug#end()
 set background=dark
 colorscheme gruvbox
 
-if has("gui_running")
-  set macmeta
-  set anti
-  " TODO make the fold highlight non-underlined.
-  " a powerline friendly font might look like
-  " set gfn=Source\ Code\ Pro\ for\ Powerline:h17
-  " set gfn=Liberation\ Mono\ for\ Powerline:h15
-  set gfn=Monaco\ for\ Powerline:h13
-  "set gfn=Monaco:h15
-endif
-
 set cursorline
 " show column markers beyond the 80, and 100
+" TODO don't set a colorcolumn if the file is read only (help files and such).
 set colorcolumn=+20,+21,+22,+23
 
 " }}}
@@ -133,7 +123,7 @@ set foldmethod=marker
 set mouse=v
 
 if has('nvim')
-  set diffopt=filler,iwhiteall,vertical,hiddenoff,internal,indent-heuristic,algorithm:patience
+  set diffopt=filler,iwhiteall,vertical,hiddenoff,algorithm:patience
 end
 set nohlsearch
 set nowrap
@@ -203,16 +193,9 @@ let g:python3_host_prog='/Users/danesummers/.pyenv/shims/python'
 "}}}
 " Plugin settings, changes."{{{
 
-" let g:Hexokinase_virtualText = ''
-" let g:Hexokinase_virtualText = ' '
-" let g:Hexokinase_virtualText = ''
-" let g:Hexokinase_virtualText = ' '
-" let g:Hexokinase_virtualText = ' '
-" let g:Hexokinase_virtualText = ' '
-let g:Hexokinase_virtualText = '廓'
+let g:Hexokinase_virtualText = ' '
 let g:kite_supported_languages = ['*']
 let g:Hexokinase_optInPatterns = 'full_hex,rgb,rgba,hsl,hsla'
-" let g:kite_snippets = 0
 
 call repeatable#Setup()
 
@@ -222,7 +205,8 @@ require'nvim-treesitter.configs'.setup {
   ensure_installed = "maintained",
   highlight = {
     enable = true,              -- false will disable the whole extension
-    disable = { "c", "rust" },  -- list of language that will be disabled
+    use_langtree = true,
+    disable = { "c", "rust", "markdown" },  -- list of language that will be disabled
   },
   incremental_selection = { enable = true },
   textobjects = { enable = true },
@@ -233,12 +217,13 @@ local lsp_status = require('lsp-status')
 lsp_status.register_progress()
 
 local lspconfig = require('lspconfig')
--- local completion = require('completion')
--- require'lspconfig'.diagnosticls.setup{}
+
+local saga = require 'lspsaga'
+saga.init_lsp_saga()
 
 vim.lsp.handlers["textDocument/publishDiagnostics"] = vim.lsp.with(
   vim.lsp.diagnostic.on_publish_diagnostics, {
-    virtual_text = true,
+    virtual_text = false,
     signs = true,
     update_in_insert = false,
   }
@@ -251,40 +236,39 @@ local on_attach = function(client, bufnr)
   lsp_status.on_attach(client)
   buf_set_option('omnifunc', 'v:lua.vim.lsp.omnifunc')
 
-  -- Mappings.
-  local opts = { noremap=true, silent=true }
-  buf_set_keymap('n', 'dc', '<Cmd>lua vim.lsp.buf.declaration()<CR>', opts)
-  buf_set_keymap('n', 'dd', '<Cmd>lua vim.lsp.buf.definition()<CR>', opts)
-  buf_set_keymap('n', 'dh', '<Cmd>lua vim.lsp.buf.hover()<CR>', opts)
-  buf_set_keymap('n', 'di', '<cmd>lua vim.lsp.buf.implementation()<CR>', opts)
-  buf_set_keymap('n', 'ds', '<cmd>lua vim.lsp.buf.signature_help()<CR>', opts)
-  buf_set_keymap('n', 'dR', '<cmd>lua vim.lsp.buf.references()<CR>', opts)
-  buf_set_keymap('n', 'dr', '<cmd>lua vim.lsp.buf.rename()<CR>', opts)
-  buf_set_keymap('n', 'da', '<cmd>lua vim.lsp.buf.code_action()<CR>', opts)
-  buf_set_keymap('n', '[d', '<cmd>lua vim.lsp.diagnostic.goto_prev()<CR>', opts)
-  buf_set_keymap('n', ']d', '<cmd>lua vim.lsp.diagnostic.goto_next()<CR>', opts)
-  buf_set_keymap('n', 'dq', '<cmd>lua vim.lsp.diagnostic.set_loclist()<CR>', opts)
+  -- buf_set_keymap('n', ',dt', '<Cmd>lua require("lsp_control").toggle_virtualtext()<CR>', {silent=true, noremap=true})
+  buf_set_keymap('n', ',dc', '<Cmd>lua vim.lsp.buf.declaration()<CR>', opts)
+  buf_set_keymap('n', ',dd', '<Cmd>lua vim.lsp.buf.definition()<CR>', opts)
+  buf_set_keymap('n', ',dh', '<cmd>lua require("lspsaga.provider").preview_definition()<CR>', opts)
+  buf_set_keymap('n', ',di', '<cmd>lua vim.lsp.buf.implementation()<CR>', opts)
+  buf_set_keymap('n', ',ds', '<cmd>lua vim.lsp.buf.signature_help()<CR>', opts)
+  buf_set_keymap('n', ',dR', '<cmd>lua vim.lsp.buf.references()<CR>', opts)
+  buf_set_keymap('n', ',dr', '<cmd>lua require("lspsaga.rename").rename()<CR>', opts)
+  buf_set_keymap('n', ',da', '<cmd>lua require("lspsaga.codeaction").code_action()<CR>', opts)
+  buf_set_keymap('v', ',da', '<cmd>lua require("lspsaga.codeaction").range_code_action()<CR>', opts)
+  buf_set_keymap('n', ',dl', '<cmd>lua require("lspsaga.provider").lsp_finder()<CR>', opts)
+  -- buf_set_keymap('n', ',dq', '<cmd>lua vim.lsp.diagnostic.set_loclist()<CR>', opts)
 
   -- Set some keybinds conditional on server capabilities
   if client.resolved_capabilities.document_formatting then
-    buf_set_keymap("n", "df", "<cmd>lua vim.lsp.buf.formatting()<CR>", opts)
+    buf_set_keymap("n", ",df", "<cmd>lua vim.lsp.buf.formatting()<CR>", opts)
   elseif client.resolved_capabilities.document_range_formatting then
-    buf_set_keymap("n", "df", "<cmd>lua vim.lsp.buf.formatting()<CR>", opts)
+    buf_set_keymap("n", ",df", "<cmd>lua vim.lsp.buf.formatting()<CR>", opts)
   end
   
-  -- Set autocommands conditional on server_capabilities
-  if client.resolved_capabilities.document_highlight then
-    lspconfig.util.nvim_multiline_command [[
-      :hi link LspReferenceRead Search
-      :hi link LspReferenceText Search
-      :hi link LspReferenceWrite IncSearch
-      augroup lsp_document_highlight
-        autocmd!
-        autocmd CursorHold <buffer> lua vim.lsp.buf.document_highlight()
-        autocmd CursorMoved <buffer> lua vim.lsp.buf.clear_references()
-      augroup END
-    ]]
-  end
+--   -- Set autocommands conditional on server_capabilities
+--   if client.resolved_capabilities.document_highlight then
+--     lspconfig.util.nvim_multiline_command [[
+--       :hi link LspReferenceRead Search
+--       :hi link LspReferenceText Search
+--       :hi link LspReferenceWrite IncSearch
+--       augroup lsp_document_highlight
+--         autocmd!
+--         autocmd CursorHold <buffer> lua vim.lsp.buf.document_highlight()
+--         autocmd CursorMoved <buffer> lua vim.lsp.buf.clear_references()
+--       augroup END
+--     ]]
+--   end
 end
 
 lspconfig.tsserver.setup{ on_attach=on_attach, capabilities=lsp_status.capabilities }
@@ -298,20 +282,28 @@ lspconfig.sumneko_lua.setup{
   on_attach=on_attach, capabilities=lsp_status.capabilities,
   cmd = {"Users","danesummers",".cache","nvim","lspconfig","sumneko_lua","lua-language-server","bin","macOS","lua-language-server"}
 }
+-- lspconfig.pyls.setup{ on_attach=on_attach, capabilities=lsp_status.capabilities }
 lspconfig.pyright.setup{ on_attach=on_attach, capabilities=lsp_status.capabilities }
 EOF
 endif
 
-let g:gitgutter_enabled=1
-nmap ]h <Plug>(GitGutterNextHunk)
-nmap [h <Plug>(GitGutterPrevHunk)
+nnoremap <silent> ]d :Lspsaga diagnostic_jump_next<CR>
+nnoremap <silent> [d :Lspsaga diagnostic_jump_prev<CR>
+
+nmap ]h <plug>(signify-next-hunk)
+nmap [h <plug>(signify-prev-hunk)
 
 " git blame:
 nmap <leader>gb :GitMessenger<cr>
 
 function! LspStatus()
   if luaeval('#vim.lsp.buf_get_clients() > 0')
-    return luaeval("vim.b.lsp_current_function")
+    let value = luaeval("vim.b.lsp_current_function")
+    if value == "null"
+      return ""
+    else
+      return value
+    endif
   endif
   return ""
 endfunction
@@ -345,8 +337,7 @@ let g:lightline = {
       \   'filename': 'LightlineFilename',
       \   'filetype': 'LightlineFiletype',
       \   'fileformat': 'LightlineFileformat',
-      \   'cocstatus': 'coc#status',
-      \   'currentfunction': 'LspStatus'
+      \   'currentfunction': 'LspStatus',
       \ },
       \ }
 
@@ -637,9 +628,7 @@ imap <f1> <nul>
 " quickly get rid of other windows
 map <F12> :only<CR>
 
-" Make Control up/down scroll up/down in the window...even in insert mode.
-imap <C-j> <C-x><C-e>
-imap <C-k> <C-x><C-y>
+" Quickly maximize splits:
 map <C-j> <C-w>j<C-w>_
 map <C-k> <C-w>k<C-w>_
 
@@ -665,8 +654,8 @@ noremap ]oI :set diffopt-=iwhiteall<cr>
 noremap [oI :set diffopt+=iwhiteall<cr>
 
 " undo/redo to the previous write
-" Repeatable map <leader>u :earlier 1f<cr>
-" Repeatable map <leader>r :later 1f<cr>
+Repeatable map <leader>u :earlier 1f<cr>
+Repeatable map <leader>r :later 1f<cr>
 
 " When in Gstatus jump to the next file in the list and diff it.
 Repeatable map <leader>gj <C-w>l<C-w>kjdv
@@ -680,10 +669,6 @@ map <leader>ctl :TestLast<CR>
 
 " Open the current directory (or make new directory)
 map - :e %:h/<CR>
-
-" toggle Sluice gutters
-nnoremap <F3> :SluiceMacroOff <bar> SluiceToggle<CR>
-nnoremap <F4> :SluiceMacroOn <bar> SluiceToggle<CR>
 
 " automatically toggle with control-
 let g:switch_mapping = ',gs'
@@ -719,6 +704,12 @@ command! -range=% Isort :<line1>,<line2>! isort -
 
 " Convert unicode to ASCII
 command! UTFToASCII :call utf2ascii#replaceUTF()<cr>
+
+
+function! StyleUnderCursor()
+  return synIDattr(synID(line("."), col("."), 0), "name")
+endfunction
+command! StyleUnderCursor :echo StyleUnderCursor()<cr>
 
 function! ToggleSearchConceal()
   if !exists('b:searchtext')
@@ -913,6 +904,10 @@ if has('autocmd') && !exists('g:autocommands_loaded')
   " ensure that tabstop settings for file browsing is big enough for column
   " alignment:
   autocmd FileType netrw setlocal ts=30
+
+  " autocmd BufNewFile,BufRead * highlight TSEmphasis,TSComment ctermfg=121 cterm=italic gui=bold,italic guifg=#fe8019
+  autocmd BufNewFile,BufRead * highlight String ctermfg=142 cterm=italic gui=italic guifg=#b8bb26
+  autocmd BufNewFile,BufRead * highlight Comment ctermfg=142 cterm=italic gui=italic guifg=#555555
 
   if has('nvim')
     autocmd BufNewFile,BufRead *.scss,*.css lua require'colorizer'.setup()
