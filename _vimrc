@@ -5,9 +5,13 @@ so ~/.vim/autoload/plug.vim
 call plug#begin('~/.vim/bundle')
 
 " <---- plugins in testing ---->
-Plug 'sheerun/vim-polyglot', { 'for': 'coffee', 'tag': 'v4.17.0' }
+Plug 'romgrk/nvim-treesitter-context'
 Plug 'mhinz/vim-signify'
 Plug 'AndrewRadev/splitjoin.vim'
+Plug 'kiteco/vim-plugin'
+Plug 'sonph/onehalf', { 'rtp': 'vim' }
+Plug 'folke/lsp-colors.nvim'
+Plug 'machakann/vim-sandwich'
 " Plug 'junegunn/vim-slash' -- for search and * search.
 " <---- end plugins in testing ---->
 " <---- plugins to probably remove ---->
@@ -33,7 +37,6 @@ Plug 'dsummersl/vim-projectionist', { 'branch': 'issue-94' } " :E* commands for 
 Plug 'MarcWeber/vim-addon-local-vimrc' " enable project local .vimrc files
 Plug 'tpope/vim-fugitive', {} " git
 Plug 'tpope/vim-rhubarb' " Gbrowse 
-Plug 'tpope/vim-surround' " surround things with quotes, etc (csw - surround word)
 Plug 'tpope/vim-eunuch' " eunuch.vim: cp/move/unlink commands
 Plug 'ludovicchabant/vim-gutentags'
 Plug 'vinodkri/vim-tmux-runner' " :VtrSendCommandToRunner for tmux
@@ -55,7 +58,7 @@ if has('nvim')
   Plug 'SirVer/ultisnips'
   Plug 'nvim-lua/lsp-status.nvim'
   Plug 'neovim/nvim-lspconfig'
-  Plug 'nvim-treesitter/nvim-treesitter', {}
+  Plug 'nvim-treesitter/nvim-treesitter', {'do': ':TSUpdate'}
   Plug 'glepnir/lspsaga.nvim'
 endif
 
@@ -75,8 +78,6 @@ Plug 'mattn/webapi-vim'
 Plug 'wellle/targets.vim' " many text objects
 Plug 'kana/vim-textobj-user' " user defined textobj implementations
 Plug 'glts/vim-textobj-comment' " select comment with vic or vac.
-Plug 'thinca/vim-textobj-between' " vib between any arbitrary object (vibX where X is the obj)
-Plug 'kana/vim-textobj-lastpat' " vi/ (last search)
 Plug 'michaeljsmith/vim-indent-object' " vii and viI (visual inner Indent)
 Plug 'saaguero/vim-textobj-pastedtext' " vgb for last pasted text.
 
@@ -171,7 +172,7 @@ set lazyredraw
 
 " For coc current function refreshes
 set updatetime=500
-set timeoutlen=300
+set timeoutlen=500
 
 " Revisit the history on the command mode without leaving the home rows.
 cnoremap <c-n> <down>
@@ -190,8 +191,14 @@ endif
 let g:python_host_prog='/usr/local/bin/python2'
 let g:python3_host_prog='/Users/danesummers/.pyenv/shims/python'
 
+hi Search gui=reverse guifg=#805c0b
+
 "}}}
 " Plugin settings, changes."{{{
+
+" for vim-sandwich don't have any s mappings as per docs
+nmap s <Nop>
+xmap s <Nop>
 
 let g:Hexokinase_virtualText = ' '
 let g:kite_supported_languages = ['*']
@@ -210,7 +217,7 @@ require'nvim-treesitter.configs'.setup {
   },
   incremental_selection = { enable = true },
   textobjects = { enable = true },
-  indent = { enable = true },
+  indent = { enable = false },
 }
 
 local lsp_status = require('lsp-status')
@@ -234,12 +241,13 @@ local on_attach = function(client, bufnr)
   local function buf_set_option(...) vim.api.nvim_buf_set_option(bufnr, ...) end
 
   lsp_status.on_attach(client)
-  buf_set_option('omnifunc', 'v:lua.vim.lsp.omnifunc')
+  -- buf_set_option('omnifunc', 'v:lua.vim.lsp.omnifunc')
 
-  -- buf_set_keymap('n', ',dt', '<Cmd>lua require("lsp_control").toggle_virtualtext()<CR>', {silent=true, noremap=true})
-  buf_set_keymap('n', ',dc', '<Cmd>lua vim.lsp.buf.declaration()<CR>', opts)
+  local opts = { noremap=true, silent=true }
+  -- buf_set_keymap('n', ',dc', '<Cmd>lua vim.lsp.buf.declaration()<CR>', opts)
   buf_set_keymap('n', ',dd', '<Cmd>lua vim.lsp.buf.definition()<CR>', opts)
-  buf_set_keymap('n', ',dh', '<cmd>lua require("lspsaga.provider").preview_definition()<CR>', opts)
+  buf_set_keymap('n', ',dh', '<cmd>lua require("lspsaga.hover").render_hover_doc()<CR>', opts)
+  buf_set_keymap('n', ',dH', '<cmd>lua vim.lsp.buf.hover()<CR>', opts)
   buf_set_keymap('n', ',di', '<cmd>lua vim.lsp.buf.implementation()<CR>', opts)
   buf_set_keymap('n', ',ds', '<cmd>lua vim.lsp.buf.signature_help()<CR>', opts)
   buf_set_keymap('n', ',dR', '<cmd>lua vim.lsp.buf.references()<CR>', opts)
@@ -247,7 +255,10 @@ local on_attach = function(client, bufnr)
   buf_set_keymap('n', ',da', '<cmd>lua require("lspsaga.codeaction").code_action()<CR>', opts)
   buf_set_keymap('v', ',da', '<cmd>lua require("lspsaga.codeaction").range_code_action()<CR>', opts)
   buf_set_keymap('n', ',dl', '<cmd>lua require("lspsaga.provider").lsp_finder()<CR>', opts)
-  -- buf_set_keymap('n', ',dq', '<cmd>lua vim.lsp.diagnostic.set_loclist()<CR>', opts)
+  buf_set_keymap('n', ',dq', '<cmd>lua vim.lsp.diagnostic.set_loclist()<CR>', opts)
+  buf_set_keymap('n', ']d', '<cmd>lua require("lspsaga.diagnostic").lsp_jump_diagnostic_next()<CR>', opts)
+  buf_set_keymap('n', '[d', '<cmd>lua require("lspsaga.diagnostic").lsp_jump_diagnostic_prev()<CR>', opts)
+  buf_set_keymap('n', ',dD', '<cmd>lua require("lspsaga.diagnostic").show_line_diagnostics()<CR>', opts)
 
   -- Set some keybinds conditional on server capabilities
   if client.resolved_capabilities.document_formatting then
@@ -256,19 +267,19 @@ local on_attach = function(client, bufnr)
     buf_set_keymap("n", ",df", "<cmd>lua vim.lsp.buf.formatting()<CR>", opts)
   end
   
---   -- Set autocommands conditional on server_capabilities
---   if client.resolved_capabilities.document_highlight then
---     lspconfig.util.nvim_multiline_command [[
---       :hi link LspReferenceRead Search
---       :hi link LspReferenceText Search
---       :hi link LspReferenceWrite IncSearch
---       augroup lsp_document_highlight
---         autocmd!
---         autocmd CursorHold <buffer> lua vim.lsp.buf.document_highlight()
---         autocmd CursorMoved <buffer> lua vim.lsp.buf.clear_references()
---       augroup END
---     ]]
---   end
+  -- Set autocommands conditional on server_capabilities
+  -- if client.resolved_capabilities.document_highlight then
+  --   vim.api.nvim_exec([[
+  --     hi link LspReferenceRead Search
+  --     hi link LspReferenceText Search
+  --     hi link LspReferenceWrite IncSearch
+  --     augroup lsp_document_highlight
+  --       autocmd! * <buffer>
+  --       autocmd CursorHold <buffer> lua vim.lsp.buf.clear_references() ; vim.lsp.buf.document_highlight()
+  --       " autocmd CursorMoved <buffer> 
+  --     augroup END
+  --   ]], false)
+  -- end
 end
 
 lspconfig.tsserver.setup{ on_attach=on_attach, capabilities=lsp_status.capabilities }
@@ -286,9 +297,6 @@ lspconfig.sumneko_lua.setup{
 lspconfig.pyright.setup{ on_attach=on_attach, capabilities=lsp_status.capabilities }
 EOF
 endif
-
-nnoremap <silent> ]d :Lspsaga diagnostic_jump_next<CR>
-nnoremap <silent> [d :Lspsaga diagnostic_jump_prev<CR>
 
 nmap ]h <plug>(signify-next-hunk)
 nmap [h <plug>(signify-prev-hunk)
@@ -355,11 +363,20 @@ let g:nrrw_rgn_nomap_Nr = 1
 nmap gs <plug>(GrepperOperator)
 xmap gs <plug>(GrepperOperator)
 
+let g:signify_disable_by_default = 1
+
+" Enable writegood linting on various programmer docs:
+let g:ale_linter_aliases = {
+      \ 'python': ['asciidoc', 'python'],
+      \ 'markdown': ['asciidoc', 'markdown'],
+      \ 'ruby': ['asciidoc', 'ruby'],
+      \ }
 let g:ale_completion_enabled = 0
 let g:ale_set_balloons = 1
 let g:ale_set_signs = 1
 let g:ale_sign_highlight_linenrs = 1
 let g:ale_set_highlights = 0
+let g:ale_lint_delay = 50
 " let g:ale_lint_on_text_changed = 'normal'
 Repeatable nmap [g <Plug>(ale_previous)
 Repeatable nmap ]g <Plug>(ale_next)
@@ -566,6 +583,9 @@ endfunction
 "}}}
 " Mappings"{{{
 
+vnoremap [6 d:let @"=system('base64 --decode', @") \| norm ""p<cr>
+vnoremap ]6 d:let @"=system('base64 --wrap=0', @") \| norm ""p<cr>
+
 let g:AutoPairsFlyMode=1
 let g:AutoPairsMultilineClose=0
 
@@ -595,8 +615,10 @@ nnoremap <leader>m  :<c-u><c-r><c-r>='let @'. v:register .' = '. string(getreg(v
 
 let g:EasyMotion_do_mapping=0
 let g:EasyMotion_smartcase=1
-nmap s <Plug>(easymotion-s2)
+nmap <leader>s  <Plug>(easymotion-s2)
 nmap <leader>; <Plug>(easymotion-next)
+let g:EasyMotion_enter_jump_first = 1
+let g:EasyMotion_space_jump_first = 1
 
 cabbrev bda call DeleteHiddenBuffers()
 cabbrev gitv Gitv
