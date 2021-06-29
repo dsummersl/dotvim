@@ -507,6 +507,7 @@ endfunction
 " left/right and up/down first/last
 let g:switch_custom_definitions =
     \ [
+    \ { '\.\([a-zA-Z_-]\+\)\>': "['\\1']" }, { '\[[''"]\([a-zA-Z_-]\+\)[''"]\]': '.\1' },
     \ { '&&': '||' }, { '||': '&&' },
     \ { '==': '!=' }, { '!=': '==' },
     \ { 'FALSE': 'TRUE' }, { 'TRUE': 'FALSE' },
