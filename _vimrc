@@ -5,13 +5,14 @@ so ~/.vim/autoload/plug.vim
 call plug#begin('~/.vim/bundle')
 
 " <---- plugins in testing ---->
-Plug 'romgrk/nvim-treesitter-context'
+" Plug 'romgrk/nvim-treesitter-context'
 Plug 'mhinz/vim-signify'
 Plug 'AndrewRadev/splitjoin.vim'
 Plug 'kiteco/vim-plugin'
 Plug 'sonph/onehalf', { 'rtp': 'vim' }
 Plug 'folke/lsp-colors.nvim'
 Plug 'machakann/vim-sandwich'
+Plug 'nvim-lua/completion-nvim'
 " Plug 'junegunn/vim-slash' -- for search and * search.
 " <---- end plugins in testing ---->
 " <---- plugins to probably remove ---->
@@ -199,6 +200,17 @@ hi Search gui=reverse guifg=#805c0b
 " for vim-sandwich don't have any s mappings as per docs
 nmap s <Nop>
 xmap s <Nop>
+" Add the space before/after capability that vim-surround had.
+autocmd FileType * call sandwich#util#addlocal([
+\   {'buns': ['{ ', ' }'], 'nesting': 1, 'match_syntax': 1,
+\    'kind': ['add', 'replace'], 'action': ['add'], 'input': ['{']},
+\
+\   {'buns': ['[ ', ' ]'], 'nesting': 1, 'match_syntax': 1,
+\    'kind': ['add', 'replace'], 'action': ['add'], 'input': ['[']},
+\
+\   {'buns': ['( ', ' )'], 'nesting': 1, 'match_syntax': 1,
+\    'kind': ['add', 'replace'], 'action': ['add'], 'input': ['(']},
+\ ])
 
 let g:Hexokinase_virtualText = ' '
 let g:kite_supported_languages = ['*']
@@ -213,7 +225,7 @@ require'nvim-treesitter.configs'.setup {
   highlight = {
     enable = true,              -- false will disable the whole extension
     use_langtree = true,
-    disable = { "c", "rust", "markdown" },  -- list of language that will be disabled
+    disable = { "c", "rust", "markdown", "python" },  -- list of language that will be disabled
   },
   incremental_selection = { enable = true },
   textobjects = { enable = true },
@@ -241,6 +253,7 @@ local on_attach = function(client, bufnr)
   local function buf_set_option(...) vim.api.nvim_buf_set_option(bufnr, ...) end
 
   lsp_status.on_attach(client)
+  require'completion'.on_attach()
   -- buf_set_option('omnifunc', 'v:lua.vim.lsp.omnifunc')
 
   local opts = { noremap=true, silent=true }
@@ -303,6 +316,20 @@ nmap [h <plug>(signify-prev-hunk)
 
 " git blame:
 nmap <leader>gb :GitMessenger<cr>
+
+let g:completion_enable_snippet = 'UltiSnips'
+let g:completion_enable_auto_popup = 1
+let g:kite_completions = 0
+let g:completion_trigger_keyword_length = 2
+set completefunc=kite#completion#complete
+imap  <c-j> <Plug>(completion_next_source)
+imap  <c-k> <Plug>(completion_prev_source)
+let g:completion_chain_complete_list = {
+    \'default' : [
+    \    {'mode': 'user'},
+    \    {'complete_items': ['lsp', 'snippet']},
+    \]
+    \}
 
 function! LspStatus()
   if luaeval('#vim.lsp.buf_get_clients() > 0')
@@ -507,13 +534,6 @@ let g:switch_custom_definitions =
     \ { 'row': 'column' }, { 'column': 'row' },
     \ ]
 
-" don't use vif (thats a function, duh!)
-let g:textobj_between_no_default_key_mappings=0
-" use vib and vab instead
-xmap ab  <Plug>(textobj-between-a)
-omap ab  <Plug>(textobj-between-a)
-xmap ib  <Plug>(textobj-between-i)
-omap ib  <Plug>(textobj-between-i)
 
 " pathing for abolish
 set runtimepath+=~/.vim/after
@@ -557,6 +577,10 @@ let g:sluice_default_macromode=1
 nnoremap <F5> :MundoToggle<CR>
 nnoremap <F6> :Gvdiff<CR>
 nnoremap <F7> :TestLast<CR>
+" easily access f-keys -- not easy on a macbookpro with 'touch bar'
+map <leader>f5 :MundoToggle<cr>
+map <leader>f6 :Gvdiff<cr>
+map <leader>f7 :Gvdiffsplit<cr>
 
 " don't search included files by default - it can be fucked up slow:
 set complete-=i
@@ -592,10 +616,6 @@ let g:AutoPairsMultilineClose=0
 map <leader>gv  <Plug>(operator-vtr)
 call operator#user#define_ex_command('vtr', 'VtrSendLinesToRunner')
 " TODO VtrAttachToPane 1
-
-" easily access f-keys -- not easy on a macbookpro with 'touch bar'
-map <leader>f6 :Gvdiffsplit<cr>
-map <leader>f4 :MundoToggle<cr>
 
 " I want to see all the options when I try to jump to a tag:
 nmap <C-]> :GutentagsReset<cr>g<C-]>zt
