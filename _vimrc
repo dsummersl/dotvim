@@ -13,6 +13,8 @@ Plug 'sonph/onehalf', { 'rtp': 'vim' }
 Plug 'folke/lsp-colors.nvim'
 Plug 'machakann/vim-sandwich'
 Plug 'nvim-lua/completion-nvim'
+Plug 'phaazon/hop.nvim'
+Plug 'lambdalisue/gina.vim'
 " Plug 'junegunn/vim-slash' -- for search and * search.
 " <---- end plugins in testing ---->
 " <---- plugins to probably remove ---->
@@ -220,12 +222,13 @@ call repeatable#Setup()
 
 if has('nvim')
 lua <<EOF
+require'hop'.setup()
 require'nvim-treesitter.configs'.setup {
   ensure_installed = "maintained",
   highlight = {
     enable = true,              -- false will disable the whole extension
     use_langtree = true,
-    disable = { "c", "rust", "markdown", "python" },  -- list of language that will be disabled
+    disable = { "c", "rust", "markdown"},  -- list of language that will be disabled
   },
   incremental_selection = { enable = true },
   textobjects = { enable = true },
@@ -238,7 +241,9 @@ lsp_status.register_progress()
 local lspconfig = require('lspconfig')
 
 local saga = require 'lspsaga'
-saga.init_lsp_saga()
+saga.init_lsp_saga{
+  hint_sign = ' '
+}
 
 vim.lsp.handlers["textDocument/publishDiagnostics"] = vim.lsp.with(
   vim.lsp.diagnostic.on_publish_diagnostics, {
@@ -311,8 +316,17 @@ lspconfig.pyright.setup{ on_attach=on_attach, capabilities=lsp_status.capabiliti
 EOF
 endif
 
+highlight LspDiagnosticsSignHint cterm=NONE gui=NONE guibg=#3c3836
+highlight LspDiagnosticsSignError ctermfg=red    guifg=#F06060 cterm=NONE gui=NONE guibg=#3c3836
+
 nmap ]h <plug>(signify-next-hunk)
 nmap [h <plug>(signify-prev-hunk)
+let g:signify_sign_add    = '▎'
+let g:signify_sign_change = '▎'
+
+highlight SignifySignAdd    ctermfg=green  guifg=#468966 cterm=NONE gui=NONE guibg=#3c3836
+highlight SignifySignDelete ctermfg=red    guifg=#B9121B cterm=NONE gui=NONE guibg=#3c3836
+highlight SignifySignChange ctermfg=yellow guifg=#F0C755 cterm=NONE gui=NONE guibg=#3c3836
 
 " git blame:
 nmap <leader>gb :GitMessenger<cr>
@@ -390,19 +404,22 @@ let g:nrrw_rgn_nomap_Nr = 1
 nmap gs <plug>(GrepperOperator)
 xmap gs <plug>(GrepperOperator)
 
-let g:signify_disable_by_default = 1
-
 " Enable writegood linting on various programmer docs:
 let g:ale_linter_aliases = {
-      \ 'python': ['asciidoc', 'python'],
+      \ 'python': ['python'],
       \ 'markdown': ['asciidoc', 'markdown'],
       \ 'ruby': ['asciidoc', 'ruby'],
       \ }
 let g:ale_completion_enabled = 0
-let g:ale_set_balloons = 1
+let g:ale_set_balloons = 0
 let g:ale_set_signs = 1
 let g:ale_sign_highlight_linenrs = 1
 let g:ale_set_highlights = 0
+let g:ale_lint_on_enter = 0
+let g:ale_lint_on_filetype_changed = 0
+let g:ale_lint_on_save = 0
+let g:ale_lint_on_text_changed = 0
+let g:ale_lint_on_insert_leave = 0
 let g:ale_lint_delay = 50
 " let g:ale_lint_on_text_changed = 'normal'
 Repeatable nmap [g <Plug>(ale_previous)
