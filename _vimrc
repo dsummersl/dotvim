@@ -232,7 +232,7 @@ require'nvim-treesitter.configs'.setup {
   },
   incremental_selection = { enable = true },
   textobjects = { enable = true },
-  indent = { enable = false },
+  indent = { enable = true },
 }
 
 local lsp_status = require('lsp-status')
@@ -325,7 +325,7 @@ let g:signify_sign_add    = '▎'
 let g:signify_sign_change = '▎'
 
 highlight SignifySignAdd    ctermfg=green  guifg=#468966 cterm=NONE gui=NONE guibg=#3c3836
-highlight SignifySignDelete ctermfg=red    guifg=#B9121B cterm=NONE gui=NONE guibg=#3c3836
+highlight SignifySignDelete ctermfg=red    guifg=#F06060  cterm=NONE gui=NONE guibg=#3c3836
 highlight SignifySignChange ctermfg=yellow guifg=#F0C755 cterm=NONE gui=NONE guibg=#3c3836
 
 " git blame:
@@ -440,8 +440,6 @@ map ]iI <Plug>(IndentWiseNextLesserIndent)
 map ]ii <Plug>(IndentWiseBlockScopeBoundaryEnd)
 sunmap ]ii
 sunmap ]iI
-
-vmap <leader>v :VSSplit<cr>
 
 let g:gruvbox_italic = 1
 let g:gruvbox_bold = 1
@@ -921,24 +919,25 @@ function! Once(cmd)
   exe a:cmd
 endfunction
 
-function! s:DiffRegisters(register_a, register_b)
-  " Diff two registers. Example:
-  " DiffRegisters a b
+function! s:DiffAgainstRegisterA() range
+  " Diff the current selection against whatever is in register 'a'
+  let lines = getline(a:firstline, a:lastline)
   new
   setlocal buftype=nofile
   setlocal bufhidden=delete
   setlocal noswapfile
-  exec "silent put ". a:register_a
+  silent put =lines
   diffthis
   vnew
   setlocal buftype=nofile
   setlocal bufhidden=delete
   setlocal noswapfile
-  exec "silent put ". a:register_b
+  exec "silent put a"
   diffthis
   resize 100
 endfunction
-command! -nargs=* DiffRegisters call s:DiffRegisters(<f-args>)
+command! -nargs=0 -range DiffAgainstRegisterA <line1>,<line2>call s:DiffAgainstRegisterA()
+vnoremap <leader>-  :'<,'>DiffAgainstRegisterA<CR>
 
 function! s:ResetGutentags()
   if exists('b:gutentags_files')
