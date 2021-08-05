@@ -15,6 +15,8 @@ Plug 'machakann/vim-sandwich'
 Plug 'nvim-lua/completion-nvim'
 Plug 'phaazon/hop.nvim'
 Plug 'lambdalisue/gina.vim'
+Plug 'nvim-treesitter/nvim-treesitter-textobjects'
+Plug 'dsummersl/vim-diffundo'
 " Plug 'junegunn/vim-slash' -- for search and * search.
 " <---- end plugins in testing ---->
 " <---- plugins to probably remove ---->
@@ -122,6 +124,7 @@ syntax on
 
 " use folding by default
 set foldmethod=marker
+set foldcolumn=auto
 
 " Turn on mouse for a visual and normal mode only:
 set mouse=v
@@ -232,7 +235,25 @@ require'nvim-treesitter.configs'.setup {
   },
   incremental_selection = { enable = true },
   textobjects = { enable = true },
-  indent = { enable = true },
+  indent = { enable = false },
+}
+require'nvim-treesitter.configs'.setup {
+  textobjects = {
+    select = {
+      enable = true,
+
+      -- Automatically jump forward to textobj, similar to targets.vim 
+      lookahead = true,
+
+      keymaps = {
+        -- You can use the capture groups defined in textobjects.scm
+        ["af"] = "@function.outer",
+        ["if"] = "@function.inner",
+        ["ac"] = "@class.outer",
+        ["ic"] = "@class.inner",
+      },
+    },
+  },
 }
 
 local lsp_status = require('lsp-status')
@@ -712,8 +733,10 @@ noremap ]oI :set diffopt-=iwhiteall<cr>
 noremap [oI :set diffopt+=iwhiteall<cr>
 
 " undo/redo to the previous write
-Repeatable map <leader>u :earlier 1f<cr>
-Repeatable map <leader>r :later 1f<cr>
+Repeatable map <leader>uu :DiffEarlier<cr>
+Repeatable map <leader>rr :DiffLater<cr>
+Repeatable map <leader>uf :DiffEarlier 1f<cr>
+Repeatable map <leader>rf :DiffLater 1f<cr>
 
 " When in Gstatus jump to the next file in the list and diff it.
 Repeatable map <leader>gj <C-w>l<C-w>kjdv
@@ -947,6 +970,13 @@ function! s:ResetGutentags()
 endfunction
 
 command! -nargs=0 GutentagsReset call s:ResetGutentags()
+
+function! s:ResetLSP()
+  lua vim.lsp.stop_client(vim.lsp.get_active_clients())
+  edit
+endfunction
+
+command! -nargs=0 ResetLSP call s:ResetLSP()
 
 "}}}
 " Automappings"{{{
