@@ -349,9 +349,6 @@ highlight SignifySignAdd    ctermfg=green  guifg=#468966 cterm=NONE gui=NONE gui
 highlight SignifySignDelete ctermfg=red    guifg=#F06060  cterm=NONE gui=NONE guibg=#3c3836
 highlight SignifySignChange ctermfg=yellow guifg=#F0C755 cterm=NONE gui=NONE guibg=#3c3836
 
-" git blame:
-nmap <leader>gb :GitMessenger<cr>
-
 let g:completion_enable_snippet = 'UltiSnips'
 let g:completion_enable_auto_popup = 1
 let g:kite_completions = 0
@@ -469,40 +466,13 @@ let g:gruvbox_undercurl = 1
 let g:gruvbox_contrast_dark = 'soft'
 let g:gruvbox_contrast_light = 'soft'
 
-let g:riv_disable_folding = 1
-
 " When using gL and gl, squeeze any extra leading whitespace.
 let g:lion_squeeze_spaces = 1
 
 let g:highlightedyank_highlight_duration = 250
 
-let g:expand_region_text_objects = {
-      \ 'iw'  :0,
-      \ 'iW'  :0,
-      \ 'i"'  :0,
-      \ 'i''' :0,
-      \ 'iB'  :1,
-      \ 'ip'  :0,
-      \ 'ii'  :0,
-      \ 'it'  :0,
-      \ 'at'  :1,
-      \ }
-
 " Run test commands in tmux - or neoterm, thats my other fav.
 let g:test#strategy = 'vtr'
-" let g:test#transformation = 'last'
-" let g:test#sub = 'docker-compose run --rm python manage.py test {} | pygmentize -l pytb'
-" let g:test#python#runner = 'djangotest'
-
-" let g:jedi#completions_enabled = 0
-" let g:jedi#show_call_signatures = '2'
-
-let g:deoplete#enable_at_startup = 1
-let g:deoplete#enable_ignore_case = 1
-let g:deoplete#enable_smart_case = 1
-let g:deoplete#enable_camel_case = 1
-let g:deoplete#max_list = 10
-let g:deoplete#auto_complete_delay = 150
 
 let g:splitjoin_trailing_comma = 1
 
@@ -520,25 +490,11 @@ let g:mundo_inline_undo = 1
 
 let g:indent_guides_enable_on_vim_startup = 0
 let g:indent_guides_color_change_percent = 4
-" don't include tabs in 'soft' tabs - I want to see when things are amiss.
-" let g:indent_guides_soft_pattern = ' '
 
 " we have very long commit lines - this helps!
 let g:Gitv_TruncateCommitSubjects = 1
 let g:Gitv_OpenHorizontal = 1
 let g:flog_default_arguments={ 'date': 'short' }
-
-" Toggle a setting on or off.
-function! Toggle(setting)
-  exec "let b=". a:setting
-  if b == '0'
-    echom a:setting ."=1"
-    exec "let ". a:setting ."=1"
-  else
-    echom a:setting ."=0"
-    exec "let ". a:setting ."=0"
-  endif
-endfunction
 
 " left/right and up/down first/last
 let g:switch_custom_definitions =
@@ -575,17 +531,7 @@ let g:switch_custom_definitions =
 " pathing for abolish
 set runtimepath+=~/.vim/after
 
-" " let g:completion_enable_snippet = 'UltiSnips'
-" let g:completion_matching_ignore_case = 1
-" " let g:completion_trigger_keyword_length = 2
-" let g:completion_enable_auto_paren = 1
-" let g:completion_enable_auto_popup = 0
-" let g:completion_matching_strategy_list = ['exact', 'substring', 'fuzzy', 'all']
-" let g:completion_sorting = 'length'
-" imap <silent> <c-n> <Plug>(completion_trigger)
-
 let g:UltiSnipsSnippetDirectories=[$HOME.'/.vim/UltiSnips', $HOME.'/.vim/bundle/vim-snippets/UltiSnips']
-" let g:UltiSnipsPythonPath="/usr/local/bin/python"
 let g:UltiSnipsSnippetsDir='~/.vim/UltiSnips'
 let g:UltiSnipsListSnippets='<C-\>'
 let g:UltiSnipsExpandTrigger='<Tab>'
@@ -652,7 +598,6 @@ let g:AutoPairsMultilineClose=0
 
 map <leader>gv  <Plug>(operator-vtr)
 call operator#user#define_ex_command('vtr', 'VtrSendLinesToRunner')
-" TODO VtrAttachToPane 1
 
 " I want to see all the options when I try to jump to a tag:
 nmap <C-]> :GutentagsReset<cr>g<C-]>zt
@@ -679,7 +624,6 @@ let g:EasyMotion_space_jump_first = 1
 
 cabbrev bda call DeleteHiddenBuffers()
 cabbrev gitv Gitv
-cabbrev flog Flog
 
 " I like having zs to jump to the start of the line, but I'd really love a
 " zm to jump to the middle - I don't think I'll miss the original folding
@@ -703,9 +647,6 @@ map <nul> <esc>
 " turn off help
 map <f1> <nul>
 imap <f1> <nul>
-
-" quickly get rid of other windows
-map <F12> :only<CR>
 
 " Quickly maximize splits:
 map <C-j> <C-w>j<C-w>_
@@ -755,23 +696,6 @@ map - :e %:h/<CR>
 let g:switch_mapping = ',gs'
 
 vmap <leader>v :VSSplit<cr>
-
-" Django: find the urls.py definition of the 'url name' under the cursor
-" let g:django_lookup_url_recording=":let b:isk_back=&isk\<cr>:set isk+=-\<cr>viwy:exe \"set isk=\". b:isk_back\<cr>:GrepperAg \<c-r>\" -G urls.py\<cr>"
-" let g:django_lookup_view_recording=":let b:isk_back=&isk\<cr>:set isk+=-\<cr>viwy:exe \"set isk=\". b:isk_back\<cr>:GrepperAg \<c-r>\" -G urls.py\<cr>"
-" map <leader>ju :let @z=g:django_lookup_url_recording<cr>@z
-" map <leader>jv :let @z=g:django_lookup_view_recording<cr>@zF,b<c-]>
-"
-" " Python: replace a multiline # COMMENT with a """ COMMENT """
-" let g:python_replace_pound_comment='gcacgpJ:s/\v^(\s+)(.*)$/\1""" \2 """\\gqq'
-" map <leader>jc :let @z=g:python_replace_pound_comment<cr>@z
-" Git: from a 'changes view', go to next diff
-" TODO support this from the main gitv screen (it works in diff at the moment.)
-let g:git_next_diff='tdvl'
-let g:git_previous_diff='tdvl'
-Repeatable map <leader>g] :let @z=g:git_next_diff<cr>@z
-Repeatable map <leader>g[ :let @z=g:git_previous_diff<cr>@z
-
 "}}}
 " Commands"{{{
 
@@ -780,12 +704,8 @@ Repeatable map <leader>g[ :let @z=g:git_previous_diff<cr>@z
 " folded.
 map <leader>ch :call ToggleSearchConceal()<CR>
 
-" Sort python imports:
-command! -range=% Isort :<line1>,<line2>! isort -
-
 " Convert unicode to ASCII
 command! UTFToASCII :call utf2ascii#replaceUTF()<cr>
-
 
 function! StyleUnderCursor()
   return synIDattr(synID(line("."), col("."), 0), "name")
@@ -852,9 +772,6 @@ endfunction
 let g:test#custom_transformations = {
       \ 'sub': function('SubstituteTransform'),
       \ 'last': function('LastTransform') }
-" let test#sub = 'command to run tests'
-" let test#transformation = 'last'
-" let test#strategy = 'neoterm'
 
 " Set an arbitrary value to a number.
 "
@@ -984,12 +901,6 @@ command! -nargs=0 ResetLSP call s:ResetLSP()
 if has('autocmd') && !exists('g:autocommands_loaded')
   let g:autocommands_loaded = 1
 
-  " autocmd WinLeave * setlocal nocursorline
-  " autocmd WinEnter * setlocal cursorline
-  "
-  " " Set a buffer variable and then only call this two time.
-  " autocmd BufNewFile,BufReadPost * :call AutoPairsInit()
-
   " ensure that tabstop settings for file browsing is big enough for column
   " alignment:
   autocmd FileType netrw setlocal ts=30
@@ -1001,6 +912,7 @@ if has('autocmd') && !exists('g:autocommands_loaded')
   if has('nvim')
     autocmd BufNewFile,BufRead *.scss,*.css lua require'colorizer'.setup()
   end
+
   autocmd BufNewFile,BufRead *.j2 setf jinja
   autocmd BufNewFile,BufRead *.md setf markdown
   autocmd BufNewFile,BufRead *.md setlocal spell wrap et
@@ -1025,9 +937,6 @@ if has('autocmd') && !exists('g:autocommands_loaded')
   " close the quickfix window when an item is selected.
   autocmd FileType qf nnoremap <buffer> <CR> <CR>:cclose<CR>
   autocmd FileType qf setlocal colorcolumn=
-  " autocmd FileType qf syntax match ConcealedPath /\v^[^|]*\// conceal
-  " autocmd FileType qf syntax match VisiblePath /\v^([^|]+\|){2}/
-  " autocmd FileType qf highlight link VisiblePath Folded
 endif
 "}}}
 " vim: set ai fdm=marker cms="%s:
