@@ -76,7 +76,7 @@ Plug 'nathanaelkane/vim-indent-guides' " A Vim plugin for visually displaying in
 
 " Language specific plugins:
 Plug 'prabirshrestha/async.vim'
-Plug 'janko-m/vim-test' " :TestNearest
+Plug 'vim-test/vim-test'
 Plug 'mattn/webapi-vim'
 
 " Textobj plugins
@@ -176,8 +176,7 @@ set linebreak " when wrap is turned on, break on words
 " let macros go faster
 set lazyredraw
 
-" For coc current function refreshes
-set updatetime=500
+set updatetime=1000
 set timeoutlen=500
 
 " Revisit the history on the command mode without leaving the home rows.
@@ -263,7 +262,7 @@ local lspconfig = require('lspconfig')
 
 local saga = require 'lspsaga'
 saga.init_lsp_saga{
-  hint_sign = ' '
+  hint_sign = '.'
 }
 
 vim.lsp.handlers["textDocument/publishDiagnostics"] = vim.lsp.with(
@@ -283,21 +282,18 @@ local on_attach = function(client, bufnr)
   -- buf_set_option('omnifunc', 'v:lua.vim.lsp.omnifunc')
 
   local opts = { noremap=true, silent=true }
-  -- buf_set_keymap('n', ',dc', '<Cmd>lua vim.lsp.buf.declaration()<CR>', opts)
   buf_set_keymap('n', ',dd', '<Cmd>lua vim.lsp.buf.definition()<CR>', opts)
+  buf_set_keymap('n', ',dD', '<cmd>lua require("lspsaga.provider").preview_definition()<CR>', opts)
   buf_set_keymap('n', ',dh', '<cmd>lua require("lspsaga.hover").render_hover_doc()<CR>', opts)
-  buf_set_keymap('n', ',dH', '<cmd>lua vim.lsp.buf.hover()<CR>', opts)
   buf_set_keymap('n', ',di', '<cmd>lua vim.lsp.buf.implementation()<CR>', opts)
-  buf_set_keymap('n', ',ds', '<cmd>lua vim.lsp.buf.signature_help()<CR>', opts)
-  buf_set_keymap('n', ',dR', '<cmd>lua vim.lsp.buf.references()<CR>', opts)
+  buf_set_keymap('n', ',ds', '<cmd>lua require("lspsaga.signaturehelp").signature_help()<CR>', opts)
   buf_set_keymap('n', ',dr', '<cmd>lua require("lspsaga.rename").rename()<CR>', opts)
   buf_set_keymap('n', ',da', '<cmd>lua require("lspsaga.codeaction").code_action()<CR>', opts)
   buf_set_keymap('v', ',da', '<cmd>lua require("lspsaga.codeaction").range_code_action()<CR>', opts)
-  buf_set_keymap('n', ',dl', '<cmd>lua require("lspsaga.provider").lsp_finder()<CR>', opts)
+  buf_set_keymap('n', ',dl', '<cmd>lua vim.lsp.buf.references()<CR>', opts)
   buf_set_keymap('n', ',dq', '<cmd>lua vim.lsp.diagnostic.set_loclist()<CR>', opts)
   buf_set_keymap('n', ']d', '<cmd>lua require("lspsaga.diagnostic").lsp_jump_diagnostic_next()<CR>', opts)
   buf_set_keymap('n', '[d', '<cmd>lua require("lspsaga.diagnostic").lsp_jump_diagnostic_prev()<CR>', opts)
-  buf_set_keymap('n', ',dD', '<cmd>lua require("lspsaga.diagnostic").show_line_diagnostics()<CR>', opts)
 
   -- Set some keybinds conditional on server capabilities
   if client.resolved_capabilities.document_formatting then
@@ -306,19 +302,27 @@ local on_attach = function(client, bufnr)
     buf_set_keymap("n", ",df", "<cmd>lua vim.lsp.buf.formatting()<CR>", opts)
   end
   
+  local on_references = vim.lsp.handlers["textDocument/references"]
+  vim.lsp.handlers["textDocument/references"] = vim.lsp.with(
+    on_references, {
+      -- Use location list instead of quickfix list
+      loclist = true,
+    }
+  )
+
   -- Set autocommands conditional on server_capabilities
-  -- if client.resolved_capabilities.document_highlight then
-  --   vim.api.nvim_exec([[
-  --     hi link LspReferenceRead Search
-  --     hi link LspReferenceText Search
-  --     hi link LspReferenceWrite IncSearch
-  --     augroup lsp_document_highlight
-  --       autocmd! * <buffer>
-  --       autocmd CursorHold <buffer> lua vim.lsp.buf.clear_references() ; vim.lsp.buf.document_highlight()
-  --       " autocmd CursorMoved <buffer> 
-  --     augroup END
-  --   ]], false)
-  -- end
+  if client.resolved_capabilities.document_highlight then
+    vim.api.nvim_exec([[
+      hi link LspReferenceRead Search
+      hi link LspReferenceText Search
+      hi link LspReferenceWrite IncSearch
+      augroup lsp_document_highlight
+        autocmd! * <buffer>
+        autocmd CursorHold <buffer> lua vim.lsp.buf.clear_references() ; vim.lsp.buf.document_highlight()
+        " autocmd CursorMoved <buffer> 
+      augroup END
+    ]], false)
+  end
 end
 
 lspconfig.tsserver.setup{ on_attach=on_attach, capabilities=lsp_status.capabilities }
@@ -328,6 +332,7 @@ lspconfig.html.setup{ on_attach=on_attach, capabilities=lsp_status.capabilities 
 lspconfig.cssls.setup{ on_attach=on_attach, capabilities=lsp_status.capabilities }
 lspconfig.vimls.setup{ on_attach=on_attach, capabilities=lsp_status.capabilities }
 lspconfig.solargraph.setup{ on_attach=on_attach, capabilities=lsp_status.capabilities }
+lspconfig.rust_analyzer.setup{ on_attach=on_attach, capabilities=lsp_status.capabilities }
 lspconfig.sumneko_lua.setup{
   on_attach=on_attach, capabilities=lsp_status.capabilities,
   cmd = {"Users","danesummers",".cache","nvim","lspconfig","sumneko_lua","lua-language-server","bin","macOS","lua-language-server"}
@@ -337,7 +342,7 @@ lspconfig.pyright.setup{ on_attach=on_attach, capabilities=lsp_status.capabiliti
 EOF
 endif
 
-highlight LspDiagnosticsSignHint cterm=NONE gui=NONE guibg=#3c3836
+highlight LspDiagnosticsSignHint cterm=NONE gui=NONE guifg=#777777 guibg=#3c3836
 highlight LspDiagnosticsSignError ctermfg=red    guifg=#F06060 cterm=NONE gui=NONE guibg=#3c3836
 
 nmap ]h <plug>(signify-next-hunk)
@@ -617,7 +622,7 @@ nnoremap <leader>m  :<c-u><c-r><c-r>='let @'. v:register .' = '. string(getreg(v
 
 let g:EasyMotion_do_mapping=0
 let g:EasyMotion_smartcase=1
-nmap <leader>s  <Plug>(easymotion-s2)
+nmap <leader>s  <Plug>(easymotion-sn)
 nmap <leader>; <Plug>(easymotion-next)
 let g:EasyMotion_enter_jump_first = 1
 let g:EasyMotion_space_jump_first = 1
