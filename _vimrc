@@ -1,100 +1,16 @@
 " vundle plugin options {{{
 
-let g:plug_url_format='git@github.com:%s.git'
-so ~/.vim/autoload/plug.vim
-call plug#begin('~/.vim/bundle')
-
-" <---- plugins in testing ---->
-" Plug 'romgrk/nvim-treesitter-context'
-Plug 'mhinz/vim-signify'
-Plug 'AndrewRadev/splitjoin.vim'
-Plug 'kiteco/vim-plugin'
-Plug 'sonph/onehalf', { 'rtp': 'vim' }
-Plug 'folke/lsp-colors.nvim'
-Plug 'machakann/vim-sandwich'
-Plug 'nvim-lua/completion-nvim'
-Plug 'phaazon/hop.nvim'
-Plug 'lambdalisue/gina.vim'
-Plug 'nvim-treesitter/nvim-treesitter-textobjects'
-Plug 'dsummersl/vim-diffundo'
-" Plug 'junegunn/vim-slash' -- for search and * search.
-" <---- end plugins in testing ---->
-" <---- plugins to probably remove ---->
-" <---- plugins to probably remove ---->
-
-" Motions
-Plug 'jeetsukumaran/vim-indentwise' " Support indent motions ]ii
-Plug 'tpope/vim-unimpaired' " many additional mappings for ]q, etc
-Plug 'tpope/vim-repeat' " awesome: makes the surround plugin work with the '.' keys (repeatability!)
-Plug 'kreskij/Repeatable.vim'
-Plug 'easymotion/vim-easymotion' " mapped to s for two letter searching.
-Plug 'wellle/visual-split.vim' " I've mapped this to <leader>v Lines to quickly resize splits (VSSplit)
-Plug 'kana/vim-operator-user' " Define my own operators for motions.
-Plug 'tommcdo/vim-exchange'
-
-" Operators
-Plug 'tommcdo/vim-lion' " align with operator gL and gl (ie glip= to align paragraph by =)
-Plug 'tommcdo/vim-express' " custom g* operations (g=iw - prompt 'get_'.v:val.'()' to change a word to a func)
-
-" Git & Project
-Plug 'stefandtw/quickfix-reflector.vim' " edit the qf list directly with copen
-Plug 'dsummersl/vim-projectionist', { 'branch': 'issue-94' } " :E* commands for a project
-Plug 'MarcWeber/vim-addon-local-vimrc' " enable project local .vimrc files
-Plug 'tpope/vim-fugitive', {} " git
-Plug 'tpope/vim-rhubarb' " Gbrowse 
-Plug 'tpope/vim-eunuch' " eunuch.vim: cp/move/unlink commands
-Plug 'ludovicchabant/vim-gutentags'
-Plug 'vinodkri/vim-tmux-runner' " :VtrSendCommandToRunner for tmux
-Plug 'tpope/vim-abolish' " fix spelling errors
-Plug 'editorconfig/editorconfig-vim' " 0.1.0 EditorConfig Plugin for Vim -- helps define and maintain consistent coding style
-Plug 'mattn/emmet-vim' " fast HTML tag generation (in insert mode type tr*3CTL-Y, to make three <tr>s
-Plug 'tomtom/tcomment_vim' " An extensible & universal comment vim-plugin that also handles embedded filetypes
-Plug 'Yggdroot/LeaderF', { 'do': './install.sh'}
-Plug 'gregsexton/gitv'
-Plug 'mhinz/vim-grepper' " Grepper to search in lots of ways
-Plug 'jiangmiao/auto-pairs' " close quotes and such automatically
-Plug 'dsummersl/vim-utf2ascii' " simple utf2ascii function.
-Plug 'AndrewRadev/switch.vim', {} " Easily toggle boolean values:
-Plug 'dsummersl/gundo.vim', { 'branch': 'mundo-master' }
-Plug 'w0rp/ale'
-if has('nvim')
-  Plug 'RRethy/vim-hexokinase', { 'do': 'make hexokinase' } " Colors for red/green/#123123
-  Plug 'dsummersl/nvim-sluice'
-  Plug 'SirVer/ultisnips'
-  Plug 'nvim-lua/lsp-status.nvim'
-  Plug 'neovim/nvim-lspconfig'
-  Plug 'nvim-treesitter/nvim-treesitter', {'do': ':TSUpdate'}
-  Plug 'glepnir/lspsaga.nvim'
-endif
-
-" Colorschemes & colors
-Plug 'morhetz/gruvbox' " gruvbox colors
-Plug 'itchyny/lightline.vim'
-Plug 'machakann/vim-highlightedyank' " highlight any text as it is yanked
-Plug 'pgdouyon/vim-evanesco' " Highlight search, clear after searching
-Plug 'nathanaelkane/vim-indent-guides' " A Vim plugin for visually displaying indent levels in code
-
-" Language specific plugins:
-Plug 'prabirshrestha/async.vim'
-Plug 'vim-test/vim-test'
-Plug 'mattn/webapi-vim'
-
-" Textobj plugins
-Plug 'wellle/targets.vim' " many text objects
-Plug 'kana/vim-textobj-user' " user defined textobj implementations
-Plug 'glts/vim-textobj-comment' " select comment with vic or vac.
-Plug 'michaeljsmith/vim-indent-object' " vii and viI (visual inner Indent)
-Plug 'saaguero/vim-textobj-pastedtext' " vgb for last pasted text.
-
-" Extra 
-Plug 'ryanoasis/vim-devicons'
+lua require('plugins')
 
 set termguicolors
-
-call plug#end()
-
 set background=dark
-colorscheme gruvbox
+let g:gruvbox_material_palette= 'mix'
+let g:gruvbox_material_background = 'hard'
+let g:gruvbox_material_enable_italic = 1
+let g:gruvbox_material_enable_bold = 1
+let g:airline_theme = 'gruvbox_material'
+let g:gruvbox_material_current_word = 'grey background'
+colorscheme gruvbox-material
 
 set cursorline
 " show column markers beyond the 80, and 100
@@ -201,6 +117,7 @@ hi Search gui=reverse guifg=#805c0b
 "}}}
 " Plugin settings, changes."{{{
 
+
 " for vim-sandwich don't have any s mappings as per docs
 nmap s <Nop>
 xmap s <Nop>
@@ -216,15 +133,16 @@ autocmd FileType * call sandwich#util#addlocal([
 \    'kind': ['add', 'replace'], 'action': ['add'], 'input': ['(']},
 \ ])
 
-let g:Hexokinase_virtualText = ' '
 let g:kite_supported_languages = ['*']
+
+let g:Hexokinase_virtualText = ' '
 let g:Hexokinase_optInPatterns = 'full_hex,rgb,rgba,hsl,hsla'
+" let g:Hexokinase_highlighters = [ 'virtual', 'backgroundfull' ]
 
 call repeatable#Setup()
 
 if has('nvim')
 lua <<EOF
-require'hop'.setup()
 require'nvim-treesitter.configs'.setup {
   ensure_installed = "maintained",
   highlight = {
@@ -313,9 +231,6 @@ local on_attach = function(client, bufnr)
   -- Set autocommands conditional on server_capabilities
   if client.resolved_capabilities.document_highlight then
     vim.api.nvim_exec([[
-      hi link LspReferenceRead Search
-      hi link LspReferenceText Search
-      hi link LspReferenceWrite IncSearch
       augroup lsp_document_highlight
         autocmd! * <buffer>
         autocmd CursorHold <buffer> lua vim.lsp.buf.clear_references() ; vim.lsp.buf.document_highlight()
@@ -342,17 +257,10 @@ lspconfig.pyright.setup{ on_attach=on_attach, capabilities=lsp_status.capabiliti
 EOF
 endif
 
-highlight LspDiagnosticsSignHint cterm=NONE gui=NONE guifg=#777777 guibg=#3c3836
-highlight LspDiagnosticsSignError ctermfg=red    guifg=#F06060 cterm=NONE gui=NONE guibg=#3c3836
-
 nmap ]h <plug>(signify-next-hunk)
 nmap [h <plug>(signify-prev-hunk)
 let g:signify_sign_add    = '▎'
 let g:signify_sign_change = '▎'
-
-highlight SignifySignAdd    ctermfg=green  guifg=#468966 cterm=NONE gui=NONE guibg=#3c3836
-highlight SignifySignDelete ctermfg=red    guifg=#F06060  cterm=NONE gui=NONE guibg=#3c3836
-highlight SignifySignChange ctermfg=yellow guifg=#F0C755 cterm=NONE gui=NONE guibg=#3c3836
 
 let g:completion_enable_snippet = 'UltiSnips'
 let g:completion_enable_auto_popup = 1
@@ -438,11 +346,6 @@ let g:ale_set_balloons = 0
 let g:ale_set_signs = 1
 let g:ale_sign_highlight_linenrs = 1
 let g:ale_set_highlights = 0
-let g:ale_lint_on_enter = 0
-let g:ale_lint_on_filetype_changed = 0
-let g:ale_lint_on_save = 0
-let g:ale_lint_on_text_changed = 0
-let g:ale_lint_on_insert_leave = 0
 let g:ale_lint_delay = 50
 " let g:ale_lint_on_text_changed = 'normal'
 Repeatable nmap [g <Plug>(ale_previous)
@@ -463,13 +366,6 @@ map ]iI <Plug>(IndentWiseNextLesserIndent)
 map ]ii <Plug>(IndentWiseBlockScopeBoundaryEnd)
 sunmap ]ii
 sunmap ]iI
-
-let g:gruvbox_italic = 1
-let g:gruvbox_bold = 1
-let g:gruvbox_underline = 1
-let g:gruvbox_undercurl = 1
-let g:gruvbox_contrast_dark = 'soft'
-let g:gruvbox_contrast_light = 'soft'
 
 " When using gL and gl, squeeze any extra leading whitespace.
 let g:lion_squeeze_spaces = 1
@@ -712,11 +608,6 @@ map <leader>ch :call ToggleSearchConceal()<CR>
 " Convert unicode to ASCII
 command! UTFToASCII :call utf2ascii#replaceUTF()<cr>
 
-function! StyleUnderCursor()
-  return synIDattr(synID(line("."), col("."), 0), "name")
-endfunction
-command! StyleUnderCursor :echo StyleUnderCursor()<cr>
-
 function! ToggleSearchConceal()
   if !exists('b:searchtext')
     let b:searchtext = @/
@@ -910,13 +801,31 @@ if has('autocmd') && !exists('g:autocommands_loaded')
   " alignment:
   autocmd FileType netrw setlocal ts=30
 
-  " autocmd BufNewFile,BufRead * highlight TSEmphasis,TSComment ctermfg=121 cterm=italic gui=bold,italic guifg=#fe8019
-  autocmd BufNewFile,BufRead * highlight String ctermfg=142 cterm=italic gui=italic guifg=#b8bb26
-  autocmd BufNewFile,BufRead * highlight Comment ctermfg=142 cterm=italic gui=italic guifg=#555555
+  function! s:gruvbox_material_custom() abort
+    highlight! link TSEmphasis Comment
+    highlight! link TSComment Comment
+    highlight! link String Blue
+    highlight! link TSString Blue
+    highlight! link TSFunction AquaBold
 
-  if has('nvim')
-    autocmd BufNewFile,BufRead *.scss,*.css lua require'colorizer'.setup()
-  end
+    " highlight! link LspReferenceRead Search
+    " highlight! link LspReferenceText Search
+    " highlight! link LspReferenceWrite IncSearch
+
+    highlight! link LspDiagnosticsSignHint Folded
+    highlight! link LspDiagnosticsSignError RedSign
+
+    highlight! link SignifySignAdd    GreenSign
+    highlight! link SignifySignDelete RedSign
+    highlight! link SignifySignChange YellowSign
+  endfunction
+  
+  augroup GruvboxMaterialCustom
+    autocmd!
+    autocmd ColorScheme gruvbox-material call s:gruvbox_material_custom()
+  augroup END
+
+  call s:gruvbox_material_custom()
 
   autocmd BufNewFile,BufRead *.j2 setf jinja
   autocmd BufNewFile,BufRead *.md setf markdown
