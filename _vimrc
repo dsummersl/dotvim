@@ -1,6 +1,91 @@
 " vundle plugin options {{{
 
-lua require('plugins')
+let g:plug_url_format='git@github.com:%s.git'
+so ~/.vim/autoload/plug.vim
+call plug#begin('~/.vim/bundle')
+
+" <---- plugins in testing ---->
+Plug 'mhinz/vim-signify'
+Plug 'AndrewRadev/splitjoin.vim'
+Plug 'kiteco/vim-plugin'
+Plug 'machakann/vim-sandwich'
+Plug 'nvim-lua/completion-nvim'
+Plug 'lambdalisue/gina.vim'
+Plug 'nvim-treesitter/nvim-treesitter-textobjects'
+Plug 'dsummersl/vim-diffundo'
+Plug 'sainnhe/gruvbox-material'
+" Plug 'junegunn/vim-slash' -- for search and * search.
+" <---- end plugins in testing ---->
+" <---- plugins to probably remove ---->
+" <---- plugins to probably remove ---->
+
+" Motions
+Plug 'jeetsukumaran/vim-indentwise' " Support indent motions ]ii
+Plug 'tpope/vim-unimpaired' " many additional mappings for ]q, etc
+Plug 'tpope/vim-repeat' " awesome: makes the surround plugin work with the '.' keys (repeatability!)
+Plug 'kreskij/Repeatable.vim'
+Plug 'easymotion/vim-easymotion' " mapped to s for two letter searching.
+Plug 'wellle/visual-split.vim' " I've mapped this to <leader>v Lines to quickly resize splits (VSSplit)
+Plug 'kana/vim-operator-user' " Define my own operators for motions.
+Plug 'tommcdo/vim-exchange'
+
+" Operators
+Plug 'tommcdo/vim-lion' " align with operator gL and gl (ie glip= to align paragraph by =)
+Plug 'tommcdo/vim-express' " custom g* operations (g=iw - prompt 'get_'.v:val.'()' to change a word to a func)
+
+" Git & Project
+Plug 'stefandtw/quickfix-reflector.vim' " edit the qf list directly with copen
+Plug 'dsummersl/vim-projectionist', { 'branch': 'issue-94' } " :E* commands for a project
+Plug 'MarcWeber/vim-addon-local-vimrc' " enable project local .vimrc files
+Plug 'tpope/vim-fugitive', {} " git
+Plug 'tpope/vim-rhubarb' " Gbrowse 
+Plug 'tpope/vim-eunuch' " eunuch.vim: cp/move/unlink commands
+Plug 'ludovicchabant/vim-gutentags'
+Plug 'vinodkri/vim-tmux-runner' " :VtrSendCommandToRunner for tmux
+Plug 'tpope/vim-abolish' " fix spelling errors
+Plug 'editorconfig/editorconfig-vim' " 0.1.0 EditorConfig Plugin for Vim -- helps define and maintain consistent coding style
+Plug 'mattn/emmet-vim' " fast HTML tag generation (in insert mode type tr*3CTL-Y, to make three <tr>s
+Plug 'tomtom/tcomment_vim' " An extensible & universal comment vim-plugin that also handles embedded filetypes
+Plug 'Yggdroot/LeaderF', { 'do': './install.sh'}
+Plug 'gregsexton/gitv'
+Plug 'mhinz/vim-grepper' " Grepper to search in lots of ways
+Plug 'jiangmiao/auto-pairs' " close quotes and such automatically
+Plug '~/Documents/classes/vim-utf2ascii' " simple utf2ascii function.
+Plug 'AndrewRadev/switch.vim', {} " Easily toggle boolean values:
+Plug 'dsummersl/gundo.vim', { 'branch': 'mundo-master' }
+Plug 'w0rp/ale'
+if has('nvim')
+  Plug 'RRethy/vim-hexokinase', { 'do': 'make hexokinase' } " Colors for red/green/#123123
+  Plug '~/Documents/classes/nvim-sluice'
+  Plug 'SirVer/ultisnips'
+  Plug 'nvim-lua/lsp-status.nvim'
+  Plug 'neovim/nvim-lspconfig'
+  Plug 'nvim-treesitter/nvim-treesitter', {'do': ':TSUpdate'}
+  Plug 'glepnir/lspsaga.nvim'
+endif
+
+" Colorschemes & colors
+Plug 'itchyny/lightline.vim'
+Plug 'machakann/vim-highlightedyank' " highlight any text as it is yanked
+Plug 'pgdouyon/vim-evanesco' " Highlight search, clear after searching
+Plug 'nathanaelkane/vim-indent-guides' " A Vim plugin for visually displaying indent levels in code
+
+" Language specific plugins:
+Plug 'prabirshrestha/async.vim'
+Plug 'vim-test/vim-test'
+Plug 'mattn/webapi-vim'
+
+" Textobj plugins
+Plug 'wellle/targets.vim' " many text objects
+Plug 'kana/vim-textobj-user' " user defined textobj implementations
+Plug 'glts/vim-textobj-comment' " select comment with vic or vac.
+Plug 'michaeljsmith/vim-indent-object' " vii and viI (visual inner Indent)
+Plug 'saaguero/vim-textobj-pastedtext' " vgb for last pasted text.
+
+" Extra 
+Plug 'ryanoasis/vim-devicons'
+
+call plug#end()
 
 set termguicolors
 set background=dark
@@ -153,8 +238,6 @@ require'nvim-treesitter.configs'.setup {
   incremental_selection = { enable = true },
   textobjects = { enable = true },
   indent = { enable = false },
-}
-require'nvim-treesitter.configs'.setup {
   textobjects = {
     select = {
       enable = true,
@@ -346,6 +429,11 @@ let g:ale_set_balloons = 0
 let g:ale_set_signs = 1
 let g:ale_sign_highlight_linenrs = 1
 let g:ale_set_highlights = 0
+let g:ale_lint_on_enter = 0
+let g:ale_lint_on_filetype_changed = 0
+let g:ale_lint_on_save = 0
+let g:ale_lint_on_text_changed = 0
+let g:ale_lint_on_insert_leave = 0
 let g:ale_lint_delay = 50
 " let g:ale_lint_on_text_changed = 'normal'
 Repeatable nmap [g <Plug>(ale_previous)
