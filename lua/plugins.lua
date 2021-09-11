@@ -3,15 +3,35 @@ vim.cmd [[packadd packer.nvim]]
 return require('packer').startup(function(use)
   use 'wbthomason/packer.nvim'
 
-  use 'mhinz/vim-signify'
-  use 'AndrewRadev/splitjoin.vim'
-  use 'kiteco/vim-plugin'
-  use { 'machakann/vim-sandwich', config = function()
+  use { 'mhinz/vim-signify', config = function()
+    vim.g.signify_sign_add    = '▎'
+    vim.g.signify_sign_change = '▎'
+    vim.cmd([[
+      nmap ]h <plug>(signify-next-hunk)
+      nmap [h <plug>(signify-prev-hunk)
+    ]])
+  end}
+  use {'AndrewRadev/splitjoin.vim', config = function()
+    vim.g.splitjoin_trailing_comma = 1
+  end}
+  use { 'kiteco/vim-plugin', config = function()
+    vim.g.kite_supported_languages = {'*'}
+    vim.g.kite_completions = 0
+  end}
+  use { 'ThePrimeagen/refactoring.nvim', requires = {'nvim-lua/plenary.nvim'}, config = function()
+    local refactor = require("refactoring")
+    refactor.setup()
+    vim.api.nvim_set_keymap("v", "<Leader>re", [[ <Esc><Cmd>lua require('refactoring').refactor('Extract Function')<CR>]], {noremap = true, silent = true, expr = false})
+    vim.api.nvim_set_keymap("v", "<Leader>rf", [[ <Esc><Cmd>lua require('refactoring').refactor('Extract Function To File')<CR>]], {noremap = true, silent = true, expr = false})
+    vim.api.nvim_set_keymap("v", "<Leader>rt", [[ <Esc><Cmd>lua require('refactoring').refactors()<CR>]], {noremap = true, silent = true, expr = false})
+  end}
+  use { 'machakann/vim-sandwich', setup = function()
     -- for vim-sandwich don't have any s mappings as per docs
     vim.cmd [[nmap s <Nop>]]
     vim.cmd [[xmap s <Nop>]]
     
     -- Add the space before/after capability that vim-surround had.
+    -- TODO can't load this :(
     -- vim.api.nvim_exec([[
     -- autocmd FileType * call sandwich#util#addlocal([
     --    {'buns': ['{ ', ' }'], 'nesting': 1, 'match_syntax': 1,
@@ -25,7 +45,28 @@ return require('packer').startup(function(use)
     --  ])
     -- ]])
   end}
-  use 'nvim-lua/completion-nvim'
+  use { 'nvim-lua/completion-nvim', config = function()
+    vim.g.completion_enable_snippet = 'UltiSnips'
+    vim.g.completion_enable_auto_popup = 1
+    vim.g.completion_trigger_keyword_length = 2
+    vim.cmd([[
+      set completefunc=kite#completion#complete
+      imap <c-j> <Plug>(completion_next_source)
+      imap <c-k> <Plug>(completion_prev_source)
+
+      " don't search included files by default - it can be fucked up slow:
+      set complete-=i
+      set completeopt=menuone,noinsert,noselect
+      set shortmess+=c
+    ]])
+    vim.g.completion_chain_complete_list = {
+      default = {
+        {mode = 'user'},
+        {complete_items = {'lsp', 'snippet'}},
+      }
+    }
+
+  end}
   -- use 'phaazon/hop.nvim'
   -- use 'lambdalisue/gina.vim'
   use 'nvim-treesitter/nvim-treesitter-textobjects'
@@ -39,7 +80,20 @@ return require('packer').startup(function(use)
     vim.g.gruvbox_material_current_word  = 'grey background'
   end}
 
-  use 'jeetsukumaran/vim-indentwise' -- Support indent motions ]ii
+  use {'jeetsukumaran/vim-indentwise', config = function()
+    vim.cmd([[
+      " Map indent motions to a more indent-like key
+      let g:indentwise_suppress_keymaps = 1
+      map [iI <Plug>(IndentWisePreviousLesserIndent)
+      map [ii <Plug>(IndentWiseBlockScopeBoundaryBegin)
+      sunmap [ii
+      sunmap [iI
+      map ]iI <Plug>(IndentWiseNextLesserIndent)
+      map ]ii <Plug>(IndentWiseBlockScopeBoundaryEnd)
+      sunmap ]ii
+      sunmap ]iI
+    ]])
+  end} -- Support indent motions ]ii
   use 'tpope/vim-unimpaired' -- many additional mappings for ]q, etc
   use 'tpope/vim-repeat' -- awesome: makes the surround plugin work with the '.' keys (repeatability!)
   use { 'kreskij/Repeatable.vim', requires = { 'tpope/vim-repeat' }, config = function()
@@ -62,24 +116,63 @@ return require('packer').startup(function(use)
   use 'kana/vim-operator-user' -- Define my own operators for motions.
   use 'tommcdo/vim-exchange'
 
-  use 'tommcdo/vim-lion' -- align with operator gL and gl (ie glip= to align paragraph by =)
+  use {'tommcdo/vim-lion', config = function()
+    -- When using gL and gl, squeeze any extra leading whitespace.
+    vim.g.lion_squeeze_spaces = 1
+  end} -- align with operator gL and gl (ie glip= to align paragraph by =)
   use 'tommcdo/vim-express' -- custom g* operations (g=iw - prompt 'get_'.v:val.'()' to change a word to a func)
 
   use 'stefandtw/quickfix-reflector.vim' -- edit the qf list directly with copen
   use { 'dsummersl/vim-projectionist', branch = 'issue-94' } -- :E* commands for a project
   use 'MarcWeber/vim-addon-local-vimrc' -- enable project local .vimrc files
-  use 'tpope/vim-fugitive' -- git
+  use {'tpope/vim-fugitive', config = function()
+    vim.cmd([[
+      " easily access f-keys -- not easy on a macbookpro with 'touch bar'
+      nnoremap <F6> :Gvdiff<CR>
+      map <leader>f6 :Gvdiff<cr>
+      map <leader>f7 :Gvdiffsplit<cr>
+    ]])
+  end} -- git
   use 'tpope/vim-rhubarb' -- Gbrowse 
   use 'tpope/vim-eunuch' -- eunuch.vim: cp/move/unlink commands
-  use 'ludovicchabant/vim-gutentags'
+  use {'ludovicchabant/vim-gutentags', config = function()
+    vim.g.gutentags_modules = {'ctags'}
+    vim.g.gutentags_cache_dir = '~/.vim/tags'
+    vim.g.gutentags_ctags_exclude = { '*.json', '*.md', '*/node_modules/*', '*/bower_components/*',
+          '*/public/assets/*', '*/public/packs/*', '*/public/packs-test/*', '*/vendor/*',
+          'tags', '*.sql', '*.html'}
+
+  end}
   use 'vinodkri/vim-tmux-runner' -- :VtrSendCommandToRunner for tmux
   use 'tpope/vim-abolish' -- fix spelling errors
   use 'editorconfig/editorconfig-vim' -- 0.1.0 EditorConfig Plugin for Vim -- helps define and maintain consistent coding style
   use 'mattn/emmet-vim' -- fast HTML tag generation (in insert mode type tr*3CTL-Y, to make three <tr>s
   use 'tomtom/tcomment_vim' -- An extensible & universal comment vim-plugin that also handles embedded filetypes
-  use { 'Yggdroot/LeaderF', run = './install.sh' }
-  use 'gregsexton/gitv'
+  use { 'Yggdroot/LeaderF', run = './install.sh', config = function()
+    vim.cmd([[
+      let g:Lf_WindowHeight = 0.2
+      let g:Lf_PopupWidth = 0.9
+      nnoremap <C-p> :Leaderf file --nowrap<CR>
+      " User iterm2 to map shift-ctrl-p to <f15>
+      nnoremap <F15> :Leaderf mru --cwd --nowrap<CR>
+      nnoremap <C-t> :Leaderf tag --nowrap<CR>
+      " User iterm2 to map shift-ctrl-t to <f16>
+      nnoremap <F16> :Leaderf bufTag --nowrap<CR>
+    ]])
+  end}
+  use {'gregsexton/gitv', config = function()
+    -- we have very long commit lines - this helps!
+    vim.g.Gitv_TruncateCommitSubjects = 1
+    vim.g.Gitv_OpenHorizontal = 1
+    vim.g.flog_default_arguments={ date = "short" }
+  end}
   use { 'mhinz/vim-grepper', config = function()
+    vim.g.grepper = {
+      open = 1,
+      stop = 300,
+      tools = {'git', 'ag', 'sift'},
+    }
+
     vim.cmd([[
       noremap <leader>/f :exec "Grepper -jump -tool ag -noprompt -query ". expand("%:t:r:r")<CR>
       noremap <leader>/g :Grepper -tool ag -jump<cr>
@@ -104,12 +197,56 @@ return require('packer').startup(function(use)
       " Something like :if exists(':Ggrep')
       command! -nargs=1 Gg exec "silent GrepperGit -jump ". '<args>'
       command! -nargs=1 Aa exec "silent GrepperAg -jump ". '<args>'
+
+      nmap gs <plug>(GrepperOperator)
+      xmap gs <plug>(GrepperOperator)
     ]])
   end} -- Grepper to search in lots of ways
   use 'jiangmiao/auto-pairs' -- close quotes and such automatically
   use '~/Documents/classes/vim-utf2ascii' -- simple utf2ascii function.
-  use 'AndrewRadev/switch.vim' -- Easily toggle boolean values:
-  use { 'dsummersl/gundo.vim' }
+  use {'AndrewRadev/switch.vim', config = function()
+    -- left/right and up/down first/last
+    vim.g.switch_custom_definitions = {
+      { ['\\.\\([a-zA-Z_-]\\+\\)\\>'] = "['\\1']" },
+      { ['\\[[\'"]\\([a-zA-Z_-]\\+\\)[\'"]\\]'] = '.\\1' },
+      { ["&&"] ='||' }, { ["||"] ='&&' },
+      { ["=="] ='!=' }, { ["!="] ='==' },
+      { FALSE ='TRUE' }, { TRUE ='FALSE' },
+      { INFO ='DEBUG' }, { DEBUG ='INFO' },
+      { align ='justify' }, { justify ='align' },
+      { ["and"] ='or' }, { ["or"] ='and' },
+      { assertContains ='assertNotContains' }, { assertNotContains ='assertContains' },
+      { assertFalse ='assertTrue' }, { assertTrue ='assertFalse' },
+      { assertIn ='assertNotIn' }, { assertNotIn ='assertIn' },
+      { before ='after' }, { after ='before' },
+      { columns ='rows' }, { rows ='columns' },
+      { disabled ='enabled' }, { enabled ='disabled' },
+      { even ='odd' }, { odd ='even' },
+      { first ='last' }, { last ='first' },
+      { info ='debug' }, { debug ='info' },
+      { left ='right' }, { right ='left' },
+      { max ='min' }, { min ='max' },
+      { padding ='margin' }, { margin ='padding' },
+      { present ='absent' }, { absent ='present' },
+      { public ='private' }, { private ='protected' }, { protected ='public' },
+      { top ='bottom' }, { bottom ='top' },
+      { up ='down' }, { down ='up' },
+      { width ='height' }, { height ='width' },
+      { yes ='no' }, { no ='yes' },
+      { row ='column' }, { column ='row' },
+    }
+  end} -- Easily toggle boolean values
+  use { 'dsummersl/gundo.vim', config = function()
+    vim.g.mundo_verbose_graph = 0
+    vim.g.mundo_mirror_graph = 1
+    vim.g.mundo_prefer_python3 = 1
+    vim.g.mundo_help = 0
+    vim.g.mundo_inline_undo = 1
+    vim.cmd([[
+      nnoremap <F5> :MundoToggle<CR>
+      map <leader>f5 :MundoToggle<cr>
+    ]])
+  end}
   use { 'w0rp/ale', opt = true, cmd = {'ALEEnable', 'ALELint', 'ALEFix'}, requires = {'kreskij/Repeatable.vim'}, setup = function()
     vim.g.ale_linter_aliases = {
       python = {'python'},
@@ -141,9 +278,22 @@ return require('packer').startup(function(use)
       Repeatable nmap ]g <Plug>(ale_next)
     ]])
   end}
-  use { 'RRethy/vim-hexokinase', run = 'make hexokinase' } -- Colors for red/green/#123123
+  use { 'RRethy/vim-hexokinase', run = 'make hexokinase', config = function()
+    vim.g.Hexokinase_virtualText = ' '
+    vim.g.Hexokinase_optInPatterns = 'full_hex,rgb,rgba,hsl,hsla'
+    -- let g:Hexokinase_highlighters = [ 'virtual', 'backgroundfull' ]
+  end} -- Colors for red/green/#123123
   use '~/Documents/classes/nvim-sluice'
-  use 'SirVer/ultisnips'
+  use {'SirVer/ultisnips', config = function()
+    vim.cmd([[
+      let g:UltiSnipsSnippetDirectories=[$HOME.'/.vim/UltiSnips', $HOME.'/.vim/bundle/vim-snippets/UltiSnips']
+      let g:UltiSnipsSnippetsDir='~/.vim/UltiSnips'
+      let g:UltiSnipsListSnippets='<C-\>'
+      let g:UltiSnipsExpandTrigger='<Tab>'
+      let g:UltiSnipsJumpForwardTrigger='<Tab>'                                           
+      let g:UltiSnipsJumpBackwardTrigger='<S-Tab>'
+    ]])
+  end}
   use { 'nvim-lua/lsp-status.nvim' }
   use { 'neovim/nvim-lspconfig', requires = {'nvim-lua/lsp-status.nvim', 'nvim-lua/completion-nvim'}, config = function()
     local lspconfig = require('lspconfig')
@@ -212,6 +362,7 @@ return require('packer').startup(function(use)
     lspconfig.jsonls.setup{ on_attach=on_attach, capabilities=lsp_status.capabilities }
     lspconfig.html.setup{ on_attach=on_attach, capabilities=lsp_status.capabilities }
     lspconfig.cssls.setup{ on_attach=on_attach, capabilities=lsp_status.capabilities }
+    lspconfig.gopls.setup{ on_attach=on_attach, capabilities=lsp_status.capabilities }
     lspconfig.vimls.setup{ on_attach=on_attach, capabilities=lsp_status.capabilities }
     lspconfig.solargraph.setup{ on_attach=on_attach, capabilities=lsp_status.capabilities }
     lspconfig.rust_analyzer.setup{ on_attach=on_attach, capabilities=lsp_status.capabilities }
@@ -269,19 +420,28 @@ return require('packer').startup(function(use)
   end}
 
   use 'itchyny/lightline.vim'
-  use 'machakann/vim-highlightedyank' -- highlight any text as it is yanked
+  use {'machakann/vim-highlightedyank', config = function()
+    vim.g.highlightedyank_highlight_duration = 250
+  end} -- highlight any text as it is yanked
   use 'pgdouyon/vim-evanesco' -- Highlight search, clear after searching
-  use 'nathanaelkane/vim-indent-guides' -- A Vim plugin for visually displaying indent levels in code
+  use {'nathanaelkane/vim-indent-guides', config = function()
+    vim.g.indent_guides_enable_on_vim_startup = 0
+    vim.g.indent_guides_color_change_percent = 4
+  end} -- A Vim plugin for visually displaying indent levels in code
 
   use 'prabirshrestha/async.vim'
   use { 'vim-test/vim-test', config = function()
     -- E15 when I run this. I think its b/c of function?
-    -- vim.cmd([[
-    --   " Send a selection to the terminal:
-    --   map <leader>ctn :TestNearest<CR>
-    --   map <leader>cts :TestSuite<CR>
-    --   map <leader>ctf :TestFile<CR>
-    --   map <leader>ctl :TestLast<CR>
+    vim.cmd([[
+      " Send a selection to the terminal:
+      map <leader>ctn :TestNearest<CR>
+      map <leader>cts :TestSuite<CR>
+      map <leader>ctf :TestFile<CR>
+      map <leader>ctl :TestLast<CR>
+
+      " Run test commands in tmux - or neoterm, thats my other fav.
+      let g:test#strategy = 'vtr'
+    ]])
     --
     --   " Transforms for running tests in. {} is replaced. For example:
     --   " let test#sub = 'docker run --rm web python manage.py test {} | pygmentize -l pytb'
@@ -302,7 +462,6 @@ return require('packer').startup(function(use)
     --   let g:test#custom_transformations = {
     --          'sub': function('SubstituteTransform'),
     --          'last': function('LastTransform') }
-    -- ]])
   end}
   use 'mattn/webapi-vim'
 
