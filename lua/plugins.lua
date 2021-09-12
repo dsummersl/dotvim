@@ -11,7 +11,7 @@ return require('packer').startup(function(use)
       nmap [h <plug>(signify-prev-hunk)
     ]])
   end}
-  use {'AndrewRadev/splitjoin.vim', config = function()
+  use {'AndrewRadev/splitjoin.vim', opt = true, keys = { {'n', 'gJ'}, {'n', 'gS'} }, config = function()
     vim.g.splitjoin_trailing_comma = 1
   end}
   use { 'kiteco/vim-plugin', config = function()
@@ -67,10 +67,15 @@ return require('packer').startup(function(use)
     }
 
   end}
-  -- use 'phaazon/hop.nvim'
-  -- use 'lambdalisue/gina.vim'
-  use 'nvim-treesitter/nvim-treesitter-textobjects'
-  use 'dsummersl/vim-diffundo'
+  use {'dsummersl/vim-diffundo', opt = true, keys = { {'n', ',uu'}, {'n', ',rr'}, {'n', ',uf'}, {'n', ',rf'} }, config = function()
+    vim.cmd([[
+      " undo/redo to the previous write
+      Repeatable map <leader>uu :DiffEarlier<cr>
+      Repeatable map <leader>rr :DiffLater<cr>
+      Repeatable map <leader>uf :DiffEarlier 1f<cr>
+      Repeatable map <leader>rf :DiffLater 1f<cr>
+    ]])
+  end}
   use { 'sainnhe/gruvbox-material', config = function()
     vim.g.gruvbox_material_palette       = 'mix'
     vim.g.gruvbox_material_background    = 'hard'
@@ -79,8 +84,7 @@ return require('packer').startup(function(use)
     vim.g.airline_theme                  = 'gruvbox_material'
     vim.g.gruvbox_material_current_word  = 'grey background'
   end}
-
-  use {'jeetsukumaran/vim-indentwise', config = function()
+  use {'jeetsukumaran/vim-indentwise', opt = true, keys = { {'n', '[iI'}, {'n', ']iI'}, {'n', ']ii'}, {'n', '[ii'} }, config = function()
     vim.cmd([[
       " Map indent motions to a more indent-like key
       let g:indentwise_suppress_keymaps = 1
@@ -100,18 +104,12 @@ return require('packer').startup(function(use)
     vim.cmd([[
       call repeatable#Setup()
 
-      " undo/redo to the previous write
-      Repeatable map <leader>uu :DiffEarlier<cr>
-      Repeatable map <leader>rr :DiffLater<cr>
-      Repeatable map <leader>uf :DiffEarlier 1f<cr>
-      Repeatable map <leader>rf :DiffLater 1f<cr>
-
       " When in Gstatus jump to the next file in the list and diff it.
       Repeatable map <leader>gj <C-w>l<C-w>kjdv
       Repeatable map <leader>gk <C-w>l<C-w>kkdv
     ]])
   end}
-  use {'easymotion/vim-easymotion', config = function()
+  use {'easymotion/vim-easymotion', opt = true, keys = { {'n', ',s'} }, config = function()
     vim.cmd([[
       let g:EasyMotion_do_mapping=0
       let g:EasyMotion_smartcase=1
@@ -121,19 +119,18 @@ return require('packer').startup(function(use)
       let g:EasyMotion_space_jump_first = 1
     ]])
   end} -- mapped to s for two letter searching.
-  use {'wellle/visual-split.vim', config = function()
+  use {'wellle/visual-split.vim', opt = true, keys = { {'n', ',v'} }, config = function()
     vim.cmd([[
       vmap <leader>v :VSSplit<cr>
     ]])
   end} -- I've mapped this to <leader>v Lines to quickly resize splits (VSSplit)
   use 'kana/vim-operator-user' -- Define my own operators for motions.
-  use 'tommcdo/vim-exchange'
-
-  use {'tommcdo/vim-lion', config = function()
+  use {'tommcdo/vim-exchange', opt = true, keys = { {'n', 'cx'}, }, }
+  use {'tommcdo/vim-lion', opt = true, keys = { {'n', 'gl'}, {'n', 'gL'} }, config = function()
     -- When using gL and gl, squeeze any extra leading whitespace.
     vim.g.lion_squeeze_spaces = 1
   end} -- align with operator gL and gl (ie glip= to align paragraph by =)
-  use 'tommcdo/vim-express' -- custom g* operations (g=iw - prompt 'get_'.v:val.'()' to change a word to a func)
+  use {'tommcdo/vim-express', opt = true, keys = { {'n', 'g='} }} -- custom g* operations (g=iw - prompt 'get_'.v:val.'()' to change a word to a func)
 
   use 'stefandtw/quickfix-reflector.vim' -- edit the qf list directly with copen
   use { 'dsummersl/vim-projectionist', branch = 'issue-94', config = function()
@@ -156,8 +153,8 @@ return require('packer').startup(function(use)
       autocmd BufReadPost fugitive://* set bufhidden=delete
     ]])
   end} -- git
-  use 'tpope/vim-rhubarb' -- Gbrowse 
-  use 'tpope/vim-eunuch' -- eunuch.vim: cp/move/unlink commands
+  use {'tpope/vim-rhubarb', opt = true, cmd = 'GBrowse'} -- Gbrowse 
+  use {'tpope/vim-eunuch', opt = true, cmd = { 'Copy', 'Remove', 'Delete', 'Move', 'Rename' }} -- eunuch.vim: cp/move/unlink commands
   use {'ludovicchabant/vim-gutentags', config = function()
     vim.g.gutentags_modules = {'ctags'}
     vim.g.gutentags_cache_dir = '~/.vim/tags'
@@ -198,8 +195,8 @@ return require('packer').startup(function(use)
     ]])
   end} -- fix spelling errors
   use 'editorconfig/editorconfig-vim' -- 0.1.0 EditorConfig Plugin for Vim -- helps define and maintain consistent coding style
-  use 'mattn/emmet-vim' -- fast HTML tag generation (in insert mode type tr*3CTL-Y, to make three <tr>s
-  use 'tomtom/tcomment_vim' -- An extensible & universal comment vim-plugin that also handles embedded filetypes
+  use {'mattn/emmet-vim', opt = true, keys = { 'n', '<c-y>,' }} -- fast HTML tag generation (in insert mode type tr*3CTL-Y, to make three <tr>s
+  use {'tomtom/tcomment_vim', opt = true, keys = { 'n', 'gc' }} -- An extensible & universal comment vim-plugin that also handles embedded filetypes
   use { 'Yggdroot/LeaderF', run = './install.sh', config = function()
     vim.cmd([[
       let g:Lf_WindowHeight = 0.2
@@ -212,7 +209,7 @@ return require('packer').startup(function(use)
       nnoremap <F16> :Leaderf bufTag --nowrap<CR>
     ]])
   end}
-  use {'gregsexton/gitv', config = function()
+  use {'gregsexton/gitv', opt = true, cmd = 'Gitv', config = function()
     -- we have very long commit lines - this helps!
     vim.g.Gitv_TruncateCommitSubjects = 1
     vim.g.Gitv_OpenHorizontal = 1
@@ -261,13 +258,13 @@ return require('packer').startup(function(use)
     vim.g.AutoPairsFlyMode=1
     vim.g.AutoPairsMultilineClose=0
   end} -- close quotes and such automatically
-  use {'~/Documents/classes/vim-utf2ascii', config = function()
+  use {'~/Documents/classes/vim-utf2ascii', opt = true, cmd = 'UTFToASCII', config = function()
     vim.cmd([[
       " Convert unicode to ASCII
       command! UTFToASCII :call utf2ascii#replaceUTF()<cr>
     ]])
   end} -- simple utf2ascii function.
-  use {'AndrewRadev/switch.vim', config = function()
+  use {'AndrewRadev/switch.vim', opt = true, keys = { 'n', ',gs' }, config = function()
     -- automatically toggle with control-
     vim.g.switch_mapping = ',gs'
 
@@ -302,7 +299,7 @@ return require('packer').startup(function(use)
       { row ='column' }, { column ='row' },
     }
   end} -- Easily toggle boolean values
-  use { 'dsummersl/gundo.vim', config = function()
+  use { 'dsummersl/gundo.vim', opt = true, keys = {{'n', '<f5>'}, {'n', ',f5'}}, config = function()
     vim.g.mundo_verbose_graph = 0
     vim.g.mundo_mirror_graph = 1
     vim.g.mundo_prefer_python3 = 1
@@ -337,8 +334,6 @@ return require('packer').startup(function(use)
     vim.g.ale_lint_delay = 50
   end,
   config = function()
-    -- TODO this isn't working out -- lost my nmap
-    vim.g.aoeu = 5
     vim.cmd([[
       Repeatable nmap [g <Plug>(ale_previous)
       Repeatable nmap ]g <Plug>(ale_next)
@@ -449,7 +444,7 @@ return require('packer').startup(function(use)
       command! -nargs=0 ResetLSP call ResetLSP()
     ]])
   end}
-  use { 'nvim-treesitter/nvim-treesitter', run = ':TSUpdate', config = function()
+  use { 'nvim-treesitter/nvim-treesitter', requires = {'nvim-treesitter/nvim-treesitter-textobjects'}, run = ':TSUpdate', config = function()
     require'nvim-treesitter.configs'.setup {
       ensure_installed = "maintained",
       highlight = {
@@ -471,10 +466,31 @@ return require('packer').startup(function(use)
             -- You can use the capture groups defined in textobjects.scm
             ["af"] = "@function.outer",
             ["if"] = "@function.inner",
-            ["ac"] = "@class.outer",
-            ["ic"] = "@class.inner",
+            ["ac"] = "@comment.outer",
+            ["ic"] = "@comment.outer",
+            ["as"] = "@statement.outer",
+            ["is"] = "@statement.outer",
           },
         },
+        swap = {
+          enable = true,
+          swap_next = {
+            ["]a"] = "@parameter.inner"
+          },
+          swap_previous = {
+            ["[a"] = "@parameter.inner"
+          }
+        },
+        move = {
+          enable = true,
+          set_jumps = true,
+          goto_next_start = {
+            ["]]"] = "@function.outer",
+          },
+          goto_previous_start = {
+            ["[["] = "@function.outer",
+          },
+        }
       },
     }
   end}
@@ -543,18 +559,15 @@ return require('packer').startup(function(use)
     vim.g.highlightedyank_highlight_duration = 250
   end} -- highlight any text as it is yanked
   use 'pgdouyon/vim-evanesco' -- Highlight search, clear after searching
-  use {'nathanaelkane/vim-indent-guides', config = function()
+  use {'nathanaelkane/vim-indent-guides', opt = true, cmd = { 'IndentGuidesToggle', 'IndentGuidesEnable' }, config = function()
     vim.g.indent_guides_enable_on_vim_startup = 0
     vim.g.indent_guides_color_change_percent = 4
   end} -- A Vim plugin for visually displaying indent levels in code
-
-  use 'prabirshrestha/async.vim'
-  use { 'vim-test/vim-test', config = function()
+  use { 'vim-test/vim-test', opt = true, keys = {{'n', ',ctn'}, {'n', ',ctf'}}, config = function()
     -- E15 when I run this. I think its b/c of function?
     vim.cmd([[
       " Send a selection to the terminal:
       map <leader>ctn :TestNearest<CR>
-      map <leader>cts :TestSuite<CR>
       map <leader>ctf :TestFile<CR>
       map <leader>ctl :TestLast<CR>
 
@@ -582,13 +595,10 @@ return require('packer').startup(function(use)
     --          'sub': function('SubstituteTransform'),
     --          'last': function('LastTransform') }
   end}
-  use 'mattn/webapi-vim'
-
+  use 'prabirshrestha/async.vim' -- TODO who needs this?
+  use 'mattn/webapi-vim' -- TODO who needs this?
   use 'wellle/targets.vim' -- many text objects
-  use 'kana/vim-textobj-user' -- user defined textobj implementations
-  use 'glts/vim-textobj-comment' -- select comment with vic or vac.
-  use 'michaeljsmith/vim-indent-object' -- vii and viI (visual inner Indent)
-  use 'saaguero/vim-textobj-pastedtext' -- vgb for last pasted text.
-
+  use {'michaeljsmith/vim-indent-object', opt = true, keys = {{'v', 'ii'}, {'v', 'iI'}}} -- vii and viI (visual inner Indent)
+  use {'saaguero/vim-textobj-pastedtext', opt = true, keys = {{'v', 'gb'}}} -- vgb for last pasted text.
   use 'ryanoasis/vim-devicons'
 end)
