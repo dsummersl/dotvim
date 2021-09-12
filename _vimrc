@@ -1,9 +1,7 @@
-" vundle plugin options {{{
-
 lua require('plugins')
 
+" basic options {{{
 set termguicolors
-set background=dark
 colorscheme gruvbox-material
 
 set cursorline
@@ -11,14 +9,13 @@ set cursorline
 " TODO don't set a colorcolumn if the file is read only (help files and such).
 set colorcolumn=+20,+21,+22,+23
 
-" }}}
-" basic options {{{
 set undofile
 set undodir=~/.vim/undo
 
 set conceallevel=2 " for ToggleGroupConceal
 set autowrite
 set nonumber
+
 " I want to know about bad tab/space use:
 set nolist
 
@@ -28,19 +25,14 @@ set noshowmode
 " give a little context when at the top/bottom of the file.
 set scrolloff=2
 
-set guioptions=egt  " GUI options
-syntax on
-
 " use folding by default
 set foldmethod=marker
 set foldcolumn=auto
 
 " Turn on mouse for a visual and normal mode only:
-set mouse=v
+set mouse=vn
 
-if has('nvim')
-  set diffopt=filler,iwhiteall,vertical,hiddenoff,algorithm:patience
-end
+set diffopt=filler,iwhiteall,vertical,hiddenoff,algorithm:patience
 set nohlsearch
 set nowrap
 
@@ -51,8 +43,6 @@ set tabstop=2
 set softtabstop=2
 
 set visualbell
-" allow backspacing over everything in insert mode
-set backspace=2
 set nobackup
 set incsearch
 
@@ -70,16 +60,15 @@ set wildcharm=<C-Z>
 
 let g:mapleader=','
 
-set viminfo='50,\"50,h
-set history=100 " keep 100 lines of command line history
-set ruler       " show the cursor position all the time
-set showcmd     " Show (partial) command in status line.
+" TODO removable
+" set shada='50,\"50,h
+" set history=100 " keep 100 lines of command line history
 set showmatch   " Show matching brackets.
-set encoding=utf-8
 
 set textwidth=80
-set formatoptions=croq
-set breakindent " match indenting when wrapping text
+set formatoptions=tcqlronj
+" TODO needed in python?
+" set breakindent " match indenting when wrapping text
 set linebreak " when wrap is turned on, break on words
 
 " let macros go faster
@@ -88,113 +77,26 @@ set lazyredraw
 set updatetime=1000
 set timeoutlen=500
 
-" Revisit the history on the command mode without leaving the home rows.
-cnoremap <c-n> <down>
-cnoremap <c-p> <up>
-
 " show replace previews
 set inccommand=split
 set pumblend=15
+
 " completion for command mode suggestions
 set wildoptions=pum
 set signcolumn=yes:1
 
 let g:python3_host_prog='/Users/danesummers/.pyenv/shims/python'
 "}}}
-" Plugin settings, changes."{{{
+" Mappings {{{
 
-function! LspStatus()
-  if luaeval('#vim.lsp.buf_get_clients() > 0')
-    let value = luaeval("vim.b.lsp_current_function")
-    if value == "null"
-      return ""
-    else
-      return value
-    endif
-  endif
-  return ""
-endfunction
-function! LightlineMode()
-  return lightline#mode()[0:0]
-endfunction
-function! LightlineFilename()
-  let filename = expand('%:t') !=# '' ? expand('%:t') : '[No Name]'
-  let modified = &modified ? ' +' : ''
-  return filename . modified
-endfunction
-function! LightlineFiletype()
-  return winwidth(0) > 70 ? (strlen(&filetype) ? WebDevIconsGetFileTypeSymbol() . ' ': 'no ft') : ''
-endfunction
-function! LightlineFileformat()
-  return WebDevIconsGetFileFormatSymbol()
-endfunction
-let g:lightline = {
-      \ 'colorscheme': 'jellybeans',
-      \ 'active': {
-      \   'left': [ [ 'mode', 'paste' ],
-      \             [ 'readonly', 'filename' ] ],
-      \   'right': [ [ 'lineinfo' ], [ 'percent' ],
-      \             [ 'currentfunction', 'indent', 'fileformat', 'filetype' ] ]
-      \ },
-      \ 'component': {
-      \   'indent': '%{&expandtab?"":"t"}%{&tabstop}',
-      \ },
-      \ 'component_function': {
-      \   'mode': 'LightlineMode',
-      \   'filename': 'LightlineFilename',
-      \   'filetype': 'LightlineFiletype',
-      \   'fileformat': 'LightlineFileformat',
-      \   'currentfunction': 'LspStatus',
-      \ },
-      \ }
-
-
-" pathing for abolish
-set runtimepath+=~/.vim/after
-
-" save my right pinky some pain:
-nnoremap <leader>t zt
-nnoremap <leader>b zb
-nnoremap <leader>, zz
-
-
-" delete all buffers function
-function! DeleteHiddenBuffers()
-    let tpbl=[]
-    call map(range(1, tabpagenr('$')), 'extend(tpbl, tabpagebuflist(v:val))')
-    for buf in filter(range(1, bufnr('$')), 'bufexists(v:val) && index(tpbl, v:val)==-1')
-        silent execute 'bwipeout' buf
-    endfor
-endfunction
-"}}}
-  " Setup how in 'list' mode characters for white space and tabs appear"{{{
-  " display tags and trailing white spaces in list mode.
-function! ShowMixedIndents()
-  set fillchars+=stl:\ ,stlnc:\ 
-  set lcs=tab:\ \ 
-  syntax match MixedIndentation /^\v +(\t+)|\t+( +)/
-  hi MixedIndentation guibg=Red guifg=White ctermbg=Red ctermfg=White
-endfunction
-"}}}
-" Mappings"{{{
-
-vnoremap [6 d:let @"=system('base64 --decode', @") \| norm ""p<cr>
-vnoremap ]6 d:let @"=system('base64 --wrap=0', @") \| norm ""p<cr>
-
-let g:AutoPairsFlyMode=1
-let g:AutoPairsMultilineClose=0
-
-map <leader>gv  <Plug>(operator-vtr)
-call operator#user#define_ex_command('vtr', 'VtrSendLinesToRunner')
-
-" I want to see all the options when I try to jump to a tag:
-nmap <C-]> :GutentagsReset<cr>g<C-]>zt
+" Revisit the history on the command mode without leaving the home rows.
+cnoremap <c-n> <down>
+cnoremap <c-p> <up>
 
 nnoremap <leader>o :only<cr>
 nnoremap <leader>' :q<cr>
 nnoremap <leader>n <c-w>_
-nnoremap <leader>gg :G<cr>
-nnoremap <leader>. :E
+
 map <leader>co :copen<cr>
 map <leader>lo :lopen<cr>
 
@@ -203,23 +105,15 @@ map <leader>lo :lopen<cr>
 " From https://github.com/mhinz/vim-galore#quickly-edit-your-macros
 nnoremap <leader>m  :<c-u><c-r><c-r>='let @'. v:register .' = '. string(getreg(v:register))<cr><c-f><left>
 
-let g:EasyMotion_do_mapping=0
-let g:EasyMotion_smartcase=1
-nmap <leader>s  <Plug>(easymotion-sn)
-nmap <leader>; <Plug>(easymotion-next)
-let g:EasyMotion_enter_jump_first = 1
-let g:EasyMotion_space_jump_first = 1
-
-cabbrev bda call DeleteHiddenBuffers()
-cabbrev gitv Gitv
+" save my right pinky some pain:
+nnoremap <leader>t zt
+nnoremap <leader>b zb
+nnoremap <leader>, zz
 
 " I like having zs to jump to the start of the line, but I'd really love a
 " zm to jump to the middle - I don't think I'll miss the original folding
 " function of zm:
 nnoremap zm zs
-
-" Use projectionist mapping when doing a C-7
-nnoremap <leader>6 :A<cr>
 
 " when switching between the alternate window, automatically save.
 inoremap <C-^> <C-O>:e #<CR>
@@ -232,7 +126,7 @@ inoremap <C-c> <Esc>
 " instead of using this, I use 'gt'
 map <nul> <esc>
 
-" turn off help
+" turn off help key
 map <f1> <nul>
 imap <f1> <nul>
 
@@ -257,23 +151,28 @@ noremap <leader>/a :AA
 noremap ]oI :set diffopt-=iwhiteall<cr>
 noremap [oI :set diffopt+=iwhiteall<cr>
 
+vnoremap [6 d:let @"=system('base64 --decode', @") \| norm ""p<cr>
+vnoremap ]6 d:let @"=system('base64 --wrap=0', @") \| norm ""p<cr>
+
 " Open the current directory (or make new directory)
 map - :e %:h/<CR>
-
-" automatically toggle with control-
-let g:switch_mapping = ',gs'
-
-vmap <leader>v :VSSplit<cr>
 "}}}
-" Commands"{{{
+" :bda - delete all buffers {{{
+function! DeleteHiddenBuffers()
+    let tpbl=[]
+    call map(range(1, tabpagenr('$')), 'extend(tpbl, tabpagebuflist(v:val))')
+    for buf in filter(range(1, bufnr('$')), 'bufexists(v:val) && index(tpbl, v:val)==-1')
+        silent execute 'bwipeout' buf
+    endfor
+endfunction
+cabbrev bda call DeleteHiddenBuffers()
+"}}}
+" <leader>ch - Toggle search conceal WIP{{{
 
 " TODO Note that this usually only works if 'syn off' is set - if the text you are
 " searching for is on a line with syntax coloring, then it likely will not be
 " folded.
 map <leader>ch :call ToggleSearchConceal()<CR>
-
-" Convert unicode to ASCII
-command! UTFToASCII :call utf2ascii#replaceUTF()<cr>
 
 function! ToggleSearchConceal()
   if !exists('b:searchtext')
@@ -315,8 +214,8 @@ function! ToggleGroupConceal(group, cchar)
     endif
   endfor
 endfunction
-
-" Set an arbitrary value to a number.
+"}}}
+" UV()/DV() - Increment/decrement a pattern search functions{{{
 "
 " Use this like so to change something, incrementing from 392:
 "
@@ -368,24 +267,9 @@ function! s:SetStop(type,count)
 endfunction
 
 command! -nargs=* SS call s:SetStop(<f-args>)
-
-function! ConcealSearch(repl)
-  exe 'syn keyword concealSearch "'. @/ .'" conceal cchar='. a:repl
-  set conceallevel=2
-endfunction
-
-" Let an command execute once:
-function! Once(cmd)
-  let varName = 'b:'. a:cmd .'_once'
-  if exists(varName)
-    return
-  endif
-  exe 'let '. varName .'=1'
-  exe a:cmd
-endfunction
-
+"}}}
+" :DiffAgainstRegisterA - Diff the current selection against whatever is in register 'a' {{{
 function! s:DiffAgainstRegisterA() range
-  " Diff the current selection against whatever is in register 'a'
   let lines = getline(a:firstline, a:lastline)
   new
   setlocal buftype=nofile
@@ -403,15 +287,6 @@ function! s:DiffAgainstRegisterA() range
 endfunction
 command! -nargs=0 -range DiffAgainstRegisterA <line1>,<line2>call s:DiffAgainstRegisterA()
 vnoremap <leader>-  :'<,'>DiffAgainstRegisterA<CR>
-
-function! s:ResetGutentags()
-  if exists('b:gutentags_files')
-    unlet b:gutentags_files
-  endif
-  call gutentags#setup_gutentags()
-endfunction
-
-command! -nargs=0 GutentagsReset call s:ResetGutentags()
 "}}}
 " Automappings"{{{
 
@@ -464,17 +339,8 @@ if has('autocmd') && !exists('g:autocommands_loaded')
   autocmd BufNewFile,BufRead *.tsv Delimiter \t
   autocmd BufNewFile,BufRead Vagrantfile set ft=ruby
 
-  " Some other ruby project is tromping over the gutentags files - manually
-  " reload every time we enter:
-  autocmd BufRead *.rb  :GutentagsReset
-  autocmd BufRead *.slim  :GutentagsReset
-  autocmd BufRead *.haml  :GutentagsReset
-
   " make commit messages formatted to 72 columns for optimal reading/history:
   autocmd BufNewFile,BufRead COMMIT_EDITMSG setlocal tw=72 fo=tc spell
-
-  " get rid of any extra git fugitive buffers
-  autocmd BufReadPost fugitive://* set bufhidden=delete
 
   " close the quickfix window when an item is selected.
   autocmd FileType qf nnoremap <buffer> <CR> <CR>:cclose<CR>

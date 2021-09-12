@@ -111,8 +111,21 @@ return require('packer').startup(function(use)
       Repeatable map <leader>gk <C-w>l<C-w>kkdv
     ]])
   end}
-  use 'easymotion/vim-easymotion' -- mapped to s for two letter searching.
-  use 'wellle/visual-split.vim' -- I've mapped this to <leader>v Lines to quickly resize splits (VSSplit)
+  use {'easymotion/vim-easymotion', config = function()
+    vim.cmd([[
+      let g:EasyMotion_do_mapping=0
+      let g:EasyMotion_smartcase=1
+      nmap <leader>s  <Plug>(easymotion-sn)
+      nmap <leader>; <Plug>(easymotion-next)
+      let g:EasyMotion_enter_jump_first = 1
+      let g:EasyMotion_space_jump_first = 1
+    ]])
+  end} -- mapped to s for two letter searching.
+  use {'wellle/visual-split.vim', config = function()
+    vim.cmd([[
+      vmap <leader>v :VSSplit<cr>
+    ]])
+  end} -- I've mapped this to <leader>v Lines to quickly resize splits (VSSplit)
   use 'kana/vim-operator-user' -- Define my own operators for motions.
   use 'tommcdo/vim-exchange'
 
@@ -123,7 +136,13 @@ return require('packer').startup(function(use)
   use 'tommcdo/vim-express' -- custom g* operations (g=iw - prompt 'get_'.v:val.'()' to change a word to a func)
 
   use 'stefandtw/quickfix-reflector.vim' -- edit the qf list directly with copen
-  use { 'dsummersl/vim-projectionist', branch = 'issue-94' } -- :E* commands for a project
+  use { 'dsummersl/vim-projectionist', branch = 'issue-94', config = function()
+    vim.cmd([[
+      " Use projectionist mapping when doing a C-7
+      nnoremap <leader>6 :A<cr>
+      nnoremap <leader>. :E
+    ]])
+  end} -- :E* commands for a project
   use 'MarcWeber/vim-addon-local-vimrc' -- enable project local .vimrc files
   use {'tpope/vim-fugitive', config = function()
     vim.cmd([[
@@ -131,6 +150,10 @@ return require('packer').startup(function(use)
       nnoremap <F6> :Gvdiff<CR>
       map <leader>f6 :Gvdiff<cr>
       map <leader>f7 :Gvdiffsplit<cr>
+      nnoremap <leader>gg :G<cr>
+
+      " get rid of any extra git fugitive buffers
+      autocmd BufReadPost fugitive://* set bufhidden=delete
     ]])
   end} -- git
   use 'tpope/vim-rhubarb' -- Gbrowse 
@@ -142,9 +165,38 @@ return require('packer').startup(function(use)
           '*/public/assets/*', '*/public/packs/*', '*/public/packs-test/*', '*/vendor/*',
           'tags', '*.sql', '*.html'}
 
+    vim.cmd([[
+      " I want to see all the options when I try to jump to a tag:
+      nmap <C-]> :GutentagsReset<cr>g<C-]>zt
+
+      function! ResetGutentags()
+        if exists('b:gutentags_files')
+          unlet b:gutentags_files
+        endif
+        call gutentags#setup_gutentags()
+      endfunction
+
+      command! -nargs=0 GutentagsReset call ResetGutentags()
+
+      " Some other ruby project is tromping over the gutentags files - manually
+      " reload every time we enter:
+      autocmd BufRead *.rb  :GutentagsReset
+      autocmd BufRead *.slim  :GutentagsReset
+      autocmd BufRead *.haml  :GutentagsReset
+    ]])
   end}
-  use 'vinodkri/vim-tmux-runner' -- :VtrSendCommandToRunner for tmux
-  use 'tpope/vim-abolish' -- fix spelling errors
+  use {'vinodkri/vim-tmux-runner', config = function()
+    vim.cmd([[
+      map <leader>gv  <Plug>(operator-vtr)
+      call operator#user#define_ex_command('vtr', 'VtrSendLinesToRunner')
+    ]])
+  end} -- :VtrSendCommandToRunner for tmux
+  use {'tpope/vim-abolish', config = function()
+    vim.cmd([[
+      " pathing for abolish
+      set runtimepath+=~/.vim/after
+    ]])
+  end} -- fix spelling errors
   use 'editorconfig/editorconfig-vim' -- 0.1.0 EditorConfig Plugin for Vim -- helps define and maintain consistent coding style
   use 'mattn/emmet-vim' -- fast HTML tag generation (in insert mode type tr*3CTL-Y, to make three <tr>s
   use 'tomtom/tcomment_vim' -- An extensible & universal comment vim-plugin that also handles embedded filetypes
@@ -165,6 +217,9 @@ return require('packer').startup(function(use)
     vim.g.Gitv_TruncateCommitSubjects = 1
     vim.g.Gitv_OpenHorizontal = 1
     vim.g.flog_default_arguments={ date = "short" }
+    vim.cmd([[
+      cabbrev gitv Gitv
+    ]])
   end}
   use { 'mhinz/vim-grepper', config = function()
     vim.g.grepper = {
@@ -202,9 +257,20 @@ return require('packer').startup(function(use)
       xmap gs <plug>(GrepperOperator)
     ]])
   end} -- Grepper to search in lots of ways
-  use 'jiangmiao/auto-pairs' -- close quotes and such automatically
-  use '~/Documents/classes/vim-utf2ascii' -- simple utf2ascii function.
+  use {'jiangmiao/auto-pairs', config = function()
+    vim.g.AutoPairsFlyMode=1
+    vim.g.AutoPairsMultilineClose=0
+  end} -- close quotes and such automatically
+  use {'~/Documents/classes/vim-utf2ascii', config = function()
+    vim.cmd([[
+      " Convert unicode to ASCII
+      command! UTFToASCII :call utf2ascii#replaceUTF()<cr>
+    ]])
+  end} -- simple utf2ascii function.
   use {'AndrewRadev/switch.vim', config = function()
+    -- automatically toggle with control-
+    vim.g.switch_mapping = ',gs'
+
     -- left/right and up/down first/last
     vim.g.switch_custom_definitions = {
       { ['\\.\\([a-zA-Z_-]\\+\\)\\>'] = "['\\1']" },
@@ -419,7 +485,60 @@ return require('packer').startup(function(use)
     }
   end}
 
-  use 'itchyny/lightline.vim'
+  use {'itchyny/lightline.vim', config = function()
+    vim.cmd([[
+      function! LspStatus()
+        if luaeval('#vim.lsp.buf_get_clients() > 0')
+          let value = luaeval("vim.b.lsp_current_function")
+          if value == "null"
+            return ""
+          else
+            return value
+          endif
+        endif
+        return ""
+      endfunction
+      function! LightlineMode()
+        return lightline#mode()[0:0]
+      endfunction
+      function! LightlineFilename()
+        let filename = expand('%:t') !=# '' ? expand('%:t') : '[No Name]'
+        let modified = &modified ? ' +' : ''
+        return filename . modified
+      endfunction
+      function! LightlineFiletype()
+        return winwidth(0) > 70 ? (strlen(&filetype) ? WebDevIconsGetFileTypeSymbol() . ' ': 'no ft') : ''
+      endfunction
+      function! LightlineFileformat()
+        return WebDevIconsGetFileFormatSymbol()
+      endfunction
+    ]])
+
+    vim.g.lightline = {
+      colorscheme = 'jellybeans',
+      active = {
+        left = {
+          { 'mode', 'paste' },
+          { 'readonly', 'filename' } 
+        },
+        right = {
+          { 'lineinfo' },
+          { 'percent' },
+          { 'currentfunction', 'indent', 'fileformat', 'filetype' }
+        }
+      },
+      component = {
+        indent = '%{&expandtab?"":"t"}%{&tabstop}',
+      },
+      component_function = {
+        mode = 'LightlineMode',
+        filename = 'LightlineFilename',
+        filetype = 'LightlineFiletype',
+        fileformat = 'LightlineFileformat',
+        currentfunction = 'LspStatus',
+      }
+    }
+  end}
   use {'machakann/vim-highlightedyank', config = function()
     vim.g.highlightedyank_highlight_duration = 250
   end} -- highlight any text as it is yanked
