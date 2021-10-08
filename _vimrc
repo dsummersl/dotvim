@@ -1,9 +1,6 @@
 lua require('plugins')
 
 " basic options {{{
-set termguicolors
-colorscheme gruvbox-material
-
 set cursorline
 " show column markers beyond the 80, and 100
 " TODO don't set a colorcolumn if the file is read only (help files and such).
@@ -30,7 +27,7 @@ set foldmethod=marker
 set foldcolumn=auto
 
 " Turn on mouse for a visual and normal mode only:
-set mouse=vn
+set mouse=v
 
 set diffopt=filler,iwhiteall,vertical,hiddenoff,algorithm:patience
 set nohlsearch
@@ -297,21 +294,18 @@ if has('autocmd') && !exists('g:autocommands_loaded')
   " alignment:
   autocmd FileType netrw setlocal ts=30
 
-  highlight! link SluiceCursor CursorLineNr
-
   function! s:gruvbox_material_custom() abort
     highlight! link TSEmphasis Comment
     highlight! link TSComment Comment
-    highlight! link String Blue
-    highlight! link TSString Blue
-    highlight! link TSFunction AquaBold
+    highlight! link String BlueItalic
+    highlight! link TSString BlueItalic
 
     " highlight! link LspReferenceRead Search
     " highlight! link LspReferenceText Search
     " highlight! link LspReferenceWrite IncSearch
 
-    highlight! link LspDiagnosticsSignHint Folded
-    highlight! link LspDiagnosticsSignError RedSign
+    highlight! link DiagnosticSignHint Folded
+    highlight! link DiagnosticSignError RedSign
 
     highlight! link SignifySignAdd    GreenSign
     highlight! link SignifySignDelete RedSign
@@ -319,7 +313,7 @@ if has('autocmd') && !exists('g:autocommands_loaded')
 
     " gruvbox blows away my plugin highlight groups - relink them
     highlight! link SluiceVisibleArea Normal
-    highlight! link SluiceCursor CursorLineNr
+    highlight! link SluiceCursor Normal
     highlight! link SluiceColumn SignColumn
   endfunction
   

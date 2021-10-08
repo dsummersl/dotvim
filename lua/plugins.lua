@@ -3,12 +3,20 @@ vim.cmd [[packadd packer.nvim]]
 return require('packer').startup(function(use)
   use 'wbthomason/packer.nvim'
 
+  use {'plasticboy/vim-markdown', config = function()
+    vim.g.vim_markdown_folding_disabled = 1
+  end}
+
   use { 'mhinz/vim-signify', config = function()
     vim.g.signify_sign_add    = '▎'
     vim.g.signify_sign_change = '▎'
     vim.cmd([[
       nmap ]h <plug>(signify-next-hunk)
       nmap [h <plug>(signify-prev-hunk)
+      omap ih <plug>(signify-motion-inner-pending)
+      xmap ih <plug>(signify-motion-inner-visual)
+      omap ah <plug>(signify-motion-outer-pending)
+      xmap ah <plug>(signify-motion-outer-visual)
     ]])
   end}
   use {'AndrewRadev/splitjoin.vim', opt = true, keys = { {'n', 'gJ'}, {'n', 'gS'} }, config = function()
@@ -18,6 +26,26 @@ return require('packer').startup(function(use)
     vim.g.kite_supported_languages = {'*'}
     vim.g.kite_completions = 0
   end}
+  -- use {
+  --   'nvim-telescope/telescope.nvim',
+  --   requires = { {'nvim-lua/plenary.nvim'} },
+  --   config = function()
+  --     require('telescope').setup {
+  --       defaults = {
+  --         previewer = false,
+  --         sorting_strategy = "descending",
+  --         color_devicons = true,
+  --       }
+  --     }
+  --
+  --     vim.cmd([[
+  --       nnoremap <C-p> :Telescope find_files<CR>
+  --       nnoremap <C-t> :Telescope tags<CR>
+  --       " User iterm2 to map shift-ctrl-t to <f16>
+  --       nnoremap <F16> :Telescope current_buffer_tags<CR>
+  --     ]])
+  --   end
+  -- }
   use { 'ThePrimeagen/refactoring.nvim', requires = {'nvim-lua/plenary.nvim'}, config = function()
     local refactor = require("refactoring")
     refactor.setup()
@@ -48,7 +76,7 @@ return require('packer').startup(function(use)
   use { 'nvim-lua/completion-nvim', config = function()
     vim.g.completion_enable_snippet = 'UltiSnips'
     vim.g.completion_enable_auto_popup = 1
-    vim.g.completion_trigger_keyword_length = 2
+    vim.g.completion_trigger_keyword_length = 1
     vim.cmd([[
       set completefunc=kite#completion#complete
       imap <c-j> <Plug>(completion_next_source)
@@ -83,8 +111,13 @@ return require('packer').startup(function(use)
     vim.g.gruvbox_material_enable_bold   = 1
     vim.g.airline_theme                  = 'gruvbox_material'
     vim.g.gruvbox_material_current_word  = 'grey background'
+    vim.cmd([[
+      set termguicolors
+      set background=dark
+      colorscheme gruvbox-material
+    ]])
   end}
-  use {'jeetsukumaran/vim-indentwise', opt = true, keys = { {'n', '[iI'}, {'n', ']iI'}, {'n', ']ii'}, {'n', '[ii'} }, config = function()
+  use {'jeetsukumaran/vim-indentwise', config = function()
     vim.cmd([[
       " Map indent motions to a more indent-like key
       let g:indentwise_suppress_keymaps = 1
@@ -99,7 +132,6 @@ return require('packer').startup(function(use)
     ]])
   end} -- Support indent motions ]ii
   use 'tpope/vim-unimpaired' -- many additional mappings for ]q, etc
-  use 'tpope/vim-repeat' -- awesome: makes the surround plugin work with the '.' keys (repeatability!)
   use { 'kreskij/Repeatable.vim', requires = { 'tpope/vim-repeat' }, config = function()
     vim.cmd([[
       call repeatable#Setup()
@@ -111,15 +143,20 @@ return require('packer').startup(function(use)
   end}
   use {'easymotion/vim-easymotion', opt = true, keys = { {'n', ',s'} }, config = function()
     vim.cmd([[
-      let g:EasyMotion_do_mapping=0
-      let g:EasyMotion_smartcase=1
       nmap <leader>s  <Plug>(easymotion-sn)
       nmap <leader>; <Plug>(easymotion-next)
+    ]])
+  end, setup = function()
+    vim.cmd([[
+      let g:EasyMotion_do_mapping=0
+      let g:EasyMotion_smartcase=1
+      let g:EasyMotion_do_mapping=0
+
       let g:EasyMotion_enter_jump_first = 1
       let g:EasyMotion_space_jump_first = 1
     ]])
   end} -- mapped to s for two letter searching.
-  use {'wellle/visual-split.vim', opt = true, keys = { {'n', ',v'} }, config = function()
+  use {'wellle/visual-split.vim', opt = true, keys = { {'v', ',v'}, {'n', ',v'} }, config = function()
     vim.cmd([[
       vmap <leader>v :VSSplit<cr>
     ]])
@@ -153,14 +190,15 @@ return require('packer').startup(function(use)
       autocmd BufReadPost fugitive://* set bufhidden=delete
     ]])
   end} -- git
-  use {'tpope/vim-rhubarb', opt = true, cmd = 'GBrowse'} -- Gbrowse 
+  -- rhubarb seems to be broken for most github repos after commit af12af4
+  use {'tpope/vim-rhubarb', commit = 'af12af4', requires = { 'tpope/vim-fugitive' }}
   use {'tpope/vim-eunuch', opt = true, cmd = { 'Copy', 'Remove', 'Delete', 'Move', 'Rename' }} -- eunuch.vim: cp/move/unlink commands
   use {'ludovicchabant/vim-gutentags', config = function()
     vim.g.gutentags_modules = {'ctags'}
     vim.g.gutentags_cache_dir = '~/.vim/tags'
-    vim.g.gutentags_ctags_exclude = { '*.json', '*.md', '*/node_modules/*', '*/bower_components/*',
+    vim.g.gutentags_ctags_exclude = { '*/node_modules/*', '*/bower_components/*',
           '*/public/assets/*', '*/public/packs/*', '*/public/packs-test/*', '*/vendor/*',
-          'tags', '*.sql', '*.html'}
+          'tags', '**/*.json', '**/*.md', '**/*.sql', '**/*.html' }
 
     vim.cmd([[
       " I want to see all the options when I try to jump to a tag:
@@ -182,12 +220,6 @@ return require('packer').startup(function(use)
       autocmd BufRead *.haml  :GutentagsReset
     ]])
   end}
-  use {'vinodkri/vim-tmux-runner', config = function()
-    vim.cmd([[
-      map <leader>gv  <Plug>(operator-vtr)
-      call operator#user#define_ex_command('vtr', 'VtrSendLinesToRunner')
-    ]])
-  end} -- :VtrSendCommandToRunner for tmux
   use {'tpope/vim-abolish', config = function()
     vim.cmd([[
       " pathing for abolish
@@ -321,11 +353,6 @@ return require('packer').startup(function(use)
       javascript = {'eslint'},
       scss = {'stylelint'}
     }
-    vim.g.ale_lint_on_enter = 0
-    vim.g.ale_lint_on_filetype_changed = 0
-    vim.g.ale_lint_on_save = 0
-    vim.g.ale_lint_on_text_changed = 0
-    vim.g.ale_lint_on_insert_leave = 0
     vim.g.ale_completion_enabled = 0
     vim.g.ale_set_balloons = 0
     vim.g.ale_set_signs = 1
@@ -375,21 +402,20 @@ return require('packer').startup(function(use)
 
       lsp_status.on_attach(client)
       require'completion'.on_attach()
-      -- buf_set_option('omnifunc', 'v:lua.vim.lsp.omnifunc')
 
       local opts = { noremap=true, silent=true }
       buf_set_keymap('n', ',dd', '<Cmd>lua vim.lsp.buf.definition()<CR>', opts)
-      buf_set_keymap('n', ',dD', '<cmd>lua require("lspsaga.provider").preview_definition()<CR>', opts)
-      buf_set_keymap('n', ',dh', '<cmd>lua require("lspsaga.hover").render_hover_doc()<CR>', opts)
       buf_set_keymap('n', ',di', '<cmd>lua vim.lsp.buf.implementation()<CR>', opts)
-      buf_set_keymap('n', ',ds', '<cmd>lua require("lspsaga.signaturehelp").signature_help()<CR>', opts)
-      buf_set_keymap('n', ',dr', '<cmd>lua require("lspsaga.rename").rename()<CR>', opts)
-      buf_set_keymap('n', ',da', '<cmd>lua require("lspsaga.codeaction").code_action()<CR>', opts)
-      buf_set_keymap('v', ',da', '<cmd>lua require("lspsaga.codeaction").range_code_action()<CR>', opts)
+      buf_set_keymap('n', ',dh', '<cmd>lua vim.lsp.buf.hover()<CR>', opts)
+      buf_set_keymap('n', ',ds', '<cmd>lua vim.lsp.buf.signature_help()<CR>', opts)
+      buf_set_keymap('n', ',dr', '<cmd>lua vim.lsp.buf.rename()<CR>', opts)
+      buf_set_keymap('n', ',da', '<cmd>lua vim.lsp.buf.code_action()<CR>', opts)
+      buf_set_keymap('v', ',da', '<cmd>lua vim.lsp.buf.range_code_action()<CR>', opts)
       buf_set_keymap('n', ',dl', '<cmd>lua vim.lsp.buf.references()<CR>', opts)
+      buf_set_keymap('n', ',dL', '<cmd>Trouble lsp_references<CR>', opts)
       buf_set_keymap('n', ',dq', '<cmd>lua vim.lsp.diagnostic.set_loclist()<CR>', opts)
-      buf_set_keymap('n', ']d', '<cmd>lua require("lspsaga.diagnostic").lsp_jump_diagnostic_next()<CR>', opts)
-      buf_set_keymap('n', '[d', '<cmd>lua require("lspsaga.diagnostic").lsp_jump_diagnostic_prev()<CR>', opts)
+      buf_set_keymap('n', ']d', '<cmd>lua vim.lsp.diagnostic.goto_next()<CR>', opts)
+      buf_set_keymap('n', '[d', '<cmd>lua vim.lsp.diagnostic.goto_prev()<CR>', opts)
 
       -- Set some keybinds conditional on server capabilities
       if client.resolved_capabilities.document_formatting then
@@ -415,6 +441,13 @@ return require('packer').startup(function(use)
             " autocmd CursorMoved <buffer> 
           augroup END
         ]], false)
+      end
+
+      local signs = { Error = " ", Warning = " ", Hint = ". ", Information = " " }
+
+      for type, icon in pairs(signs) do
+        local hl = "DiagnosticSign" .. type
+        vim.fn.sign_define(hl, { text = icon, texthl = hl, numhl = "" })
       end
     end
 
@@ -466,8 +499,9 @@ return require('packer').startup(function(use)
             -- You can use the capture groups defined in textobjects.scm
             ["af"] = "@function.outer",
             ["if"] = "@function.inner",
-            ["ac"] = "@comment.outer",
-            ["ic"] = "@comment.outer",
+            -- TODO this does not currently work for multiline comments
+            -- ["ac"] = "@comment.outer",
+            -- ["ic"] = "@comment.outer",
             ["as"] = "@statement.outer",
             ["is"] = "@statement.outer",
           },
@@ -494,13 +528,10 @@ return require('packer').startup(function(use)
       },
     }
   end}
-  use { 'glepnir/lspsaga.nvim', config = function()
-    local saga = require 'lspsaga'
-    saga.init_lsp_saga{
-      hint_sign = '.'
+  use { 'folke/trouble.nvim', requires = "kyazdani42/nvim-web-devicons", config = function()
+    require("trouble").setup {
     }
   end}
-
   use {'itchyny/lightline.vim', config = function()
     vim.cmd([[
       function! LspStatus()
@@ -563,7 +594,13 @@ return require('packer').startup(function(use)
     vim.g.indent_guides_enable_on_vim_startup = 0
     vim.g.indent_guides_color_change_percent = 4
   end} -- A Vim plugin for visually displaying indent levels in code
-  use { 'vim-test/vim-test', opt = true, keys = {{'n', ',ctn'}, {'n', ',ctf'}}, config = function()
+  use {'vinodkri/vim-tmux-runner', config = function()
+    vim.cmd([[
+      map <leader>gv  <Plug>(operator-vtr)
+      call operator#user#define_ex_command('vtr', 'VtrSendLinesToRunner')
+    ]])
+  end} -- :VtrSendCommandToRunner for tmux
+  use { 'vim-test/vim-test', opt = true, keys = {{'n', ',ctn'}, {'n', ',ctf'}, {'n', ',ctl'}}, config = function()
     -- E15 when I run this. I think its b/c of function?
     vim.cmd([[
       " Send a selection to the terminal:
@@ -573,6 +610,8 @@ return require('packer').startup(function(use)
 
       " Run test commands in tmux - or neoterm, thats my other fav.
       let g:test#strategy = 'vtr'
+
+      VtrAttachToPane
     ]])
     --
     --   " Transforms for running tests in. {} is replaced. For example:
@@ -599,6 +638,7 @@ return require('packer').startup(function(use)
   use 'mattn/webapi-vim' -- TODO who needs this?
   use 'wellle/targets.vim' -- many text objects
   use {'michaeljsmith/vim-indent-object', opt = true, keys = {{'v', 'ii'}, {'v', 'iI'}}} -- vii and viI (visual inner Indent)
-  use {'saaguero/vim-textobj-pastedtext', opt = true, keys = {{'v', 'gb'}}} -- vgb for last pasted text.
+  use {'saaguero/vim-textobj-pastedtext', requires = { 'kana/vim-textobj-user' }} -- vgb for last pasted text.
+  use {'glts/vim-textobj-comment', requires = { 'kana/vim-textobj-user' }} -- select comment with vic or vac.
   use 'ryanoasis/vim-devicons'
 end)
