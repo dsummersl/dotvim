@@ -3,13 +3,14 @@ vim.cmd [[packadd packer.nvim]]
 return require('packer').startup(function(use)
   use 'wbthomason/packer.nvim'
 
+  use { "nathom/filetype.nvim", config = 'vim.g.did_load_filetypes = 1' }
   use {'plasticboy/vim-markdown', config = function()
     vim.g.vim_markdown_folding_disabled = 1
   end}
 
   use { 'mhinz/vim-signify', config = function()
-    vim.g.signify_sign_add    = '▎'
-    vim.g.signify_sign_change = '▎'
+    vim.g.signify_sign_add    = '▏'
+    vim.g.signify_sign_change = '▏'
     vim.cmd([[
       nmap ]h <plug>(signify-next-hunk)
       nmap [h <plug>(signify-prev-hunk)
@@ -73,28 +74,50 @@ return require('packer').startup(function(use)
     --  ])
     -- ]])
   end}
-  use { 'nvim-lua/completion-nvim', config = function()
-    vim.g.completion_enable_snippet = 'UltiSnips'
-    vim.g.completion_enable_auto_popup = 1
-    vim.g.completion_trigger_keyword_length = 1
-    vim.cmd([[
-      set completefunc=kite#completion#complete
-      imap <c-j> <Plug>(completion_next_source)
-      imap <c-k> <Plug>(completion_prev_source)
+  use {'hrsh7th/nvim-cmp',
+    requires = {
+      'neovim/nvim-lspconfig',
+      'hrsh7th/cmp-nvim-lsp',
+      'hrsh7th/cmp-buffer',
+      'quangnguyen30192/cmp-nvim-ultisnips',
+      'hrsh7th/cmp-omni',
+      'onsails/lspkind-nvim',
+    },
+    config = function()
+      vim.cmd([[
+        set completeopt=menu,menuone,noselect
+        set pumheight=15
+      ]])
 
-      " don't search included files by default - it can be fucked up slow:
-      set complete-=i
-      set completeopt=menuone,noinsert,noselect
-      set shortmess+=c
-    ]])
-    vim.g.completion_chain_complete_list = {
-      default = {
-        {mode = 'user'},
-        {complete_items = {'lsp', 'snippet'}},
-      }
-    }
-
-  end}
+      local cmp = require'cmp'
+      local lspkind = require('lspkind')
+      cmp.setup({
+        formatting = {
+          format = lspkind.cmp_format({with_text = false, maxwidth = 50})
+        },
+        snippet = {
+          expand = function(args)
+            vim.fn["UltiSnips#Anon"](args.body)
+          end,
+        },
+        mapping = {
+          ['<C-d>'] = cmp.mapping.scroll_docs(-4),
+          ['<C-f>'] = cmp.mapping.scroll_docs(4),
+          ['<C-e>'] = cmp.mapping.close(),
+          -- ['<CR>'] = cmp.mapping.confirm({ select = true }),
+          -- ['<Tab>'] = cmp.mapping.confirm({ select = true }),
+          -- ['<C-Space>'] = cmp.mapping.complete(),
+          ['<C-Space>'] = cmp.mapping.confirm({ select = true }),
+        },
+        sources = {
+          { name = 'nvim_lsp', priority=2, keyword_length = 3 },
+          { name = 'ultisnips', priority=4 },
+          { name = 'buffer', priority=3, keyword_length = 3 },
+          -- { name = 'omni', priority=1, keyword_length=3 },
+        }
+      })
+    end
+  }
   use {'dsummersl/vim-diffundo', opt = true, keys = { {'n', ',uu'}, {'n', ',rr'}, {'n', ',uf'}, {'n', ',rf'} }, config = function()
     vim.cmd([[
       " undo/redo to the previous write
@@ -296,7 +319,7 @@ return require('packer').startup(function(use)
       command! UTFToASCII :call utf2ascii#replaceUTF()<cr>
     ]])
   end} -- simple utf2ascii function.
-  use {'AndrewRadev/switch.vim', opt = true, keys = { 'n', ',gs' }, config = function()
+  use {'AndrewRadev/switch.vim', config = function()
     -- automatically toggle with control-
     vim.g.switch_mapping = ',gs'
 
@@ -382,8 +405,7 @@ return require('packer').startup(function(use)
       let g:UltiSnipsJumpBackwardTrigger='<S-Tab>'
     ]])
   end}
-  use { 'nvim-lua/lsp-status.nvim' }
-  use { 'neovim/nvim-lspconfig', requires = {'nvim-lua/lsp-status.nvim', 'nvim-lua/completion-nvim'}, config = function()
+  use { 'neovim/nvim-lspconfig', requires = {'nvim-lua/lsp-status.nvim' }, config = function()
     local lspconfig = require('lspconfig')
     local lsp_status = require('lsp-status')
     lsp_status.register_progress()
@@ -442,30 +464,31 @@ return require('packer').startup(function(use)
           augroup END
         ]], false)
       end
-
-      local signs = { Error = " ", Warning = " ", Hint = ". ", Information = " " }
-
-      for type, icon in pairs(signs) do
-        local hl = "DiagnosticSign" .. type
-        vim.fn.sign_define(hl, { text = icon, texthl = hl, numhl = "" })
-      end
     end
 
-    lspconfig.tsserver.setup{ on_attach=on_attach, capabilities=lsp_status.capabilities }
-    lspconfig.yamlls.setup{ on_attach=on_attach, capabilities=lsp_status.capabilities }
-    lspconfig.jsonls.setup{ on_attach=on_attach, capabilities=lsp_status.capabilities }
-    lspconfig.html.setup{ on_attach=on_attach, capabilities=lsp_status.capabilities }
-    lspconfig.cssls.setup{ on_attach=on_attach, capabilities=lsp_status.capabilities }
-    lspconfig.gopls.setup{ on_attach=on_attach, capabilities=lsp_status.capabilities }
-    lspconfig.vimls.setup{ on_attach=on_attach, capabilities=lsp_status.capabilities }
-    lspconfig.solargraph.setup{ on_attach=on_attach, capabilities=lsp_status.capabilities }
-    lspconfig.rust_analyzer.setup{ on_attach=on_attach, capabilities=lsp_status.capabilities }
+    local signs = { Error = " ", Warning = " ", Hint = ". ", Information = " " }
+
+    for type, icon in pairs(signs) do
+      local hl = "DiagnosticSign" .. type
+      vim.fn.sign_define(hl, { text = icon, texthl = hl, numhl = "" })
+    end
+
+    local cmp_capabilities = require('cmp_nvim_lsp').update_capabilities(vim.lsp.protocol.make_client_capabilities())
+
+    lspconfig.tsserver.setup{ on_attach=on_attach, capabilities=cmp_capabilities }
+    lspconfig.yamlls.setup{ on_attach=on_attach, capabilities=cmp_capabilities }
+    lspconfig.jsonls.setup{ on_attach=on_attach, capabilities=cmp_capabilities }
+    lspconfig.html.setup{ on_attach=on_attach, capabilities=cmp_capabilities }
+    lspconfig.cssls.setup{ on_attach=on_attach, capabilities=cmp_capabilities }
+    lspconfig.gopls.setup{ on_attach=on_attach, capabilities=cmp_capabilities }
+    lspconfig.vimls.setup{ on_attach=on_attach, capabilities=cmp_capabilities }
+    lspconfig.solargraph.setup{ on_attach=on_attach, capabilities=cmp_capabilities }
+    lspconfig.rust_analyzer.setup{ on_attach=on_attach, capabilities=cmp_capabilities }
     lspconfig.sumneko_lua.setup{
-      on_attach=on_attach, capabilities=lsp_status.capabilities,
+      on_attach=on_attach, capabilities=capabilities,
       cmd = {"Users","danesummers",".cache","nvim","lspconfig","sumneko_lua","lua-language-server","bin","macOS","lua-language-server"}
     }
-    -- lspconfig.pyls.setup{ on_attach=on_attach, capabilities=lsp_status.capabilities }
-    lspconfig.pyright.setup{ on_attach=on_attach, capabilities=lsp_status.capabilities }
+    lspconfig.pyright.setup{ on_attach=on_attach, capabilities=cmp_capabilities }
 
 
     vim.cmd([[
@@ -487,7 +510,7 @@ return require('packer').startup(function(use)
       },
       incremental_selection = { enable = true },
       textobjects = { enable = true },
-      indent = { enable = false },
+      indent = { enable = true },
       textobjects = {
         select = {
           enable = true,
@@ -530,6 +553,7 @@ return require('packer').startup(function(use)
   end}
   use { 'folke/trouble.nvim', requires = "kyazdani42/nvim-web-devicons", config = function()
     require("trouble").setup {
+      mode = 'lsp_document_diagnostics'
     }
   end}
   use {'itchyny/lightline.vim', config = function()
