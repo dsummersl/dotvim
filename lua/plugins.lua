@@ -3,6 +3,7 @@ vim.cmd [[packadd packer.nvim]]
 return require('packer').startup(function(use)
   use 'wbthomason/packer.nvim'
 
+  use 'liuchengxu/vista.vim' -- Vista to view outline of tags/lsp
   use { "nathom/filetype.nvim", config = 'vim.g.did_load_filetypes = 1' }
   use {'plasticboy/vim-markdown', config = function()
     vim.g.vim_markdown_folding_disabled = 1
@@ -22,10 +23,6 @@ return require('packer').startup(function(use)
   end}
   use {'AndrewRadev/splitjoin.vim', opt = true, keys = { {'n', 'gJ'}, {'n', 'gS'} }, config = function()
     vim.g.splitjoin_trailing_comma = 1
-  end}
-  use { 'kiteco/vim-plugin', config = function()
-    vim.g.kite_supported_languages = {'*'}
-    vim.g.kite_completions = 0
   end}
   -- use {
   --   'nvim-telescope/telescope.nvim',
@@ -104,15 +101,19 @@ return require('packer').startup(function(use)
           ['<C-d>'] = cmp.mapping.scroll_docs(-4),
           ['<C-f>'] = cmp.mapping.scroll_docs(4),
           ['<C-e>'] = cmp.mapping.close(),
-          -- ['<CR>'] = cmp.mapping.confirm({ select = true }),
-          -- ['<Tab>'] = cmp.mapping.confirm({ select = true }),
-          -- ['<C-Space>'] = cmp.mapping.complete(),
+          ['<C-n>'] = cmp.mapping(function(fallback)
+            if cmp.visible() then
+              cmp.select_next_item()
+            else
+              cmp.complete()
+            end
+          end),
           ['<C-Space>'] = cmp.mapping.confirm({ select = true }),
         },
         sources = {
-          { name = 'nvim_lsp', priority=2, keyword_length = 3 },
-          { name = 'ultisnips', priority=4 },
-          { name = 'buffer', priority=3, keyword_length = 3 },
+          { name = 'nvim_lsp', priority=2, keyword_length = 5 },
+          { name = 'ultisnips', priority=4, keyword_length = 2 },
+          { name = 'buffer', priority=3, keyword_length = 4 },
           -- { name = 'omni', priority=1, keyword_length=3 },
         }
       })
@@ -186,7 +187,7 @@ return require('packer').startup(function(use)
   end} -- I've mapped this to <leader>v Lines to quickly resize splits (VSSplit)
   use 'kana/vim-operator-user' -- Define my own operators for motions.
   use {'tommcdo/vim-exchange', opt = true, keys = { {'n', 'cx'}, }, }
-  use {'tommcdo/vim-lion', opt = true, keys = { {'n', 'gl'}, {'n', 'gL'} }, config = function()
+  use {'tommcdo/vim-lion', config = function()
     -- When using gL and gl, squeeze any extra leading whitespace.
     vim.g.lion_squeeze_spaces = 1
   end} -- align with operator gL and gl (ie glip= to align paragraph by =)
@@ -405,100 +406,115 @@ return require('packer').startup(function(use)
       let g:UltiSnipsJumpBackwardTrigger='<S-Tab>'
     ]])
   end}
-  use { 'neovim/nvim-lspconfig', requires = {'nvim-lua/lsp-status.nvim' }, config = function()
-    local lspconfig = require('lspconfig')
-    local lsp_status = require('lsp-status')
-    lsp_status.register_progress()
+  use { 'neovim/nvim-lspconfig',
+    requires = {
+      'nvim-lua/lsp-status.nvim',
+      'ray-x/lsp_signature.nvim',
+      'https://gitlab.com/yorickpeterse/nvim-dd.git',
+    },
+    config = function()
+      local lspconfig = require('lspconfig')
+      local lsp_status = require('lsp-status')
+      local lsp_signature = require('lsp_signature')
+      require('dd').setup()
 
-    vim.lsp.handlers["textDocument/publishDiagnostics"] = vim.lsp.with(
-      vim.lsp.diagnostic.on_publish_diagnostics, {
-        virtual_text = false,
-        signs = true,
-        update_in_insert = false,
-      }
-    )
+      lsp_signature.setup({
+        floating_window = false,
+        hint_prefix = "",
+      })
 
-    local on_attach = function(client, bufnr)
-      local function buf_set_keymap(...) vim.api.nvim_buf_set_keymap(bufnr, ...) end
-      local function buf_set_option(...) vim.api.nvim_buf_set_option(bufnr, ...) end
+      lsp_status.register_progress()
 
-      lsp_status.on_attach(client)
-      require'completion'.on_attach()
-
-      local opts = { noremap=true, silent=true }
-      buf_set_keymap('n', ',dd', '<Cmd>lua vim.lsp.buf.definition()<CR>', opts)
-      buf_set_keymap('n', ',di', '<cmd>lua vim.lsp.buf.implementation()<CR>', opts)
-      buf_set_keymap('n', ',dh', '<cmd>lua vim.lsp.buf.hover()<CR>', opts)
-      buf_set_keymap('n', ',ds', '<cmd>lua vim.lsp.buf.signature_help()<CR>', opts)
-      buf_set_keymap('n', ',dr', '<cmd>lua vim.lsp.buf.rename()<CR>', opts)
-      buf_set_keymap('n', ',da', '<cmd>lua vim.lsp.buf.code_action()<CR>', opts)
-      buf_set_keymap('v', ',da', '<cmd>lua vim.lsp.buf.range_code_action()<CR>', opts)
-      buf_set_keymap('n', ',dl', '<cmd>lua vim.lsp.buf.references()<CR>', opts)
-      buf_set_keymap('n', ',dL', '<cmd>Trouble lsp_references<CR>', opts)
-      buf_set_keymap('n', ',dq', '<cmd>lua vim.lsp.diagnostic.set_loclist()<CR>', opts)
-      buf_set_keymap('n', ']d', '<cmd>lua vim.lsp.diagnostic.goto_next()<CR>', opts)
-      buf_set_keymap('n', '[d', '<cmd>lua vim.lsp.diagnostic.goto_prev()<CR>', opts)
-
-      -- Set some keybinds conditional on server capabilities
-      if client.resolved_capabilities.document_formatting then
-        buf_set_keymap("n", ",df", "<cmd>lua vim.lsp.buf.formatting()<CR>", opts)
-      elseif client.resolved_capabilities.document_range_formatting then
-        buf_set_keymap("n", ",df", "<cmd>lua vim.lsp.buf.formatting()<CR>", opts)
-      end
-      
-      local on_references = vim.lsp.handlers["textDocument/references"]
-      vim.lsp.handlers["textDocument/references"] = vim.lsp.with(
-        on_references, {
-          -- Use location list instead of quickfix list
-          loclist = true,
+      vim.lsp.handlers["textDocument/publishDiagnostics"] = vim.lsp.with(
+        vim.lsp.diagnostic.on_publish_diagnostics, {
+          virtual_text = false,
+          signs = true,
+          update_in_insert = false,
         }
       )
 
-      -- Set autocommands conditional on server_capabilities
-      if client.resolved_capabilities.document_highlight then
-        vim.api.nvim_exec([[
-          augroup lsp_document_highlight
-            autocmd! * <buffer>
-            autocmd CursorHold <buffer> lua vim.lsp.buf.clear_references() ; vim.lsp.buf.document_highlight()
-            " autocmd CursorMoved <buffer> 
-          augroup END
-        ]], false)
+      local on_attach = function(client, bufnr)
+        local function buf_set_keymap(...) vim.api.nvim_buf_set_keymap(bufnr, ...) end
+        local function buf_set_option(...) vim.api.nvim_buf_set_option(bufnr, ...) end
+
+        lsp_status.on_attach(client)
+        lsp_signature.on_attach(client)
+
+        local opts = { noremap=true, silent=true }
+        buf_set_keymap('n', ',dd', '<Cmd>lua vim.lsp.buf.definition()<CR>', opts)
+        buf_set_keymap('n', ',di', '<cmd>lua vim.lsp.buf.implementation()<CR>', opts)
+        buf_set_keymap('n', ',dh', '<cmd>lua vim.lsp.buf.hover()<CR>', opts)
+        buf_set_keymap('n', ',ds', '<cmd>lua vim.lsp.buf.signature_help()<CR>', opts)
+        buf_set_keymap('n', ',dr', '<cmd>lua vim.lsp.buf.rename()<CR>', opts)
+        buf_set_keymap('n', ',da', '<cmd>lua vim.lsp.buf.code_action()<CR>', opts)
+        buf_set_keymap('v', ',da', '<cmd>lua vim.lsp.buf.range_code_action()<CR>', opts)
+        buf_set_keymap('n', ',dl', '<cmd>lua vim.lsp.buf.references()<CR>', opts)
+        buf_set_keymap('n', ',dL', '<cmd>Trouble lsp_references<CR>', opts)
+        buf_set_keymap('n', ',dq', '<cmd>lua vim.lsp.diagnostic.set_loclist()<CR>', opts)
+        buf_set_keymap('n', ']d', '<cmd>lua vim.lsp.diagnostic.goto_next()<CR>', opts)
+        buf_set_keymap('n', '[d', '<cmd>lua vim.lsp.diagnostic.goto_prev()<CR>', opts)
+
+        -- Set some keybinds conditional on server capabilities
+        if client.resolved_capabilities.document_formatting then
+          buf_set_keymap("n", ",df", "<cmd>lua vim.lsp.buf.formatting()<CR>", opts)
+        elseif client.resolved_capabilities.document_range_formatting then
+          buf_set_keymap("n", ",df", "<cmd>lua vim.lsp.buf.formatting()<CR>", opts)
+        end
+        
+        local on_references = vim.lsp.handlers["textDocument/references"]
+        vim.lsp.handlers["textDocument/references"] = vim.lsp.with(
+          on_references, {
+            -- Use location list instead of quickfix list
+            loclist = true,
+          }
+        )
+
+        -- Set autocommands conditional on server_capabilities
+        if client.resolved_capabilities.document_highlight then
+          vim.api.nvim_exec([[
+            augroup lsp_document_highlight
+              autocmd! * <buffer>
+              autocmd CursorHold <buffer> lua vim.lsp.buf.clear_references() ; vim.lsp.buf.document_highlight()
+              " autocmd CursorMoved <buffer> 
+            augroup END
+          ]], false)
+        end
       end
-    end
 
-    local signs = { Error = " ", Warning = " ", Hint = ". ", Information = " " }
+      local signs = { Error = " ", Warning = " ", Hint = ". ", Information = " " }
 
-    for type, icon in pairs(signs) do
-      local hl = "DiagnosticSign" .. type
-      vim.fn.sign_define(hl, { text = icon, texthl = hl, numhl = "" })
-    end
+      for type, icon in pairs(signs) do
+        local hl = "DiagnosticSign" .. type
+        vim.fn.sign_define(hl, { text = icon, texthl = hl, numhl = "" })
+      end
 
-    local cmp_capabilities = require('cmp_nvim_lsp').update_capabilities(vim.lsp.protocol.make_client_capabilities())
+      local servers = { 'tsserver', 'yamlls', 'jsonls', 'html', 'cssls', 'gopls',
+        'vimls', 'solargraph', 'rust_analyzer', 'pyright' }
+      local cmp_capabilities = require('cmp_nvim_lsp').update_capabilities(vim.lsp.protocol.make_client_capabilities())
 
-    lspconfig.tsserver.setup{ on_attach=on_attach, capabilities=cmp_capabilities }
-    lspconfig.yamlls.setup{ on_attach=on_attach, capabilities=cmp_capabilities }
-    lspconfig.jsonls.setup{ on_attach=on_attach, capabilities=cmp_capabilities }
-    lspconfig.html.setup{ on_attach=on_attach, capabilities=cmp_capabilities }
-    lspconfig.cssls.setup{ on_attach=on_attach, capabilities=cmp_capabilities }
-    lspconfig.gopls.setup{ on_attach=on_attach, capabilities=cmp_capabilities }
-    lspconfig.vimls.setup{ on_attach=on_attach, capabilities=cmp_capabilities }
-    lspconfig.solargraph.setup{ on_attach=on_attach, capabilities=cmp_capabilities }
-    lspconfig.rust_analyzer.setup{ on_attach=on_attach, capabilities=cmp_capabilities }
-    lspconfig.sumneko_lua.setup{
-      on_attach=on_attach, capabilities=capabilities,
-      cmd = {"Users","danesummers",".cache","nvim","lspconfig","sumneko_lua","lua-language-server","bin","macOS","lua-language-server"}
-    }
-    lspconfig.pyright.setup{ on_attach=on_attach, capabilities=cmp_capabilities }
+      for _, lsp in ipairs(servers) do
+        lspconfig[lsp].setup {
+          on_attach=on_attach,
+          capabilities=cmp_capabilities,
+          flags = {
+            debounce_text_changes = 150,
+          }
+        }
+      end
+      lspconfig.sumneko_lua.setup {
+        on_attach=on_attach,
+        cmd = {"Users","danesummers",".cache","nvim","lspconfig","sumneko_lua","lua-language-server","bin","macOS","lua-language-server"},
+        capabilities=cmp_capabilities,
+      }
 
+      vim.cmd([[
+        function! ResetLSP()
+          lua vim.lsp.stop_client(vim.lsp.get_active_clients())
+          edit
+        endfunction
 
-    vim.cmd([[
-      function! ResetLSP()
-        lua vim.lsp.stop_client(vim.lsp.get_active_clients())
-        edit
-      endfunction
-
-      command! -nargs=0 ResetLSP call ResetLSP()
-    ]])
+        command! -nargs=0 ResetLSP call ResetLSP()
+      ]])
   end}
   use { 'nvim-treesitter/nvim-treesitter', requires = {'nvim-treesitter/nvim-treesitter-textobjects'}, run = ':TSUpdate', config = function()
     require'nvim-treesitter.configs'.setup {
@@ -613,7 +629,7 @@ return require('packer').startup(function(use)
   use {'machakann/vim-highlightedyank', config = function()
     vim.g.highlightedyank_highlight_duration = 250
   end} -- highlight any text as it is yanked
-  use 'pgdouyon/vim-evanesco' -- Highlight search, clear after searching
+  use 'pgdouyon/vim-evanesco' -- vmap *, Highlight search, clear after searching
   use {'nathanaelkane/vim-indent-guides', opt = true, cmd = { 'IndentGuidesToggle', 'IndentGuidesEnable' }, config = function()
     vim.g.indent_guides_enable_on_vim_startup = 0
     vim.g.indent_guides_color_change_percent = 4
@@ -624,44 +640,45 @@ return require('packer').startup(function(use)
       call operator#user#define_ex_command('vtr', 'VtrSendLinesToRunner')
     ]])
   end} -- :VtrSendCommandToRunner for tmux
-  use { 'vim-test/vim-test', opt = true, keys = {{'n', ',ctn'}, {'n', ',ctf'}, {'n', ',ctl'}}, config = function()
-    -- E15 when I run this. I think its b/c of function?
-    vim.cmd([[
-      " Send a selection to the terminal:
-      map <leader>ctn :TestNearest<CR>
-      map <leader>ctf :TestFile<CR>
-      map <leader>ctl :TestLast<CR>
+  use { 'vim-test/vim-test',
+    keys = {{'n', ',ctn'}, {'n', ',ctf'}, {'n', ',ctl'}},
+    opt = true, 
+    config = function()
+      vim.g['test#preserve_screen'] = 1
+      vim.g['test#strategy'] = 'vtr'
+      vim.g['test#sub'] = ''
+      local SubstituteTransform = function(cmd)
+        -- Transforms for running tests in. {} is replaced. For example:
+        -- let test#sub = 'docker run --rm web python manage.py test {} | pygmentize -l pytb'
+        -- or, just pipe to something
+        -- let test#sub = '{} | pygmentize -l pytb'
+        return vim.fn.substitute(vim.g['test#sub'], '{}', cmd, 'g')
+      end
+      local LastTransform = function(cmd)
+        -- Keep only the last word, and combine with SubstituteTransform - handy for
+        -- the djangotest type test where I want to take advantage of its figuring out
+        -- the test name (at the end of the cmd) but want to run it differently
+        return SubstituteTransform(vim.fn.substitute(cmd, '^.* \\(\\S\\+\\)$', '\\1', ''))
+      end
+      vim.g['test#custom_transformations'] = {
+        sub = SubstituteTransform,
+        last = LastTransform,
+      }
 
-      " Run test commands in tmux - or neoterm, thats my other fav.
-      let g:test#strategy = 'vtr'
+      -- E15 when I run this. I think its b/c of function?
+      vim.cmd([[
+        " Send a selection to the terminal:
+        map <leader>ctn :TestNearest<CR>
+        map <leader>ctf :TestFile<CR>
+        map <leader>ctl :TestLast<CR>
 
-      VtrAttachToPane
-    ]])
-    --
-    --   " Transforms for running tests in. {} is replaced. For example:
-    --   " let test#sub = 'docker run --rm web python manage.py test {} | pygmentize -l pytb'
-    --   " or, just pipe to something
-    --   " let test#sub = '{} | pygmentize -l pytb'
-    --   let g:test#sub = ''
-    --   function! SubstituteTransform(cmd) abort
-    --     return substitute(g:test#sub, '{}', a:cmd, 'g')
-    --   endfunction
-    --
-    --   function! LastTransform(cmd) abort
-    --     " Keep only the last word, and combine with SubstituteTransform - handy for
-    --     " the djangotest type test where I want to take advantage of its figuring out
-    --     " the test name (at the end of the cmd) but want to run it differently
-    --     return SubstituteTransform(substitute(a:cmd, '^.* \(\S\+\)$', '\1', ''))
-    --   endfunction
-    --
-    --   let g:test#custom_transformations = {
-    --          'sub': function('SubstituteTransform'),
-    --          'last': function('LastTransform') }
+        VtrAttachToPane
+      ]])
   end}
   use 'prabirshrestha/async.vim' -- TODO who needs this?
   use 'mattn/webapi-vim' -- TODO who needs this?
   use 'wellle/targets.vim' -- many text objects
-  use {'michaeljsmith/vim-indent-object', opt = true, keys = {{'v', 'ii'}, {'v', 'iI'}}} -- vii and viI (visual inner Indent)
+  use {'michaeljsmith/vim-indent-object', opt = true, keys = {{'o', 'iI'}, {'o', 'ii'}, {'v', 'ii'}, {'v', 'iI'}}} -- vii and viI (visual inner Indent)
   use {'saaguero/vim-textobj-pastedtext', requires = { 'kana/vim-textobj-user' }} -- vgb for last pasted text.
   use {'glts/vim-textobj-comment', requires = { 'kana/vim-textobj-user' }} -- select comment with vic or vac.
   use 'ryanoasis/vim-devicons'

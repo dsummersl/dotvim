@@ -63,7 +63,7 @@ let g:mapleader=','
 set showmatch   " Show matching brackets.
 
 set textwidth=80
-set formatoptions=tcqlronj
+set formatoptions=cqlronj
 " TODO needed in python?
 " set breakindent " match indenting when wrapping text
 set linebreak " when wrap is turned on, break on words
