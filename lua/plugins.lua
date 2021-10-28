@@ -3,6 +3,11 @@ vim.cmd [[packadd packer.nvim]]
 return require('packer').startup(function(use)
   use 'wbthomason/packer.nvim'
 
+  use { "github/copilot.vim", config = function()
+    vim.g.copilot_no_tab_map = true
+    vim.g.copilot_assume_mapped = true
+    vim.g.copilot_tab_fallback = ""
+  end}
   use 'liuchengxu/vista.vim' -- Vista to view outline of tags/lsp
   use { "nathom/filetype.nvim", config = 'vim.g.did_load_filetypes = 1' }
   use {'plasticboy/vim-markdown', config = function()
@@ -105,7 +110,12 @@ return require('packer').startup(function(use)
             if cmp.visible() then
               cmp.select_next_item()
             else
-              cmp.complete()
+              local copilot_keys = vim.fn["copilot#Accept"]()
+              if copilot_keys ~= "" then
+                vim.api.nvim_feedkeys(copilot_keys, "i", true)
+              else
+                fallback()
+              end
             end
           end),
           ['<C-Space>'] = cmp.mapping.confirm({ select = true }),
@@ -185,7 +195,12 @@ return require('packer').startup(function(use)
       vmap <leader>v :VSSplit<cr>
     ]])
   end} -- I've mapped this to <leader>v Lines to quickly resize splits (VSSplit)
-  use 'kana/vim-operator-user' -- Define my own operators for motions.
+  use {'kana/vim-operator-user', config = function()
+    vim.cmd([[
+      call operator#user#define_ex_command('vtr', 'VtrSendLinesToRunner')
+      " call operator#user#define_ex_command('g/', 'VtrSendLinesToRunner')
+    ]])
+  end} -- Define my own operators for motions.
   use {'tommcdo/vim-exchange', opt = true, keys = { {'n', 'cx'}, }, }
   use {'tommcdo/vim-lion', config = function()
     -- When using gL and gl, squeeze any extra leading whitespace.
@@ -637,7 +652,6 @@ return require('packer').startup(function(use)
   use {'vinodkri/vim-tmux-runner', config = function()
     vim.cmd([[
       map <leader>gv  <Plug>(operator-vtr)
-      call operator#user#define_ex_command('vtr', 'VtrSendLinesToRunner')
     ]])
   end} -- :VtrSendCommandToRunner for tmux
   use { 'vim-test/vim-test',

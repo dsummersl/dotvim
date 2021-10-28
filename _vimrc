@@ -86,6 +86,8 @@ let g:python3_host_prog='/Users/danesummers/.pyenv/shims/python'
 "}}}
 " Mappings {{{
 
+noremap <leader>/' /"<cr>
+
 " Revisit the history on the command mode without leaving the home rows.
 cnoremap <c-n> <down>
 cnoremap <c-p> <up>
