@@ -76,7 +76,7 @@ set timeoutlen=500
 
 " show replace previews
 set inccommand=split
-set pumblend=15
+set pumblend=10
 
 " completion for command mode suggestions
 set wildoptions=pum

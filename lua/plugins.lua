@@ -29,32 +29,65 @@ return require('packer').startup(function(use)
   use {'AndrewRadev/splitjoin.vim', opt = true, keys = { {'n', 'gJ'}, {'n', 'gS'} }, config = function()
     vim.g.splitjoin_trailing_comma = 1
   end}
-  -- use {
-  --   'nvim-telescope/telescope.nvim',
-  --   requires = { {'nvim-lua/plenary.nvim'} },
-  --   config = function()
-  --     require('telescope').setup {
-  --       defaults = {
-  --         previewer = false,
-  --         sorting_strategy = "descending",
-  --         color_devicons = true,
-  --       }
-  --     }
-  --
-  --     vim.cmd([[
-  --       nnoremap <C-p> :Telescope find_files<CR>
-  --       nnoremap <C-t> :Telescope tags<CR>
-  --       " User iterm2 to map shift-ctrl-t to <f16>
-  --       nnoremap <F16> :Telescope current_buffer_tags<CR>
-  --     ]])
-  --   end
-  -- }
+  use {
+    'nvim-telescope/telescope.nvim',
+    requires = {
+      'nvim-lua/plenary.nvim',
+      'nvim-lua/popup.nvim',
+      'nvim-telescope/telescope-media-files.nvim',
+    },
+    run = 'pip install ueberzug',
+    config = function()
+      require('telescope').load_extension('media_files')
+      require('telescope').setup {
+        defaults = {
+          sorting_strategy = "descending",
+          color_devicons = true,
+          mappings = {
+            i = {
+              ["<C-j>"] = require('telescope.actions').move_selection_next,
+              ["<C-k>"] = require('telescope.actions').move_selection_previous,
+              ["<C-p>"] = require('telescope.actions').close,
+              ["<C-c>"] = function() vim.cmd [[stopinsert]] end
+            },
+            n = {
+              ["<C-c>"] = require('telescope.actions').close,
+            }
+          },
+        },
+        pickers = {
+          find_files = {
+            previewer = false,
+          },
+          oldfiles = {
+            previewer = false,
+            only_cwd = true,
+          }
+        }
+      }
+
+      vim.cmd([[
+        nnoremap <C-p> :Telescope find_files<CR>
+        " User iterm2 to map shift-ctrl-p to <f15>
+        nnoremap <F15> :Telescope oldfiles<CR>
+        nnoremap <C-t> :Telescope tags<CR>
+        " User iterm2 to map shift-ctrl-t to <f16>
+        nnoremap <F16> :Telescope current_buffer_tags<CR>
+      ]])
+    end
+  }
   use { 'ThePrimeagen/refactoring.nvim', requires = {'nvim-lua/plenary.nvim'}, config = function()
-    local refactor = require("refactoring")
-    refactor.setup()
-    vim.api.nvim_set_keymap("v", "<Leader>re", [[ <Esc><Cmd>lua require('refactoring').refactor('Extract Function')<CR>]], {noremap = true, silent = true, expr = false})
-    vim.api.nvim_set_keymap("v", "<Leader>rf", [[ <Esc><Cmd>lua require('refactoring').refactor('Extract Function To File')<CR>]], {noremap = true, silent = true, expr = false})
-    vim.api.nvim_set_keymap("v", "<Leader>rt", [[ <Esc><Cmd>lua require('refactoring').refactors()<CR>]], {noremap = true, silent = true, expr = false})
+    -- TODO this doesn't work at the moment. I think its an incompatibility with
+    -- telescope.
+    -- local refactor = require("refactoring")
+    -- refactor.setup()
+    -- function refactor(prompt_bufnr)
+    --   local content = require("telescope.actions.state").get_selected_entry(prompt_bufnr)
+    --   require("telescope.actions").close(prompt_bufnr)
+    --   require("refactoring").refactor(content.value)
+    -- end
+    -- vim.api.nvim_set_keymap("v", "<Leader>re", [[ <Esc><Cmd>lua require('refactoring').refactor('Extract Function')<CR>]], {noremap = true, silent = true, expr = false})
+    -- vim.api.nvim_set_keymap("v", "<Leader>rf", [[ <Esc><Cmd>lua require('refactoring').refactor('Extract Function To File')<CR>]], {noremap = true, silent = true, expr = false})
   end}
   use { 'machakann/vim-sandwich', setup = function()
     -- for vim-sandwich don't have any s mappings as per docs
@@ -105,17 +138,18 @@ return require('packer').startup(function(use)
         mapping = {
           ['<C-d>'] = cmp.mapping.scroll_docs(-4),
           ['<C-f>'] = cmp.mapping.scroll_docs(4),
-          ['<C-e>'] = cmp.mapping.close(),
+          ['<C-y>'] = cmp.mapping(cmp.mapping.disable, { 'i', 'c', 's' }),
+          ['<C-e>'] = cmp.mapping(function(fallback)
+            local copilot_keys = vim.fn["copilot#Accept"]()
+            if copilot_keys ~= "" then
+              vim.api.nvim_feedkeys(copilot_keys, "i", true)
+            end
+          end),
           ['<C-n>'] = cmp.mapping(function(fallback)
             if cmp.visible() then
               cmp.select_next_item()
             else
-              local copilot_keys = vim.fn["copilot#Accept"]()
-              if copilot_keys ~= "" then
-                vim.api.nvim_feedkeys(copilot_keys, "i", true)
-              else
-                fallback()
-              end
+              fallback()
             end
           end),
           ['<C-Space>'] = cmp.mapping.confirm({ select = true }),
@@ -266,19 +300,20 @@ return require('packer').startup(function(use)
     ]])
   end} -- fix spelling errors
   use 'editorconfig/editorconfig-vim' -- 0.1.0 EditorConfig Plugin for Vim -- helps define and maintain consistent coding style
-  use {'mattn/emmet-vim', opt = true, keys = { 'n', '<c-y>,' }} -- fast HTML tag generation (in insert mode type tr*3CTL-Y, to make three <tr>s
+  use 'mattn/emmet-vim' -- fast HTML tag generation (in insert mode type tr*3CTL-Y, to make three <tr>s
   use {'tomtom/tcomment_vim', opt = true, keys = { 'n', 'gc' }} -- An extensible & universal comment vim-plugin that also handles embedded filetypes
+  use { 'liuchengxu/vim-clap', run = ':Clap install-binary!' }
   use { 'Yggdroot/LeaderF', run = './install.sh', config = function()
-    vim.cmd([[
-      let g:Lf_WindowHeight = 0.2
-      let g:Lf_PopupWidth = 0.9
-      nnoremap <C-p> :Leaderf file --nowrap<CR>
-      " User iterm2 to map shift-ctrl-p to <f15>
-      nnoremap <F15> :Leaderf mru --cwd --nowrap<CR>
-      nnoremap <C-t> :Leaderf tag --nowrap<CR>
-      " User iterm2 to map shift-ctrl-t to <f16>
-      nnoremap <F16> :Leaderf bufTag --nowrap<CR>
-    ]])
+    -- vim.cmd([[
+    --   let g:Lf_WindowHeight = 0.2
+    --   let g:Lf_PopupWidth = 0.9
+    --   nnoremap <C-p> :Leaderf file --nowrap<CR>
+    --   " User iterm2 to map shift-ctrl-p to <f15>
+    --   nnoremap <F15> :Leaderf mru --cwd --nowrap<CR>
+    --   nnoremap <C-t> :Leaderf tag --nowrap<CR>
+    --   " User iterm2 to map shift-ctrl-t to <f16>
+    --   nnoremap <F16> :Leaderf bufTag --nowrap<CR>
+    -- ]])
   end}
   use {'gregsexton/gitv', opt = true, cmd = 'Gitv', config = function()
     -- we have very long commit lines - this helps!
@@ -301,7 +336,7 @@ return require('packer').startup(function(use)
       noremap <leader>/g :Grepper -tool ag -jump<cr>
 
       " see all the search matches in a separate window
-      noremap <leader>// :exec "Grepper -jump -tool ag -noprompt -query ". substitute(escape(@/,' '),'\\[<>]\{1}','\\\\b','g') ." ". expand('%')<CR>
+      noremap <leader>// :exec "Grepper -jump -tool ag -noprompt -query ". substitute(escape(@/,' '),'\\[<>]\{1}','\\\\b','g')<CR>
 
       " Execute something on all files of the same kind:
       "
@@ -423,20 +458,17 @@ return require('packer').startup(function(use)
   end}
   use { 'neovim/nvim-lspconfig',
     requires = {
+      'williamboman/nvim-lsp-installer',
       'nvim-lua/lsp-status.nvim',
-      'ray-x/lsp_signature.nvim',
+      'b0o/schemastore.nvim',
       'https://gitlab.com/yorickpeterse/nvim-dd.git',
+      'ldelossa/calltree.nvim',
     },
     config = function()
       local lspconfig = require('lspconfig')
       local lsp_status = require('lsp-status')
-      local lsp_signature = require('lsp_signature')
+      require('calltree').setup({})
       require('dd').setup()
-
-      lsp_signature.setup({
-        floating_window = false,
-        hint_prefix = "",
-      })
 
       lsp_status.register_progress()
 
@@ -453,7 +485,6 @@ return require('packer').startup(function(use)
         local function buf_set_option(...) vim.api.nvim_buf_set_option(bufnr, ...) end
 
         lsp_status.on_attach(client)
-        lsp_signature.on_attach(client)
 
         local opts = { noremap=true, silent=true }
         buf_set_keymap('n', ',dd', '<Cmd>lua vim.lsp.buf.definition()<CR>', opts)
@@ -496,40 +527,36 @@ return require('packer').startup(function(use)
         end
       end
 
-      local signs = { Error = " ", Warning = " ", Hint = ". ", Information = " " }
+      local signs = { Error = " ", Warn = " ", Hint = ". ", Info = " " }
 
       for type, icon in pairs(signs) do
         local hl = "DiagnosticSign" .. type
         vim.fn.sign_define(hl, { text = icon, texthl = hl, numhl = "" })
       end
 
-      local servers = { 'tsserver', 'yamlls', 'jsonls', 'html', 'cssls', 'gopls',
-        'vimls', 'solargraph', 'rust_analyzer', 'pyright' }
+      local servers = { 'tsserver', 'yamlls', 'html', 'cssls', 'gopls',
+        'vimls', 'solargraph', 'rust_analyzer' }
       local cmp_capabilities = require('cmp_nvim_lsp').update_capabilities(vim.lsp.protocol.make_client_capabilities())
 
-      for _, lsp in ipairs(servers) do
-        lspconfig[lsp].setup {
-          on_attach=on_attach,
-          capabilities=cmp_capabilities,
-          flags = {
-            debounce_text_changes = 150,
-          }
+      local lsp_installer = require("nvim-lsp-installer")
+      lsp_installer.on_server_ready(function(server)
+        local opts = {
+          on_attach = on_attach,
+          capabilities = cmp_capabilities,
+          flags = { debounce_text_changes = 150 }
         }
-      end
-      lspconfig.sumneko_lua.setup {
-        on_attach=on_attach,
-        cmd = {"Users","danesummers",".cache","nvim","lspconfig","sumneko_lua","lua-language-server","bin","macOS","lua-language-server"},
-        capabilities=cmp_capabilities,
-      }
+        if server.name == "jsonls" then
+          opts.settings = {
+            json = { schemas = require('schemastore').json.schemas() },
+            jsonls = { schemas = require('schemastore').json.schemas() },
+          }
+        end
+        if server.name == "pylsp" then
+          opts.settings = { pylsp = { plugins = { pycodestyle = { enabled = false } } } }
+        end
 
-      vim.cmd([[
-        function! ResetLSP()
-          lua vim.lsp.stop_client(vim.lsp.get_active_clients())
-          edit
-        endfunction
-
-        command! -nargs=0 ResetLSP call ResetLSP()
-      ]])
+        server:setup(opts)
+      end)
   end}
   use { 'nvim-treesitter/nvim-treesitter', requires = {'nvim-treesitter/nvim-treesitter-textobjects'}, run = ':TSUpdate', config = function()
     require'nvim-treesitter.configs'.setup {
@@ -540,13 +567,12 @@ return require('packer').startup(function(use)
         disable = { "c", "rust", "markdown"},  -- list of language that will be disabled
       },
       incremental_selection = { enable = true },
-      textobjects = { enable = true },
-      indent = { enable = true },
+      indent = { enable = false },
       textobjects = {
         select = {
           enable = true,
 
-          -- Automatically jump forward to textobj, similar to targets.vim 
+          -- Automatically jump forward to textobj, similar to targets.vim
           lookahead = true,
 
           keymaps = {
@@ -563,10 +589,10 @@ return require('packer').startup(function(use)
         swap = {
           enable = true,
           swap_next = {
-            ["]a"] = "@parameter.inner"
+            ["]a"] = "@parameter.inner",
           },
           swap_previous = {
-            ["[a"] = "@parameter.inner"
+            ["[a"] = "@parameter.inner",
           }
         },
         move = {
@@ -574,9 +600,11 @@ return require('packer').startup(function(use)
           set_jumps = true,
           goto_next_start = {
             ["]]"] = "@function.outer",
+            ["]s"] = "@statement.outer",
           },
           goto_previous_start = {
             ["[["] = "@function.outer",
+            ["[s"] = "@statement.outer",
           },
         }
       },
@@ -691,7 +719,6 @@ return require('packer').startup(function(use)
   end}
   use 'prabirshrestha/async.vim' -- TODO who needs this?
   use 'mattn/webapi-vim' -- TODO who needs this?
-  use 'wellle/targets.vim' -- many text objects
   use {'michaeljsmith/vim-indent-object', opt = true, keys = {{'o', 'iI'}, {'o', 'ii'}, {'v', 'ii'}, {'v', 'iI'}}} -- vii and viI (visual inner Indent)
   use {'saaguero/vim-textobj-pastedtext', requires = { 'kana/vim-textobj-user' }} -- vgb for last pasted text.
   use {'glts/vim-textobj-comment', requires = { 'kana/vim-textobj-user' }} -- select comment with vic or vac.
