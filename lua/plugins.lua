@@ -2,7 +2,6 @@ vim.cmd [[packadd packer.nvim]]
 
 return require('packer').startup(function(use)
   use 'wbthomason/packer.nvim'
-
   use { "github/copilot.vim", config = function()
     vim.g.copilot_no_tab_map = true
     vim.g.copilot_assume_mapped = true
@@ -26,7 +25,7 @@ return require('packer').startup(function(use)
       xmap ah <plug>(signify-motion-outer-visual)
     ]])
   end}
-  use {'AndrewRadev/splitjoin.vim', opt = true, keys = { {'n', 'gJ'}, {'n', 'gS'} }, config = function()
+  use {'AndrewRadev/splitjoin.vim', config = function()
     vim.g.splitjoin_trailing_comma = 1
   end}
   use {
@@ -43,11 +42,27 @@ return require('packer').startup(function(use)
         defaults = {
           sorting_strategy = "descending",
           color_devicons = true,
+          layout_config = {
+            center = {
+              height = 0.4,
+            },
+            cursor = {
+              height = 0.4,
+            },
+            horizontal = {
+              height = 0.4,
+            },
+            vertical = {
+              height = 0.4,
+            }
+          },
           mappings = {
             i = {
+              ["<C-l>"] = require('telescope.actions.layout').cycle_layout_next,
               ["<C-j>"] = require('telescope.actions').move_selection_next,
               ["<C-k>"] = require('telescope.actions').move_selection_previous,
               ["<C-p>"] = require('telescope.actions').close,
+              ["<Esc>"] = require('telescope.actions').close,
               ["<C-c>"] = function() vim.cmd [[stopinsert]] end
             },
             n = {
@@ -69,9 +84,11 @@ return require('packer').startup(function(use)
       vim.cmd([[
         nnoremap <C-p> :Telescope find_files<CR>
         " User iterm2 to map shift-ctrl-p to <f15>
+        nnoremap <F11> :Telescope oldfiles<CR>
         nnoremap <F15> :Telescope oldfiles<CR>
         nnoremap <C-t> :Telescope tags<CR>
         " User iterm2 to map shift-ctrl-t to <f16>
+        nnoremap <F12> :Telescope current_buffer_tags<CR>
         nnoremap <F16> :Telescope current_buffer_tags<CR>
       ]])
     end
@@ -93,7 +110,7 @@ return require('packer').startup(function(use)
     -- for vim-sandwich don't have any s mappings as per docs
     vim.cmd [[nmap s <Nop>]]
     vim.cmd [[xmap s <Nop>]]
-    
+
     -- Add the space before/after capability that vim-surround had.
     -- TODO can't load this :(
     -- vim.api.nvim_exec([[
@@ -179,6 +196,7 @@ return require('packer').startup(function(use)
     vim.g.gruvbox_material_enable_bold   = 1
     vim.g.airline_theme                  = 'gruvbox_material'
     vim.g.gruvbox_material_current_word  = 'grey background'
+    vim.g.gruvbox_material_diagnostic_virtual_text = 'colored'
     vim.cmd([[
       set termguicolors
       set background=dark
@@ -301,29 +319,7 @@ return require('packer').startup(function(use)
   end} -- fix spelling errors
   use 'editorconfig/editorconfig-vim' -- 0.1.0 EditorConfig Plugin for Vim -- helps define and maintain consistent coding style
   use 'mattn/emmet-vim' -- fast HTML tag generation (in insert mode type tr*3CTL-Y, to make three <tr>s
-  use {'tomtom/tcomment_vim', opt = true, keys = { 'n', 'gc' }} -- An extensible & universal comment vim-plugin that also handles embedded filetypes
-  use { 'liuchengxu/vim-clap', run = ':Clap install-binary!' }
-  use { 'Yggdroot/LeaderF', run = './install.sh', config = function()
-    -- vim.cmd([[
-    --   let g:Lf_WindowHeight = 0.2
-    --   let g:Lf_PopupWidth = 0.9
-    --   nnoremap <C-p> :Leaderf file --nowrap<CR>
-    --   " User iterm2 to map shift-ctrl-p to <f15>
-    --   nnoremap <F15> :Leaderf mru --cwd --nowrap<CR>
-    --   nnoremap <C-t> :Leaderf tag --nowrap<CR>
-    --   " User iterm2 to map shift-ctrl-t to <f16>
-    --   nnoremap <F16> :Leaderf bufTag --nowrap<CR>
-    -- ]])
-  end}
-  use {'gregsexton/gitv', opt = true, cmd = 'Gitv', config = function()
-    -- we have very long commit lines - this helps!
-    vim.g.Gitv_TruncateCommitSubjects = 1
-    vim.g.Gitv_OpenHorizontal = 1
-    vim.g.flog_default_arguments={ date = "short" }
-    vim.cmd([[
-      cabbrev gitv Gitv
-    ]])
-  end}
+  use {'tomtom/tcomment_vim'} -- An extensible & universal comment vim-plugin that also handles embedded filetypes
   use { 'mhinz/vim-grepper', config = function()
     vim.g.grepper = {
       open = 1,
@@ -458,11 +454,13 @@ return require('packer').startup(function(use)
   end}
   use { 'neovim/nvim-lspconfig',
     requires = {
+      'stevearc/dressing.nvim',
       'williamboman/nvim-lsp-installer',
       'nvim-lua/lsp-status.nvim',
       'b0o/schemastore.nvim',
       'https://gitlab.com/yorickpeterse/nvim-dd.git',
       'ldelossa/calltree.nvim',
+      'jose-elias-alvarez/null-ls.nvim',
     },
     config = function()
       local lspconfig = require('lspconfig')
@@ -482,7 +480,6 @@ return require('packer').startup(function(use)
 
       local on_attach = function(client, bufnr)
         local function buf_set_keymap(...) vim.api.nvim_buf_set_keymap(bufnr, ...) end
-        local function buf_set_option(...) vim.api.nvim_buf_set_option(bufnr, ...) end
 
         lsp_status.on_attach(client)
 
@@ -506,7 +503,7 @@ return require('packer').startup(function(use)
         elseif client.resolved_capabilities.document_range_formatting then
           buf_set_keymap("n", ",df", "<cmd>lua vim.lsp.buf.formatting()<CR>", opts)
         end
-        
+
         local on_references = vim.lsp.handlers["textDocument/references"]
         vim.lsp.handlers["textDocument/references"] = vim.lsp.with(
           on_references, {
@@ -534,8 +531,6 @@ return require('packer').startup(function(use)
         vim.fn.sign_define(hl, { text = icon, texthl = hl, numhl = "" })
       end
 
-      local servers = { 'tsserver', 'yamlls', 'html', 'cssls', 'gopls',
-        'vimls', 'solargraph', 'rust_analyzer' }
       local cmp_capabilities = require('cmp_nvim_lsp').update_capabilities(vim.lsp.protocol.make_client_capabilities())
 
       local lsp_installer = require("nvim-lsp-installer")
@@ -554,9 +549,22 @@ return require('packer').startup(function(use)
         if server.name == "pylsp" then
           opts.settings = { pylsp = { plugins = { pycodestyle = { enabled = false } } } }
         end
+        if server.name == "sumneko_lua" then
+          opts.settings = { Lua = { diagnostics = { globals = { 'vim' } } } }
+        end
 
         server:setup(opts)
       end)
+
+      require("null-ls").config({
+        sources = {
+          require("null-ls").builtins.code_actions.refactoring,
+          require("null-ls").builtins.diagnostics.proselint,
+        },
+      })
+      lspconfig["null-ls"].setup({
+        on_attach = on_attach,
+      })
   end}
   use { 'nvim-treesitter/nvim-treesitter', requires = {'nvim-treesitter/nvim-treesitter-textobjects'}, run = ':TSUpdate', config = function()
     require'nvim-treesitter.configs'.setup {
@@ -584,6 +592,8 @@ return require('packer').startup(function(use)
             -- ["ic"] = "@comment.outer",
             ["as"] = "@statement.outer",
             ["is"] = "@statement.outer",
+            ["aa"] = "@parameter.outer",
+            ["ia"] = "@parameter.inner",
           },
         },
         swap = {
@@ -649,7 +659,7 @@ return require('packer').startup(function(use)
       active = {
         left = {
           { 'mode', 'paste' },
-          { 'readonly', 'filename' } 
+          { 'readonly', 'filename' }
         },
         right = {
           { 'lineinfo' },
@@ -684,7 +694,7 @@ return require('packer').startup(function(use)
   end} -- :VtrSendCommandToRunner for tmux
   use { 'vim-test/vim-test',
     keys = {{'n', ',ctn'}, {'n', ',ctf'}, {'n', ',ctl'}},
-    opt = true, 
+    opt = true,
     config = function()
       vim.g['test#preserve_screen'] = 1
       vim.g['test#strategy'] = 'vtr'

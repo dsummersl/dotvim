@@ -75,7 +75,7 @@ set updatetime=1000
 set timeoutlen=500
 
 " show replace previews
-set inccommand=split
+set inccommand=nosplit
 set pumblend=10
 
 " completion for command mode suggestions
