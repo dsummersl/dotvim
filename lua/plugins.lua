@@ -352,7 +352,9 @@ return require('packer').startup(function(use)
     }
 
     vim.cmd([[
+      " search for the name of this file:
       noremap <leader>/f :exec "Grepper -jump -tool ag -noprompt -query ". expand("%:t:r:r")<CR>
+      " search this directory:
       noremap <leader>/g :Grepper -tool ag -jump<cr>
 
       " see all the search matches in a separate window
