@@ -356,8 +356,7 @@ return require('packer').startup(function(use)
       noremap <leader>/g :Grepper -tool ag -jump<cr>
 
       " see all the search matches in a separate window
-      " noremap <leader>// :exec "Grepper -jump -tool ag -noprompt -query ". substitute(escape(@/,' '),'\\[<>]\{1}','\\\\b','g')<CR>
-      noremap <leader>// :exec "Grepper -jump -tool ag -noprompt -query ". @/<CR>
+      noremap <leader>// :exec "Grepper -jump -tool ag -noprompt -query ". substitute(escape(@/,' '),'\\[<>]\{1}','\\\\b','g') ." ". expand("%")<CR>
 
       " Execute something on all files of the same kind:
       "
