@@ -24,7 +24,7 @@ set scrolloff=2
 
 " use folding by default
 set foldmethod=marker
-set foldcolumn=auto
+set foldcolumn=0
 
 " Turn on mouse for a visual and normal mode only:
 set mouse=v
@@ -82,6 +82,7 @@ set pumblend=10
 set wildoptions=pum
 set signcolumn=yes:1
 
+set guifont=JetBrainsMono\ Nerd\ Font\ Mono
 let g:python3_host_prog='/Users/danesummers/.pyenv/shims/python'
 "}}}
 " Mappings {{{
@@ -108,11 +109,16 @@ nnoremap <leader>m  :<c-u><c-r><c-r>='let @'. v:register .' = '. string(getreg(v
 nnoremap <leader>t zt
 nnoremap <leader>b zb
 nnoremap <leader>, zz
+nnoremap <leader>l :%y*<cr>
 
 " I like having zs to jump to the start of the line, but I'd really love a
 " zm to jump to the middle - I don't think I'll miss the original folding
 " function of zm:
 nnoremap zm zs
+
+" This mapping lets me use . to repeat a regular c-prefixed command as if it were performed using cgn.
+" from https://www.reddit.com/r/neovim/comments/sf0hmc/im_really_proud_of_this_mapping_i_came_up_with/
+nnoremap g. :call setreg('/',substitute(@", '\%x00', '\\n', 'g'))<cr>:exec printf("norm %sgn%s", v:operator, v:operator != 'd' ? '<c-a>':'')<cr>
 
 " when switching between the alternate window, automatically save.
 inoremap <C-^> <C-O>:e #<CR>
@@ -153,8 +159,15 @@ noremap [oI :set diffopt+=iwhiteall<cr>
 vnoremap [6 d:let @"=system('base64 --decode', @") \| norm ""p<cr>
 vnoremap ]6 d:let @"=system('base64 --wrap=0', @") \| norm ""p<cr>
 
+noremap ]ol :LspStop<cr>
+noremap [ol :LspStart<cr>
+
 " Open the current directory (or make new directory)
 map - :e %:h/<CR>
+
+" VimR apple paste:
+map <D-v> :norm "*p<cr>
+imap <D-v> <C-r><C-o>*
 "}}}
 " :bda - delete all buffers {{{
 function! DeleteHiddenBuffers()
@@ -166,53 +179,18 @@ function! DeleteHiddenBuffers()
 endfunction
 cabbrev bda call DeleteHiddenBuffers()
 "}}}
-" <leader>ch - Toggle search conceal WIP{{{
+" SynGroup {{{
+function! SynGroup()                                                            
+    let l:s = synID(line('.'), col('.'), 1)                                       
+    echo synIDattr(l:s, 'name') . ' -> ' . synIDattr(synIDtrans(l:s), 'name')
+endfun
 
-" TODO Note that this usually only works if 'syn off' is set - if the text you are
-" searching for is on a line with syntax coloring, then it likely will not be
-" folded.
-map <leader>ch :call ToggleSearchConceal()<CR>
-
-function! ToggleSearchConceal()
-  if !exists('b:searchtext')
-    let b:searchtext = @/
+function! SynStack()
+  if !exists("*synstack")
+    return
   endif
-  if b:searchtext != @/
-    silent syntax clear searchtext
-    let b:searchtext = @/
-  endif
-  exe 'syntax match searchtext "'. @/ .'"'
-  call ToggleGroupConceal('searchtext', '*')
-endfunction
-
-function! ToggleGroupConceal(group, cchar)
-  " Get the existing syntax definition
-  redir => syntax_def
-  exe 'silent syn list' a:group
-  redir END
-  " Split into multiple lines
-  let lines = split(syntax_def, "\n")
-  " Clear the existing syntax definitions
-  exe 'syn clear' a:group
-  for line in lines
-    " Only parse the lines that mention the desired group
-    " (so don't try to parse the "--- Syntax items ---" line)
-    if line =~ a:group
-      echom line
-      " Get the required bits (the syntax type and the full definition)
-      let matcher = a:group . '\s\+xxx\s\+\(\k\+\)\s\+\(.*\)'
-      let type = substitute(line, matcher, '\1', '')
-      let definition = substitute(line, matcher, '\2', '')
-      " Either add or remove 'conceal' from the definition
-      if definition =~ 'conceal'
-        let definition = substitute(definition, ' conceal\>', '', '')
-        exe 'syn' type a:group definition
-      else
-        exe 'syn' type a:group definition 'conceal cchar='. a:cchar
-      endif
-    endif
-  endfor
-endfunction
+  echo map(synstack(line('.'), col('.')), 'synIDattr(v:val, "name")')
+endfunc
 "}}}
 " UV()/DV() - Increment/decrement a pattern search functions{{{
 "
@@ -328,9 +306,11 @@ if has('autocmd') && !exists('g:autocommands_loaded')
 
   autocmd BufNewFile,BufRead *.j2 setf jinja
   autocmd BufNewFile,BufRead *.md setf markdown
+  autocmd BufNewFile,BufRead *.md setlocal wrap
   autocmd BufNewFile,BufRead *.md setlocal spell wrap et
   autocmd BufNewFile,BufRead *.csv setf csv
   autocmd BufNewFile,BufRead *.tsv setf csv
+  autocmd BufNewFile,BufRead Tiltfile setf python
   autocmd BufNewFile,BufRead *.tsv setlocal ts=20 sw=25
   autocmd BufNewFile,BufRead *.tsv Delimiter \t
   autocmd BufNewFile,BufRead Vagrantfile set ft=ruby

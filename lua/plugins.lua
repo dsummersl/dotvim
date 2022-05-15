@@ -2,6 +2,31 @@ vim.cmd [[packadd packer.nvim]]
 
 return require('packer').startup(function(use)
   use 'wbthomason/packer.nvim'
+
+  use 'andymass/vim-matchup'
+
+  -- syntax:
+  use 'towolf/vim-helm'
+  use 'aklt/plantuml-syntax'
+
+  use {'f-person/git-blame.nvim', config = function()
+    vim.g.gitblame_enabled = 0
+    vim.g.gitblame_message_template = '<summary> • <date> • <author>'
+    vim.cmd([[
+      nmap [og :GitBlameEnable<cr>
+      nmap ]og :GitBlameDisable<cr>
+    ]])
+  end}
+  use {'chrisbra/NrrwRgn', config = function()
+    vim.g.nrrw_rgn_nomap_nr = 1
+    vim.g.nrrw_rgn_nomap_Nr = 1
+  end}
+  use { "junegunn/goyo.vim", requires = { 'junegunn/limelight.vim' }, config = function()
+    -- vim.cmd([[
+    --   autocmd! User GoyoEnter Limelight
+    --   autocmd! User GoyoLeave Limelight!
+    -- ]])
+  end}
   use { "github/copilot.vim", config = function()
     vim.g.copilot_no_tab_map = true
     vim.g.copilot_assume_mapped = true
@@ -77,6 +102,11 @@ return require('packer').startup(function(use)
           oldfiles = {
             previewer = false,
             only_cwd = true,
+            -- mappings = {
+            --   i = {
+            --     ["<C-p>"] = require('telescope.actions').find_files,
+            --   },
+            -- },
           }
         }
       }
@@ -94,37 +124,31 @@ return require('packer').startup(function(use)
     end
   }
   use { 'ThePrimeagen/refactoring.nvim', requires = {'nvim-lua/plenary.nvim'}, config = function()
-    -- TODO this doesn't work at the moment. I think its an incompatibility with
-    -- telescope.
-    -- local refactor = require("refactoring")
-    -- refactor.setup()
-    -- function refactor(prompt_bufnr)
-    --   local content = require("telescope.actions.state").get_selected_entry(prompt_bufnr)
-    --   require("telescope.actions").close(prompt_bufnr)
-    --   require("refactoring").refactor(content.value)
-    -- end
-    -- vim.api.nvim_set_keymap("v", "<Leader>re", [[ <Esc><Cmd>lua require('refactoring').refactor('Extract Function')<CR>]], {noremap = true, silent = true, expr = false})
-    -- vim.api.nvim_set_keymap("v", "<Leader>rf", [[ <Esc><Cmd>lua require('refactoring').refactor('Extract Function To File')<CR>]], {noremap = true, silent = true, expr = false})
+    -- load refactoring Telescope extension
+    require("telescope").load_extension("refactoring")
+
+    -- remap to open the Telescope refactoring menu in visual mode
+    vim.api.nvim_set_keymap(
+      "v",
+      "<leader>rr",
+      "<Esc><cmd>lua require('telescope').extensions.refactoring.refactors()<CR>",
+      { noremap = true }
+    )
   end}
-  use { 'machakann/vim-sandwich', setup = function()
+  use { 'machakann/vim-sandwich', config = function()
     -- for vim-sandwich don't have any s mappings as per docs
     vim.cmd [[nmap s <Nop>]]
     vim.cmd [[xmap s <Nop>]]
 
-    -- Add the space before/after capability that vim-surround had.
-    -- TODO can't load this :(
-    -- vim.api.nvim_exec([[
-    -- autocmd FileType * call sandwich#util#addlocal([
-    --    {'buns': ['{ ', ' }'], 'nesting': 1, 'match_syntax': 1,
-    --     'kind': ['add', 'replace'], 'action': ['add'], 'input': ['{']},
-    --
-    --    {'buns': ['[ ', ' ]'], 'nesting': 1, 'match_syntax': 1,
-    --     'kind': ['add', 'replace'], 'action': ['add'], 'input': ['[']},
-    --
-    --    {'buns': ['( ', ' )'], 'nesting': 1, 'match_syntax': 1,
-    --     'kind': ['add', 'replace'], 'action': ['add'], 'input': ['(']},
-    --  ])
-    -- ]])
+    vim.api.nvim_command('runtime autoload/sandwich.vim')
+    vim.g['sandwich#recipes'] = vim.list_extend(vim.g['sandwich#default_recipes'], {
+      -- { buns = { '{ ', ' }' }, nesting = 1, match_syntax = 1, kind = { 'add', 'replace' }, action = { 'add' }, input = { '{' } },
+      -- { buns = { '[ ', ' ]' }, nesting = 1, match_syntax = 1, kind = { 'add', 'replace' }, action = { 'add' }, input = { '[' } },
+      -- { buns = { '( ', ' )' }, nesting = 1, match_syntax = 1, kind = { 'add', 'replace' }, action = { 'add' }, input = { '(' } },
+      { buns = { '{\\s*', '\\s*}' },     nesting = 1, regex = 1, match_syntax = 1, kind = { 'delete', 'replace', 'textobj' }, action = { 'delete' }, input = { '{' } },
+      { buns = { '\\[\\s*', '\\s*\\]' }, nesting = 1, regex = 1, match_syntax = 1, kind = { 'delete', 'replace', 'textobj' }, action = { 'delete' }, input = { '[' } },
+      { buns = { '(\\s*', '\\s*)' },     nesting = 1, regex = 1, match_syntax = 1, kind = { 'delete', 'replace', 'textobj' }, action = { 'delete' }, input = { '(' } }
+    })
   end}
   use {'hrsh7th/nvim-cmp',
     requires = {
@@ -190,7 +214,7 @@ return require('packer').startup(function(use)
     ]])
   end}
   use { 'sainnhe/gruvbox-material', config = function()
-    vim.g.gruvbox_material_palette       = 'mix'
+    vim.g.gruvbox_material_palette       = 'material'
     vim.g.gruvbox_material_background    = 'hard'
     vim.g.gruvbox_material_enable_italic = 1
     vim.g.gruvbox_material_enable_bold   = 1
@@ -332,7 +356,8 @@ return require('packer').startup(function(use)
       noremap <leader>/g :Grepper -tool ag -jump<cr>
 
       " see all the search matches in a separate window
-      noremap <leader>// :exec "Grepper -jump -tool ag -noprompt -query ". substitute(escape(@/,' '),'\\[<>]\{1}','\\\\b','g')<CR>
+      " noremap <leader>// :exec "Grepper -jump -tool ag -noprompt -query ". substitute(escape(@/,' '),'\\[<>]\{1}','\\\\b','g')<CR>
+      noremap <leader>// :exec "Grepper -jump -tool ag -noprompt -query ". @/<CR>
 
       " Execute something on all files of the same kind:
       "
@@ -360,6 +385,12 @@ return require('packer').startup(function(use)
     vim.g.AutoPairsFlyMode=1
     vim.g.AutoPairsMultilineClose=0
   end} -- close quotes and such automatically
+  use {'~/Documents/classes/vim-searchconceal', config = function()
+    vim.cmd([[
+      map ,cc :SearchConcealClear<CR>
+      map ,ch :SearchConceal<CR>
+    ]])
+  end}
   use {'~/Documents/classes/vim-utf2ascii', opt = true, cmd = 'UTFToASCII', config = function()
     vim.cmd([[
       " Convert unicode to ASCII
@@ -459,26 +490,23 @@ return require('packer').startup(function(use)
       'nvim-lua/lsp-status.nvim',
       'b0o/schemastore.nvim',
       'https://gitlab.com/yorickpeterse/nvim-dd.git',
-      'ldelossa/calltree.nvim',
+      -- 'ldelossa/calltree.nvim',
       'jose-elias-alvarez/null-ls.nvim',
     },
     config = function()
-      local lspconfig = require('lspconfig')
       local lsp_status = require('lsp-status')
-      require('calltree').setup({})
+      -- require('calltree').setup({})
       require('dd').setup()
 
       lsp_status.register_progress()
 
-      vim.lsp.handlers["textDocument/publishDiagnostics"] = vim.lsp.with(
-        vim.lsp.diagnostic.on_publish_diagnostics, {
-          virtual_text = false,
-          signs = true,
-          update_in_insert = false,
-        }
-      )
+      vim.diagnostic.config({
+        virtual_text = false,
+        signs = true,
+        update_in_insert = false,
+      })
 
-      local on_attach = function(client, bufnr)
+      GLOBAL_LSP_ON_ATTACH = function(client, bufnr)
         local function buf_set_keymap(...) vim.api.nvim_buf_set_keymap(bufnr, ...) end
 
         lsp_status.on_attach(client)
@@ -489,18 +517,20 @@ return require('packer').startup(function(use)
         buf_set_keymap('n', ',dh', '<cmd>lua vim.lsp.buf.hover()<CR>', opts)
         buf_set_keymap('n', ',ds', '<cmd>lua vim.lsp.buf.signature_help()<CR>', opts)
         buf_set_keymap('n', ',dr', '<cmd>lua vim.lsp.buf.rename()<CR>', opts)
+        buf_set_keymap('n', ',df', '<cmd>lua vim.lsp.buf.formatting()<CR>', opts)
+        buf_set_keymap('v', ',df', '<cmd>lua vim.lsp.buf.range_formatting()<CR>', opts)
         buf_set_keymap('n', ',da', '<cmd>lua vim.lsp.buf.code_action()<CR>', opts)
         buf_set_keymap('v', ',da', '<cmd>lua vim.lsp.buf.range_code_action()<CR>', opts)
         buf_set_keymap('n', ',dl', '<cmd>lua vim.lsp.buf.references()<CR>', opts)
         buf_set_keymap('n', ',dL', '<cmd>Trouble lsp_references<CR>', opts)
-        buf_set_keymap('n', ',dq', '<cmd>lua vim.lsp.diagnostic.set_loclist()<CR>', opts)
-        buf_set_keymap('n', ']d', '<cmd>lua vim.lsp.diagnostic.goto_next()<CR>', opts)
-        buf_set_keymap('n', '[d', '<cmd>lua vim.lsp.diagnostic.goto_prev()<CR>', opts)
+        buf_set_keymap('n', ',dq', '<cmd>lua vim.diagnostic.set_loclist()<CR>', opts)
+        buf_set_keymap('n', ']d', '<cmd>lua vim.diagnostic.goto_next()<CR>', opts)
+        buf_set_keymap('n', '[d', '<cmd>lua vim.diagnostic.goto_prev()<CR>', opts)
 
         -- Set some keybinds conditional on server capabilities
-        if client.resolved_capabilities.document_formatting then
+        if client.server_capabilities.document_formatting then
           buf_set_keymap("n", ",df", "<cmd>lua vim.lsp.buf.formatting()<CR>", opts)
-        elseif client.resolved_capabilities.document_range_formatting then
+        elseif client.server_capabilities.document_range_formatting then
           buf_set_keymap("n", ",df", "<cmd>lua vim.lsp.buf.formatting()<CR>", opts)
         end
 
@@ -513,7 +543,7 @@ return require('packer').startup(function(use)
         )
 
         -- Set autocommands conditional on server_capabilities
-        if client.resolved_capabilities.document_highlight then
+        if client.server_capabilities.document_highlight then
           vim.api.nvim_exec([[
             augroup lsp_document_highlight
               autocmd! * <buffer>
@@ -533,42 +563,60 @@ return require('packer').startup(function(use)
 
       local cmp_capabilities = require('cmp_nvim_lsp').update_capabilities(vim.lsp.protocol.make_client_capabilities())
 
-      local lsp_installer = require("nvim-lsp-installer")
-      lsp_installer.on_server_ready(function(server)
-        local opts = {
-          on_attach = on_attach,
-          capabilities = cmp_capabilities,
-          flags = { debounce_text_changes = 150 }
+      require("nvim-lsp-installer").setup {}
+      local opts = {
+        on_attach = GLOBAL_LSP_ON_ATTACH,
+        capabilities = cmp_capabilities,
+        flags = { debounce_text_changes = 150 }
+      }
+      local lspconfig = require('lspconfig')
+      lspconfig.jsonls.setup {
+        on_attach = GLOBAL_LSP_ON_ATTACH,
+        capabilities = cmp_capabilities,
+        flags = { debounce_text_changes = 150 },
+        settings = {
+          json = { schemas = require('schemastore').json.schemas() },
+          jsonls = { schemas = require('schemastore').json.schemas() },
         }
-        if server.name == "jsonls" then
-          opts.settings = {
-            json = { schemas = require('schemastore').json.schemas() },
-            jsonls = { schemas = require('schemastore').json.schemas() },
-          }
-        end
-        if server.name == "pylsp" then
-          opts.settings = { pylsp = { plugins = { pycodestyle = { enabled = false } } } }
-        end
-        if server.name == "sumneko_lua" then
-          opts.settings = { Lua = { diagnostics = { globals = { 'vim' } } } }
-        end
+      }
+      lspconfig.pylsp.setup {
+        on_attach = GLOBAL_LSP_ON_ATTACH,
+        capabilities = cmp_capabilities,
+        flags = { debounce_text_changes = 150 },
+        settings = { pylsp = { plugins = { pycodestyle = { enabled = false } } } }
+      }
+      lspconfig.sumneko_lua.setup {
+        on_attach = GLOBAL_LSP_ON_ATTACH,
+        capabilities = cmp_capabilities,
+        flags = { debounce_text_changes = 150 },
+        settings = { Lua = { diagnostics = { globals = { 'vim' } } } }
+      }
+      lspconfig.html.setup(opts)
+      lspconfig.cssls.setup(opts)
+      lspconfig.emmet_ls.setup(opts)
+      lspconfig.jsonls.setup(opts)
+      lspconfig.remark_ls.setup(opts)
+      lspconfig.tsserver.setup(opts)
 
-        server:setup(opts)
-      end)
-
-      require("null-ls").config({
-        sources = {
-          require("null-ls").builtins.code_actions.refactoring,
-          require("null-ls").builtins.diagnostics.proselint,
+      local null_ls = require('null-ls')
+        null_ls.setup({ sources = {
+          null_ls.builtins.code_actions.refactoring,
+          null_ls.builtins.diagnostics.proselint,
         },
-      })
-      lspconfig["null-ls"].setup({
-        on_attach = on_attach,
+        on_attach = GLOBAL_LSP_ON_ATTACH,
       })
   end}
-  use { 'nvim-treesitter/nvim-treesitter', requires = {'nvim-treesitter/nvim-treesitter-textobjects'}, run = ':TSUpdate', config = function()
+  use { 'nvim-treesitter/nvim-treesitter', requires = {
+    'nvim-treesitter/nvim-treesitter-textobjects',
+    'lewis6991/nvim-treesitter-context',
+    'nvim-treesitter/playground',
+  }, run = ':TSUpdate', config = function()
     require'nvim-treesitter.configs'.setup {
-      ensure_installed = "maintained",
+      ensure_installed = "all",
+      ignore_install = { "phpdoc" },
+      matchup = {
+        enable = true,
+      },
       highlight = {
         enable = true,              -- false will disable the whole extension
         use_langtree = true,
@@ -619,10 +667,21 @@ return require('packer').startup(function(use)
         }
       },
     }
+
+    require'treesitter-context'.setup{
+      enable = true,
+      throttle = true,
+      max_lines = 3,
+      patterns = {
+        yaml = {
+          'block_mapping_pair',
+        }
+      }
+    }
   end}
   use { 'folke/trouble.nvim', requires = "kyazdani42/nvim-web-devicons", config = function()
     require("trouble").setup {
-      mode = 'lsp_document_diagnostics'
+      mode = 'document_diagnostics'
     }
   end}
   use {'itchyny/lightline.vim', config = function()
@@ -642,7 +701,7 @@ return require('packer').startup(function(use)
         return lightline#mode()[0:0]
       endfunction
       function! LightlineFilename()
-        let filename = expand('%:t') !=# '' ? expand('%:t') : '[No Name]'
+        let filename = expand('%') !=# '' ? expand('%') : '[No Name]'
         let modified = &modified ? ' +' : ''
         return filename . modified
       endfunction
@@ -683,10 +742,17 @@ return require('packer').startup(function(use)
     vim.g.highlightedyank_highlight_duration = 250
   end} -- highlight any text as it is yanked
   use 'pgdouyon/vim-evanesco' -- vmap *, Highlight search, clear after searching
-  use {'nathanaelkane/vim-indent-guides', opt = true, cmd = { 'IndentGuidesToggle', 'IndentGuidesEnable' }, config = function()
-    vim.g.indent_guides_enable_on_vim_startup = 0
-    vim.g.indent_guides_color_change_percent = 4
-  end} -- A Vim plugin for visually displaying indent levels in code
+  use {'lukas-reineke/indent-blankline.nvim', config = function()
+    vim.cmd([[
+      nmap [oG :IndentBlanklineEnable<cr>
+      nmap ]oG :IndentBlanklineDisable<cr>
+    ]])
+    require("indent_blankline").setup {
+        space_char_blankline = " ",
+        show_current_context = true,
+        show_current_context_start = false,
+    }
+  end}
   use {'vinodkri/vim-tmux-runner', config = function()
     vim.cmd([[
       map <leader>gv  <Plug>(operator-vtr)
@@ -722,7 +788,7 @@ return require('packer').startup(function(use)
         " Send a selection to the terminal:
         map <leader>ctn :TestNearest<CR>
         map <leader>ctf :TestFile<CR>
-        map <leader>ctl :TestLast<CR>
+        map <leader>ctt :TestLast<CR>
 
         VtrAttachToPane
       ]])
