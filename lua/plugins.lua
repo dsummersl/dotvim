@@ -4,6 +4,7 @@ return require('packer').startup(function(use)
   use 'wbthomason/packer.nvim'
 
   use 'andymass/vim-matchup'
+  use 'chrisbra/unicode.vim'
 
   -- syntax:
   use 'towolf/vim-helm'
@@ -54,12 +55,13 @@ return require('packer').startup(function(use)
     vim.g.splitjoin_trailing_comma = 1
   end}
   use {
-    'nvim-telescope/telescope.nvim',
+    'dsummersl/telescope.nvim',
     requires = {
       'nvim-lua/plenary.nvim',
       'nvim-lua/popup.nvim',
       'nvim-telescope/telescope-media-files.nvim',
     },
+    branch = 'fix/current_buffer_tags',
     run = 'pip install ueberzug',
     config = function()
       require('telescope').load_extension('media_files')
@@ -83,7 +85,6 @@ return require('packer').startup(function(use)
           },
           mappings = {
             i = {
-              ["<C-l>"] = require('telescope.actions.layout').cycle_layout_next,
               ["<C-j>"] = require('telescope.actions').move_selection_next,
               ["<C-k>"] = require('telescope.actions').move_selection_previous,
               ["<C-p>"] = require('telescope.actions').close,
@@ -118,8 +119,8 @@ return require('packer').startup(function(use)
         nnoremap <F15> :Telescope oldfiles<CR>
         nnoremap <C-t> :Telescope tags<CR>
         " User iterm2 to map shift-ctrl-t to <f16>
-        nnoremap <F12> :Telescope current_buffer_tags<CR>
-        nnoremap <F16> :Telescope current_buffer_tags<CR>
+        nnoremap <F12> :silent! lua require"telescope-config".treesitter_or_ctags()<CR>
+        nnoremap <F16> :silent! lua require"telescope-config".treesitter_or_ctags()<CR>
       ]])
     end
   }
