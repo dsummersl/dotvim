@@ -247,23 +247,23 @@ command! -nargs=* SS call s:SetStop(<f-args>)
 "}}}
 " :DiffAgainstRegisterA - Diff the current selection against whatever is in register 'a' {{{
 function! s:DiffAgainstRegisterA() range
-  let lines = getline(a:firstline, a:lastline)
-  new
-  setlocal buftype=nofile
-  setlocal bufhidden=delete
-  setlocal noswapfile
-  silent put =lines
   diffthis
   vnew
-  setlocal buftype=nofile
+  setlocal buftype=nowrite
   setlocal bufhidden=delete
   setlocal noswapfile
+  setlocal nobuflisted
   exec "silent put a"
+  let bnr = bufnr('%')
   diffthis
   resize 100
+  " jump over to the narrow region section.
+  norm l
+  " when the narrow region is closed, delete the scratch buffer
+  exec "autocmd BufHidden <buffer> :bw ". bnr
 endfunction
 command! -nargs=0 -range DiffAgainstRegisterA <line1>,<line2>call s:DiffAgainstRegisterA()
-vnoremap <leader>-  :'<,'>DiffAgainstRegisterA<CR>
+vnoremap <leader>-  :'<,'>NR<CR>:DiffAgainstRegisterA<CR>
 "}}}
 " Automappings"{{{
 
