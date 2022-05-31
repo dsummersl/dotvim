@@ -1,3 +1,0 @@
-[submodule "phpctags"]
-	path = phpctags
-	url = git://github.com/techlivezheng/phpctags.git
