@@ -28,11 +28,6 @@ return require('packer').startup(function(use)
     --   autocmd! User GoyoLeave Limelight!
     -- ]])
   end}
-  use { "github/copilot.vim", config = function()
-    vim.g.copilot_no_tab_map = true
-    vim.g.copilot_assume_mapped = true
-    vim.g.copilot_tab_fallback = ""
-  end}
   use 'liuchengxu/vista.vim' -- Vista to view outline of tags/lsp
   use { "nathom/filetype.nvim", config = 'vim.g.did_load_filetypes = 1' }
   use {'plasticboy/vim-markdown', config = function()
@@ -151,13 +146,28 @@ return require('packer').startup(function(use)
       { buns = { '(\\s*', '\\s*)' },     nesting = 1, regex = 1, match_syntax = 1, kind = { 'delete', 'replace', 'textobj' }, action = { 'delete' }, input = { '(' } }
     })
   end}
+  -- use { "github/copilot.vim"}
+  use {
+    "zbirenbaum/copilot.lua",
+    event = {"VimEnter"},
+    config = function()
+      vim.defer_fn(function()
+        require("copilot").setup()
+      end, 100)
+    end,
+  }
+  use {
+    "zbirenbaum/copilot-cmp",
+    after = { "copilot.lua", "nvim-cmp" },
+  }
   use {'hrsh7th/nvim-cmp',
     requires = {
       'neovim/nvim-lspconfig',
       'hrsh7th/cmp-nvim-lsp',
       'hrsh7th/cmp-buffer',
+      'hrsh7th/cmp-path',
+      'hrsh7th/cmp-cmdline',
       'quangnguyen30192/cmp-nvim-ultisnips',
-      'hrsh7th/cmp-omni',
       'onsails/lspkind-nvim',
     },
     config = function()
@@ -177,31 +187,41 @@ return require('packer').startup(function(use)
             vim.fn["UltiSnips#Anon"](args.body)
           end,
         },
+        window = {
+          -- completion = cmp.config.window.bordered(),
+          documentation = cmp.config.window.bordered(),
+        },
         mapping = {
           ['<C-d>'] = cmp.mapping.scroll_docs(-4),
           ['<C-f>'] = cmp.mapping.scroll_docs(4),
-          ['<C-y>'] = cmp.mapping(cmp.mapping.disable, { 'i', 'c', 's' }),
-          ['<C-e>'] = cmp.mapping(function(fallback)
-            local copilot_keys = vim.fn["copilot#Accept"]()
-            if copilot_keys ~= "" then
-              vim.api.nvim_feedkeys(copilot_keys, "i", true)
-            end
-          end),
-          ['<C-n>'] = cmp.mapping(function(fallback)
-            if cmp.visible() then
-              cmp.select_next_item()
-            else
-              fallback()
-            end
-          end),
-          ['<C-Space>'] = cmp.mapping.confirm({ select = true }),
+          ['<C-p>'] = cmp.mapping.select_prev_item(),
+          ['<C-n>'] = cmp.mapping.select_next_item(),
+          ['<C-e>'] = cmp.mapping.confirm({ select = true }),
         },
         sources = {
-          { name = 'nvim_lsp', priority=2, keyword_length = 5 },
-          { name = 'ultisnips', priority=4, keyword_length = 2 },
-          { name = 'buffer', priority=3, keyword_length = 4 },
-          -- { name = 'omni', priority=1, keyword_length=3 },
+          { name = 'copilot', priority_weight=1, keyword_length=2 },
+          { name = 'nvim_lsp', priority_weight=2, keyword_length = 3 },
+          { name = 'buffer', priority_weight=3, keyword_length = 3 },
+          { name = 'ultisnips', priority_weight=4, keyword_length = 2 },
         }
+      })
+
+      -- `/` cmdline setup.
+      cmp.setup.cmdline('/', {
+        mapping = cmp.mapping.preset.cmdline(),
+        sources = {
+          { name = 'buffer', keyword_length=3 }
+        }
+      })
+
+      -- `:` cmdline setup.
+      cmp.setup.cmdline(':', {
+        mapping = cmp.mapping.preset.cmdline(),
+        sources = cmp.config.sources({
+          { name = 'path' }
+        }, {
+          { name = 'cmdline', keyword_length=2 }
+        })
       })
     end
   }
