@@ -12,7 +12,7 @@ return require('packer').startup(function(use)
 
   use {'f-person/git-blame.nvim', config = function()
     vim.g.gitblame_enabled = 0
-    vim.g.gitblame_message_template = '<summary> • <date> • <author>'
+    vim.g.gitblame_message_template = '<sha> • <summary> • <date> • <author>'
     vim.cmd([[
       nmap [og :GitBlameEnable<cr>
       nmap ]og :GitBlameDisable<cr>
@@ -21,12 +21,22 @@ return require('packer').startup(function(use)
   use {'chrisbra/NrrwRgn', config = function()
     vim.g.nrrw_rgn_nomap_nr = 1
     vim.g.nrrw_rgn_nomap_Nr = 1
+
+    vim.cmd([[
+      " get rid of any extra git fugitive buffers
+      autocmd BufReadPost NrrwRgn_* set bufhidden=delete
+    ]])
   end}
   use { "junegunn/goyo.vim", requires = { 'junegunn/limelight.vim' }, config = function()
     -- vim.cmd([[
     --   autocmd! User GoyoEnter Limelight
     --   autocmd! User GoyoLeave Limelight!
     -- ]])
+  end}
+  use { "github/copilot.vim", config = function()
+    vim.g.copilot_no_tab_map = true
+    vim.g.copilot_assume_mapped = true
+    vim.g.copilot_tab_fallback = ""
   end}
   use 'liuchengxu/vista.vim' -- Vista to view outline of tags/lsp
   use { "nathom/filetype.nvim", config = 'vim.g.did_load_filetypes = 1' }
@@ -146,20 +156,6 @@ return require('packer').startup(function(use)
       { buns = { '(\\s*', '\\s*)' },     nesting = 1, regex = 1, match_syntax = 1, kind = { 'delete', 'replace', 'textobj' }, action = { 'delete' }, input = { '(' } }
     })
   end}
-  -- use { "github/copilot.vim"}
-  use {
-    "zbirenbaum/copilot.lua",
-    event = {"VimEnter"},
-    config = function()
-      vim.defer_fn(function()
-        require("copilot").setup()
-      end, 100)
-    end,
-  }
-  use {
-    "zbirenbaum/copilot-cmp",
-    after = { "copilot.lua", "nvim-cmp" },
-  }
   use {'hrsh7th/nvim-cmp',
     requires = {
       'neovim/nvim-lspconfig',
@@ -195,11 +191,24 @@ return require('packer').startup(function(use)
           ['<C-d>'] = cmp.mapping.scroll_docs(-4),
           ['<C-f>'] = cmp.mapping.scroll_docs(4),
           ['<C-p>'] = cmp.mapping.select_prev_item(),
-          ['<C-n>'] = cmp.mapping.select_next_item(),
-          ['<C-e>'] = cmp.mapping.confirm({ select = true }),
+          ['<C-e>'] = cmp.mapping(function(fallback)
+            local copilot_keys = vim.fn["copilot#Accept"]()
+            if copilot_keys ~= "" then
+              vim.api.nvim_feedkeys(copilot_keys, "i", true)
+            else
+              fallback()
+            end
+          end),
+          ['<C-n>'] = cmp.mapping(function(fallback)
+            if cmp.visible() then
+              cmp.select_next_item()
+            else
+              fallback()
+            end
+          end),
+          ['<C-Space>'] = cmp.mapping.confirm({ select = true }),
         },
         sources = {
-          { name = 'copilot', priority_weight=1, keyword_length=2 },
           { name = 'nvim_lsp', priority_weight=2, keyword_length = 3 },
           { name = 'buffer', priority_weight=3, keyword_length = 3 },
           { name = 'ultisnips', priority_weight=4, keyword_length = 2 },
@@ -212,16 +221,6 @@ return require('packer').startup(function(use)
         sources = {
           { name = 'buffer', keyword_length=3 }
         }
-      })
-
-      -- `:` cmdline setup.
-      cmp.setup.cmdline(':', {
-        mapping = cmp.mapping.preset.cmdline(),
-        sources = cmp.config.sources({
-          { name = 'path' }
-        }, {
-          { name = 'cmdline', keyword_length=2 }
-        })
       })
     end
   }
@@ -454,7 +453,7 @@ return require('packer').startup(function(use)
       { row ='column' }, { column ='row' },
     }
   end} -- Easily toggle boolean values
-  use { 'dsummersl/gundo.vim', opt = true, keys = {{'n', '<f5>'}, {'n', ',f5'}}, config = function()
+  use { 'simnalamburt/vim-mundo', config = function()
     vim.g.mundo_verbose_graph = 0
     vim.g.mundo_mirror_graph = 1
     vim.g.mundo_prefer_python3 = 1
@@ -509,18 +508,14 @@ return require('packer').startup(function(use)
     requires = {
       'stevearc/dressing.nvim',
       'williamboman/nvim-lsp-installer',
-      'nvim-lua/lsp-status.nvim',
       'b0o/schemastore.nvim',
       'https://gitlab.com/yorickpeterse/nvim-dd.git',
       -- 'ldelossa/calltree.nvim',
       'jose-elias-alvarez/null-ls.nvim',
     },
     config = function()
-      local lsp_status = require('lsp-status')
       -- require('calltree').setup({})
       require('dd').setup()
-
-      lsp_status.register_progress()
 
       vim.diagnostic.config({
         virtual_text = false,
@@ -530,8 +525,6 @@ return require('packer').startup(function(use)
 
       GLOBAL_LSP_ON_ATTACH = function(client, bufnr)
         local function buf_set_keymap(...) vim.api.nvim_buf_set_keymap(bufnr, ...) end
-
-        lsp_status.on_attach(client)
 
         local opts = { noremap=true, silent=true }
         buf_set_keymap('n', ',dd', '<Cmd>lua vim.lsp.buf.definition()<CR>', opts)
@@ -592,6 +585,14 @@ return require('packer').startup(function(use)
         flags = { debounce_text_changes = 150 }
       }
       local lspconfig = require('lspconfig')
+      lspconfig.yamlls.setup {
+        on_attach = GLOBAL_LSP_ON_ATTACH,
+        capabilities = cmp_capabilities,
+        flags = { debounce_text_changes = 150 },
+        settings = {
+          yaml = { schemas = require('schemastore').json.schemas() },
+        }
+      }
       lspconfig.jsonls.setup {
         on_attach = GLOBAL_LSP_ON_ATTACH,
         capabilities = cmp_capabilities,
@@ -706,18 +707,16 @@ return require('packer').startup(function(use)
       mode = 'document_diagnostics'
     }
   end}
-  use {'itchyny/lightline.vim', config = function()
+  use {'itchyny/lightline.vim', requires = { 'SmiteshP/nvim-gps' }, config = function()
+    require("nvim-gps").setup()
+
     vim.cmd([[
+      lua gps = require("nvim-gps")
       function! LspStatus()
-        if luaeval('#vim.lsp.buf_get_clients() > 0')
-          let value = luaeval("vim.b.lsp_current_function")
-          if value == "null"
-            return ""
-          else
-            return value
-          endif
+        if luaeval('gps.is_available()')
+          return luaeval('gps.get_location()')
         endif
-        return ""
+        return "-"
       endfunction
       function! LightlineMode()
         return lightline#mode()[0:0]
