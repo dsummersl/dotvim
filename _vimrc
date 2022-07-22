@@ -82,6 +82,9 @@ set pumblend=10
 set wildoptions=pum
 set signcolumn=yes:1
 
+" show or hide that extra space at the bottom of the screen:
+set cmdheight=1
+
 set guifont=JetBrainsMono\ Nerd\ Font\ Mono
 let g:python3_host_prog='/Users/danesummers/.pyenv/shims/python'
 "}}}
@@ -109,15 +112,16 @@ nnoremap <leader>m  :<c-u><c-r><c-r>='let @'. v:register .' = '. string(getreg(v
 nnoremap <leader>t zt
 nnoremap <leader>b zb
 nnoremap <leader>, zz
-nnoremap <leader>l :%y*<cr>
+nnoremap <leader>l :silent! %y*<cr>
 
 " I like having zs to jump to the start of the line, but I'd really love a
 " zm to jump to the middle - I don't think I'll miss the original folding
 " function of zm:
 nnoremap zm zs
 
-" This mapping lets me use . to repeat a regular c-prefixed command as if it were performed using cgn.
-" from https://www.reddit.com/r/neovim/comments/sf0hmc/im_really_proud_of_this_mapping_i_came_up_with/
+" Use 'g.' to Repeat the previous change as if it had been made with cgn - lets future
+" changes for the same pattern happen with '.'
+" Inspired by https://www.reddit.com/r/neovim/comments/sf0hmc/im_really_proud_of_this_mapping_i_came_up_with/
 nnoremap g. :call setreg('/',substitute(@", '\%x00', '\\n', 'g'))<cr>:exec printf("norm %sgn%s", v:operator, v:operator != 'd' ? '<c-a>':'')<cr>
 
 " when switching between the alternate window, automatically save.
@@ -247,6 +251,8 @@ command! -nargs=* SS call s:SetStop(<f-args>)
 "}}}
 " :DiffAgainstRegisterA - Diff the current selection against whatever is in register 'a' {{{
 function! s:DiffAgainstRegisterA() range
+  let b:nrrw_aucmd_written = ':update'
+
   diffthis
   vnew
   setlocal buftype=nowrite
@@ -295,6 +301,9 @@ if has('autocmd') && !exists('g:autocommands_loaded')
     highlight! link SluiceVisibleArea Normal
     highlight! link SluiceCursor Normal
     highlight! link SluiceColumn SignColumn
+
+    highlight! link IndentBlanklineIndent1 Normal
+    highlight! link IndentBlanklineIndent2  SignColumn
   endfunction
   
   augroup GruvboxMaterialCustom

@@ -10,6 +10,28 @@ return require('packer').startup(function(use)
   use 'towolf/vim-helm'
   use 'aklt/plantuml-syntax'
 
+  -- use {
+  --   "nvim-neotest/neotest",
+  --   requires = {
+  --     "nvim-lua/plenary.nvim",
+  --     "nvim-treesitter/nvim-treesitter",
+  --     "antoinemadec/FixCursorHold.nvim"
+  --   },
+  --   config = function()
+  --     require("neotest").setup({
+  --       adapters = {
+  --         require("neotest-python")({
+  --           dap = { justMyCode = false },
+  --         }),
+  --         require("neotest-plenary"),
+  --         require("neotest-vim-test")({
+  --           ignore_file_types = { "python", "vim", "lua" },
+  --         }),
+  --       },
+  --     })
+  --   end
+  -- }
+
   use {'f-person/git-blame.nvim', config = function()
     vim.g.gitblame_enabled = 0
     vim.g.gitblame_message_template = '<sha> • <summary> • <date> • <author>'
@@ -38,7 +60,6 @@ return require('packer').startup(function(use)
     vim.g.copilot_assume_mapped = true
     vim.g.copilot_tab_fallback = ""
   end}
-  use 'liuchengxu/vista.vim' -- Vista to view outline of tags/lsp
   use { "nathom/filetype.nvim", config = 'vim.g.did_load_filetypes = 1' }
   use {'plasticboy/vim-markdown', config = function()
     vim.g.vim_markdown_folding_disabled = 1
@@ -60,13 +81,12 @@ return require('packer').startup(function(use)
     vim.g.splitjoin_trailing_comma = 1
   end}
   use {
-    'dsummersl/telescope.nvim',
+    'nvim-telescope/telescope.nvim',
     requires = {
       'nvim-lua/plenary.nvim',
       'nvim-lua/popup.nvim',
       'nvim-telescope/telescope-media-files.nvim',
     },
-    branch = 'fix/current_buffer_tags',
     run = 'pip install ueberzug',
     config = function()
       require('telescope').load_extension('media_files')
@@ -176,7 +196,7 @@ return require('packer').startup(function(use)
       local lspkind = require('lspkind')
       cmp.setup({
         formatting = {
-          format = lspkind.cmp_format({with_text = false, maxwidth = 50})
+          format = lspkind.cmp_format({with_text = false, maxwidth = 40})
         },
         snippet = {
           expand = function(args)
@@ -199,13 +219,7 @@ return require('packer').startup(function(use)
               fallback()
             end
           end),
-          ['<C-n>'] = cmp.mapping(function(fallback)
-            if cmp.visible() then
-              cmp.select_next_item()
-            else
-              fallback()
-            end
-          end),
+          ['<C-n>'] = cmp.mapping.select_next_item(),
           ['<C-Space>'] = cmp.mapping.confirm({ select = true }),
         },
         sources = {
@@ -219,12 +233,22 @@ return require('packer').startup(function(use)
       cmp.setup.cmdline('/', {
         mapping = cmp.mapping.preset.cmdline(),
         sources = {
-          { name = 'buffer', keyword_length=3 }
+          { name = 'buffer', keyword_length = 3 }
         }
+      })
+
+      -- Use cmdline & path source for ':' (if you enabled `native_menu`, this won't work anymore).
+      cmp.setup.cmdline(':', {
+        mapping = cmp.mapping.preset.cmdline(),
+        sources = cmp.config.sources({
+          { name = 'path' }
+        }, {
+          { name = 'cmdline' }
+        })
       })
     end
   }
-  use {'dsummersl/vim-diffundo', opt = true, keys = { {'n', ',uu'}, {'n', ',rr'}, {'n', ',uf'}, {'n', ',rf'} }, config = function()
+  use {'~/Documents/classes/vim-diffundo', opt = true, keys = { {'n', ',uu'}, {'n', ',rr'}, {'n', ',uf'}, {'n', ',rf'} }, config = function()
     vim.cmd([[
       " undo/redo to the previous write
       Repeatable map <leader>uu :DiffEarlier<cr>
@@ -312,14 +336,19 @@ return require('packer').startup(function(use)
       nnoremap <leader>. :E
     ]])
   end} -- :E* commands for a project
-  use 'MarcWeber/vim-addon-local-vimrc' -- enable project local .vimrc files
+  use { 'embear/vim-localvimrc', config = function()
+    vim.g.localvimrc_persistent = 1
+    vim.g.localvimrc_ask = 0
+    vim.g.localvimrc_sandbox = 0
+    vim.g.localvimrc_name = { '.lvimrc', '.vimrc' }
+  end} -- enable project local .vimrc files
   use {'tpope/vim-fugitive', config = function()
     vim.cmd([[
       " easily access f-keys -- not easy on a macbookpro with 'touch bar'
       nnoremap <F6> :Gvdiff<CR>
       map <leader>f6 :Gvdiff<cr>
       map <leader>f7 :Gvdiffsplit<cr>
-      nnoremap <leader>gg :G<cr>
+      nnoremap <leader>gg :silent! G<cr>
 
       " get rid of any extra git fugitive buffers
       autocmd BufReadPost fugitive://* set bufhidden=delete
@@ -391,12 +420,12 @@ return require('packer').startup(function(use)
       endfunction
 
       cnoremap AG GrepperAg
-      command! -nargs=1 GG call ExecFileType("silent GrepperGit %s -- '*.%s'",'<args>')
-      command! -nargs=1 AA call ExecFileType("silent GrepperAg '%s' -G '.*.%s'",'<args>')
+      command! -nargs=1 GG call ExecFileType("silent! GrepperGit %s -- '*.%s'",'<args>')
+      command! -nargs=1 AA call ExecFileType("silent! GrepperAg '%s' -G '.*.%s'",'<args>')
       " TODO make Ggrep be test for the command...for non git projects, fallback on Ag
       " Something like :if exists(':Ggrep')
-      command! -nargs=1 Gg exec "silent GrepperGit -jump ". '<args>'
-      command! -nargs=1 Aa exec "silent GrepperAg -jump ". '<args>'
+      command! -nargs=1 Gg exec "silent! GrepperGit -jump ". '<args>'
+      command! -nargs=1 Aa exec "silent! GrepperAg -jump ". '<args>'
 
       nmap gs <plug>(GrepperOperator)
       xmap gs <plug>(GrepperOperator)
@@ -450,6 +479,7 @@ return require('packer').startup(function(use)
       { up ='down' }, { down ='up' },
       { width ='height' }, { height ='width' },
       { yes ='no' }, { no ='yes' },
+      { open ='close' }, { close ='open' },
       { row ='column' }, { column ='row' },
     }
   end} -- Easily toggle boolean values
@@ -510,29 +540,36 @@ return require('packer').startup(function(use)
       'williamboman/nvim-lsp-installer',
       'b0o/schemastore.nvim',
       'https://gitlab.com/yorickpeterse/nvim-dd.git',
-      -- 'ldelossa/calltree.nvim',
       'jose-elias-alvarez/null-ls.nvim',
+      'stevearc/aerial.nvim',
+      'https://git.sr.ht/~whynothugo/lsp_lines.nvim',
     },
     config = function()
-      -- require('calltree').setup({})
       require('dd').setup()
+      require("aerial").setup()
+      require("lsp_lines").register_lsp_virtual_lines()
 
       vim.diagnostic.config({
+        underline = false,
         virtual_text = false,
+        virtual_lines = false,
         signs = true,
         update_in_insert = false,
       })
 
       GLOBAL_LSP_ON_ATTACH = function(client, bufnr)
+        require("aerial").on_attach(client, bufnr)
+
         local function buf_set_keymap(...) vim.api.nvim_buf_set_keymap(bufnr, ...) end
 
         local opts = { noremap=true, silent=true }
+        buf_set_keymap('n', ',dD', '<Cmd>lua vim.lsp.buf.declaration()<CR>', opts)
         buf_set_keymap('n', ',dd', '<Cmd>lua vim.lsp.buf.definition()<CR>', opts)
         buf_set_keymap('n', ',di', '<cmd>lua vim.lsp.buf.implementation()<CR>', opts)
         buf_set_keymap('n', ',dh', '<cmd>lua vim.lsp.buf.hover()<CR>', opts)
         buf_set_keymap('n', ',ds', '<cmd>lua vim.lsp.buf.signature_help()<CR>', opts)
         buf_set_keymap('n', ',dr', '<cmd>lua vim.lsp.buf.rename()<CR>', opts)
-        buf_set_keymap('n', ',df', '<cmd>lua vim.lsp.buf.formatting()<CR>', opts)
+        buf_set_keymap('n', ',df', '<cmd>lua vim.lsp.buf.format()<CR>', opts)
         buf_set_keymap('v', ',df', '<cmd>lua vim.lsp.buf.range_formatting()<CR>', opts)
         buf_set_keymap('n', ',da', '<cmd>lua vim.lsp.buf.code_action()<CR>', opts)
         buf_set_keymap('v', ',da', '<cmd>lua vim.lsp.buf.range_code_action()<CR>', opts)
@@ -602,7 +639,7 @@ return require('packer').startup(function(use)
           jsonls = { schemas = require('schemastore').json.schemas() },
         }
       }
-      lspconfig.pylsp.setup {
+      lspconfig.pyright.setup {
         on_attach = GLOBAL_LSP_ON_ATTACH,
         capabilities = cmp_capabilities,
         flags = { debounce_text_changes = 150 },
@@ -625,13 +662,17 @@ return require('packer').startup(function(use)
         null_ls.setup({ sources = {
           null_ls.builtins.code_actions.refactoring,
           null_ls.builtins.diagnostics.proselint,
+          null_ls.builtins.formatting.black,
+          null_ls.builtins.formatting.isort,
+          null_ls.builtins.diagnostics.pylint,
+          null_ls.builtins.diagnostics.codespell,
+          null_ls.builtins.diagnostics.flake8,
         },
         on_attach = GLOBAL_LSP_ON_ATTACH,
       })
   end}
   use { 'nvim-treesitter/nvim-treesitter', requires = {
     'nvim-treesitter/nvim-treesitter-textobjects',
-    'lewis6991/nvim-treesitter-context',
     'nvim-treesitter/playground',
   }, run = ':TSUpdate', config = function()
     require'nvim-treesitter.configs'.setup {
@@ -680,26 +721,15 @@ return require('packer').startup(function(use)
           enable = true,
           set_jumps = true,
           goto_next_start = {
+            ["]c"] = "@class.outer",
             ["]]"] = "@function.outer",
-            ["]s"] = "@statement.outer",
           },
           goto_previous_start = {
             ["[["] = "@function.outer",
-            ["[s"] = "@statement.outer",
+            ["[c"] = "@class.outer",
           },
         }
       },
-    }
-
-    require'treesitter-context'.setup{
-      enable = true,
-      throttle = true,
-      max_lines = 3,
-      patterns = {
-        yaml = {
-          'block_mapping_pair',
-        }
-      }
     }
   end}
   use { 'folke/trouble.nvim', requires = "kyazdani42/nvim-web-devicons", config = function()
@@ -708,7 +738,9 @@ return require('packer').startup(function(use)
     }
   end}
   use {'itchyny/lightline.vim', requires = { 'SmiteshP/nvim-gps' }, config = function()
-    require("nvim-gps").setup()
+    require("nvim-gps").setup({
+      depth = 3,
+    })
 
     vim.cmd([[
       lua gps = require("nvim-gps")
@@ -769,9 +801,19 @@ return require('packer').startup(function(use)
       nmap ]oG :IndentBlanklineDisable<cr>
     ]])
     require("indent_blankline").setup {
+        enabled = false,
         space_char_blankline = " ",
         show_current_context = true,
         show_current_context_start = false,
+        char_list_blankline = {'|', '¦', '┆', '┊'},
+        -- char_highlight_list = {
+        --     "IndentBlanklineIndent1",
+        --     "IndentBlanklineIndent2",
+        -- },
+        -- space_char_highlight_list = {
+        --     "IndentBlanklineIndent1",
+        --     "IndentBlanklineIndent2",
+        -- },
     }
   end}
   use {'vinodkri/vim-tmux-runner', config = function()
@@ -790,6 +832,7 @@ return require('packer').startup(function(use)
         -- Transforms for running tests in. {} is replaced. For example:
         -- let test#sub = 'docker run --rm web python manage.py test {} | pygmentize -l pytb'
         -- or, just pipe to something
+        -- let g:test#transformation = 'sub'
         -- let test#sub = '{} | pygmentize -l pytb'
         return vim.fn.substitute(vim.g['test#sub'], '{}', cmd, 'g')
       end
@@ -797,6 +840,8 @@ return require('packer').startup(function(use)
         -- Keep only the last word, and combine with SubstituteTransform - handy for
         -- the djangotest type test where I want to take advantage of its figuring out
         -- the test name (at the end of the cmd) but want to run it differently
+        -- let g:test#transformation = 'last'
+        -- let test#sub = '{} | pygmentize -l pytb'
         return SubstituteTransform(vim.fn.substitute(cmd, '^.* \\(\\S\\+\\)$', '\\1', ''))
       end
       vim.g['test#custom_transformations'] = {
