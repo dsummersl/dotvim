@@ -200,6 +200,9 @@ endfunc
 "
 " Use this like so to change something, incrementing from 392:
 "
+" NOTE: in neovim you probably want to turn off the inccommand setting - it
+" royally fucks all this up
+"
 " :set inccommand=
 " :call SV(392)
 " :%s/\v(something:)(\d+)/\=submatch(1) . UV()/
@@ -304,6 +307,20 @@ if has('autocmd') && !exists('g:autocommands_loaded')
 
     highlight! link IndentBlanklineIndent1 Normal
     highlight! link IndentBlanklineIndent2  SignColumn
+
+    " Initialize the color palette.
+    " The first parameter is a valid value for `g:gruvbox_material_background`,
+    " the second parameter is a valid value for `g:gruvbox_material_foreground`,
+    " and the third parameter is a valid value for `g:gruvbox_material_colors_override`.
+    let l:palette = gruvbox_material#get_palette('hard', 'mix', {})
+    " Define a highlight group.
+    " The first parameter is the name of a highlight group,
+    " the second parameter is the foreground color,
+    " the third parameter is the background color,
+    " the fourth parameter is for UI highlighting which is optional,
+    " and the last parameter is for `guisp` which is also optional.
+    " See `autoload/gruvbox_material.vim` for the format of `l:palette`.
+    call gruvbox_material#highlight('CommentCurrentLine', l:palette.grey1, l:palette.bg1)
   endfunction
   
   augroup GruvboxMaterialCustom
@@ -314,8 +331,6 @@ if has('autocmd') && !exists('g:autocommands_loaded')
   call s:gruvbox_material_custom()
 
   autocmd BufNewFile,BufRead *.j2 setf jinja
-  autocmd BufNewFile,BufRead *.md setf markdown
-  autocmd BufNewFile,BufRead *.md setlocal wrap
   autocmd BufNewFile,BufRead *.md setlocal spell wrap et
   autocmd BufNewFile,BufRead *.csv setf csv
   autocmd BufNewFile,BufRead *.tsv setf csv

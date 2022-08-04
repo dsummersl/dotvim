@@ -35,6 +35,7 @@ return require('packer').startup(function(use)
   use {'f-person/git-blame.nvim', config = function()
     vim.g.gitblame_enabled = 0
     vim.g.gitblame_message_template = '<sha> • <summary> • <date> • <author>'
+    vim.g.gitblame_highlight_group = "CommentCurrentLine"
     vim.cmd([[
       nmap [og :GitBlameEnable<cr>
       nmap ]og :GitBlameDisable<cr>
@@ -46,7 +47,7 @@ return require('packer').startup(function(use)
 
     vim.cmd([[
       " get rid of any extra git fugitive buffers
-      autocmd BufReadPost NrrwRgn_* set bufhidden=delete
+      autocmd BufReadPost NrrwRgn_* set bufhidden=wipe
     ]])
   end}
   use { "junegunn/goyo.vim", requires = { 'junegunn/limelight.vim' }, config = function()
@@ -66,8 +67,9 @@ return require('packer').startup(function(use)
   end}
 
   use { 'mhinz/vim-signify', config = function()
-    vim.g.signify_sign_add    = '▏'
-    vim.g.signify_sign_change = '▏'
+    vim.g.signify_sign_show_count = 0
+    vim.g.signify_sign_add    = '│'
+    vim.g.signify_sign_change = '┊'
     vim.cmd([[
       nmap ]h <plug>(signify-next-hunk)
       nmap [h <plug>(signify-prev-hunk)
@@ -240,11 +242,7 @@ return require('packer').startup(function(use)
       -- Use cmdline & path source for ':' (if you enabled `native_menu`, this won't work anymore).
       cmp.setup.cmdline(':', {
         mapping = cmp.mapping.preset.cmdline(),
-        sources = cmp.config.sources({
-          { name = 'path' }
-        }, {
-          { name = 'cmdline' }
-        })
+        sources = cmp.config.sources({})
       })
     end
   }
@@ -351,7 +349,7 @@ return require('packer').startup(function(use)
       nnoremap <leader>gg :silent! G<cr>
 
       " get rid of any extra git fugitive buffers
-      autocmd BufReadPost fugitive://* set bufhidden=delete
+      autocmd BufReadPost fugitive://* set bufhidden=wipe
     ]])
   end} -- git
   -- rhubarb seems to be broken for most github repos after commit af12af4
@@ -534,6 +532,13 @@ return require('packer').startup(function(use)
       let g:UltiSnipsJumpBackwardTrigger='<S-Tab>'
     ]])
   end}
+  use { 'stevearc/aerial.nvim', config = function()
+    require("aerial").setup()
+    vim.cmd([[
+      nnoremap <F13> :AerialToggle<CR>
+      nnoremap <F17> :AerialToggle<CR>
+    ]])
+  end}
   use { 'neovim/nvim-lspconfig',
     requires = {
       'stevearc/dressing.nvim',
@@ -541,18 +546,14 @@ return require('packer').startup(function(use)
       'b0o/schemastore.nvim',
       'https://gitlab.com/yorickpeterse/nvim-dd.git',
       'jose-elias-alvarez/null-ls.nvim',
-      'stevearc/aerial.nvim',
-      'https://git.sr.ht/~whynothugo/lsp_lines.nvim',
     },
     config = function()
       require('dd').setup()
       require("aerial").setup()
-      require("lsp_lines").register_lsp_virtual_lines()
 
       vim.diagnostic.config({
         underline = false,
         virtual_text = false,
-        virtual_lines = false,
         signs = true,
         update_in_insert = false,
       })
@@ -660,6 +661,7 @@ return require('packer').startup(function(use)
 
       local null_ls = require('null-ls')
         null_ls.setup({ sources = {
+          null_ls.builtins.diagnostics.buf,
           null_ls.builtins.code_actions.refactoring,
           null_ls.builtins.diagnostics.proselint,
           null_ls.builtins.formatting.black,
