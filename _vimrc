@@ -63,7 +63,7 @@ let g:mapleader=','
 set showmatch   " Show matching brackets.
 
 set textwidth=80
-set formatoptions=cqlronj
+set formatoptions=qlronj
 " TODO needed in python?
 " set breakindent " match indenting when wrapping text
 set linebreak " when wrap is turned on, break on words
@@ -166,7 +166,7 @@ vnoremap ]6 d:let @"=system('base64 --wrap=0', @") \| norm ""p<cr>
 noremap ]ol :LspStop<cr>
 noremap [ol :LspStart<cr>
 
-" Open the current directory (or make new directory)
+" Navigate to the current directory of the file I'm in:
 map - :e %:h/<CR>
 
 " VimR apple paste:
@@ -293,7 +293,7 @@ if has('autocmd') && !exists('g:autocommands_loaded')
     " highlight! link LspReferenceText Search
     " highlight! link LspReferenceWrite IncSearch
 
-    highlight! link DiagnosticSignHint Folded
+    highlight! link DiagnosticSignHint NonText
     highlight! link DiagnosticSignError RedSign
 
     highlight! link SignifySignAdd    GreenSign
@@ -320,7 +320,7 @@ if has('autocmd') && !exists('g:autocommands_loaded')
     " the fourth parameter is for UI highlighting which is optional,
     " and the last parameter is for `guisp` which is also optional.
     " See `autoload/gruvbox_material.vim` for the format of `l:palette`.
-    call gruvbox_material#highlight('CommentCurrentLine', l:palette.grey1, l:palette.bg1)
+    call gruvbox_material#highlight('CommentCurrentLine', l:palette.bg5, l:palette.bg1)
   endfunction
   
   augroup GruvboxMaterialCustom
@@ -345,6 +345,9 @@ if has('autocmd') && !exists('g:autocommands_loaded')
   " close the quickfix window when an item is selected.
   autocmd FileType qf nnoremap <buffer> <CR> <CR>:cclose<CR>
   autocmd FileType qf setlocal colorcolumn=
+
+  " Turn off syntax for large files
+  autocmd BufWinEnter * if line2byte(line("$") + 1) > 1000000 | syntax off | endif
 endif
 "}}}
 " vim: set ai fdm=marker cms="%s:

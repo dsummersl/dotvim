@@ -5,6 +5,9 @@ return require('packer').startup(function(use)
 
   use 'andymass/vim-matchup'
   use 'chrisbra/unicode.vim'
+  use { 'chrisbra/csv.vim', config = function()
+    vim.g.csv_nomap_space = 1
+  end }
 
   -- syntax:
   use 'towolf/vim-helm'
@@ -32,16 +35,17 @@ return require('packer').startup(function(use)
   --   end
   -- }
 
-  use {'f-person/git-blame.nvim', config = function()
-    vim.g.gitblame_enabled = 0
-    vim.g.gitblame_message_template = '<sha> • <summary> • <date> • <author>'
+  use { 'f-person/git-blame.nvim', config = function()
+    vim.g.gitblame_enabled = 1
+    vim.g.gitblame_date_format = '%x'
+    vim.g.gitblame_message_template = '<date> <author>: <sha> <summary>'
     vim.g.gitblame_highlight_group = "CommentCurrentLine"
     vim.cmd([[
       nmap [og :GitBlameEnable<cr>
       nmap ]og :GitBlameDisable<cr>
     ]])
-  end}
-  use {'chrisbra/NrrwRgn', config = function()
+  end }
+  use { 'chrisbra/NrrwRgn', config = function()
     vim.g.nrrw_rgn_nomap_nr = 1
     vim.g.nrrw_rgn_nomap_Nr = 1
 
@@ -49,27 +53,27 @@ return require('packer').startup(function(use)
       " get rid of any extra git fugitive buffers
       autocmd BufReadPost NrrwRgn_* set bufhidden=wipe
     ]])
-  end}
+  end }
   use { "junegunn/goyo.vim", requires = { 'junegunn/limelight.vim' }, config = function()
     -- vim.cmd([[
     --   autocmd! User GoyoEnter Limelight
     --   autocmd! User GoyoLeave Limelight!
     -- ]])
-  end}
+  end }
   use { "github/copilot.vim", config = function()
     vim.g.copilot_no_tab_map = true
     vim.g.copilot_assume_mapped = true
     vim.g.copilot_tab_fallback = ""
-  end}
+  end }
   use { "nathom/filetype.nvim", config = 'vim.g.did_load_filetypes = 1' }
-  use {'plasticboy/vim-markdown', config = function()
+  use { 'plasticboy/vim-markdown', config = function()
     vim.g.vim_markdown_folding_disabled = 1
-  end}
+  end }
 
   use { 'mhinz/vim-signify', config = function()
     vim.g.signify_sign_show_count = 0
-    vim.g.signify_sign_add    = '│'
-    vim.g.signify_sign_change = '┊'
+    vim.g.signify_sign_add        = '│'
+    vim.g.signify_sign_change     = '┊'
     vim.cmd([[
       nmap ]h <plug>(signify-next-hunk)
       nmap [h <plug>(signify-prev-hunk)
@@ -78,10 +82,10 @@ return require('packer').startup(function(use)
       omap ah <plug>(signify-motion-outer-pending)
       xmap ah <plug>(signify-motion-outer-visual)
     ]])
-  end}
-  use {'AndrewRadev/splitjoin.vim', config = function()
+  end }
+  use { 'AndrewRadev/splitjoin.vim', config = function()
     vim.g.splitjoin_trailing_comma = 1
-  end}
+  end }
   use {
     'nvim-telescope/telescope.nvim',
     requires = {
@@ -151,7 +155,7 @@ return require('packer').startup(function(use)
       ]])
     end
   }
-  use { 'ThePrimeagen/refactoring.nvim', requires = {'nvim-lua/plenary.nvim'}, config = function()
+  use { 'ThePrimeagen/refactoring.nvim', requires = { 'nvim-lua/plenary.nvim' }, config = function()
     -- load refactoring Telescope extension
     require("telescope").load_extension("refactoring")
 
@@ -162,7 +166,7 @@ return require('packer').startup(function(use)
       "<Esc><cmd>lua require('telescope').extensions.refactoring.refactors()<CR>",
       { noremap = true }
     )
-  end}
+  end }
   use { 'machakann/vim-sandwich', config = function()
     -- for vim-sandwich don't have any s mappings as per docs
     vim.cmd [[nmap s <Nop>]]
@@ -173,12 +177,12 @@ return require('packer').startup(function(use)
       -- { buns = { '{ ', ' }' }, nesting = 1, match_syntax = 1, kind = { 'add', 'replace' }, action = { 'add' }, input = { '{' } },
       -- { buns = { '[ ', ' ]' }, nesting = 1, match_syntax = 1, kind = { 'add', 'replace' }, action = { 'add' }, input = { '[' } },
       -- { buns = { '( ', ' )' }, nesting = 1, match_syntax = 1, kind = { 'add', 'replace' }, action = { 'add' }, input = { '(' } },
-      { buns = { '{\\s*', '\\s*}' },     nesting = 1, regex = 1, match_syntax = 1, kind = { 'delete', 'replace', 'textobj' }, action = { 'delete' }, input = { '{' } },
+      { buns = { '{\\s*', '\\s*}' }, nesting = 1, regex = 1, match_syntax = 1, kind = { 'delete', 'replace', 'textobj' }, action = { 'delete' }, input = { '{' } },
       { buns = { '\\[\\s*', '\\s*\\]' }, nesting = 1, regex = 1, match_syntax = 1, kind = { 'delete', 'replace', 'textobj' }, action = { 'delete' }, input = { '[' } },
-      { buns = { '(\\s*', '\\s*)' },     nesting = 1, regex = 1, match_syntax = 1, kind = { 'delete', 'replace', 'textobj' }, action = { 'delete' }, input = { '(' } }
+      { buns = { '(\\s*', '\\s*)' }, nesting = 1, regex = 1, match_syntax = 1, kind = { 'delete', 'replace', 'textobj' }, action = { 'delete' }, input = { '(' } }
     })
-  end}
-  use {'hrsh7th/nvim-cmp',
+  end }
+  use { 'hrsh7th/nvim-cmp',
     requires = {
       'neovim/nvim-lspconfig',
       'hrsh7th/cmp-nvim-lsp',
@@ -194,11 +198,11 @@ return require('packer').startup(function(use)
         set pumheight=15
       ]])
 
-      local cmp = require'cmp'
+      local cmp = require 'cmp'
       local lspkind = require('lspkind')
       cmp.setup({
         formatting = {
-          format = lspkind.cmp_format({with_text = false, maxwidth = 40})
+          format = lspkind.cmp_format({ with_text = false, maxwidth = 40 })
         },
         snippet = {
           expand = function(args)
@@ -225,9 +229,9 @@ return require('packer').startup(function(use)
           ['<C-Space>'] = cmp.mapping.confirm({ select = true }),
         },
         sources = {
-          { name = 'nvim_lsp', priority_weight=2, keyword_length = 3 },
-          { name = 'buffer', priority_weight=3, keyword_length = 3 },
-          { name = 'ultisnips', priority_weight=4, keyword_length = 2 },
+          { name = 'nvim_lsp', priority_weight = 2, keyword_length = 3 },
+          { name = 'buffer', priority_weight = 3, keyword_length = 3 },
+          { name = 'ultisnips', priority_weight = 4, keyword_length = 2 },
         }
       })
 
@@ -246,7 +250,7 @@ return require('packer').startup(function(use)
       })
     end
   }
-  use {'~/Documents/classes/vim-diffundo', opt = true, keys = { {'n', ',uu'}, {'n', ',rr'}, {'n', ',uf'}, {'n', ',rf'} }, config = function()
+  use { '~/Documents/classes/vim-diffundo', opt = true, keys = { { 'n', ',uu' }, { 'n', ',rr' }, { 'n', ',uf' }, { 'n', ',rf' } }, config = function()
     vim.cmd([[
       " undo/redo to the previous write
       Repeatable map <leader>uu :DiffEarlier<cr>
@@ -254,22 +258,22 @@ return require('packer').startup(function(use)
       Repeatable map <leader>uf :DiffEarlier 1f<cr>
       Repeatable map <leader>rf :DiffLater 1f<cr>
     ]])
-  end}
+  end }
   use { 'sainnhe/gruvbox-material', config = function()
-    vim.g.gruvbox_material_palette       = 'material'
-    vim.g.gruvbox_material_background    = 'hard'
-    vim.g.gruvbox_material_enable_italic = 1
-    vim.g.gruvbox_material_enable_bold   = 1
-    vim.g.airline_theme                  = 'gruvbox_material'
-    vim.g.gruvbox_material_current_word  = 'grey background'
+    vim.g.gruvbox_material_palette                 = 'material'
+    vim.g.gruvbox_material_background              = 'hard'
+    vim.g.gruvbox_material_enable_italic           = 1
+    vim.g.gruvbox_material_enable_bold             = 1
+    vim.g.airline_theme                            = 'gruvbox_material'
+    vim.g.gruvbox_material_current_word            = 'grey background'
     vim.g.gruvbox_material_diagnostic_virtual_text = 'colored'
     vim.cmd([[
       set termguicolors
       set background=dark
       colorscheme gruvbox-material
     ]])
-  end}
-  use {'jeetsukumaran/vim-indentwise', config = function()
+  end }
+  use { 'jeetsukumaran/vim-indentwise', config = function()
     vim.cmd([[
       " Map indent motions to a more indent-like key
       let g:indentwise_suppress_keymaps = 1
@@ -282,7 +286,7 @@ return require('packer').startup(function(use)
       sunmap ]ii
       sunmap ]iI
     ]])
-  end} -- Support indent motions ]ii
+  end } -- Support indent motions ]ii
   use 'tpope/vim-unimpaired' -- many additional mappings for ]q, etc
   use { 'kreskij/Repeatable.vim', requires = { 'tpope/vim-repeat' }, config = function()
     vim.cmd([[
@@ -292,8 +296,8 @@ return require('packer').startup(function(use)
       Repeatable map <leader>gj <C-w>l<C-w>kjdv
       Repeatable map <leader>gk <C-w>l<C-w>kkdv
     ]])
-  end}
-  use {'easymotion/vim-easymotion', opt = true, keys = { {'n', ',s'} }, config = function()
+  end }
+  use { 'easymotion/vim-easymotion', opt = true, keys = { { 'n', ',s' } }, config = function()
     vim.cmd([[
       nmap <leader>s  <Plug>(easymotion-sn)
       nmap <leader>; <Plug>(easymotion-next)
@@ -307,24 +311,24 @@ return require('packer').startup(function(use)
       let g:EasyMotion_enter_jump_first = 1
       let g:EasyMotion_space_jump_first = 1
     ]])
-  end} -- mapped to s for two letter searching.
-  use {'wellle/visual-split.vim', opt = true, keys = { {'v', ',v'}, {'n', ',v'} }, config = function()
+  end } -- mapped to s for two letter searching.
+  use { 'wellle/visual-split.vim', opt = true, keys = { { 'v', ',v' }, { 'n', ',v' } }, config = function()
     vim.cmd([[
       vmap <leader>v :VSSplit<cr>
     ]])
-  end} -- I've mapped this to <leader>v Lines to quickly resize splits (VSSplit)
-  use {'kana/vim-operator-user', config = function()
+  end } -- I've mapped this to <leader>v Lines to quickly resize splits (VSSplit)
+  use { 'kana/vim-operator-user', config = function()
     vim.cmd([[
       call operator#user#define_ex_command('vtr', 'VtrSendLinesToRunner')
       " call operator#user#define_ex_command('g/', 'VtrSendLinesToRunner')
     ]])
-  end} -- Define my own operators for motions.
-  use {'tommcdo/vim-exchange', opt = true, keys = { {'n', 'cx'}, }, }
-  use {'tommcdo/vim-lion', config = function()
+  end } -- Define my own operators for motions.
+  use { 'tommcdo/vim-exchange', opt = true, keys = { { 'n', 'cx' }, }, }
+  use { 'tommcdo/vim-lion', config = function()
     -- When using gL and gl, squeeze any extra leading whitespace.
     vim.g.lion_squeeze_spaces = 1
-  end} -- align with operator gL and gl (ie glip= to align paragraph by =)
-  use {'tommcdo/vim-express', opt = true, keys = { {'n', 'g='} }} -- custom g* operations (g=iw - prompt 'get_'.v:val.'()' to change a word to a func)
+  end } -- align with operator gL and gl (ie glip= to align paragraph by =)
+  use { 'tommcdo/vim-express', opt = true, keys = { { 'n', 'g=' } } } -- custom g* operations (g=iw - prompt 'get_'.v:val.'()' to change a word to a func)
 
   use 'stefandtw/quickfix-reflector.vim' -- edit the qf list directly with copen
   use { 'dsummersl/vim-projectionist', branch = 'issue-94', config = function()
@@ -333,14 +337,14 @@ return require('packer').startup(function(use)
       nnoremap <leader>6 :A<cr>
       nnoremap <leader>. :E
     ]])
-  end} -- :E* commands for a project
+  end } -- :E* commands for a project
   use { 'embear/vim-localvimrc', config = function()
     vim.g.localvimrc_persistent = 1
     vim.g.localvimrc_ask = 0
     vim.g.localvimrc_sandbox = 0
     vim.g.localvimrc_name = { '.lvimrc', '.vimrc' }
-  end} -- enable project local .vimrc files
-  use {'tpope/vim-fugitive', config = function()
+  end } -- enable project local .vimrc files
+  use { 'tpope/vim-fugitive', config = function()
     vim.cmd([[
       " easily access f-keys -- not easy on a macbookpro with 'touch bar'
       nnoremap <F6> :Gvdiff<CR>
@@ -350,20 +354,21 @@ return require('packer').startup(function(use)
 
       " get rid of any extra git fugitive buffers
       autocmd BufReadPost fugitive://* set bufhidden=wipe
+      command! -nargs=0 Gone G log --pretty=format:"%ad %Cred%h%Creset: %<(15)%aN %Cred--%Creset %s" --date=short
     ]])
-  end} -- git
+  end } -- git
   -- rhubarb seems to be broken for most github repos after commit af12af4
-  use {'tpope/vim-rhubarb', commit = 'af12af4', requires = { 'tpope/vim-fugitive' }}
-  use {'tpope/vim-eunuch', opt = true, cmd = { 'Copy', 'Remove', 'Delete', 'Move', 'Rename' }} -- eunuch.vim: cp/move/unlink commands
-  use {'ludovicchabant/vim-gutentags', config = function()
-    vim.g.gutentags_modules = {'ctags'}
+  use { 'tpope/vim-rhubarb', commit = 'af12af4', requires = { 'tpope/vim-fugitive' } }
+  use { 'tpope/vim-eunuch', opt = true, cmd = { 'Copy', 'Remove', 'Delete', 'Move', 'Rename' } } -- eunuch.vim: cp/move/unlink commands
+  use { 'ludovicchabant/vim-gutentags', config = function()
+    vim.g.gutentags_modules = { 'ctags' }
     vim.g.gutentags_cache_dir = '~/.vim/tags'
     vim.g.gutentags_ctags_exclude = { '*/node_modules/*', '*/bower_components/*',
-          '*/public/assets/*', '*/public/packs/*', '*/public/packs-test/*', '*/vendor/*',
-          'tags', '**/*.json', '**/*.md', '**/*.sql', '**/*.html' }
+      '*/public/assets/*', '*/public/packs/*', '*/public/packs-test/*', '*/vendor/*',
+      'tags', '**/*.json', '**/*.md', '**/*.sql', '**/*.html' }
 
     vim.cmd([[
-      " I want to see all the options when I try to jump to a tag:
+      " If there is more than one tag match, show the list of matches
       nmap <C-]> :GutentagsReset<cr>g<C-]>zt
 
       function! ResetGutentags()
@@ -381,21 +386,21 @@ return require('packer').startup(function(use)
       autocmd BufRead *.slim  :GutentagsReset
       autocmd BufRead *.haml  :GutentagsReset
     ]])
-  end}
-  use {'tpope/vim-abolish', config = function()
+  end }
+  use { 'tpope/vim-abolish', config = function()
     vim.cmd([[
       " pathing for abolish
       set runtimepath+=~/.vim/after
     ]])
-  end} -- fix spelling errors
+  end } -- fix spelling errors
   use 'editorconfig/editorconfig-vim' -- 0.1.0 EditorConfig Plugin for Vim -- helps define and maintain consistent coding style
   use 'mattn/emmet-vim' -- fast HTML tag generation (in insert mode type tr*3CTL-Y, to make three <tr>s
-  use {'tomtom/tcomment_vim'} -- An extensible & universal comment vim-plugin that also handles embedded filetypes
+  use { 'tomtom/tcomment_vim' } -- An extensible & universal comment vim-plugin that also handles embedded filetypes
   use { 'mhinz/vim-grepper', config = function()
     vim.g.grepper = {
       open = 1,
       stop = 300,
-      tools = {'git', 'ag', 'sift'},
+      tools = { 'git', 'ag', 'sift' },
     }
 
     vim.cmd([[
@@ -428,59 +433,90 @@ return require('packer').startup(function(use)
       nmap gs <plug>(GrepperOperator)
       xmap gs <plug>(GrepperOperator)
     ]])
-  end} -- Grepper to search in lots of ways
-  use {'jiangmiao/auto-pairs', config = function()
-    vim.g.AutoPairsFlyMode=1
-    vim.g.AutoPairsMultilineClose=0
-  end} -- close quotes and such automatically
-  use {'~/Documents/classes/vim-searchconceal', config = function()
+  end } -- Grepper to search in lots of ways
+  use { 'jiangmiao/auto-pairs', config = function()
+    vim.g.AutoPairsFlyMode = 1
+    vim.g.AutoPairsMultilineClose = 0
+  end } -- close quotes and such automatically
+  use { '~/Documents/classes/vim-searchconceal', config = function()
     vim.cmd([[
       map ,cc :SearchConcealClear<CR>
       map ,ch :SearchConceal<CR>
     ]])
-  end}
-  use {'~/Documents/classes/vim-utf2ascii', opt = true, cmd = 'UTFToASCII', config = function()
+  end }
+  use { '~/Documents/classes/vim-utf2ascii', opt = true, cmd = 'UTFToASCII', config = function()
     vim.cmd([[
       " Convert unicode to ASCII
       command! UTFToASCII :call utf2ascii#replaceUTF()<cr>
     ]])
-  end} -- simple utf2ascii function.
-  use {'AndrewRadev/switch.vim', config = function()
-    -- automatically toggle with control-
-    vim.g.switch_mapping = ',gs'
-
-    -- left/right and up/down first/last
-    vim.g.switch_custom_definitions = {
-      { ['\\.\\([a-zA-Z_-]\\+\\)\\>'] = "['\\1']" },
-      { ['\\[[\'"]\\([a-zA-Z_-]\\+\\)[\'"]\\]'] = '.\\1' },
-      { ["&&"] ='||' }, { ["||"] ='&&' },
-      { ["=="] ='!=' }, { ["!="] ='==' },
-      { FALSE ='TRUE' }, { TRUE ='FALSE' },
-      { INFO ='DEBUG' }, { DEBUG ='INFO' },
-      { align ='justify' }, { justify ='align' },
-      { ["and"] ='or' }, { ["or"] ='and' },
-      { assertContains ='assertNotContains' }, { assertNotContains ='assertContains' },
-      { assertFalse ='assertTrue' }, { assertTrue ='assertFalse' },
-      { assertIn ='assertNotIn' }, { assertNotIn ='assertIn' },
-      { before ='after' }, { after ='before' },
-      { columns ='rows' }, { rows ='columns' },
-      { disabled ='enabled' }, { enabled ='disabled' },
-      { even ='odd' }, { odd ='even' },
-      { first ='last' }, { last ='first' },
-      { info ='debug' }, { debug ='info' },
-      { left ='right' }, { right ='left' },
-      { max ='min' }, { min ='max' },
-      { padding ='margin' }, { margin ='padding' },
-      { present ='absent' }, { absent ='present' },
-      { public ='private' }, { private ='protected' }, { protected ='public' },
-      { top ='bottom' }, { bottom ='top' },
-      { up ='down' }, { down ='up' },
-      { width ='height' }, { height ='width' },
-      { yes ='no' }, { no ='yes' },
-      { open ='close' }, { close ='open' },
-      { row ='column' }, { column ='row' },
+  end } -- simple utf2ascii function.
+  use { 'monaqa/dial.nvim', config = function()
+    local augend = require("dial.augend")
+    require("dial.config").augends:register_group {
+      -- default augends used when no group name is specified
+      default = {
+        augend.integer.alias.decimal, -- nonnegative decimal number (0, 1, 2, 3, ...)
+        augend.integer.alias.hex, -- nonnegative hex number  (0x01, 0x1a1f, etc.)
+        augend.date.alias["%m/%d/%Y"], -- date (02/19/2022, etc.)
+        augend.date.alias["%m-%d-%Y"], -- date (02/19/2022, etc.)
+      },
+      enhanced = {
+        augend.integer.alias.decimal, -- nonnegative decimal number (0, 1, 2, 3, ...)
+        augend.integer.alias.hex, -- nonnegative hex number  (0x01, 0x1a1f, etc.)
+        augend.date.alias["%m/%d/%Y"], -- date (02/19/2022, etc.)
+        augend.constant.new { elements = { "&&", "||" }, word = false, cyclic = true },
+        augend.constant.new { elements = { "==", "!=" }, word = false, cyclic = true },
+        augend.constant.new { elements = { "true", "false" } },
+        augend.constant.new { elements = { "info", "warn", "debug" } },
+        augend.constant.new { elements = { "INFO", "WARN", "DEBUG" } },
+        augend.constant.new { elements = { "align", "justify" } },
+        augend.constant.new { elements = { "and", "or" } },
+        augend.constant.new { elements = { "assertContains", "assertNotContains" } },
+        augend.constant.new { elements = { "assertFalse", "assertTrue" } },
+        augend.constant.new { elements = { "assertIn", "assertNotIn" } },
+        augend.constant.new { elements = { "before", "after" } },
+        augend.constant.new { elements = { "columns", "rows" } },
+        augend.constant.new { elements = { "disabled", "enabled" } },
+        augend.constant.new { elements = { "even", "odd" } },
+        augend.constant.new { elements = { "first", "last" } },
+        augend.constant.new { elements = { "left", "right" } },
+        augend.constant.new { elements = { "min", "max" } },
+        augend.constant.new { elements = { "top", "bottom" } },
+        augend.constant.new { elements = { "up", "down" } },
+        augend.constant.new { elements = { "width", "height" } },
+        augend.constant.new { elements = { "yes", "no" } },
+        augend.constant.new { elements = { "open", "close" } },
+        augend.constant.new { elements = { "padding", "margin" } },
+        augend.constant.new { elements = { "present", "absent" } },
+        augend.constant.new { elements = { "public", "protected", "private" } },
+        augend.user.new {
+          find = require("dial.augend.common").find_pattern_regex('\\v\\.([a-zA-Z_-]+)>'),
+          add = function(text, addend, cursor)
+            local word = text:sub(2)
+            text = "['" .. word .. "']"
+            cursor = #text
+            return { text = text, cursor = cursor }
+          end
+        },
+        augend.user.new {
+          find = require("dial.augend.common").find_pattern_regex('\\v\\[[\'"]([a-zA-Z_-]+)[\'"]\\]'),
+          add = function(text, addend, cursor)
+            local word = text:sub(3, -3)
+            text = "." .. word
+            cursor = #text
+            return { text = text, cursor = cursor }
+          end
+        },
+      },
     }
-  end} -- Easily toggle boolean values
+
+    vim.api.nvim_set_keymap("n", "<C-a>", require("dial.map").inc_normal("enhanced"), { noremap = true })
+    vim.api.nvim_set_keymap("n", "<C-x>", require("dial.map").dec_normal("enhanced"), { noremap = true })
+    vim.api.nvim_set_keymap("v", "<C-a>", require("dial.map").inc_visual("enhanced"), { noremap = true })
+    vim.api.nvim_set_keymap("v", "<C-x>", require("dial.map").dec_visual("enhanced"), { noremap = true })
+    vim.api.nvim_set_keymap("v", "g<C-a>", require("dial.map").inc_gvisual("enhanced"), { noremap = true })
+    vim.api.nvim_set_keymap("v", "g<C-x>", require("dial.map").dec_gvisual("enhanced"), { noremap = true })
+  end }
   use { 'simnalamburt/vim-mundo', config = function()
     vim.g.mundo_verbose_graph = 0
     vim.g.mundo_mirror_graph = 1
@@ -491,17 +527,17 @@ return require('packer').startup(function(use)
       nnoremap <F5> :MundoToggle<CR>
       map <leader>f5 :MundoToggle<cr>
     ]])
-  end}
-  use { 'w0rp/ale', opt = true, cmd = {'ALEEnable', 'ALELint', 'ALEFix'}, requires = {'kreskij/Repeatable.vim'}, setup = function()
+  end }
+  use { 'w0rp/ale', opt = true, cmd = { 'ALEEnable', 'ALELint', 'ALEFix' }, requires = { 'kreskij/Repeatable.vim' }, setup = function()
     vim.g.ale_linter_aliases = {
-      python = {'python'},
-      markdown = {'asciidoc', 'markdown'},
-      ruby = {'asciidoc', 'ruby'}
+      python = { 'python' },
+      markdown = { 'asciidoc', 'markdown' },
+      ruby = { 'asciidoc', 'ruby' }
     }
     vim.g.ale_linters = {
-      python = {'black', 'pyls', 'isort', 'trim_whitespace'},
-      javascript = {'eslint'},
-      scss = {'stylelint'}
+      python = { 'black', 'pyls', 'isort', 'trim_whitespace' },
+      javascript = { 'eslint' },
+      scss = { 'stylelint' }
     }
     vim.g.ale_completion_enabled = 0
     vim.g.ale_set_balloons = 0
@@ -515,14 +551,15 @@ return require('packer').startup(function(use)
       Repeatable nmap [g <Plug>(ale_previous)
       Repeatable nmap ]g <Plug>(ale_next)
     ]])
-  end}
-  use { 'RRethy/vim-hexokinase', run = 'make hexokinase', config = function()
-    vim.g.Hexokinase_virtualText = ' '
-    vim.g.Hexokinase_optInPatterns = 'full_hex,rgb,rgba,hsl,hsla'
-    -- let g:Hexokinase_highlighters = [ 'virtual', 'backgroundfull' ]
-  end} -- Colors for red/green/#123123
+  end }
+  -- TODO really really slow for big files
+  -- use { 'RRethy/vim-hexokinase', run = 'make hexokinase', config = function()
+  --   vim.g.Hexokinase_virtualText = ' '
+  --   vim.g.Hexokinase_optInPatterns = 'full_hex,rgb,rgba,hsl,hsla'
+  --   -- let g:Hexokinase_highlighters = [ 'virtual', 'backgroundfull' ]
+  -- end} -- Colors for red/green/#123123
   use '~/Documents/classes/nvim-sluice'
-  use {'SirVer/ultisnips', config = function()
+  use { 'SirVer/ultisnips', config = function()
     vim.cmd([[
       let g:UltiSnipsSnippetDirectories=[$HOME.'/.vim/UltiSnips', $HOME.'/.vim/bundle/vim-snippets/UltiSnips']
       let g:UltiSnipsSnippetsDir='~/.vim/UltiSnips'
@@ -531,14 +568,14 @@ return require('packer').startup(function(use)
       let g:UltiSnipsJumpForwardTrigger='<Tab>'                                           
       let g:UltiSnipsJumpBackwardTrigger='<S-Tab>'
     ]])
-  end}
+  end }
   use { 'stevearc/aerial.nvim', config = function()
     require("aerial").setup()
     vim.cmd([[
       nnoremap <F13> :AerialToggle<CR>
       nnoremap <F17> :AerialToggle<CR>
     ]])
-  end}
+  end }
   use { 'neovim/nvim-lspconfig',
     requires = {
       'stevearc/dressing.nvim',
@@ -563,7 +600,7 @@ return require('packer').startup(function(use)
 
         local function buf_set_keymap(...) vim.api.nvim_buf_set_keymap(bufnr, ...) end
 
-        local opts = { noremap=true, silent=true }
+        local opts = { noremap = true, silent = true }
         buf_set_keymap('n', ',dD', '<Cmd>lua vim.lsp.buf.declaration()<CR>', opts)
         buf_set_keymap('n', ',dd', '<Cmd>lua vim.lsp.buf.definition()<CR>', opts)
         buf_set_keymap('n', ',di', '<cmd>lua vim.lsp.buf.implementation()<CR>', opts)
@@ -590,9 +627,9 @@ return require('packer').startup(function(use)
         local on_references = vim.lsp.handlers["textDocument/references"]
         vim.lsp.handlers["textDocument/references"] = vim.lsp.with(
           on_references, {
-            -- Use location list instead of quickfix list
-            loclist = true,
-          }
+          -- Use location list instead of quickfix list
+          loclist = true,
+        }
         )
 
         -- Set autocommands conditional on server_capabilities
@@ -605,6 +642,12 @@ return require('packer').startup(function(use)
             augroup END
           ]], false)
         end
+
+        -- for some reason formatexpr is getting set to lua - and that is
+        -- annoying b/c its not often right (text wrapping gets broken)!
+        vim.api.nvim_exec([[
+          set formatexpr=
+        ]], false)
       end
 
       local signs = { Error = " ", Warn = " ", Hint = ". ", Info = " " }
@@ -660,33 +703,34 @@ return require('packer').startup(function(use)
       lspconfig.tsserver.setup(opts)
 
       local null_ls = require('null-ls')
-        null_ls.setup({ sources = {
-          null_ls.builtins.diagnostics.buf,
-          null_ls.builtins.code_actions.refactoring,
-          null_ls.builtins.diagnostics.proselint,
-          null_ls.builtins.formatting.black,
-          null_ls.builtins.formatting.isort,
-          null_ls.builtins.diagnostics.pylint,
-          null_ls.builtins.diagnostics.codespell,
-          null_ls.builtins.diagnostics.flake8,
-        },
-        on_attach = GLOBAL_LSP_ON_ATTACH,
+      null_ls.setup({ sources = {
+        null_ls.builtins.diagnostics.buf,
+        null_ls.builtins.code_actions.refactoring,
+        null_ls.builtins.diagnostics.proselint,
+        null_ls.builtins.formatting.black,
+        null_ls.builtins.formatting.isort,
+        null_ls.builtins.diagnostics.pylint,
+        null_ls.builtins.diagnostics.codespell,
+        null_ls.builtins.diagnostics.flake8,
+        null_ls.builtins.code_actions.eslint,
+      },
+      on_attach = GLOBAL_LSP_ON_ATTACH,
       })
-  end}
+    end }
   use { 'nvim-treesitter/nvim-treesitter', requires = {
     'nvim-treesitter/nvim-treesitter-textobjects',
     'nvim-treesitter/playground',
   }, run = ':TSUpdate', config = function()
-    require'nvim-treesitter.configs'.setup {
+    require 'nvim-treesitter.configs'.setup {
       ensure_installed = "all",
       ignore_install = { "phpdoc" },
       matchup = {
         enable = true,
       },
       highlight = {
-        enable = true,              -- false will disable the whole extension
+        enable = false, -- false will disable the whole extension
         use_langtree = true,
-        disable = { "c", "rust", "markdown"},  -- list of language that will be disabled
+        disable = { "c", "rust", "markdown" }, -- list of language that will be disabled
       },
       incremental_selection = { enable = true },
       indent = { enable = false },
@@ -733,13 +777,13 @@ return require('packer').startup(function(use)
         }
       },
     }
-  end}
+  end }
   use { 'folke/trouble.nvim', requires = "kyazdani42/nvim-web-devicons", config = function()
     require("trouble").setup {
       mode = 'document_diagnostics'
     }
-  end}
-  use {'itchyny/lightline.vim', requires = { 'SmiteshP/nvim-gps' }, config = function()
+  end }
+  use { 'itchyny/lightline.vim', requires = { 'SmiteshP/nvim-gps' }, config = function()
     require("nvim-gps").setup({
       depth = 3,
     })
@@ -792,39 +836,39 @@ return require('packer').startup(function(use)
         currentfunction = 'LspStatus',
       }
     }
-  end}
-  use {'machakann/vim-highlightedyank', config = function()
+  end }
+  use { 'machakann/vim-highlightedyank', config = function()
     vim.g.highlightedyank_highlight_duration = 250
-  end} -- highlight any text as it is yanked
+  end } -- highlight any text as it is yanked
   use 'pgdouyon/vim-evanesco' -- vmap *, Highlight search, clear after searching
-  use {'lukas-reineke/indent-blankline.nvim', config = function()
+  use { 'lukas-reineke/indent-blankline.nvim', config = function()
     vim.cmd([[
       nmap [oG :IndentBlanklineEnable<cr>
       nmap ]oG :IndentBlanklineDisable<cr>
     ]])
     require("indent_blankline").setup {
-        enabled = false,
-        space_char_blankline = " ",
-        show_current_context = true,
-        show_current_context_start = false,
-        char_list_blankline = {'|', '¦', '┆', '┊'},
-        -- char_highlight_list = {
-        --     "IndentBlanklineIndent1",
-        --     "IndentBlanklineIndent2",
-        -- },
-        -- space_char_highlight_list = {
-        --     "IndentBlanklineIndent1",
-        --     "IndentBlanklineIndent2",
-        -- },
+      enabled = false,
+      space_char_blankline = " ",
+      show_current_context = true,
+      show_current_context_start = false,
+      char_list_blankline = { '|', '¦', '┆', '┊' },
+      -- char_highlight_list = {
+      --     "IndentBlanklineIndent1",
+      --     "IndentBlanklineIndent2",
+      -- },
+      -- space_char_highlight_list = {
+      --     "IndentBlanklineIndent1",
+      --     "IndentBlanklineIndent2",
+      -- },
     }
-  end}
-  use {'vinodkri/vim-tmux-runner', config = function()
+  end }
+  use { 'vinodkri/vim-tmux-runner', config = function()
     vim.cmd([[
       map <leader>gv  <Plug>(operator-vtr)
     ]])
-  end} -- :VtrSendCommandToRunner for tmux
+  end } -- :VtrSendCommandToRunner for tmux
   use { 'vim-test/vim-test',
-    keys = {{'n', ',ctn'}, {'n', ',ctf'}, {'n', ',ctl'}},
+    keys = { { 'n', ',ctn' }, { 'n', ',ctf' }, { 'n', ',ctl' } },
     opt = true,
     config = function()
       vim.g['test#preserve_screen'] = 1
@@ -860,11 +904,11 @@ return require('packer').startup(function(use)
 
         VtrAttachToPane
       ]])
-  end}
+    end }
   use 'prabirshrestha/async.vim' -- TODO who needs this?
   use 'mattn/webapi-vim' -- TODO who needs this?
-  use {'michaeljsmith/vim-indent-object', opt = true, keys = {{'o', 'iI'}, {'o', 'ii'}, {'v', 'ii'}, {'v', 'iI'}}} -- vii and viI (visual inner Indent)
-  use {'saaguero/vim-textobj-pastedtext', requires = { 'kana/vim-textobj-user' }} -- vgb for last pasted text.
-  use {'glts/vim-textobj-comment', requires = { 'kana/vim-textobj-user' }} -- select comment with vic or vac.
+  use { 'michaeljsmith/vim-indent-object', opt = true, keys = { { 'o', 'iI' }, { 'o', 'ii' }, { 'v', 'ii' }, { 'v', 'iI' } } } -- vii and viI (visual inner Indent)
+  use { 'saaguero/vim-textobj-pastedtext', requires = { 'kana/vim-textobj-user' } } -- vgb for last pasted text.
+  use { 'glts/vim-textobj-comment', requires = { 'kana/vim-textobj-user' } } -- select comment with vic or vac.
   use 'ryanoasis/vim-devicons'
 end)
