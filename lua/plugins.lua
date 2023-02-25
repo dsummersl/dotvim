@@ -15,12 +15,6 @@ return require('packer').startup(function(use)
   -- syntax:
   use 'towolf/vim-helm'
   use 'aklt/plantuml-syntax'
-  use { 'norcalli/nvim-colorizer.lua', config = function()
-    require('colorizer').setup {
-      'css';
-      'typescriptreact';
-    }
-  end}
 
   -- use {
   --   "nvim-neotest/neotest",
@@ -570,12 +564,12 @@ return require('packer').startup(function(use)
       Repeatable nmap ]g <Plug>(ale_next)
     ]])
   end }
-  -- TODO really really slow for big files
-  -- use { 'RRethy/vim-hexokinase', run = 'make hexokinase', config = function()
-  --   vim.g.Hexokinase_virtualText = ' '
-  --   vim.g.Hexokinase_optInPatterns = 'full_hex,rgb,rgba,hsl,hsla'
-  --   -- let g:Hexokinase_highlighters = [ 'virtual', 'backgroundfull' ]
-  -- end} -- Colors for red/green/#123123
+  use { 'norcalli/nvim-colorizer.lua', config = function()
+    require('colorizer').setup {
+      'css';
+      'typescriptreact';
+    }
+  end}
   use { '~/Documents/classes/nvim-sluice', config = function()
     end
   }
@@ -591,12 +585,6 @@ return require('packer').startup(function(use)
   end }
   use { 'RRethy/vim-illuminate', config = function()
     require('illuminate').configure()
-  end }
-  use { 'stevearc/aerial.nvim', config = function()
-    require("aerial").setup()
-    vim.cmd([[
-      nnoremap [t :AerialToggle<CR>
-    ]])
   end }
   use { 'neovim/nvim-lspconfig',
     requires = {
