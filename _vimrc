@@ -29,7 +29,7 @@ set foldcolumn=0
 " Turn on mouse for a visual and normal mode only:
 set mouse=v
 
-set diffopt=filler,iwhiteall,vertical,hiddenoff,algorithm:patience
+set diffopt=filler,iwhiteall,vertical,hiddenoff,algorithm:patience,linematch:60
 set nohlsearch
 set nowrap
 
@@ -80,7 +80,7 @@ set pumblend=10
 
 " completion for command mode suggestions
 set wildoptions=pum
-set signcolumn=yes:1
+set signcolumn=auto:1-2
 
 " show or hide that extra space at the bottom of the screen:
 set cmdheight=1
@@ -90,6 +90,7 @@ let g:python3_host_prog='/Users/danesummers/.pyenv/shims/python'
 "}}}
 " Mappings {{{
 
+" search the whats yanked
 noremap <leader>/' /"<cr>
 
 " Revisit the history on the command mode without leaving the home rows.
@@ -163,8 +164,12 @@ noremap [oI :set diffopt+=iwhiteall<cr>
 vnoremap [6 d:let @"=system('base64 --decode', @") \| norm ""p<cr>
 vnoremap ]6 d:let @"=system('base64 --wrap=0', @") \| norm ""p<cr>
 
-noremap ]ol :LspStop<cr>
+function! s:Lspstop()
+  LspStop
+  lua require('null-ls').disable{}
+endfunction
 noremap [ol :LspStart<cr>
+noremap ]ol :call <sid>Lspstop()<cr>
 
 " Navigate to the current directory of the file I'm in:
 map - :e %:h/<CR>
@@ -172,6 +177,15 @@ map - :e %:h/<CR>
 " VimR apple paste:
 map <D-v> :norm "*p<cr>
 imap <D-v> <C-r><C-o>*
+
+" Reverse the <C-r>/<C-r><C-o> meanings - make <C-r>" default to a repeatable behavior for text changes:
+" inoremap <C-r> <C-r><C-o>
+" inoremap <C-r><C-o> <C-r>
+
+" I used the " register a lot in changes, so make it easy to insert it:
+inoremap <C-t> <C-r><C-o>"
+cnoremap <C-t> <C-r><C-o>"
+
 "}}}
 " :bda - delete all buffers {{{
 function! DeleteHiddenBuffers()
@@ -184,17 +198,16 @@ endfunction
 cabbrev bda call DeleteHiddenBuffers()
 "}}}
 " SynGroup {{{
-function! SynGroup()                                                            
-    let l:s = synID(line('.'), col('.'), 1)                                       
+function! s:SynGroup()                                                            
+    let l:s = synID(line('.'), col('.'), 1)
     echo synIDattr(l:s, 'name') . ' -> ' . synIDattr(synIDtrans(l:s), 'name')
 endfun
 
-function! SynStack()
-  if !exists("*synstack")
-    return
-  endif
+function! s:SynStack()
   echo map(synstack(line('.'), col('.')), 'synIDattr(v:val, "name")')
 endfunc
+nmap <leader>z :call <SID>SynStack()<CR>
+nmap <leader>v :call <SID>SynGroup()<CR>
 "}}}
 " UV()/DV() - Increment/decrement a pattern search functions{{{
 "
@@ -277,6 +290,8 @@ vnoremap <leader>-  :'<,'>NR<CR>:DiffAgainstRegisterA<CR>
 " Automappings"{{{
 
 if has('autocmd') && !exists('g:autocommands_loaded')
+  autocmd TextYankPost * silent! lua vim.highlight.on_yank {higroup='Visual', timeout=50}
+
   let g:autocommands_loaded = 1
 
   " ensure that tabstop settings for file browsing is big enough for column

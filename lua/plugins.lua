@@ -3,7 +3,10 @@ vim.cmd [[packadd packer.nvim]]
 return require('packer').startup(function(use)
   use 'wbthomason/packer.nvim'
 
-  use 'andymass/vim-matchup'
+  use { 'andymass/vim-matchup', config = function()
+    vim.g.matchup_matchparen_hi_background = 2
+    vim.g.matchup_matchparen_offscreen = {method= 'popup'}
+  end}
   use 'chrisbra/unicode.vim'
   use { 'chrisbra/csv.vim', config = function()
     vim.g.csv_nomap_space = 1
@@ -12,6 +15,12 @@ return require('packer').startup(function(use)
   -- syntax:
   use 'towolf/vim-helm'
   use 'aklt/plantuml-syntax'
+  use { 'norcalli/nvim-colorizer.lua', config = function()
+    require('colorizer').setup {
+      'css';
+      'typescriptreact';
+    }
+  end}
 
   -- use {
   --   "nvim-neotest/neotest",
@@ -71,6 +80,7 @@ return require('packer').startup(function(use)
   end }
 
   use { 'mhinz/vim-signify', config = function()
+    vim.g.signify_priority = 5
     vim.g.signify_sign_show_count = 0
     vim.g.signify_sign_add        = '│'
     vim.g.signify_sign_change     = '┊'
@@ -183,6 +193,7 @@ return require('packer').startup(function(use)
     })
   end }
   use { 'hrsh7th/nvim-cmp',
+    commit = '53f49c5^',
     requires = {
       'neovim/nvim-lspconfig',
       'hrsh7th/cmp-nvim-lsp',
@@ -287,7 +298,12 @@ return require('packer').startup(function(use)
       sunmap ]iI
     ]])
   end } -- Support indent motions ]ii
-  use 'tpope/vim-unimpaired' -- many additional mappings for ]q, etc
+  use { 'tpope/vim-unimpaired', config=function ()
+    vim.cmd([[
+      " unmap ]t
+      " unmap [t
+    ]])
+  end }
   use { 'kreskij/Repeatable.vim', requires = { 'tpope/vim-repeat' }, config = function()
     vim.cmd([[
       call repeatable#Setup()
@@ -297,7 +313,7 @@ return require('packer').startup(function(use)
       Repeatable map <leader>gk <C-w>l<C-w>kkdv
     ]])
   end }
-  use { 'easymotion/vim-easymotion', opt = true, keys = { { 'n', ',s' } }, config = function()
+  use { 'easymotion/vim-easymotion', config = function()
     vim.cmd([[
       nmap <leader>s  <Plug>(easymotion-sn)
       nmap <leader>; <Plug>(easymotion-next)
@@ -400,7 +416,7 @@ return require('packer').startup(function(use)
     vim.g.grepper = {
       open = 1,
       stop = 300,
-      tools = { 'git', 'ag', 'sift' },
+      tools = { 'git', 'ag', 'sift', 'rg' },
     }
 
     vim.cmd([[
@@ -434,9 +450,10 @@ return require('packer').startup(function(use)
       xmap gs <plug>(GrepperOperator)
     ]])
   end } -- Grepper to search in lots of ways
-  use { 'jiangmiao/auto-pairs', config = function()
-    vim.g.AutoPairsFlyMode = 1
-    vim.g.AutoPairsMultilineClose = 0
+  use { 'cohama/lexima.vim', config = function()
+    vim.cmd([[
+      ; call lexima#add_rule({'char': ')', 'leave': 1})
+    ]])
   end } -- close quotes and such automatically
   use { '~/Documents/classes/vim-searchconceal', config = function()
     vim.cmd([[
@@ -488,6 +505,7 @@ return require('packer').startup(function(use)
         augend.constant.new { elements = { "open", "close" } },
         augend.constant.new { elements = { "padding", "margin" } },
         augend.constant.new { elements = { "present", "absent" } },
+        augend.constant.new { elements = { "enable", "disable" } },
         augend.constant.new { elements = { "public", "protected", "private" } },
         augend.user.new {
           find = require("dial.augend.common").find_pattern_regex('\\v\\.([a-zA-Z_-]+)>'),
@@ -517,7 +535,7 @@ return require('packer').startup(function(use)
     vim.api.nvim_set_keymap("v", "g<C-a>", require("dial.map").inc_gvisual("enhanced"), { noremap = true })
     vim.api.nvim_set_keymap("v", "g<C-x>", require("dial.map").dec_gvisual("enhanced"), { noremap = true })
   end }
-  use { 'simnalamburt/vim-mundo', config = function()
+  use { '~/Documents/classes/vim-mundo', config = function()
     vim.g.mundo_verbose_graph = 0
     vim.g.mundo_mirror_graph = 1
     vim.g.mundo_prefer_python3 = 1
@@ -558,7 +576,9 @@ return require('packer').startup(function(use)
   --   vim.g.Hexokinase_optInPatterns = 'full_hex,rgb,rgba,hsl,hsla'
   --   -- let g:Hexokinase_highlighters = [ 'virtual', 'backgroundfull' ]
   -- end} -- Colors for red/green/#123123
-  use '~/Documents/classes/nvim-sluice'
+  use { '~/Documents/classes/nvim-sluice', config = function()
+    end
+  }
   use { 'SirVer/ultisnips', config = function()
     vim.cmd([[
       let g:UltiSnipsSnippetDirectories=[$HOME.'/.vim/UltiSnips', $HOME.'/.vim/bundle/vim-snippets/UltiSnips']
@@ -569,105 +589,58 @@ return require('packer').startup(function(use)
       let g:UltiSnipsJumpBackwardTrigger='<S-Tab>'
     ]])
   end }
+  use { 'RRethy/vim-illuminate', config = function()
+    require('illuminate').configure()
+  end }
   use { 'stevearc/aerial.nvim', config = function()
     require("aerial").setup()
     vim.cmd([[
-      nnoremap <F13> :AerialToggle<CR>
-      nnoremap <F17> :AerialToggle<CR>
+      nnoremap [t :AerialToggle<CR>
     ]])
   end }
   use { 'neovim/nvim-lspconfig',
     requires = {
       'stevearc/dressing.nvim',
-      'williamboman/nvim-lsp-installer',
+      'williamboman/mason.nvim',
       'b0o/schemastore.nvim',
+      'glepnir/lspsaga.nvim',
       'https://gitlab.com/yorickpeterse/nvim-dd.git',
       'jose-elias-alvarez/null-ls.nvim',
     },
     config = function()
       require('dd').setup()
-      require("aerial").setup()
+
+      require('lspsaga').setup({
+        symbol_in_winbar = {
+          enable = false,
+          show_file = false,
+        },
+        lightbulb = {
+          enable = false,
+          saga_winblend = 20,
+        }
+      })
 
       vim.diagnostic.config({
         underline = false,
         virtual_text = false,
+        severity_sort = true,
         signs = true,
         update_in_insert = false,
       })
 
-      GLOBAL_LSP_ON_ATTACH = function(client, bufnr)
-        require("aerial").on_attach(client, bufnr)
-
-        local function buf_set_keymap(...) vim.api.nvim_buf_set_keymap(bufnr, ...) end
-
-        local opts = { noremap = true, silent = true }
-        buf_set_keymap('n', ',dD', '<Cmd>lua vim.lsp.buf.declaration()<CR>', opts)
-        buf_set_keymap('n', ',dd', '<Cmd>lua vim.lsp.buf.definition()<CR>', opts)
-        buf_set_keymap('n', ',di', '<cmd>lua vim.lsp.buf.implementation()<CR>', opts)
-        buf_set_keymap('n', ',dh', '<cmd>lua vim.lsp.buf.hover()<CR>', opts)
-        buf_set_keymap('n', ',ds', '<cmd>lua vim.lsp.buf.signature_help()<CR>', opts)
-        buf_set_keymap('n', ',dr', '<cmd>lua vim.lsp.buf.rename()<CR>', opts)
-        buf_set_keymap('n', ',df', '<cmd>lua vim.lsp.buf.format()<CR>', opts)
-        buf_set_keymap('v', ',df', '<cmd>lua vim.lsp.buf.range_formatting()<CR>', opts)
-        buf_set_keymap('n', ',da', '<cmd>lua vim.lsp.buf.code_action()<CR>', opts)
-        buf_set_keymap('v', ',da', '<cmd>lua vim.lsp.buf.range_code_action()<CR>', opts)
-        buf_set_keymap('n', ',dl', '<cmd>lua vim.lsp.buf.references()<CR>', opts)
-        buf_set_keymap('n', ',dL', '<cmd>Trouble lsp_references<CR>', opts)
-        buf_set_keymap('n', ',dq', '<cmd>lua vim.diagnostic.set_loclist()<CR>', opts)
-        buf_set_keymap('n', ']d', '<cmd>lua vim.diagnostic.goto_next()<CR>', opts)
-        buf_set_keymap('n', '[d', '<cmd>lua vim.diagnostic.goto_prev()<CR>', opts)
-
-        -- Set some keybinds conditional on server capabilities
-        if client.server_capabilities.document_formatting then
-          buf_set_keymap("n", ",df", "<cmd>lua vim.lsp.buf.formatting()<CR>", opts)
-        elseif client.server_capabilities.document_range_formatting then
-          buf_set_keymap("n", ",df", "<cmd>lua vim.lsp.buf.formatting()<CR>", opts)
-        end
-
-        local on_references = vim.lsp.handlers["textDocument/references"]
-        vim.lsp.handlers["textDocument/references"] = vim.lsp.with(
-          on_references, {
-          -- Use location list instead of quickfix list
-          loclist = true,
-        }
-        )
-
-        -- Set autocommands conditional on server_capabilities
-        if client.server_capabilities.document_highlight then
-          vim.api.nvim_exec([[
-            augroup lsp_document_highlight
-              autocmd! * <buffer>
-              autocmd CursorHold <buffer> lua vim.lsp.buf.clear_references() ; vim.lsp.buf.document_highlight()
-              " autocmd CursorMoved <buffer> 
-            augroup END
-          ]], false)
-        end
-
-        -- for some reason formatexpr is getting set to lua - and that is
-        -- annoying b/c its not often right (text wrapping gets broken)!
-        vim.api.nvim_exec([[
-          set formatexpr=
-        ]], false)
-      end
-
-      local signs = { Error = " ", Warn = " ", Hint = ". ", Info = " " }
+      local signs = { Error = " ", Warn = " ", Hint = " .", Info = " ᵢ" }
 
       for type, icon in pairs(signs) do
         local hl = "DiagnosticSign" .. type
         vim.fn.sign_define(hl, { text = icon, texthl = hl, numhl = "" })
       end
 
-      local cmp_capabilities = require('cmp_nvim_lsp').update_capabilities(vim.lsp.protocol.make_client_capabilities())
-
-      require("nvim-lsp-installer").setup {}
-      local opts = {
-        on_attach = GLOBAL_LSP_ON_ATTACH,
-        capabilities = cmp_capabilities,
-        flags = { debounce_text_changes = 150 }
-      }
+      require("mason").setup {}
       local lspconfig = require('lspconfig')
+      local on_attach = require'lsp_control'.on_attach
       lspconfig.yamlls.setup {
-        on_attach = GLOBAL_LSP_ON_ATTACH,
+        on_attach = on_attach,
         capabilities = cmp_capabilities,
         flags = { debounce_text_changes = 150 },
         settings = {
@@ -675,7 +648,7 @@ return require('packer').startup(function(use)
         }
       }
       lspconfig.jsonls.setup {
-        on_attach = GLOBAL_LSP_ON_ATTACH,
+        on_attach = on_attach,
         capabilities = cmp_capabilities,
         flags = { debounce_text_changes = 150 },
         settings = {
@@ -684,23 +657,25 @@ return require('packer').startup(function(use)
         }
       }
       lspconfig.pyright.setup {
-        on_attach = GLOBAL_LSP_ON_ATTACH,
+        on_attach = on_attach,
         capabilities = cmp_capabilities,
         flags = { debounce_text_changes = 150 },
         settings = { pylsp = { plugins = { pycodestyle = { enabled = false } } } }
       }
-      lspconfig.sumneko_lua.setup {
-        on_attach = GLOBAL_LSP_ON_ATTACH,
+      lspconfig.lua_ls.setup {
+        on_attach = on_attach,
         capabilities = cmp_capabilities,
         flags = { debounce_text_changes = 150 },
         settings = { Lua = { diagnostics = { globals = { 'vim' } } } }
       }
+      local opts = require'lsp_control'.make_default_opts()
       lspconfig.html.setup(opts)
       lspconfig.cssls.setup(opts)
       lspconfig.emmet_ls.setup(opts)
       lspconfig.jsonls.setup(opts)
       lspconfig.remark_ls.setup(opts)
       lspconfig.tsserver.setup(opts)
+      lspconfig.vimls.setup(opts)
 
       local null_ls = require('null-ls')
       null_ls.setup({ sources = {
@@ -714,7 +689,7 @@ return require('packer').startup(function(use)
         null_ls.builtins.diagnostics.flake8,
         null_ls.builtins.code_actions.eslint,
       },
-      on_attach = GLOBAL_LSP_ON_ATTACH,
+      on_attach = on_attach,
       })
     end }
   use { 'nvim-treesitter/nvim-treesitter', requires = {
@@ -728,9 +703,16 @@ return require('packer').startup(function(use)
         enable = true,
       },
       highlight = {
-        enable = false, -- false will disable the whole extension
+        enable = true,
         use_langtree = true,
-        disable = { "c", "rust", "markdown" }, -- list of language that will be disabled
+        -- disable slow treesitter highlight for large files
+        disable = function(lang, buf)
+            local max_filesize = 20 * 1024 -- 100 KB
+            local ok, stats = pcall(vim.loop.fs_stat, vim.api.nvim_buf_get_name(buf))
+            if ok and stats and stats.size > max_filesize then
+                return true
+            end
+        end,
       },
       incremental_selection = { enable = true },
       indent = { enable = false },
@@ -800,7 +782,7 @@ return require('packer').startup(function(use)
         return lightline#mode()[0:0]
       endfunction
       function! LightlineFilename()
-        let filename = expand('%') !=# '' ? expand('%') : '[No Name]'
+        let filename = expand('%:~:.') !=# '' ? expand('%:~:.') : '[No Name]'
         let modified = &modified ? ' +' : ''
         return filename . modified
       endfunction
@@ -837,9 +819,6 @@ return require('packer').startup(function(use)
       }
     }
   end }
-  use { 'machakann/vim-highlightedyank', config = function()
-    vim.g.highlightedyank_highlight_duration = 250
-  end } -- highlight any text as it is yanked
   use 'pgdouyon/vim-evanesco' -- vmap *, Highlight search, clear after searching
   use { 'lukas-reineke/indent-blankline.nvim', config = function()
     vim.cmd([[
@@ -905,8 +884,8 @@ return require('packer').startup(function(use)
         VtrAttachToPane
       ]])
     end }
-  use 'prabirshrestha/async.vim' -- TODO who needs this?
-  use 'mattn/webapi-vim' -- TODO who needs this?
+  -- use 'prabirshrestha/async.vim' -- TODO who needs this?
+  -- use 'mattn/webapi-vim' -- TODO who needs this?
   use { 'michaeljsmith/vim-indent-object', opt = true, keys = { { 'o', 'iI' }, { 'o', 'ii' }, { 'v', 'ii' }, { 'v', 'iI' } } } -- vii and viI (visual inner Indent)
   use { 'saaguero/vim-textobj-pastedtext', requires = { 'kana/vim-textobj-user' } } -- vgb for last pasted text.
   use { 'glts/vim-textobj-comment', requires = { 'kana/vim-textobj-user' } } -- select comment with vic or vac.
