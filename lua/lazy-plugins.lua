@@ -1,44 +1,19 @@
-vim.cmd [[packadd packer.nvim]]
-
-return require('packer').startup(function(use)
-  use 'wbthomason/packer.nvim'
-
-  use { 'andymass/vim-matchup', config = function() -- matching tags/parens/etc
+require("lazy").setup({
+  "folke/which-key.nvim",
+  { 'andymass/vim-matchup', config = function() -- matching tags/parens/etc
     vim.g.matchup_matchparen_hi_background = 2
     vim.g.matchup_matchparen_offscreen = {method= 'popup'}
-  end}
-  use 'chrisbra/unicode.vim' -- :Unicode* commands to search for them.
-  use { 'chrisbra/csv.vim', config = function()
+  end},
+  'chrisbra/unicode.vim', -- :Unicode* commands to search for them.
+  { 'chrisbra/csv.vim', config = function()
     vim.g.csv_nomap_space = 1
-  end }
+  end },
 
   -- syntax:
-  use 'towolf/vim-helm'
-  use 'aklt/plantuml-syntax'
+  'towolf/vim-helm',
+  'aklt/plantuml-syntax',
 
-  -- use {
-  --   "nvim-neotest/neotest",
-  --   requires = {
-  --     "nvim-lua/plenary.nvim",
-  --     "nvim-treesitter/nvim-treesitter",
-  --     "antoinemadec/FixCursorHold.nvim"
-  --   },
-  --   config = function()
-  --     require("neotest").setup({
-  --       adapters = {
-  --         require("neotest-python")({
-  --           dap = { justMyCode = false },
-  --         }),
-  --         require("neotest-plenary"),
-  --         require("neotest-vim-test")({
-  --           ignore_file_types = { "python", "vim", "lua" },
-  --         }),
-  --       },
-  --     })
-  --   end
-  -- }
-
-  use { 'f-person/git-blame.nvim', config = function() -- show git blame in the editor.
+  { 'f-person/git-blame.nvim', config = function() -- show git blame in the editor.
     vim.g.gitblame_enabled = 1
     vim.g.gitblame_date_format = '%x'
     vim.g.gitblame_message_template = '<date> <author>: <sha> <summary>'
@@ -47,8 +22,8 @@ return require('packer').startup(function(use)
       nmap [og :GitBlameEnable<cr>
       nmap ]og :GitBlameDisable<cr>
     ]])
-  end }
-  use { 'chrisbra/NrrwRgn', config = function()
+  end },
+  { 'chrisbra/NrrwRgn', config = function()
     vim.g.nrrw_rgn_nomap_nr = 1
     vim.g.nrrw_rgn_nomap_Nr = 1
 
@@ -56,18 +31,18 @@ return require('packer').startup(function(use)
       " get rid of any extra git fugitive buffers
       autocmd BufReadPost NrrwRgn_* set bufhidden=wipe
     ]])
-  end }
-  use { "github/copilot.vim", config = function()
+  end },
+  { "github/copilot.vim", config = function()
     vim.g.copilot_no_tab_map = true
     vim.g.copilot_assume_mapped = true
     vim.g.copilot_tab_fallback = ""
-  end }
-  use { "nathom/filetype.nvim", config = 'vim.g.did_load_filetypes = 1' }
-  use { 'plasticboy/vim-markdown', config = function()
+  end },
+  "nathom/filetype.nvim",
+  { 'plasticboy/vim-markdown', config = function()
     vim.g.vim_markdown_folding_disabled = 1
-  end }
+  end },
 
-  use { 'mhinz/vim-signify', config = function()
+  { 'mhinz/vim-signify', config = function()
     vim.g.signify_priority = 5
     vim.g.signify_sign_show_count = 0
     vim.g.signify_sign_add        = '│'
@@ -80,19 +55,19 @@ return require('packer').startup(function(use)
       omap ah <plug>(signify-motion-outer-pending)
       xmap ah <plug>(signify-motion-outer-visual)
     ]])
-  end }
-  use { 'AndrewRadev/splitjoin.vim', config = function()
+  end },
+  { 'AndrewRadev/splitjoin.vim', config = function()
     vim.g.splitjoin_trailing_comma = 1
-  end }
-  use {
+  end },
+  {
     'nvim-telescope/telescope.nvim',
-    requires = {
+    dependencies = {
       'nvim-lua/plenary.nvim',
       'nvim-lua/popup.nvim',
       'nvim-telescope/telescope-media-files.nvim',
       'zolrath/telescope-projectionist.nvim',
     },
-    run = 'pip install ueberzug',
+    build = 'pip install ueberzug',
     config = function()
       require('telescope').load_extension('media_files')
       require("telescope").load_extension('projectionist')
@@ -154,8 +129,8 @@ return require('packer').startup(function(use)
         nnoremap <F16> :silent! lua require"telescope-config".treesitter_or_ctags()<CR>
       ]])
     end
-  }
-  use { 'ThePrimeagen/refactoring.nvim', requires = { 'nvim-lua/plenary.nvim' }, config = function()
+  },
+  { 'ThePrimeagen/refactoring.nvim', dependencies = { 'nvim-lua/plenary.nvim' }, config = function()
     -- load refactoring Telescope extension
     require("telescope").load_extension("refactoring")
 
@@ -166,8 +141,8 @@ return require('packer').startup(function(use)
       "<Esc><cmd>lua require('telescope').extensions.refactoring.refactors()<CR>",
       { noremap = true }
     )
-  end }
-  use { 'machakann/vim-sandwich', config = function()
+  end },
+  { 'machakann/vim-sandwich', config = function()
     -- for vim-sandwich don't have any s mappings as per docs
     vim.cmd [[nmap s <Nop>]]
     vim.cmd [[xmap s <Nop>]]
@@ -181,10 +156,10 @@ return require('packer').startup(function(use)
       { buns = { '\\[\\s*', '\\s*\\]' }, nesting = 1, regex = 1, match_syntax = 1, kind = { 'delete', 'replace', 'textobj' }, action = { 'delete' }, input = { '[' } },
       { buns = { '(\\s*', '\\s*)' }, nesting = 1, regex = 1, match_syntax = 1, kind = { 'delete', 'replace', 'textobj' }, action = { 'delete' }, input = { '(' } }
     })
-  end }
-  use { 'hrsh7th/nvim-cmp',
+  end },
+  { 'hrsh7th/nvim-cmp',
     commit = '53f49c5^',
-    requires = {
+    dependencies = {
       'neovim/nvim-lspconfig',
       'hrsh7th/cmp-nvim-lsp',
       'hrsh7th/cmp-buffer',
@@ -250,8 +225,10 @@ return require('packer').startup(function(use)
         sources = cmp.config.sources({})
       })
     end
-  }
-  use { '~/Documents/classes/vim-diffundo', opt = true, keys = { { 'n', ',uu' }, { 'n', ',rr' }, { 'n', ',uf' }, { 'n', ',rf' } }, config = function()
+  },
+  { dir = '~/Documents/classes/vim-diffundo',
+  dependencies = { 'kreskij/Repeatable.vim' },
+  config = function()
     vim.cmd([[
       " undo/redo to the previous write
       Repeatable map <leader>uu :DiffEarlier<cr>
@@ -259,8 +236,8 @@ return require('packer').startup(function(use)
       Repeatable map <leader>uf :DiffEarlier 1f<cr>
       Repeatable map <leader>rf :DiffLater 1f<cr>
     ]])
-  end }
-  use { 'sainnhe/gruvbox-material', config = function()
+  end },
+  { 'sainnhe/gruvbox-material', config = function()
     vim.g.gruvbox_material_palette                 = 'material'
     vim.g.gruvbox_material_background              = 'hard'
     vim.g.gruvbox_material_enable_italic           = 1
@@ -273,8 +250,8 @@ return require('packer').startup(function(use)
       set background=dark
       colorscheme gruvbox-material
     ]])
-  end }
-  use { 'jeetsukumaran/vim-indentwise', config = function()
+  end },
+  { 'jeetsukumaran/vim-indentwise', config = function()
     vim.cmd([[
       " Map indent motions to a more indent-like key
       let g:indentwise_suppress_keymaps = 1
@@ -287,14 +264,14 @@ return require('packer').startup(function(use)
       sunmap ]ii
       sunmap ]iI
     ]])
-  end } -- Support indent motions ]ii
-  use { 'tpope/vim-unimpaired', config=function ()
+  end }, -- Support indent motions ]ii
+  { 'tpope/vim-unimpaired', config=function ()
     vim.cmd([[
       " unmap ]t
       " unmap [t
     ]])
-  end }
-  use { 'kreskij/Repeatable.vim', requires = { 'tpope/vim-repeat' }, config = function()
+  end },
+  { 'kreskij/Repeatable.vim', dependencies = { 'tpope/vim-repeat' }, config = function()
     vim.cmd([[
       call repeatable#Setup()
 
@@ -302,13 +279,13 @@ return require('packer').startup(function(use)
       Repeatable map <leader>gj <C-w>l<C-w>kjdv
       Repeatable map <leader>gk <C-w>l<C-w>kkdv
     ]])
-  end }
-  use { 'easymotion/vim-easymotion', config = function()
+  end },
+  { 'easymotion/vim-easymotion', config = function()
     vim.cmd([[
       nmap <leader>s  <Plug>(easymotion-sn)
       nmap <leader>; <Plug>(easymotion-next)
     ]])
-  end, setup = function()
+  end, init = function()
     vim.cmd([[
       let g:EasyMotion_do_mapping=0
       let g:EasyMotion_smartcase=1
@@ -317,40 +294,40 @@ return require('packer').startup(function(use)
       let g:EasyMotion_enter_jump_first = 1
       let g:EasyMotion_space_jump_first = 1
     ]])
-  end } -- mapped to s for two letter searching.
-  use { 'wellle/visual-split.vim', opt = true, keys = { { 'v', ',v' }, { 'n', ',v' } }, config = function()
+  end }, -- mapped to s for two letter searching.
+  { 'wellle/visual-split.vim', config = function()
     vim.cmd([[
       vmap <leader>v :VSSplit<cr>
     ]])
-  end } -- I've mapped this to <leader>v Lines to quickly resize splits (VSSplit)
-  use { 'kana/vim-operator-user', config = function()
+  end }, -- I've mapped this to <leader>v Lines to quickly resize splits (VSSplit)
+  { 'kana/vim-operator-user', config = function()
     vim.cmd([[
       call operator#user#define_ex_command('vtr', 'VtrSendLinesToRunner')
       " call operator#user#define_ex_command('g/', 'VtrSendLinesToRunner')
     ]])
-  end } -- Define my own operators for motions.
-  use { 'tommcdo/vim-exchange', opt = true, keys = { { 'n', 'cx' }, }, }
-  use { 'tommcdo/vim-lion', config = function()
+  end }, -- Define my own operators for motions.
+  'tommcdo/vim-exchange',
+  { 'tommcdo/vim-lion', config = function()
     -- When using gL and gl, squeeze any extra leading whitespace.
     vim.g.lion_squeeze_spaces = 1
-  end } -- align with operator gL and gl (ie glip= to align paragraph by =)
-  use { 'tommcdo/vim-express', opt = true, keys = { { 'n', 'g=' } } } -- custom g* operations (g=iw - prompt 'get_'.v:val.'()' to change a word to a func)
+  end }, -- align with operator gL and gl (ie glip= to align paragraph by =)
+  'tommcdo/vim-express', -- custom g* operations (g=iw - prompt 'get_'.v:val.'()' to change a word to a func)
 
-  use 'stefandtw/quickfix-reflector.vim' -- edit the qf list directly with copen
-  use { 'dsummersl/vim-projectionist', branch = 'issue-94', config = function()
+  'stefandtw/quickfix-reflector.vim', -- edit the qf list directly with copen
+  { 'dsummersl/vim-projectionist', branch = 'issue-94', config = function()
     vim.cmd([[
       " Use projectionist mapping when doing a C-7
       nnoremap <leader>6 :A<cr>
       nnoremap <leader>. :E
     ]])
-  end } -- :E* commands for a project
-  use { 'embear/vim-localvimrc', config = function()
+  end }, -- :E* commands for a project
+  { 'embear/vim-localvimrc', config = function()
     vim.g.localvimrc_persistent = 1
     vim.g.localvimrc_ask = 0
     vim.g.localvimrc_sandbox = 0
     vim.g.localvimrc_name = { '.lvimrc', '.vimrc' }
-  end } -- enable project local .vimrc files
-  use { 'tpope/vim-fugitive', config = function()
+  end }, -- enable project local .vimrc files
+  { 'tpope/vim-fugitive', config = function()
     vim.cmd([[
       " easily access f-keys -- not easy on a macbookpro with 'touch bar'
       nnoremap <F6> :Gvdiff<CR>
@@ -362,11 +339,11 @@ return require('packer').startup(function(use)
       autocmd BufReadPost fugitive://* set bufhidden=wipe
       command! -nargs=0 Gone G log --pretty=format:"%ad %Cred%h%Creset: %<(15)%aN %Cred--%Creset %s" --date=short
     ]])
-  end } -- git
+  end }, -- git
   -- rhubarb seems to be broken for most github repos after commit af12af4
-  use { 'tpope/vim-rhubarb', commit = 'af12af4', requires = { 'tpope/vim-fugitive' } }
-  use { 'tpope/vim-eunuch', opt = true, cmd = { 'Copy', 'Remove', 'Delete', 'Move', 'Rename' } } -- eunuch.vim: cp/move/unlink commands
-  use { 'ludovicchabant/vim-gutentags', config = function()
+  { 'tpope/vim-rhubarb', commit = 'af12af4', dependencies = { 'tpope/vim-fugitive' } },
+  'tpope/vim-eunuch', -- eunuch.vim: cp/move/unlink commands
+  { 'ludovicchabant/vim-gutentags', config = function()
     vim.g.gutentags_modules = { 'ctags' }
     vim.g.gutentags_cache_dir = '~/.vim/tags'
     vim.g.gutentags_ctags_exclude = { '*/node_modules/*', '*/bower_components/*',
@@ -392,17 +369,17 @@ return require('packer').startup(function(use)
       autocmd BufRead *.slim  :GutentagsReset
       autocmd BufRead *.haml  :GutentagsReset
     ]])
-  end }
-  use { 'tpope/vim-abolish', config = function()
+  end },
+  { 'tpope/vim-abolish', config = function()
     vim.cmd([[
       " pathing for abolish
       set runtimepath+=~/.vim/after
     ]])
-  end } -- fix spelling errors
-  use 'editorconfig/editorconfig-vim' -- 0.1.0 EditorConfig Plugin for Vim -- helps define and maintain consistent coding style
-  use 'mattn/emmet-vim' -- fast HTML tag generation (in insert mode type tr*3CTL-Y, to make three <tr>s
-  use { 'tomtom/tcomment_vim' } -- An extensible & universal comment vim-plugin that also handles embedded filetypes
-  use { 'mhinz/vim-grepper', config = function()
+  end }, -- fix spelling errors
+  'editorconfig/editorconfig-vim', -- 0.1.0 EditorConfig Plugin for Vim -- helps define and maintain consistent coding style
+  'mattn/emmet-vim', -- fast HTML tag generation (in insert mode type tr*3CTL-Y, to make three <tr>s
+  'tomtom/tcomment_vim', -- An extensible & universal comment vim-plugin that also handles embedded filetypes
+  { 'mhinz/vim-grepper', config = function()
     vim.g.grepper = {
       open = 1,
       stop = 300,
@@ -439,25 +416,25 @@ return require('packer').startup(function(use)
       nmap gs <plug>(GrepperOperator)
       xmap gs <plug>(GrepperOperator)
     ]])
-  end } -- Grepper to search in lots of ways
-  use { 'cohama/lexima.vim', config = function()
+  end }, -- Grepper to search in lots of ways
+  { 'cohama/lexima.vim', config = function()
     vim.cmd([[
       ; call lexima#add_rule({'char': ')', 'leave': 1})
     ]])
-  end } -- close quotes and such automatically
-  use { '~/Documents/classes/vim-searchconceal', config = function()
+  end }, -- close quotes and such automatically
+  { dir = '~/Documents/classes/vim-searchconceal', config = function()
     vim.cmd([[
       map ,cc :SearchConcealClear<CR>
       map ,ch :SearchConceal<CR>
     ]])
-  end }
-  use { '~/Documents/classes/vim-utf2ascii', opt = true, cmd = 'UTFToASCII', config = function()
+  end },
+  { dir = '~/Documents/classes/vim-utf2ascii', config = function()
     vim.cmd([[
       " Convert unicode to ASCII
       command! UTFToASCII :call utf2ascii#replaceUTF()<cr>
     ]])
-  end } -- simple utf2ascii function.
-  use { 'monaqa/dial.nvim', config = function()
+  end }, -- simple utf2ascii function.
+  { 'monaqa/dial.nvim', config = function()
     local augend = require("dial.augend")
     require("dial.config").augends:register_group {
       -- default augends used when no group name is specified
@@ -524,8 +501,8 @@ return require('packer').startup(function(use)
     vim.api.nvim_set_keymap("v", "<C-x>", require("dial.map").dec_visual("enhanced"), { noremap = true })
     vim.api.nvim_set_keymap("v", "g<C-a>", require("dial.map").inc_gvisual("enhanced"), { noremap = true })
     vim.api.nvim_set_keymap("v", "g<C-x>", require("dial.map").dec_gvisual("enhanced"), { noremap = true })
-  end }
-  use { '~/Documents/classes/vim-mundo', config = function()
+  end },
+  { dir = '~/Documents/classes/vim-mundo', config = function()
     vim.g.mundo_verbose_graph = 0
     vim.g.mundo_mirror_graph = 1
     vim.g.mundo_prefer_python3 = 1
@@ -535,8 +512,8 @@ return require('packer').startup(function(use)
       nnoremap <F5> :MundoToggle<CR>
       map <leader>f5 :MundoToggle<cr>
     ]])
-  end }
-  use { 'w0rp/ale', opt = true, cmd = { 'ALEEnable', 'ALELint', 'ALEFix' }, requires = { 'kreskij/Repeatable.vim' }, setup = function()
+  end },
+  { 'w0rp/ale', lazy = true, cmd = { 'ALEEnable', 'ALELint', 'ALEFix' }, dependencies = { 'kreskij/Repeatable.vim' }, init = function()
     vim.g.ale_linter_aliases = {
       python = { 'python' },
       markdown = { 'asciidoc', 'markdown' },
@@ -559,17 +536,17 @@ return require('packer').startup(function(use)
       Repeatable nmap [g <Plug>(ale_previous)
       Repeatable nmap ]g <Plug>(ale_next)
     ]])
-  end }
-  use { 'norcalli/nvim-colorizer.lua', config = function()
+  end },
+  { 'norcalli/nvim-colorizer.lua', config = function()
     require('colorizer').setup {
       'css';
       'typescriptreact';
     }
-  end}
-  use { '~/Documents/classes/nvim-sluice', config = function()
+  end},
+  { dir = '~/Documents/classes/nvim-sluice', config = function()
     end
-  }
-  use { 'SirVer/ultisnips', config = function()
+  },
+  { 'SirVer/ultisnips', config = function()
     vim.cmd([[
       let g:UltiSnipsSnippetDirectories=[$HOME.'/.vim/UltiSnips', $HOME.'/.vim/bundle/vim-snippets/UltiSnips']
       let g:UltiSnipsSnippetsDir='~/.vim/UltiSnips'
@@ -578,12 +555,12 @@ return require('packer').startup(function(use)
       let g:UltiSnipsJumpForwardTrigger='<Tab>'                                           
       let g:UltiSnipsJumpBackwardTrigger='<S-Tab>'
     ]])
-  end }
-  use { 'RRethy/vim-illuminate', config = function()
+  end },
+  { 'RRethy/vim-illuminate', config = function()
     require('illuminate').configure()
-  end }
-  use { 'neovim/nvim-lspconfig',
-    requires = {
+  end },
+  { 'neovim/nvim-lspconfig',
+    dependencies = {
       'stevearc/dressing.nvim',
       'williamboman/mason.nvim',
       'b0o/schemastore.nvim',
@@ -675,11 +652,11 @@ return require('packer').startup(function(use)
       },
       on_attach = on_attach,
       })
-    end }
-  use { 'nvim-treesitter/nvim-treesitter', requires = {
+    end },
+  { 'nvim-treesitter/nvim-treesitter', dependencies = {
     'nvim-treesitter/nvim-treesitter-textobjects',
     'nvim-treesitter/playground',
-  }, run = ':TSUpdate', config = function()
+  }, build = ':TSUpdate', config = function()
     require 'nvim-treesitter.configs'.setup {
       ensure_installed = "all",
       ignore_install = { "phpdoc" },
@@ -708,7 +685,7 @@ return require('packer').startup(function(use)
           lookahead = true,
 
           keymaps = {
-            -- You can use the capture groups defined in textobjects.scm
+            -- You can the capture groups defined in textobjects.scm
             ["af"] = "@function.outer",
             ["if"] = "@function.inner",
             -- TODO this does not currently work for multiline comments
@@ -743,13 +720,13 @@ return require('packer').startup(function(use)
         }
       },
     }
-  end }
-  use { 'folke/trouble.nvim', requires = "kyazdani42/nvim-web-devicons", config = function()
+  end },
+  { 'folke/trouble.nvim', dependencies = "kyazdani42/nvim-web-devicons", config = function()
     require("trouble").setup {
       mode = 'document_diagnostics'
     }
-  end }
-  use { 'itchyny/lightline.vim', requires = { 'SmiteshP/nvim-gps' }, config = function()
+  end },
+  { 'itchyny/lightline.vim', dependencies = { 'SmiteshP/nvim-gps' }, config = function()
     require("nvim-gps").setup({
       depth = 3,
     })
@@ -802,9 +779,9 @@ return require('packer').startup(function(use)
         currentfunction = 'LspStatus',
       }
     }
-  end }
-  use 'pgdouyon/vim-evanesco' -- vmap *, Highlight search, clear after searching
-  use { 'lukas-reineke/indent-blankline.nvim', config = function()
+  end },
+  'pgdouyon/vim-evanesco', -- vmap *, Highlight search, clear after searching
+  { 'lukas-reineke/indent-blankline.nvim', config = function()
     vim.cmd([[
       nmap [oG :IndentBlanklineEnable<cr>
       nmap ]oG :IndentBlanklineDisable<cr>
@@ -824,15 +801,16 @@ return require('packer').startup(function(use)
       --     "IndentBlanklineIndent2",
       -- },
     }
-  end }
-  use { 'vinodkri/vim-tmux-runner', config = function()
+  end },
+  { 'vinodkri/vim-tmux-runner', config = function()
     vim.cmd([[
       map <leader>gv  <Plug>(operator-vtr)
     ]])
-  end } -- :VtrSendCommandToRunner for tmux
-  use { 'vim-test/vim-test',
-    keys = { { 'n', ',ctn' }, { 'n', ',ctf' }, { 'n', ',ctl' } },
-    opt = true,
+  end }, -- :VtrSendCommandToRunner for tmux
+  { 'vim-test/vim-test',
+    lazy = true,
+    keys = { ',ctn', ',ctf', ',ctl' },
+    dependencies = { 'vinodkri/vim-tmux-runner' },
     config = function()
       vim.g['test#preserve_screen'] = 1
       vim.g['test#strategy'] = 'vtr'
@@ -867,9 +845,9 @@ return require('packer').startup(function(use)
 
         VtrAttachToPane
       ]])
-    end }
-  use { 'michaeljsmith/vim-indent-object', opt = true, keys = { { 'o', 'iI' }, { 'o', 'ii' }, { 'v', 'ii' }, { 'v', 'iI' } } } -- vii and viI (visual inner Indent)
-  use { 'saaguero/vim-textobj-pastedtext', requires = { 'kana/vim-textobj-user' } } -- vgb for last pasted text.
-  use { 'glts/vim-textobj-comment', requires = { 'kana/vim-textobj-user' } } -- select comment with vic or vac.
-  use 'ryanoasis/vim-devicons'
-end)
+    end },
+  'michaeljsmith/vim-indent-object', -- vii and viI (visual inner Indent)
+  { 'saaguero/vim-textobj-pastedtext', dependencies = { 'kana/vim-textobj-user' } }, -- vgb for last pasted text.
+  { 'glts/vim-textobj-comment', dependencies = { 'kana/vim-textobj-user' } }, -- select comment with vic or vac.
+  'ryanoasis/vim-devicons',
+})

@@ -1,6 +1,6 @@
-lua require('plugins')
-
 " basic options {{{
+set termguicolors
+
 set cursorline
 " show column markers beyond the 80, and 100
 " TODO don't set a colorcolumn if the file is read only (help files and such).
@@ -57,9 +57,6 @@ set wildcharm=<C-Z>
 
 let g:mapleader=','
 
-" TODO removable
-" set shada='50,\"50,h
-" set history=100 " keep 100 lines of command line history
 set showmatch   " Show matching brackets.
 
 set textwidth=80
@@ -87,6 +84,24 @@ set cmdheight=1
 
 set guifont=JetBrainsMono\ Nerd\ Font\ Mono
 let g:python3_host_prog='/Users/danesummers/.pyenv/shims/python'
+"}}}
+" Plugins{{{
+lua << EOF
+local lazypath = vim.fn.stdpath("data") .. "/lazy/lazy.nvim"
+if not vim.loop.fs_stat(lazypath) then
+  vim.fn.system({
+    "git",
+    "clone",
+    "--filter=blob:none",
+    "https://github.com/folke/lazy.nvim.git",
+    "--branch=stable", -- latest stable release
+    lazypath,
+  })
+end
+vim.opt.rtp:prepend(lazypath)
+
+require('lazy-plugins')
+EOF
 "}}}
 " Mappings {{{
 
