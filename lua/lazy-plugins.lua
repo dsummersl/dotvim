@@ -2,8 +2,8 @@ require("lazy").setup({
   "folke/which-key.nvim",
   { 'andymass/vim-matchup', config = function() -- matching tags/parens/etc
     vim.g.matchup_matchparen_hi_background = 2
-    vim.g.matchup_matchparen_offscreen = {method= 'popup'}
-  end},
+    vim.g.matchup_matchparen_offscreen = { method = 'popup' }
+  end },
   'chrisbra/unicode.vim', -- :Unicode* commands to search for them.
   { 'chrisbra/csv.vim', config = function()
     vim.g.csv_nomap_space = 1
@@ -37,13 +37,12 @@ require("lazy").setup({
     vim.g.copilot_assume_mapped = true
     vim.g.copilot_tab_fallback = ""
   end },
-  "nathom/filetype.nvim",
   { 'plasticboy/vim-markdown', config = function()
     vim.g.vim_markdown_folding_disabled = 1
   end },
 
   { 'mhinz/vim-signify', config = function()
-    vim.g.signify_priority = 5
+    vim.g.signify_priority        = 5
     vim.g.signify_sign_show_count = 0
     vim.g.signify_sign_add        = '│'
     vim.g.signify_sign_change     = '┊'
@@ -152,9 +151,9 @@ require("lazy").setup({
       -- { buns = { '{ ', ' }' }, nesting = 1, match_syntax = 1, kind = { 'add', 'replace' }, action = { 'add' }, input = { '{' } },
       -- { buns = { '[ ', ' ]' }, nesting = 1, match_syntax = 1, kind = { 'add', 'replace' }, action = { 'add' }, input = { '[' } },
       -- { buns = { '( ', ' )' }, nesting = 1, match_syntax = 1, kind = { 'add', 'replace' }, action = { 'add' }, input = { '(' } },
-      { buns = { '{\\s*', '\\s*}' }, nesting = 1, regex = 1, match_syntax = 1, kind = { 'delete', 'replace', 'textobj' }, action = { 'delete' }, input = { '{' } },
+      { buns = { '{\\s*', '\\s*}' },     nesting = 1, regex = 1, match_syntax = 1, kind = { 'delete', 'replace', 'textobj' }, action = { 'delete' }, input = { '{' } },
       { buns = { '\\[\\s*', '\\s*\\]' }, nesting = 1, regex = 1, match_syntax = 1, kind = { 'delete', 'replace', 'textobj' }, action = { 'delete' }, input = { '[' } },
-      { buns = { '(\\s*', '\\s*)' }, nesting = 1, regex = 1, match_syntax = 1, kind = { 'delete', 'replace', 'textobj' }, action = { 'delete' }, input = { '(' } }
+      { buns = { '(\\s*', '\\s*)' },     nesting = 1, regex = 1, match_syntax = 1, kind = { 'delete', 'replace', 'textobj' }, action = { 'delete' }, input = { '(' } }
     })
   end },
   { 'hrsh7th/nvim-cmp',
@@ -190,7 +189,7 @@ require("lazy").setup({
           documentation = cmp.config.window.bordered(),
         },
         mapping = {
-          ['<C-d>'] = cmp.mapping.scroll_docs(-4),
+          ['<C-d>'] = cmp.mapping.scroll_docs( -4),
           ['<C-f>'] = cmp.mapping.scroll_docs(4),
           ['<C-p>'] = cmp.mapping.select_prev_item(),
           ['<C-e>'] = cmp.mapping(function(fallback)
@@ -205,8 +204,8 @@ require("lazy").setup({
           ['<C-Space>'] = cmp.mapping.confirm({ select = true }),
         },
         sources = {
-          { name = 'nvim_lsp', priority_weight = 2, keyword_length = 3 },
-          { name = 'buffer', priority_weight = 3, keyword_length = 3 },
+          { name = 'nvim_lsp',  priority_weight = 2, keyword_length = 3 },
+          { name = 'buffer',    priority_weight = 3, keyword_length = 3 },
           { name = 'ultisnips', priority_weight = 4, keyword_length = 2 },
         }
       })
@@ -227,16 +226,16 @@ require("lazy").setup({
     end
   },
   { dir = '~/Documents/classes/vim-diffundo',
-  dependencies = { 'kreskij/Repeatable.vim' },
-  config = function()
-    vim.cmd([[
+    dependencies = { 'kreskij/Repeatable.vim' },
+    config = function()
+      vim.cmd([[
       " undo/redo to the previous write
       Repeatable map <leader>uu :DiffEarlier<cr>
       Repeatable map <leader>rr :DiffLater<cr>
       Repeatable map <leader>uf :DiffEarlier 1f<cr>
       Repeatable map <leader>rf :DiffLater 1f<cr>
     ]])
-  end },
+    end },
   { 'sainnhe/gruvbox-material', config = function()
     vim.g.gruvbox_material_palette                 = 'material'
     vim.g.gruvbox_material_background              = 'hard'
@@ -265,7 +264,7 @@ require("lazy").setup({
       sunmap ]iI
     ]])
   end }, -- Support indent motions ]ii
-  { 'tpope/vim-unimpaired', config=function ()
+  { 'tpope/vim-unimpaired', config = function()
     vim.cmd([[
       " unmap ]t
       " unmap [t
@@ -341,7 +340,7 @@ require("lazy").setup({
     ]])
   end }, -- git
   -- rhubarb seems to be broken for most github repos after commit af12af4
-  { 'tpope/vim-rhubarb', commit = 'af12af4', dependencies = { 'tpope/vim-fugitive' } },
+  { 'tpope/vim-rhubarb',               commit = 'af12af4',                        dependencies = { 'tpope/vim-fugitive' } },
   'tpope/vim-eunuch', -- eunuch.vim: cp/move/unlink commands
   { 'ludovicchabant/vim-gutentags', config = function()
     vim.g.gutentags_modules = { 'ctags' }
@@ -531,20 +530,20 @@ require("lazy").setup({
     vim.g.ale_set_highlights = 0
     vim.g.ale_lint_delay = 50
   end,
-  config = function()
-    vim.cmd([[
+    config = function()
+      vim.cmd([[
       Repeatable nmap [g <Plug>(ale_previous)
       Repeatable nmap ]g <Plug>(ale_next)
     ]])
-  end },
+    end },
   { 'norcalli/nvim-colorizer.lua', config = function()
     require('colorizer').setup {
-      'css';
-      'typescriptreact';
+      'css',
+      'typescriptreact',
     }
-  end},
+  end },
   { dir = '~/Documents/classes/nvim-sluice', config = function()
-    end
+  end
   },
   { 'SirVer/ultisnips', config = function()
     vim.cmd([[
@@ -552,7 +551,7 @@ require("lazy").setup({
       let g:UltiSnipsSnippetsDir='~/.vim/UltiSnips'
       let g:UltiSnipsListSnippets='<C-\>'
       let g:UltiSnipsExpandTrigger='<Tab>'
-      let g:UltiSnipsJumpForwardTrigger='<Tab>'                                           
+      let g:UltiSnipsJumpForwardTrigger='<Tab>'
       let g:UltiSnipsJumpBackwardTrigger='<S-Tab>'
     ]])
   end },
@@ -599,7 +598,8 @@ require("lazy").setup({
 
       require("mason").setup {}
       local lspconfig = require('lspconfig')
-      local on_attach = require'lsp_control'.on_attach
+      local on_attach = require 'lsp_control'.on_attach
+      local cmp_capabilities = require'cmp_nvim_lsp'.default_capabilities(vim.lsp.protocol.make_client_capabilities())
       lspconfig.yamlls.setup {
         on_attach = on_attach,
         capabilities = cmp_capabilities,
@@ -629,7 +629,7 @@ require("lazy").setup({
         flags = { debounce_text_changes = 150 },
         settings = { Lua = { diagnostics = { globals = { 'vim' } } } }
       }
-      local opts = require'lsp_control'.make_default_opts()
+      local opts = require 'lsp_control'.make_default_opts()
       lspconfig.html.setup(opts)
       lspconfig.cssls.setup(opts)
       lspconfig.emmet_ls.setup(opts)
@@ -639,18 +639,19 @@ require("lazy").setup({
       lspconfig.vimls.setup(opts)
 
       local null_ls = require('null-ls')
-      null_ls.setup({ sources = {
-        null_ls.builtins.diagnostics.buf,
-        null_ls.builtins.code_actions.refactoring,
-        null_ls.builtins.diagnostics.proselint,
-        null_ls.builtins.formatting.black,
-        null_ls.builtins.formatting.isort,
-        null_ls.builtins.diagnostics.pylint,
-        null_ls.builtins.diagnostics.codespell,
-        null_ls.builtins.diagnostics.flake8,
-        null_ls.builtins.code_actions.eslint,
-      },
-      on_attach = on_attach,
+      null_ls.setup({
+        sources = {
+          null_ls.builtins.diagnostics.buf,
+          null_ls.builtins.code_actions.refactoring,
+          null_ls.builtins.diagnostics.proselint,
+          null_ls.builtins.formatting.black,
+          null_ls.builtins.formatting.isort,
+          null_ls.builtins.diagnostics.pylint,
+          null_ls.builtins.diagnostics.codespell,
+          null_ls.builtins.diagnostics.flake8,
+          null_ls.builtins.code_actions.eslint,
+        },
+        on_attach = on_attach,
       })
     end },
   { 'nvim-treesitter/nvim-treesitter', dependencies = {
@@ -668,11 +669,11 @@ require("lazy").setup({
         use_langtree = true,
         -- disable slow treesitter highlight for large files
         disable = function(lang, buf)
-            local max_filesize = 20 * 1024 -- 100 KB
-            local ok, stats = pcall(vim.loop.fs_stat, vim.api.nvim_buf_get_name(buf))
-            if ok and stats and stats.size > max_filesize then
-                return true
-            end
+          local max_filesize = 20 * 1024 -- 100 KB
+          local ok, stats = pcall(vim.loop.fs_stat, vim.api.nvim_buf_get_name(buf))
+          if ok and stats and stats.size > max_filesize then
+            return true
+          end
         end,
       },
       incremental_selection = { enable = true },
@@ -759,7 +760,7 @@ require("lazy").setup({
       colorscheme = 'jellybeans',
       active = {
         left = {
-          { 'mode', 'paste' },
+          { 'mode',     'paste' },
           { 'readonly', 'filename' }
         },
         right = {
@@ -848,6 +849,6 @@ require("lazy").setup({
     end },
   'michaeljsmith/vim-indent-object', -- vii and viI (visual inner Indent)
   { 'saaguero/vim-textobj-pastedtext', dependencies = { 'kana/vim-textobj-user' } }, -- vgb for last pasted text.
-  { 'glts/vim-textobj-comment', dependencies = { 'kana/vim-textobj-user' } }, -- select comment with vic or vac.
+  { 'glts/vim-textobj-comment',        dependencies = { 'kana/vim-textobj-user' } }, -- select comment with vic or vac.
   'ryanoasis/vim-devicons',
 })
