@@ -3,11 +3,11 @@ vim.cmd [[packadd packer.nvim]]
 return require('packer').startup(function(use)
   use 'wbthomason/packer.nvim'
 
-  use { 'andymass/vim-matchup', config = function()
+  use { 'andymass/vim-matchup', config = function() -- matching tags/parens/etc
     vim.g.matchup_matchparen_hi_background = 2
     vim.g.matchup_matchparen_offscreen = {method= 'popup'}
   end}
-  use 'chrisbra/unicode.vim'
+  use 'chrisbra/unicode.vim' -- :Unicode* commands to search for them.
   use { 'chrisbra/csv.vim', config = function()
     vim.g.csv_nomap_space = 1
   end }
@@ -38,7 +38,7 @@ return require('packer').startup(function(use)
   --   end
   -- }
 
-  use { 'f-person/git-blame.nvim', config = function()
+  use { 'f-person/git-blame.nvim', config = function() -- show git blame in the editor.
     vim.g.gitblame_enabled = 1
     vim.g.gitblame_date_format = '%x'
     vim.g.gitblame_message_template = '<date> <author>: <sha> <summary>'
@@ -56,12 +56,6 @@ return require('packer').startup(function(use)
       " get rid of any extra git fugitive buffers
       autocmd BufReadPost NrrwRgn_* set bufhidden=wipe
     ]])
-  end }
-  use { "junegunn/goyo.vim", requires = { 'junegunn/limelight.vim' }, config = function()
-    -- vim.cmd([[
-    --   autocmd! User GoyoEnter Limelight
-    --   autocmd! User GoyoLeave Limelight!
-    -- ]])
   end }
   use { "github/copilot.vim", config = function()
     vim.g.copilot_no_tab_map = true
@@ -96,10 +90,12 @@ return require('packer').startup(function(use)
       'nvim-lua/plenary.nvim',
       'nvim-lua/popup.nvim',
       'nvim-telescope/telescope-media-files.nvim',
+      'zolrath/telescope-projectionist.nvim',
     },
     run = 'pip install ueberzug',
     config = function()
       require('telescope').load_extension('media_files')
+      require("telescope").load_extension('projectionist')
       require('telescope').setup {
         defaults = {
           sorting_strategy = "descending",
@@ -872,8 +868,6 @@ return require('packer').startup(function(use)
         VtrAttachToPane
       ]])
     end }
-  -- use 'prabirshrestha/async.vim' -- TODO who needs this?
-  -- use 'mattn/webapi-vim' -- TODO who needs this?
   use { 'michaeljsmith/vim-indent-object', opt = true, keys = { { 'o', 'iI' }, { 'o', 'ii' }, { 'v', 'ii' }, { 'v', 'iI' } } } -- vii and viI (visual inner Indent)
   use { 'saaguero/vim-textobj-pastedtext', requires = { 'kana/vim-textobj-user' } } -- vgb for last pasted text.
   use { 'glts/vim-textobj-comment', requires = { 'kana/vim-textobj-user' } } -- select comment with vic or vac.
