@@ -11,7 +11,7 @@ set undodir=~/.vim/undo
 
 set conceallevel=2 " for ToggleGroupConceal
 set autowrite
-set nonumber
+" set nonumber
 
 " I want to know about bad tab/space use:
 set nolist
@@ -77,7 +77,7 @@ set pumblend=10
 
 " completion for command mode suggestions
 set wildoptions=pum
-set signcolumn=auto:1-2
+set signcolumn=yes:2
 
 " show or hide that extra space at the bottom of the screen:
 set cmdheight=1
@@ -281,6 +281,7 @@ endfunction
 command! -nargs=* SS call s:SetStop(<f-args>)
 "}}}
 " :DiffAgainstRegisterA - Diff the current selection against whatever is in register 'a' {{{
+" TODO DiffAgainstRegisterAandB (three way diff)
 function! s:DiffAgainstRegisterA() range
   let b:nrrw_aucmd_written = ':update'
 
@@ -300,12 +301,12 @@ function! s:DiffAgainstRegisterA() range
   exec "autocmd BufHidden <buffer> :bw ". bnr
 endfunction
 command! -nargs=0 -range DiffAgainstRegisterA <line1>,<line2>call s:DiffAgainstRegisterA()
-vnoremap <leader>-  :'<,'>NR<CR>:DiffAgainstRegisterA<CR>
+vnoremap <leader>va  :'<,'>NR<CR>:DiffAgainstRegisterA<CR>
 "}}}
 " Automappings"{{{
 
 if has('autocmd') && !exists('g:autocommands_loaded')
-  autocmd TextYankPost * silent! lua vim.highlight.on_yank {higroup='Visual', timeout=50}
+  autocmd TextYankPost * silent! lua vim.highlight.on_yank {higroup='Visual', timeout=300}
 
   let g:autocommands_loaded = 1
 

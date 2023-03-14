@@ -28,8 +28,10 @@ lsp_control.on_attach = function(client, bufnr)
   buf_set_keymap('n', ',dl', '<cmd>Lspsaga lsp_finder<CR>', opts)
   buf_set_keymap('n', ',dL', '<cmd>Trouble lsp_references<CR>', opts)
   -- I only care about diagnostic errors:
-  buf_set_keymap('n', ']d', '<cmd>lua require("lspsaga.diagnostic"):goto_next({ severity = vim.diagnostic.severity.ERROR })<CR>', opts)
-  buf_set_keymap('n', '[d', '<cmd>lua require("lspsaga.diagnostic"):goto_prev({ severity = vim.diagnostic.severity.ERROR })<CR>', opts)
+  buf_set_keymap('n', ']d', '<cmd>lua require("lspsaga.diagnostic"):goto_next({ severity = { min = vim.diagnostic.severity.WARN } })<CR>', opts)
+  buf_set_keymap('n', '[d', '<cmd>lua require("lspsaga.diagnostic"):goto_prev({ severity = { min = vim.diagnostic.severity.WARN } })<CR>', opts)
+  buf_set_keymap('n', ']e', '<cmd>lua require("lspsaga.diagnostic"):goto_next({ severity = { min = vim.diagnostic.severity.ERROR } })<CR>', opts)
+  buf_set_keymap('n', '[e', '<cmd>lua require("lspsaga.diagnostic"):goto_prev({ severity = { min = vim.diagnostic.severity.ERROR } })<CR>', opts)
 
   local on_references = vim.lsp.handlers["textDocument/references"]
   vim.lsp.handlers["textDocument/references"] = vim.lsp.with(
