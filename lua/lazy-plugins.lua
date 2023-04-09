@@ -1,4 +1,25 @@
 require("lazy").setup({
+  {
+    "RRethy/nvim-treesitter-textsubjects",
+    config = function() -- matching tags/parens/etc
+      require('nvim-treesitter.configs').setup {
+        textsubjects = {
+          enable = true,
+          prev_selection = ',', -- (Optional) keymap to select the previous selection
+          keymaps = {
+            ['.'] = 'textsubjects-smart',
+            [';'] = 'textsubjects-container-outer',
+            ['i;'] = 'textsubjects-container-inner',
+          },
+        },
+      }
+    end,
+  },
+
+  { "madox2/vim-ai",                   build = "./install.sh" },
+
+  -- https://github.com/windwp/nvim-projectconfig maybe for loading local lua setup.
+  "otavioschwanck/telescope-alternate",
   "folke/which-key.nvim",
   {
     "andymass/vim-matchup",
@@ -13,18 +34,6 @@ require("lazy").setup({
     config = function()
       vim.g.csv_nomap_space = 1
     end,
-  },
-
-  { "dense-analysis/neural",
-    config = function()
-      require('neural').setup({
-        source = {
-          openai = {
-            api_key = vim.env.OPENAI_API_KEY,
-          },
-        },
-      })
-    end
   },
 
   -- syntax:
@@ -179,7 +188,10 @@ require("lazy").setup({
   },
   {
     "ThePrimeagen/refactoring.nvim",
-    dependencies = { "nvim-lua/plenary.nvim" },
+    dependencies = {
+      { "nvim-lua/plenary.nvim" },
+      { "nvim-treesitter/nvim-treesitter" }
+    },
     config = function()
       -- load refactoring Telescope extension
       require("telescope").load_extension("refactoring")
@@ -187,9 +199,9 @@ require("lazy").setup({
       -- remap to open the Telescope refactoring menu in visual mode
       vim.api.nvim_set_keymap(
         "v",
-        "<leader>rr",
+        "<leader>dA",
         "<Esc><cmd>lua require('telescope').extensions.refactoring.refactors()<CR>",
-        { noremap = true }
+        { noremap = true, desc = "Refactor actions" }
       )
     end,
   },
@@ -256,6 +268,13 @@ require("lazy").setup({
       local cmp = require("cmp")
       local lspkind = require("lspkind")
       cmp.setup({
+        enabled = function()
+          if vim.bo.buftype == 'prompt' then
+            return false
+          end
+
+          return true
+        end,
         formatting = {
           format = lspkind.cmp_format({ with_text = false, maxwidth = 40 }),
         },
@@ -290,14 +309,14 @@ require("lazy").setup({
       })
 
       -- `/` cmdline setup.
-      cmp.setup.cmdline("/", {
-        mapping = cmp.mapping.preset.cmdline(),
-        sources = {
-          { name = "buffer", keyword_length = 4 },
-        },
-      })
+      -- cmp.setup.cmdline("/", {
+      --   mapping = cmp.mapping.preset.cmdline(),
+      --   sources = {
+      --     { name = "buffer", keyword_length = 4 },
+      --   },
+      -- })
 
-      -- Fix the default cmdline behavior so that it uses te native one:
+      -- Fix the default cmdline behavior so that it uses the native one:
       -- https://github.com/hrsh7th/nvim-cmp/issues/1454
       cmp.setup.cmdline(':', {
         sources = {},
@@ -322,7 +341,7 @@ require("lazy").setup({
       vim.cmd([[
       " undo/redo to the previous write
       Repeatable map <leader>uu :DiffEarlier<cr>
-      Repeatable map <leader>rr :DiffLater<cr>
+      " Repeatable map <leader>rr :DiffLater<cr>
       Repeatable map <leader>uf :DiffEarlier 1f<cr>
       Repeatable map <leader>rf :DiffLater 1f<cr>
     ]])
@@ -366,10 +385,10 @@ require("lazy").setup({
   {
     "tpope/vim-unimpaired",
     config = function()
-      -- vim.cmd([[
-      --   noremap ]on :set number relativenumber<cr>
-      --   noremap [on :set nonumber norelativenumber<cr>
-      -- ]])
+      vim.cmd([[
+        noremap ]on :set number relativenumber<cr>
+        noremap [on :set nonumber norelativenumber<cr>
+      ]])
     end,
   },
   {
@@ -452,7 +471,7 @@ require("lazy").setup({
     "embear/vim-localvimrc",
     init = function()
       vim.g.localvimrc_persistent = 1
-      vim.g.localvimrc_ask = 1
+      vim.g.localvimrc_ask = 0
       vim.g.localvimrc_debug = 2
       vim.g.localvimrc_sandbox = 0
       vim.g.localvimrc_name = ".vimrc"
@@ -529,17 +548,60 @@ require("lazy").setup({
     ]])
     end,
   }, -- fix spelling errors
-  "editorconfig/editorconfig-vim", -- 0.1.0 EditorConfig Plugin for Vim -- helps define and maintain consistent coding style
   "mattn/emmet-vim", -- fast HTML tag generation (in insert mode type tr*3CTL-Y, to make three <tr>s
   "tomtom/tcomment_vim", -- An extensible & universal comment vim-plugin that also handles embedded filetypes
   {
-    "cohama/lexima.vim",
+    "windwp/nvim-autopairs",
     config = function()
-      vim.cmd([[
-      ; call lexima#add_rule({'char': ')', 'leave': 1})
-    ]])
+      require("nvim-autopairs").setup()
+
+      local npairs = require('nvim-autopairs')
+      local Rule = require('nvim-autopairs.rule')
+      local cond = require('nvim-autopairs.conds')
+      local utils = require('nvim-autopairs.utils')
+
+      -- from https://github.com/windwp/nvim-autopairs/issues/167 -- ability to jump out of pairs
+      local function multiline_close_jump(open, close)
+        return Rule(close, '')
+            :with_pair(function()
+              local buf = vim.fn.bufnr()
+              local row, col = utils.get_cursor(0)
+              local line = utils.text_get_current_line(buf)
+
+              if #line ~= col then --not at EOL
+                return false
+              end
+
+              local unclosed_count = 0
+              for c in line:gmatch("[\\" .. open .. "\\" .. close .. "]") do
+                if c == open then unclosed_count = unclosed_count + 1 end
+                if unclosed_count > 0 and c == close then unclosed_count = unclosed_count - 1 end
+              end
+              if unclosed_count > 0 then return false end
+
+              local nextrow = row + 1
+              if nextrow < vim.api.nvim_buf_line_count(0)
+                  and vim.regex("^\\s*" .. close):match_line(0, nextrow) then
+                return true
+              end
+              return false
+            end)
+            :with_move(cond.none())
+            :with_cr(cond.none())
+            :with_del(cond.none())
+            :set_end_pair_length(0)
+            :replace_endpair(function()
+              return '<esc>xEa'
+            end)
+      end
+
+      npairs.add_rules({
+        multiline_close_jump('(', ')'),
+        multiline_close_jump('[', ']'),
+        multiline_close_jump('{', '}'),
+      })
     end,
-  }, -- close quotes and such automatically
+  },
   {
     dir = "~/Documents/classes/vim-searchconceal",
     config = function()
@@ -704,18 +766,9 @@ require("lazy").setup({
     end,
   },
   {
-    "neovim/nvim-lspconfig",
-    dependencies = {
-      "stevearc/dressing.nvim",
-      "williamboman/mason.nvim",
-      "b0o/schemastore.nvim",
-      "glepnir/lspsaga.nvim",
-      "https://gitlab.com/yorickpeterse/nvim-dd.git",
-      "jose-elias-alvarez/null-ls.nvim",
-    },
+    "glepnir/lspsaga.nvim",
+    event = "LspAttach",
     config = function()
-      require("dd").setup()
-
       require("lspsaga").setup({
         symbol_in_winbar = {
           enable = false,
@@ -726,7 +779,23 @@ require("lazy").setup({
           saga_winblend = 20,
         },
       })
-
+    end,
+    dependencies = {
+      { "nvim-tree/nvim-web-devicons" },
+      { "nvim-treesitter/nvim-treesitter" }
+    }
+  },
+  {
+    "neovim/nvim-lspconfig",
+    dependencies = {
+      "stevearc/dressing.nvim",
+      "williamboman/mason.nvim",
+      "b0o/schemastore.nvim",
+      "https://gitlab.com/yorickpeterse/nvim-dd.git",
+      "jose-elias-alvarez/null-ls.nvim",
+    },
+    config = function()
+      require("dd").setup()
       vim.diagnostic.config({
         underline = false,
         virtual_text = false,
@@ -879,7 +948,7 @@ require("lazy").setup({
   },
   {
     "folke/trouble.nvim",
-    dependencies = "kyazdani42/nvim-web-devicons",
+    dependencies = "nvim-tree/nvim-web-devicons",
     config = function()
       require("trouble").setup({
         mode = "document_diagnostics",
@@ -887,19 +956,11 @@ require("lazy").setup({
     end,
   },
   {
+    -- use navic?
     "itchyny/lightline.vim",
-    dependencies = { "SmiteshP/nvim-gps" },
     config = function()
-      require("nvim-gps").setup({
-        depth = 3,
-      })
-
       vim.cmd([[
-      lua gps = require("nvim-gps")
       function! LspStatus()
-        if luaeval('gps.is_available()')
-          return luaeval('gps.get_location()')
-        endif
         return "-"
       endfunction
       function! LightlineMode()

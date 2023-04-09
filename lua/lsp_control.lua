@@ -4,34 +4,41 @@ lsp_control.show = true
 
 --- I don't think this does anything anymore
 lsp_control.toggle_virtualtext = function()
-    lsp_control.show = not lsp_control.show
-    vim.lsp.diagnostic.display(
-        vim.lsp.diagnostic.get(0, 1),
-        0,
-        1,
-        {lsp_control = lsp_control.show}
-    )
+  lsp_control.show = not lsp_control.show
+  vim.lsp.diagnostic.display(
+    vim.lsp.diagnostic.get(0, 1),
+    0,
+    1,
+    { lsp_control = lsp_control.show }
+  )
 end
 
 lsp_control.on_attach = function(client, bufnr)
-  local function buf_set_keymap(...) vim.api.nvim_buf_set_keymap(bufnr, ...) end
+  local keymap_opts = function(desc)
+    return { noremap = true, silent = true, buffer = bufnr, desc = desc }
+  end
+  vim.keymap.set('n', ',dd', vim.lsp.buf.definition, keymap_opts('Go to definition'))
+  vim.keymap.set('n', ',dh', vim.lsp.buf.hover, keymap_opts('LSP Hover'))
+  vim.keymap.set('n', ',dr', vim.lsp.buf.rename, keymap_opts('LSP Rename'))
+  vim.keymap.set('n', ',df', vim.lsp.buf.format, keymap_opts('Format buffer'))
+  -- vim.keymap.set('v', ',df', vim.lsp.buf.range_formatting, opts)
+  vim.keymap.set('n', ',da', vim.lsp.buf.code_action, keymap_opts('Code actions'))
+  -- vim.keymap.set('v', ',dA', vim.lsp.buf.range_code_action, opts)
+  vim.keymap.set('n', ',dl', vim.lsp.buf.references, keymap_opts('LSP References'))
+  vim.keymap.set('n', '<C-k>', vim.lsp.buf.signature_help, keymap_opts('LSP Signature Help'))
 
-  local opts = { noremap = true, silent = true }
-  buf_set_keymap('n', ',dD', '<cmd>Lspsaga peek_definition<CR>', opts)
-  buf_set_keymap('n', ',dd', '<Cmd>Lspsaga goto_definition<CR>', opts)
-  buf_set_keymap('n', ',do', '<Cmd>Lspsaga outline<CR>', opts)
-  buf_set_keymap('n', ',dh', '<cmd>Lspsaga hover_doc<CR>', opts)
-  buf_set_keymap('n', ',dr', '<cmd>Lspsaga rename<CR>', opts)
-  buf_set_keymap('n', ',df', '<cmd>lua vim.lsp.buf.format()<CR>', opts)
-  buf_set_keymap('v', ',df', '<cmd>lua vim.lsp.buf.range_formatting()<CR>', opts)
-  buf_set_keymap('n', ',da', '<cmd>Lspsaga code_action<CR>', opts)
-  buf_set_keymap('n', ',dl', '<cmd>Lspsaga lsp_finder<CR>', opts)
-  buf_set_keymap('n', ',dL', '<cmd>Trouble lsp_references<CR>', opts)
-  -- I only care about diagnostic errors:
-  buf_set_keymap('n', ']d', '<cmd>lua require("lspsaga.diagnostic"):goto_next({ severity = { min = vim.diagnostic.severity.WARN } })<CR>', opts)
-  buf_set_keymap('n', '[d', '<cmd>lua require("lspsaga.diagnostic"):goto_prev({ severity = { min = vim.diagnostic.severity.WARN } })<CR>', opts)
-  buf_set_keymap('n', ']e', '<cmd>lua require("lspsaga.diagnostic"):goto_next({ severity = { min = vim.diagnostic.severity.ERROR } })<CR>', opts)
-  buf_set_keymap('n', '[e', '<cmd>lua require("lspsaga.diagnostic"):goto_prev({ severity = { min = vim.diagnostic.severity.ERROR } })<CR>', opts)
+  vim.keymap.set('n', ']d',
+    '<cmd>lua vim.diagnostic.goto_next{float=true, severity = { min = vim.diagnostic.severity.WARN }}<CR>',
+    keymap_opts('Next warning'))
+  vim.keymap.set('n', '[d',
+    '<cmd>lua vim.diagnostic.goto_prev{float=true, severity = { min = vim.diagnostic.severity.WARN }}<CR>',
+    keymap_opts('Prev warning'))
+  vim.keymap.set('n', ']D',
+    '<cmd>lua vim.diagnostic.goto_next{float=true, severity = { min = vim.diagnostic.severity.ERROR }}<CR>',
+    keymap_opts('Next error'))
+  vim.keymap.set('n', '[D',
+    '<cmd>lua vim.diagnostic.goto_prev{float=true, severity = { min = vim.diagnostic.severity.ERROR }}<CR>',
+    keymap_opts('Prev error'))
 
   local on_references = vim.lsp.handlers["textDocument/references"]
   vim.lsp.handlers["textDocument/references"] = vim.lsp.with(
@@ -39,17 +46,6 @@ lsp_control.on_attach = function(client, bufnr)
     -- Use location list instead of quickfix list
     loclist = true,
   })
-
-  -- Set autocommands conditional on server_capabilities
-  if client.server_capabilities.document_highlight then
-    vim.api.nvim_exec([[
-      augroup lsp_document_highlight
-        autocmd! * <buffer>
-        autocmd CursorHold <buffer> lua vim.lsp.buf.clear_references() ; vim.lsp.buf.document_highlight()
-        " autocmd CursorMoved <buffer> 
-      augroup END
-    ]], false)
-  end
 
   -- for some reason formatexpr is getting set to lua - and that is
   -- annoying b/c its not often right (text wrapping gets broken)!
@@ -59,7 +55,7 @@ lsp_control.on_attach = function(client, bufnr)
 end
 
 lsp_control.make_default_opts = function()
-  local cmp_capabilities = require'cmp_nvim_lsp'.default_capabilities(vim.lsp.protocol.make_client_capabilities())
+  local cmp_capabilities = require 'cmp_nvim_lsp'.default_capabilities(vim.lsp.protocol.make_client_capabilities())
   local opts = {
     on_attach = lsp_control.on_attach,
     on_init = function(client)

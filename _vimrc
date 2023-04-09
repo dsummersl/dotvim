@@ -317,10 +317,10 @@ if has('autocmd') && !exists('g:autocommands_loaded')
   autocmd FileType netrw setlocal ts=30
 
   function! s:gruvbox_material_custom() abort
-    highlight! link TSEmphasis Comment
-    highlight! link TSComment Comment
-    highlight! link String BlueItalic
-    highlight! link TSString BlueItalic
+    " highlight! link TSEmphasis Comment
+    " highlight! link TSComment Comment
+    " highlight! link String BlueItalic
+    " highlight! link TSString BlueItalic
 
     " highlight! link LspReferenceRead Search
     " highlight! link LspReferenceText Search
