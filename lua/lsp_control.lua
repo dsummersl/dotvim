@@ -17,7 +17,8 @@ lsp_control.on_attach = function(client, bufnr)
   local keymap_opts = function(desc)
     return { noremap = true, silent = true, buffer = bufnr, desc = desc }
   end
-  vim.keymap.set('n', ',dd', vim.lsp.buf.definition, keymap_opts('Go to definition'))
+  vim.keymap.set('n', ',dd', vim.lsp.buf.definition, keymap_opts('Jump to definition'))
+  vim.keymap.set('n', ',dt', vim.lsp.buf.type_definition, keymap_opts('Jump to type definition'))
   vim.keymap.set('n', ',dh', vim.lsp.buf.hover, keymap_opts('LSP Hover'))
   vim.keymap.set('n', ',dr', vim.lsp.buf.rename, keymap_opts('LSP Rename'))
   vim.keymap.set('n', ',df', vim.lsp.buf.format, keymap_opts('Format buffer'))
@@ -25,7 +26,7 @@ lsp_control.on_attach = function(client, bufnr)
   vim.keymap.set('n', ',da', vim.lsp.buf.code_action, keymap_opts('Code actions'))
   -- vim.keymap.set('v', ',dA', vim.lsp.buf.range_code_action, opts)
   vim.keymap.set('n', ',dl', vim.lsp.buf.references, keymap_opts('LSP References'))
-  vim.keymap.set('n', '<C-k>', vim.lsp.buf.signature_help, keymap_opts('LSP Signature Help'))
+  vim.keymap.set('n', ',dk', vim.lsp.buf.signature_help, keymap_opts('LSP Signature Help'))
 
   vim.keymap.set('n', ']d',
     '<cmd>lua vim.diagnostic.goto_next{float=true, severity = { min = vim.diagnostic.severity.WARN }}<CR>',
