@@ -358,11 +358,9 @@ require("lazy").setup({
       vim.g.airline_theme = "gruvbox_material"
       vim.g.gruvbox_material_current_word = "grey background"
       vim.g.gruvbox_material_diagnostic_virtual_text = "colored"
-      vim.cmd([[
-      set termguicolors
-      set background=dark
-      colorscheme gruvbox-material
-    ]])
+      vim.o.termguicolors = true
+      vim.o.background = 'dark'
+      vim.cmd.colorscheme('gruvbox-material')
     end,
   },
   {
@@ -448,10 +446,10 @@ require("lazy").setup({
   }, -- Define my own operators for motions.
   "tommcdo/vim-exchange",
   {
-    "tommcdo/vim-lion",
+    "junegunn/vim-easy-align",
     config = function()
-      -- When using gL and gl, squeeze any extra leading whitespace.
-      vim.g.lion_squeeze_spaces = 1
+      vim.api.nvim_set_keymap("x", "ga", "<Plug>(EasyAlign)", { noremap = true })
+      vim.api.nvim_set_keymap("n", "ga", "<Plug>(EasyAlign)", { noremap = true })
     end,
   }, -- align with operator gL and gl (ie glip= to align paragraph by =)
   "tommcdo/vim-express", -- custom g* operations (g=iw - prompt 'get_'.v:val.'()' to change a word to a func)
@@ -851,23 +849,25 @@ require("lazy").setup({
       lspconfig.jsonls.setup(opts)
       lspconfig.remark_ls.setup(opts)
       lspconfig.tsserver.setup(opts)
+      lspconfig.ruby_ls.setup(opts)
       lspconfig.vimls.setup(opts)
 
       local null_ls = require("null-ls")
       null_ls.setup({
         sources = {
-          null_ls.builtins.diagnostics.buf,
-          null_ls.builtins.code_actions.eslint_d,
           null_ls.builtins.code_actions.refactoring,
+          null_ls.builtins.diagnostics.buf,
           null_ls.builtins.diagnostics.proselint,
+          null_ls.builtins.code_actions.proselint,
           null_ls.builtins.formatting.black,
           null_ls.builtins.formatting.prettier,
           null_ls.builtins.formatting.isort,
           null_ls.builtins.diagnostics.eslint_d,
+          null_ls.builtins.code_actions.eslint_d,
           null_ls.builtins.diagnostics.pylint,
           null_ls.builtins.diagnostics.codespell,
+          null_ls.builtins.formatting.codespell,
           null_ls.builtins.diagnostics.flake8,
-          null_ls.builtins.code_actions.eslint,
         },
         on_attach = on_attach,
       })
