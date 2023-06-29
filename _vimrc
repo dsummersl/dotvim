@@ -11,7 +11,6 @@ set undodir=~/.vim/undo
 
 set conceallevel=2 " for ToggleGroupConceal
 set autowrite
-" set nonumber
 
 " I want to know about bad tab/space use:
 set nolist
@@ -82,7 +81,7 @@ set signcolumn=yes:2
 " show or hide that extra space at the bottom of the screen:
 set cmdheight=1
 
-set guifont=JetBrainsMono\ Nerd\ Font\ Mono
+set guifont=JetBrainsMono\ Nerd\ Font
 let g:python3_host_prog='/Users/danesummers/.pyenv/shims/python'
 "}}}
 " Plugins{{{
@@ -275,11 +274,11 @@ endfunction
 " TODO automate this diffsplit two matching regions
 " let @m=j?<<<\jV/^===\k"aynjV/^>>>\k"by:sp below\ggdG"bp:vert diffs above\ggdG"apgglgg:diffupdate\=
 
-function! s:SetStop(type,count)
-  if a:type ==# 't'
-    set noexpandtab
-  else
+function! s:SetStop(count, type='s')
+  if a:type ==# 's'
     set expandtab
+  else
+    set noexpandtab
   end
   exec 'set sw='. a:count
   exec 'set ts='. a:count

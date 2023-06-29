@@ -15,7 +15,6 @@ require("lazy").setup({
       }
     end,
   },
-
   { "madox2/vim-ai",                   build = "./install.sh" },
 
   -- https://github.com/windwp/nvim-projectconfig maybe for loading local lua setup.
@@ -384,8 +383,8 @@ require("lazy").setup({
     "tpope/vim-unimpaired",
     config = function()
       vim.cmd([[
-        noremap ]on :set number relativenumber<cr>
-        noremap [on :set nonumber norelativenumber<cr>
+        noremap ]on :set number<cr>
+        noremap [on :set nonumber<cr>
       ]])
     end,
   },
@@ -788,6 +787,7 @@ require("lazy").setup({
     dependencies = {
       "stevearc/dressing.nvim",
       "williamboman/mason.nvim",
+      "williamboman/mason-lspconfig.nvim",
       "b0o/schemastore.nvim",
       "https://gitlab.com/yorickpeterse/nvim-dd.git",
       "jose-elias-alvarez/null-ls.nvim",
@@ -810,6 +810,7 @@ require("lazy").setup({
       end
 
       require("mason").setup({})
+      require("mason-lspconfig").setup({})
       local lspconfig = require("lspconfig")
       local on_attach = require("lsp_control").on_attach
       local cmp_capabilities =
