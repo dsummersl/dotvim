@@ -1,5 +1,12 @@
 require("lazy").setup({
   {
+    {"simrat39/symbols-outline.nvim", config = function()
+      require('symbols-outline').setup {}
+    end},
+    {"NeogitOrg/neogit", dependencies = 'nvim-lua/plenary.nvim', config = function()
+      local neogit = require('neogit')
+      neogit.setup {}
+    end},
     "RRethy/nvim-treesitter-textsubjects",
     config = function() -- matching tags/parens/etc
       require('nvim-treesitter.configs').setup {
@@ -115,9 +122,7 @@ require("lazy").setup({
     build = "pip install ueberzug",
     config = function()
       local actions = require("telescope.actions")
-      require("telescope").load_extension("media_files")
-      require("telescope").load_extension("projectionist")
-      require("telescope").load_extension("live_grep_args")
+      local lga_actions = require("telescope-live-grep-args.actions")
       require("telescope").setup({
         defaults = {
           sorting_strategy = "descending",
@@ -165,7 +170,21 @@ require("lazy").setup({
             -- },
           },
         },
+        extensions = {
+          live_grep_args = {
+            auto_quoting = true, -- enable/disable auto-quoting
+            mappings = { -- extend mappings
+              i = {
+                ["<C-s>"] = lga_actions.quote_prompt(),
+                ["<C-i>"] = lga_actions.quote_prompt({ postfix = " --iglob " }),
+              },
+            },
+          }
+        }
       })
+      require("telescope").load_extension("media_files")
+      require("telescope").load_extension("projectionist")
+      require("telescope").load_extension("live_grep_args")
 
       vim.cmd([[
         nnoremap <leader>/r :Telescope resume<CR>
@@ -636,6 +655,7 @@ require("lazy").setup({
           augend.constant.new({ elements = { "&&", "||" }, word = false, cyclic = true }),
           augend.constant.new({ elements = { "==", "!=" }, word = false, cyclic = true }),
           augend.constant.new({ elements = { "true", "false" } }),
+          augend.constant.new({ elements = { "True", "False" } }),
           augend.constant.new({ elements = { "info", "warn", "debug" } }),
           augend.constant.new({ elements = { "INFO", "WARN", "DEBUG" } }),
           augend.constant.new({ elements = { "align", "justify" } }),
@@ -832,11 +852,19 @@ require("lazy").setup({
           jsonls = { schemas = require("schemastore").json.schemas() },
         },
       })
-      lspconfig.pyright.setup({
+      lspconfig.pylsp.setup({
         on_attach = on_attach,
         capabilities = cmp_capabilities,
         flags = { debounce_text_changes = 150 },
-        settings = { pylsp = { plugins = { pycodestyle = { enabled = false } } } },
+        settings = { pylsp = {
+          plugins = {
+            flake8 = {
+              enabled = false,
+              exclude = { "E501" },
+            },
+            pycodestyle = { enabled = false },
+            rope_autoimport = { enabled = true },
+        } } },
       })
       lspconfig.lua_ls.setup({
         on_attach = on_attach,

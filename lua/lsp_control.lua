@@ -24,7 +24,7 @@ lsp_control.on_attach = function(client, bufnr)
   vim.keymap.set('n', ',df', vim.lsp.buf.format, keymap_opts('Format buffer'))
   -- vim.keymap.set('v', ',df', vim.lsp.buf.range_formatting, opts)
   vim.keymap.set('n', ',da', vim.lsp.buf.code_action, keymap_opts('Code actions'))
-  -- vim.keymap.set('v', ',dA', vim.lsp.buf.range_code_action, opts)
+  -- vim.keymap.set('v', ',da', vim.lsp.buf.range_code_action, keymap_opts('Code actions'))
   vim.keymap.set('n', ',dl', vim.lsp.buf.references, keymap_opts('LSP References'))
   vim.keymap.set('n', ',dk', vim.lsp.buf.signature_help, keymap_opts('LSP Signature Help'))
 
