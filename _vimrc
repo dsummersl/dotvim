@@ -32,11 +32,7 @@ set diffopt=filler,iwhiteall,vertical,hiddenoff,algorithm:patience,linematch:60
 set nohlsearch
 set nowrap
 
-" SPACES, and tab size of two characters
 set expandtab
-set shiftwidth=2
-set tabstop=2
-set softtabstop=2
 
 set visualbell
 set nobackup
@@ -370,6 +366,12 @@ if has('autocmd') && !exists('g:autocommands_loaded')
 
   call s:gruvbox_material_custom()
 
+  augroup Python
+    autocmd!
+    autocmd BufNew,BufNewFile,BufRead *.py SS 4
+    autocmd FileType python SS 4
+  augroup END
+
   autocmd BufNewFile,BufRead *.j2 setf jinja
   autocmd BufNewFile,BufRead *.md setlocal spell wrap et
   autocmd BufNewFile,BufRead *.csv setf csv
@@ -387,7 +389,7 @@ if has('autocmd') && !exists('g:autocommands_loaded')
   autocmd FileType qf setlocal colorcolumn=
 
   " Turn off syntax for large files
-  autocmd BufWinEnter * if line2byte(line("$") + 1) > 1000000 | syntax off | endif
+  autocmd BufWinEnter * if line2byte(line("$") + 1) > 100000 | syntax off | endif
 endif
 "}}}
 " vim: set ai fdm=marker cms="%s:

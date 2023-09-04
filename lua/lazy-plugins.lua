@@ -3,10 +3,35 @@ require("lazy").setup({
     {"simrat39/symbols-outline.nvim", config = function()
       require('symbols-outline').setup {}
     end},
-    {"NeogitOrg/neogit", dependencies = 'nvim-lua/plenary.nvim', config = function()
-      local neogit = require('neogit')
-      neogit.setup {}
-    end},
+    "sindrets/diffview.nvim",
+    {
+    "Bryley/neoai.nvim",
+    dependencies = {
+        "MunifTanjim/nui.nvim",
+    },
+    cmd = {
+        "NeoAI",
+        "NeoAIOpen",
+        "NeoAIClose",
+        "NeoAIToggle",
+        "NeoAIContext",
+        "NeoAIContextOpen",
+        "NeoAIContextClose",
+        "NeoAIInject",
+        "NeoAIInjectCode",
+        "NeoAIInjectContext",
+        "NeoAIInjectContextCode",
+    },
+    keys = {
+        { "<leader>as", desc = "summarize text" },
+        { "<leader>ag", desc = "generate git message" },
+    },
+    config = function()
+        require("neoai").setup({
+            -- Options go here
+        })
+    end,
+  },
     "RRethy/nvim-treesitter-textsubjects",
     config = function() -- matching tags/parens/etc
       require('nvim-treesitter.configs').setup {
@@ -22,7 +47,6 @@ require("lazy").setup({
       }
     end,
   },
-  { "madox2/vim-ai",                   build = "./install.sh" },
 
   -- https://github.com/windwp/nvim-projectconfig maybe for loading local lua setup.
   "otavioschwanck/telescope-alternate",
@@ -49,7 +73,7 @@ require("lazy").setup({
   {
     "f-person/git-blame.nvim",
     init = function() -- show git blame in the editor.
-      vim.g.gitblame_enabled = 1
+      vim.g.gitblame_enabled = 0
       vim.g.gitblame_date_format = "%x"
       vim.g.gitblame_message_template = "<date> <author>: <sha> <summary>"
       vim.g.gitblame_highlight_group = "StatusLineNC"
@@ -94,14 +118,12 @@ require("lazy").setup({
       vim.g.signify_sign_show_count = 0
       vim.g.signify_sign_add = "│"
       vim.g.signify_sign_change = "┊"
-      vim.cmd([[
-      nmap ]h <plug>(signify-next-hunk)
-      nmap [h <plug>(signify-prev-hunk)
-      omap ih <plug>(signify-motion-inner-pending)
-      xmap ih <plug>(signify-motion-inner-visual)
-      omap ah <plug>(signify-motion-outer-pending)
-      xmap ah <plug>(signify-motion-outer-visual)
-    ]])
+      vim.keymap.set('n', ']h', '<plug>(signify-next-hunk)', { desc = 'Next hunk' })
+      vim.keymap.set('n', '[h', '<plug>(signify-prev-hunk)', { desc = 'Previous hunk' })
+      vim.keymap.set('o', 'ih', '<plug>(signify-motion-inner-pending)', { desc = 'Inner hunk' })
+      vim.keymap.set('x', 'ih', '<plug>(signify-motion-inner-visual)', { desc = 'Inner hunk' })
+      vim.keymap.set('o', 'ah', '<plug>(signify-motion-outer-pending)', { desc = 'Outer hunk' })
+      vim.keymap.set('x', 'ah', '<plug>(signify-motion-outer-visual)', { desc = 'Outer hunk' })
     end,
   },
   {
@@ -223,48 +245,48 @@ require("lazy").setup({
       )
     end,
   },
-  {
-    "machakann/vim-sandwich",
-    config = function()
-      -- for vim-sandwich don't have any s mappings as per docs
-      vim.cmd([[nmap s <Nop>]])
-      vim.cmd([[xmap s <Nop>]])
-
-      vim.api.nvim_command("runtime autoload/sandwich.vim")
-      vim.g["sandwich#recipes"] = vim.list_extend(vim.g["sandwich#default_recipes"], {
-        -- { buns = { '{ ', ' }' }, nesting = 1, match_syntax = 1, kind = { 'add', 'replace' }, action = { 'add' }, input = { '{' } },
-        -- { buns = { '[ ', ' ]' }, nesting = 1, match_syntax = 1, kind = { 'add', 'replace' }, action = { 'add' }, input = { '[' } },
-        -- { buns = { '( ', ' )' }, nesting = 1, match_syntax = 1, kind = { 'add', 'replace' }, action = { 'add' }, input = { '(' } },
-        {
-          buns = { "{\\s*", "\\s*}" },
-          nesting = 1,
-          regex = 1,
-          match_syntax = 1,
-          kind = { "delete", "replace", "textobj" },
-          action = { "delete" },
-          input = { "{" },
-        },
-        {
-          buns = { "\\[\\s*", "\\s*\\]" },
-          nesting = 1,
-          regex = 1,
-          match_syntax = 1,
-          kind = { "delete", "replace", "textobj" },
-          action = { "delete" },
-          input = { "[" },
-        },
-        {
-          buns = { "(\\s*", "\\s*)" },
-          nesting = 1,
-          regex = 1,
-          match_syntax = 1,
-          kind = { "delete", "replace", "textobj" },
-          action = { "delete" },
-          input = { "(" },
-        },
-      })
-    end,
-  },
+  -- {
+  --   "machakann/vim-sandwich",
+  --   config = function()
+  --     -- for vim-sandwich don't have any s mappings as per docs
+  --     vim.cmd([[nmap s <Nop>]])
+  --     vim.cmd([[xmap s <Nop>]])
+  --
+  --     vim.api.nvim_command("runtime autoload/sandwich.vim")
+  --     vim.g["sandwich#recipes"] = vim.list_extend(vim.g["sandwich#default_recipes"], {
+  --       -- { buns = { '{ ', ' }' }, nesting = 1, match_syntax = 1, kind = { 'add', 'replace' }, action = { 'add' }, input = { '{' } },
+  --       -- { buns = { '[ ', ' ]' }, nesting = 1, match_syntax = 1, kind = { 'add', 'replace' }, action = { 'add' }, input = { '[' } },
+  --       -- { buns = { '( ', ' )' }, nesting = 1, match_syntax = 1, kind = { 'add', 'replace' }, action = { 'add' }, input = { '(' } },
+  --       {
+  --         buns = { "{\\s*", "\\s*}" },
+  --         nesting = 1,
+  --         regex = 1,
+  --         match_syntax = 1,
+  --         kind = { "delete", "replace", "textobj" },
+  --         action = { "delete" },
+  --         input = { "{" },
+  --       },
+  --       {
+  --         buns = { "\\[\\s*", "\\s*\\]" },
+  --         nesting = 1,
+  --         regex = 1,
+  --         match_syntax = 1,
+  --         kind = { "delete", "replace", "textobj" },
+  --         action = { "delete" },
+  --         input = { "[" },
+  --       },
+  --       {
+  --         buns = { "(\\s*", "\\s*)" },
+  --         nesting = 1,
+  --         regex = 1,
+  --         match_syntax = 1,
+  --         kind = { "delete", "replace", "textobj" },
+  --         action = { "delete" },
+  --         input = { "(" },
+  --       },
+  --     })
+  --   end,
+  -- },
   {
     "hrsh7th/nvim-cmp",
     dependencies = {
@@ -835,6 +857,8 @@ require("lazy").setup({
       local on_attach = require("lsp_control").on_attach
       local cmp_capabilities =
           require("cmp_nvim_lsp").default_capabilities(vim.lsp.protocol.make_client_capabilities())
+      local opts = require("lsp_control").make_default_opts()
+
       lspconfig.yamlls.setup({
         on_attach = on_attach,
         capabilities = cmp_capabilities,
@@ -852,27 +876,13 @@ require("lazy").setup({
           jsonls = { schemas = require("schemastore").json.schemas() },
         },
       })
-      lspconfig.pylsp.setup({
-        on_attach = on_attach,
-        capabilities = cmp_capabilities,
-        flags = { debounce_text_changes = 150 },
-        settings = { pylsp = {
-          plugins = {
-            flake8 = {
-              enabled = false,
-              exclude = { "E501" },
-            },
-            pycodestyle = { enabled = false },
-            rope_autoimport = { enabled = true },
-        } } },
-      })
+      lspconfig.pyright.setup(opts)
       lspconfig.lua_ls.setup({
         on_attach = on_attach,
         capabilities = cmp_capabilities,
         flags = { debounce_text_changes = 150 },
         settings = { Lua = { diagnostics = { globals = { "vim" } } } },
       })
-      local opts = require("lsp_control").make_default_opts()
       lspconfig.html.setup(opts)
       lspconfig.cssls.setup(opts)
       lspconfig.jsonls.setup(opts)
@@ -893,10 +903,10 @@ require("lazy").setup({
           null_ls.builtins.formatting.isort,
           null_ls.builtins.diagnostics.eslint_d,
           null_ls.builtins.code_actions.eslint_d,
-          null_ls.builtins.diagnostics.pylint,
+          -- null_ls.builtins.diagnostics.pylint,
           null_ls.builtins.diagnostics.codespell,
           null_ls.builtins.formatting.codespell,
-          null_ls.builtins.diagnostics.flake8,
+          -- null_ls.builtins.diagnostics.flake8,
         },
         on_attach = on_attach,
       })
