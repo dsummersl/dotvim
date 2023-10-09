@@ -171,8 +171,8 @@ noremap <leader>/a :AA
 noremap ]oI :set diffopt-=iwhiteall<cr>
 noremap [oI :set diffopt+=iwhiteall<cr>
 
-vnoremap [6 d:let @"=system('base64 --decode', @") \| norm ""p<cr>
-vnoremap ]6 d:let @"=system('base64 --wrap=0', @") \| norm ""p<cr>
+vnoremap ]6 d:let @"=system('base64 --decode', @") \| norm ""p<cr>
+vnoremap [6 d:let @"=system('base64 --wrap=0', @") \| norm ""p<cr>
 
 function! s:Lspstop()
   LspStop

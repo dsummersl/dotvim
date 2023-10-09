@@ -1,15 +1,50 @@
 require("lazy").setup({
   {
-    {"simrat39/symbols-outline.nvim", config = function()
-      require('symbols-outline').setup {}
-    end},
+    {
+      "folke/flash.nvim",
+      event = "VeryLazy",
+      ---@type Flash.Config
+      opts = {},
+      -- stylua: ignore
+      keys = {
+        { "s", mode = { "n", "x", "o" }, function() require("flash").jump() end, desc = "Flash" },
+        { "S", mode = { "n", "x", "o" }, function() require("flash").treesitter() end, desc = "Flash Treesitter" },
+        { "r", mode = "o", function() require("flash").remote() end, desc = "Remote Flash" },
+        { "R", mode = { "o", "x" }, function() require("flash").treesitter_search() end, desc = "Treesitter Search" },
+        { "<c-s>", mode = { "c" }, function() require("flash").toggle() end, desc = "Toggle Flash Search" },
+      },
+    },
+    {
+      "robitx/gp.nvim",
+      config = function()
+        require("gp").setup()
+        -- shortcuts might be setup here (see Usage > Shortcuts in Readme)
+      end,
+    },
+    {
+      "jackMort/ChatGPT.nvim",
+      config = function()
+        require("chatgpt").setup()
+      end,
+      dependencies = {
+        "MunifTanjim/nui.nvim",
+        "nvim-lua/plenary.nvim",
+        "nvim-telescope/telescope.nvim"
+      },
+    },
+    {
+      "simrat39/symbols-outline.nvim",
+      config = function()
+        require('symbols-outline').setup {}
+      end
+    },
     "sindrets/diffview.nvim",
     {
-    "Bryley/neoai.nvim",
-    dependencies = {
+      "Bryley/neoai.nvim",
+      dependencies = {
         "MunifTanjim/nui.nvim",
-    },
-    cmd = {
+      },
+      cmd = {
         "NeoAI",
         "NeoAIOpen",
         "NeoAIClose",
@@ -21,17 +56,17 @@ require("lazy").setup({
         "NeoAIInjectCode",
         "NeoAIInjectContext",
         "NeoAIInjectContextCode",
-    },
-    keys = {
+      },
+      keys = {
         { "<leader>as", desc = "summarize text" },
         { "<leader>ag", desc = "generate git message" },
-    },
-    config = function()
+      },
+      config = function()
         require("neoai").setup({
-            -- Options go here
+          -- Options go here
         })
-    end,
-  },
+      end,
+    },
     "RRethy/nvim-treesitter-textsubjects",
     config = function() -- matching tags/parens/etc
       require('nvim-treesitter.configs').setup {
@@ -48,8 +83,11 @@ require("lazy").setup({
     end,
   },
 
+  ---------------------
+  -- Adopted plugins --
+  ---------------------
+
   -- https://github.com/windwp/nvim-projectconfig maybe for loading local lua setup.
-  "otavioschwanck/telescope-alternate",
   "folke/which-key.nvim",
   {
     "andymass/vim-matchup",
@@ -66,8 +104,6 @@ require("lazy").setup({
     end,
   },
 
-  -- syntax:
-  "towolf/vim-helm",
   "aklt/plantuml-syntax",
 
   {
@@ -195,7 +231,7 @@ require("lazy").setup({
         extensions = {
           live_grep_args = {
             auto_quoting = true, -- enable/disable auto-quoting
-            mappings = { -- extend mappings
+            mappings = {         -- extend mappings
               i = {
                 ["<C-s>"] = lga_actions.quote_prompt(),
                 ["<C-i>"] = lga_actions.quote_prompt({ postfix = " --iglob " }),
@@ -245,48 +281,48 @@ require("lazy").setup({
       )
     end,
   },
-  -- {
-  --   "machakann/vim-sandwich",
-  --   config = function()
-  --     -- for vim-sandwich don't have any s mappings as per docs
-  --     vim.cmd([[nmap s <Nop>]])
-  --     vim.cmd([[xmap s <Nop>]])
-  --
-  --     vim.api.nvim_command("runtime autoload/sandwich.vim")
-  --     vim.g["sandwich#recipes"] = vim.list_extend(vim.g["sandwich#default_recipes"], {
-  --       -- { buns = { '{ ', ' }' }, nesting = 1, match_syntax = 1, kind = { 'add', 'replace' }, action = { 'add' }, input = { '{' } },
-  --       -- { buns = { '[ ', ' ]' }, nesting = 1, match_syntax = 1, kind = { 'add', 'replace' }, action = { 'add' }, input = { '[' } },
-  --       -- { buns = { '( ', ' )' }, nesting = 1, match_syntax = 1, kind = { 'add', 'replace' }, action = { 'add' }, input = { '(' } },
-  --       {
-  --         buns = { "{\\s*", "\\s*}" },
-  --         nesting = 1,
-  --         regex = 1,
-  --         match_syntax = 1,
-  --         kind = { "delete", "replace", "textobj" },
-  --         action = { "delete" },
-  --         input = { "{" },
-  --       },
-  --       {
-  --         buns = { "\\[\\s*", "\\s*\\]" },
-  --         nesting = 1,
-  --         regex = 1,
-  --         match_syntax = 1,
-  --         kind = { "delete", "replace", "textobj" },
-  --         action = { "delete" },
-  --         input = { "[" },
-  --       },
-  --       {
-  --         buns = { "(\\s*", "\\s*)" },
-  --         nesting = 1,
-  --         regex = 1,
-  --         match_syntax = 1,
-  --         kind = { "delete", "replace", "textobj" },
-  --         action = { "delete" },
-  --         input = { "(" },
-  --       },
-  --     })
-  --   end,
-  -- },
+  {
+    "machakann/vim-sandwich",
+    config = function()
+      -- for vim-sandwich don't have any s mappings as per docs
+      vim.cmd([[nmap s <Nop>]])
+      vim.cmd([[xmap s <Nop>]])
+
+      vim.api.nvim_command("runtime autoload/sandwich.vim")
+      vim.g["sandwich#recipes"] = vim.list_extend(vim.g["sandwich#default_recipes"], {
+        -- { buns = { '{ ', ' }' }, nesting = 1, match_syntax = 1, kind = { 'add', 'replace' }, action = { 'add' }, input = { '{' } },
+        -- { buns = { '[ ', ' ]' }, nesting = 1, match_syntax = 1, kind = { 'add', 'replace' }, action = { 'add' }, input = { '[' } },
+        -- { buns = { '( ', ' )' }, nesting = 1, match_syntax = 1, kind = { 'add', 'replace' }, action = { 'add' }, input = { '(' } },
+        {
+          buns = { "{\\s*", "\\s*}" },
+          nesting = 1,
+          regex = 1,
+          match_syntax = 1,
+          kind = { "delete", "replace", "textobj" },
+          action = { "delete" },
+          input = { "{" },
+        },
+        {
+          buns = { "\\[\\s*", "\\s*\\]" },
+          nesting = 1,
+          regex = 1,
+          match_syntax = 1,
+          kind = { "delete", "replace", "textobj" },
+          action = { "delete" },
+          input = { "[" },
+        },
+        {
+          buns = { "(\\s*", "\\s*)" },
+          nesting = 1,
+          regex = 1,
+          match_syntax = 1,
+          kind = { "delete", "replace", "textobj" },
+          action = { "delete" },
+          input = { "(" },
+        },
+      })
+    end,
+  },
   {
     "hrsh7th/nvim-cmp",
     dependencies = {
@@ -327,7 +363,7 @@ require("lazy").setup({
           documentation = cmp.config.window.bordered(),
         },
         mapping = {
-          ["<C-d>"] = cmp.mapping.scroll_docs( -4),
+          ["<C-d>"] = cmp.mapping.scroll_docs(-4),
           ["<C-f>"] = cmp.mapping.scroll_docs(4),
           ["<C-p>"] = cmp.mapping.select_prev_item(),
           ["<C-e>"] = cmp.mapping(function(fallback)
@@ -443,25 +479,6 @@ require("lazy").setup({
     end,
   },
   {
-    "easymotion/vim-easymotion",
-    config = function()
-      vim.cmd([[
-      nmap <leader>s  <Plug>(easymotion-sn)
-      nmap <leader>; <Plug>(easymotion-next)
-    ]])
-    end,
-    init = function()
-      vim.cmd([[
-      let g:EasyMotion_do_mapping=0
-      let g:EasyMotion_smartcase=1
-      let g:EasyMotion_do_mapping=0
-
-      let g:EasyMotion_enter_jump_first = 1
-      let g:EasyMotion_space_jump_first = 1
-    ]])
-    end,
-  }, -- mapped to s for two letter searching.
-  {
     "wellle/visual-split.vim",
     config = function()
       vim.cmd([[
@@ -491,8 +508,8 @@ require("lazy").setup({
       vim.api.nvim_set_keymap("x", "ga", "<Plug>(EasyAlign)", { noremap = true })
       vim.api.nvim_set_keymap("n", "ga", "<Plug>(EasyAlign)", { noremap = true })
     end,
-  }, -- align with operator gL and gl (ie glip= to align paragraph by =)
-  "tommcdo/vim-express", -- custom g* operations (g=iw - prompt 'get_'.v:val.'()' to change a word to a func)
+  },                                  -- align with operator gL and gl (ie glip= to align paragraph by =)
+  "tommcdo/vim-express",              -- custom g* operations (g=iw - prompt 'get_'.v:val.'()' to change a word to a func)
 
   "stefandtw/quickfix-reflector.vim", -- edit the qf list directly with copen
   {
@@ -535,7 +552,7 @@ require("lazy").setup({
     "tpope/vim-rhubarb",
     commit = "af12af4",
     dependencies = { "tpope/vim-fugitive" },
-  }, -- rhubarb seems to be broken for most github repos after commit af12af4
+  },                  -- rhubarb seems to be broken for most github repos after commit af12af4
   "tpope/vim-eunuch", -- eunuch.vim: cp/move/unlink commands
   {
     "ludovicchabant/vim-gutentags",
@@ -585,8 +602,8 @@ require("lazy").setup({
       set runtimepath+=~/.vim/after
     ]])
     end,
-  }, -- fix spelling errors
-  "mattn/emmet-vim", -- fast HTML tag generation (in insert mode type tr*3CTL-Y, to make three <tr>s
+  },                     -- fix spelling errors
+  "mattn/emmet-vim",     -- fast HTML tag generation (in insert mode type tr*3CTL-Y, to make three <tr>s
   "tomtom/tcomment_vim", -- An extensible & universal comment vim-plugin that also handles embedded filetypes
   {
     "windwp/nvim-autopairs",
@@ -665,14 +682,14 @@ require("lazy").setup({
       require("dial.config").augends:register_group({
         -- default augends used when no group name is specified
         default = {
-          augend.integer.alias.decimal, -- nonnegative decimal number (0, 1, 2, 3, ...)
-          augend.integer.alias.hex, -- nonnegative hex number  (0x01, 0x1a1f, etc.)
+          augend.integer.alias.decimal,  -- nonnegative decimal number (0, 1, 2, 3, ...)
+          augend.integer.alias.hex,      -- nonnegative hex number  (0x01, 0x1a1f, etc.)
           augend.date.alias["%m/%d/%Y"], -- date (02/19/2022, etc.)
           augend.date.alias["%m-%d-%Y"], -- date (02/19/2022, etc.)
         },
         enhanced = {
-          augend.integer.alias.decimal, -- nonnegative decimal number (0, 1, 2, 3, ...)
-          augend.integer.alias.hex, -- nonnegative hex number  (0x01, 0x1a1f, etc.)
+          augend.integer.alias.decimal,  -- nonnegative decimal number (0, 1, 2, 3, ...)
+          augend.integer.alias.hex,      -- nonnegative hex number  (0x01, 0x1a1f, etc.)
           augend.date.alias["%m/%d/%Y"], -- date (02/19/2022, etc.)
           augend.constant.new({ elements = { "&&", "||" }, word = false, cyclic = true }),
           augend.constant.new({ elements = { "==", "!=" }, word = false, cyclic = true }),
@@ -783,8 +800,11 @@ require("lazy").setup({
       })
     end,
   },
-  { dir = "~/Documents/classes/nvim-sluice", config = function()
-  end },
+  {
+    dir = "~/Documents/classes/nvim-sluice",
+    config = function()
+    end
+  },
   {
     "SirVer/ultisnips",
     config = function()
@@ -1046,26 +1066,18 @@ require("lazy").setup({
   },
   "pgdouyon/vim-evanesco", -- vmap *, Highlight search, clear after searching
   {
-    "lukas-reineke/indent-blankline.nvim",
+    "lukas-reineke/indent-blankline.nvim", main = "ibl",
     config = function()
       vim.cmd([[
-      nmap [oG :IndentBlanklineEnable<cr>
-      nmap ]oG :IndentBlanklineDisable<cr>
-    ]])
-      require("indent_blankline").setup({
+        nmap [oG :IBLEnable<cr>
+        nmap ]oG :IBLDisable<cr>
+      ]])
+      require("ibl").setup({
         enabled = false,
-        space_char_blankline = " ",
-        show_current_context = true,
-        show_current_context_start = false,
-        char_list_blankline = { "|", "¦", "┆", "┊" },
-        -- char_highlight_list = {
-        --     "IndentBlanklineIndent1",
-        --     "IndentBlanklineIndent2",
-        -- },
-        -- space_char_highlight_list = {
-        --     "IndentBlanklineIndent1",
-        --     "IndentBlanklineIndent2",
-        -- },
+        -- space_char_blankline = " ",
+        -- show_current_context = true,
+        -- show_current_context_start = false,
+        -- char_list_blankline = { "|", "¦", "┆", "┊" },
       })
     end,
   },
@@ -1118,7 +1130,7 @@ require("lazy").setup({
       ]])
     end,
   },
-  "michaeljsmith/vim-indent-object", -- vii and viI (visual inner Indent)
+  "michaeljsmith/vim-indent-object",                                                 -- vii and viI (visual inner Indent)
   { "saaguero/vim-textobj-pastedtext", dependencies = { "kana/vim-textobj-user" } }, -- vgb for last pasted text.
   { "glts/vim-textobj-comment",        dependencies = { "kana/vim-textobj-user" } }, -- select comment with vic or vac.
   "ryanoasis/vim-devicons",
