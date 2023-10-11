@@ -239,11 +239,13 @@ require("lazy").setup({
     init = function()
       vim.g.gruvbox_material_palette = "material"
       vim.g.gruvbox_material_background = "hard"
+      vim.g.gruvbox_material_better_performance = 1
       vim.g.gruvbox_material_enable_italic = 1
       vim.g.gruvbox_material_enable_bold = 1
       vim.g.airline_theme = "gruvbox_material"
       vim.g.gruvbox_material_current_word = "grey background"
       vim.g.gruvbox_material_diagnostic_virtual_text = "colored"
+
       vim.o.termguicolors = true
       vim.o.background = 'dark'
       vim.cmd.colorscheme('gruvbox-material')

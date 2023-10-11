@@ -17,6 +17,7 @@ lsp_control.on_attach = function(client, bufnr)
   local keymap_opts = function(desc)
     return { noremap = true, silent = true, buffer = bufnr, desc = desc }
   end
+
   vim.keymap.set('n', ',dd', vim.lsp.buf.definition, keymap_opts('Jump to definition'))
   vim.keymap.set('n', ',dt', vim.lsp.buf.type_definition, keymap_opts('Jump to type definition'))
   vim.keymap.set('n', ',dh', vim.lsp.buf.hover, keymap_opts('LSP Hover'))
@@ -44,15 +45,19 @@ lsp_control.on_attach = function(client, bufnr)
   local on_references = vim.lsp.handlers["textDocument/references"]
   vim.lsp.handlers["textDocument/references"] = vim.lsp.with(
     on_references, {
-    -- Use location list instead of quickfix list
-    loclist = true,
-  })
+      -- Use location list instead of quickfix list
+      loclist = true,
+    })
 
   -- for some reason formatexpr is getting set to lua - and that is
   -- annoying b/c its not often right (text wrapping gets broken)!
   vim.api.nvim_exec([[
     set formatexpr=
   ]], false)
+
+  if client.server_capabilities.documentSymbolProvider then
+    require("nvim-navic").attach(client, bufnr)
+  end
 end
 
 lsp_control.make_default_opts = function()
@@ -69,7 +74,7 @@ lsp_control.make_default_opts = function()
   return opts
 end
 
-return function ()
+return function()
   return {
     "neovim/nvim-lspconfig",
     dependencies = {
@@ -78,7 +83,8 @@ return function ()
       "williamboman/mason-lspconfig.nvim",
       "b0o/schemastore.nvim",
       "https://gitlab.com/yorickpeterse/nvim-dd.git",
-      "jose-elias-alvarez/null-ls.nvim",
+      "nvimtools/none-ls.nvim",
+      "SmiteshP/nvim-navic",
     },
     config = function()
       require("dd").setup()
@@ -90,7 +96,7 @@ return function ()
         update_in_insert = false,
       })
 
-      local signs = { Error = " ", Warn = " ", Hint = " .", Info = " ᵢ" }
+      local signs = { Error = "⧳ ", Warn = "⧲ ", Hint = ". ", Info = "ℹ " }
 
       for type, icon in pairs(signs) do
         local hl = "DiagnosticSign" .. type

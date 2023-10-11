@@ -20,6 +20,9 @@ return function ()
       function! LightlineFileformat()
         return WebDevIconsGetFileFormatSymbol()
       endfunction
+      function! LightlineBreadcrumb()
+        return luaeval('require("nvim-navic").get_location({depth_limit = 3, separator = ""})')
+      endfunction
     ]])
 
       vim.g.lightline = {
@@ -27,7 +30,7 @@ return function ()
         active = {
           left = {
             { "mode",     "paste" },
-            { "readonly", "filename" },
+            { "readonly", "filename", "breadcrumb" },
           },
           right = {
             { "lineinfo" },
@@ -44,6 +47,7 @@ return function ()
           filetype = "LightlineFiletype",
           fileformat = "LightlineFileformat",
           currentfunction = "LspStatus",
+          breadcrumb = "LightlineBreadcrumb",
         },
       }
     end,

@@ -357,6 +357,12 @@ if has('autocmd') && !exists('g:autocommands_loaded')
     " and the last parameter is for `guisp` which is also optional.
     " See `autoload/gruvbox_material.vim` for the format of `l:palette`.
     call gruvbox_material#highlight('CommentCurrentLine', l:palette.bg5, l:palette.bg1)
+    call gruvbox_material#highlight('Search', l:palette.bg0, l:palette.bg_visual_yellow)
+    call gruvbox_material#highlight('IncSearch', l:palette.bg0, l:palette.bg_yellow)
+
+    " flash.nvim less annoying:
+    call gruvbox_material#highlight('FlashLabel', l:palette.yellow, l:palette.bg_visual_yellow)
+    call gruvbox_material#highlight('FlashCursor', l:palette.bg0, l:palette.bg_visual_yellow)
   endfunction
   
   augroup GruvboxMaterialCustom
