@@ -21,7 +21,7 @@ return function ()
         return WebDevIconsGetFileFormatSymbol()
       endfunction
       function! LightlineBreadcrumb()
-        return luaeval('require("nvim-navic").get_location({depth_limit = 3, separator = ""})')
+        return luaeval('require("nvim-navic").get_location({depth_limit = 3, separator = ": "})')
       endfunction
     ]])
 
