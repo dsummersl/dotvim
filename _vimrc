@@ -160,12 +160,9 @@ imap <M-e> <C-O>$
 " Used iterm2 to map shift-ctrl-a to <f16>
 imap <M-a> <Home>
 
-" console copy to buffer
-noremap <leader>y "+y
 " noremap <leader>a ggVG"+y
 " copy the current filename and line number into the clipboard and past register:
 noremap <leader>f :let @+=expand("%") .'#'. line(".")<bar>let @"=@+ ."\n"<CR>
-noremap <leader>/a :AA 
 
 " unimpaired like mapping for diff option for ignoring whitespace.
 noremap ]oI :set diffopt-=iwhiteall<cr>

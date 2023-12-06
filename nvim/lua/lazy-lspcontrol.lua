@@ -96,7 +96,7 @@ return function()
         update_in_insert = false,
       })
 
-      local signs = { Error = "⧳ ", Warn = "⧲ ", Hint = ". ", Info = "ℹ " }
+      local signs = { Error = "⊪ ", Warn = "⊩ ", Hint = ". ", Info = "ℹ " }
 
       for type, icon in pairs(signs) do
         local hl = "DiagnosticSign" .. type

@@ -1,36 +1,11 @@
 require("lazy").setup({
   {
     {
-      "folke/flash.nvim",
-      event = "VeryLazy",
-      ---@type Flash.Config
-      opts = {},
-      -- stylua: ignore
-      keys = {
-        { "s", mode = { "n", "x", "o" }, function() require("flash").jump() end,   desc = "Flash" },
-        {
-          "S",
-          mode = { "n", "x", "o" },
-          function() require("flash").treesitter() end,
-          desc =
-          "Flash Treesitter"
-        },
-        { "r", mode = "o",               function() require("flash").remote() end, desc = "Remote Flash" },
-        {
-          "R",
-          mode = { "o", "x" },
-          function() require("flash").treesitter_search() end,
-          desc =
-          "Treesitter Search"
-        },
-        {
-          "<c-s>",
-          mode = { "c" },
-          function() require("flash").toggle() end,
-          desc =
-          "Toggle Flash Search"
-        },
-      },
+      "ojroques/vim-oscyank",
+      config = function()
+        vim.keymap.set('n', ',y', '<Plug>OSCYankOperator', { desc = 'Yank to clipboard' })
+        vim.keymap.set('v', ',y', '<Plug>OSCYankVisual', { desc = 'Yank to clipboard (visual)' })
+      end,
     },
     {
       "robitx/gp.nvim",
@@ -56,7 +31,14 @@ require("lazy").setup({
         require('symbols-outline').setup {}
       end
     },
-    "sindrets/diffview.nvim",
+    {
+      "sindrets/diffview.nvim",
+      config = function()
+        vim.keymap.set('n', ',gd', ':DiffviewFileHistory %<cr>', { desc = 'Git diff current file' })
+        vim.keymap.set('v', ',gd', ':DiffviewFileHistory %<cr>', { desc = 'Git diff current file' })
+      end
+    },
+    
     {
       "Bryley/neoai.nvim",
       dependencies = {
@@ -127,6 +109,38 @@ require("lazy").setup({
   "tpope/vim-eunuch", -- eunuch.vim: cp/move/unlink commands
   "mattn/emmet-vim",     -- fast HTML tag generation (in insert mode type tr*3CTL-Y, to make three <tr>s
   "tomtom/tcomment_vim", -- An extensible & universal comment vim-plugin that also handles embedded filetypes
+  {
+    "folke/flash.nvim",
+    event = "VeryLazy",
+    ---@type Flash.Config
+    opts = {},
+    -- stylua: ignore
+    keys = {
+      { "s", mode = { "n", "x", "o" }, function() require("flash").jump() end,   desc = "Flash" },
+      {
+        "S",
+        mode = { "n", "x", "o" },
+        function() require("flash").treesitter() end,
+        desc =
+        "Flash Treesitter"
+      },
+      { "r", mode = "o",               function() require("flash").remote() end, desc = "Remote Flash" },
+      {
+        "R",
+        mode = { "o", "x" },
+        function() require("flash").treesitter_search() end,
+        desc =
+        "Treesitter Search"
+      },
+      {
+        "<c-s>",
+        mode = { "c" },
+        function() require("flash").toggle() end,
+        desc =
+        "Toggle Flash Search"
+      },
+    },
+  },
   {
     "andymass/vim-matchup",
     init = function() -- matching tags/parens/etc
