@@ -112,9 +112,12 @@ require("lazy").setup({
   {
     "folke/flash.nvim",
     event = "VeryLazy",
-    ---@type Flash.Config
-    opts = {},
-    -- stylua: ignore
+    opts = {
+      label = {
+        after = false,
+        before = true
+      }
+    },
     keys = {
       { "s", mode = { "n", "x", "o" }, function() require("flash").jump() end,   desc = "Flash" },
       {
