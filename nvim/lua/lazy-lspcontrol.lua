@@ -1,18 +1,5 @@
 local lsp_control = {}
 
-lsp_control.show = true
-
---- I don't think this does anything anymore
-lsp_control.toggle_virtualtext = function()
-  lsp_control.show = not lsp_control.show
-  vim.lsp.diagnostic.display(
-    vim.lsp.diagnostic.get(0, 1),
-    0,
-    1,
-    { lsp_control = lsp_control.show }
-  )
-end
-
 lsp_control.on_attach = function(client, bufnr)
   local keymap_opts = function(desc)
     return { noremap = true, silent = true, buffer = bufnr, desc = desc }
@@ -74,7 +61,7 @@ lsp_control.make_default_opts = function()
   return opts
 end
 
-return function()
+lsp_control.init = function()
   return {
     "neovim/nvim-lspconfig",
     dependencies = {
@@ -92,8 +79,27 @@ return function()
         underline = false,
         virtual_text = false,
         severity_sort = true,
-        signs = true,
         update_in_insert = false,
+        signs = {
+          text = {
+            [vim.diagnostic.severity.ERROR] = '⊪ ',
+            [vim.diagnostic.severity.WARN] = '⊩ ',
+            [vim.diagnostic.severity.HINT] = '. ',
+            [vim.diagnostic.severity.INFO] = 'ℹ ',
+          },
+          linehl = {
+            [vim.diagnostic.severity.ERROR] = 'DiagnosticSignError',
+            [vim.diagnostic.severity.WARN] = 'DiagnosticSignWarn',
+            [vim.diagnostic.severity.HINT] = 'DiagnosticSignHint',
+            [vim.diagnostic.severity.INFO] = 'DiagnosticSignInfo',
+          },
+          numhl = {
+            [vim.diagnostic.severity.ERROR] = '',
+            [vim.diagnostic.severity.WARN] = '',
+            [vim.diagnostic.severity.HINT] = '',
+            [vim.diagnostic.severity.INFO] = '',
+          },
+        },
       })
 
       local signs = { Error = "⊪ ", Warn = "⊩ ", Hint = ". ", Info = "ℹ " }
@@ -164,3 +170,5 @@ return function()
     end,
   }
 end
+
+return lsp_control

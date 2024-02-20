@@ -1,6 +1,9 @@
 return function ()
   return {
     "itchyny/lightline.vim",
+    dependencies = {
+      "SmiteshP/nvim-navic",
+    },
     config = function()
       vim.cmd([[
       function! LspStatus()

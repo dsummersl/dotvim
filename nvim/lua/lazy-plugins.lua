@@ -1,93 +1,41 @@
 return {
   {
-    {
-      "ojroques/vim-oscyank",
-      config = function()
-        vim.keymap.set('n', ',y', '<Plug>OSCYankOperator', { desc = 'Yank to clipboard' })
-        vim.keymap.set('v', ',y', '<Plug>OSCYankVisual', { desc = 'Yank to clipboard (visual)' })
-      end,
-    },
-    {
-      "robitx/gp.nvim",
-      config = function()
-        require("gp").setup()
-        -- shortcuts might be setup here (see Usage > Shortcuts in Readme)
-      end,
-    },
-    {
-      "jackMort/ChatGPT.nvim",
-      config = function()
-        require("chatgpt").setup()
-      end,
-      dependencies = {
-        "MunifTanjim/nui.nvim",
-        "nvim-lua/plenary.nvim",
-        "nvim-telescope/telescope.nvim"
-      },
-    },
-    {
-      "simrat39/symbols-outline.nvim",
-      config = function()
-        require('symbols-outline').setup {}
-      end
-    },
-    {
-      "sindrets/diffview.nvim",
-      config = function()
-        vim.keymap.set('n', ',gd', ':DiffviewFileHistory %<cr>', { desc = 'Git diff current file' })
-        vim.keymap.set('v', ',gd', ':DiffviewFileHistory %<cr>', { desc = 'Git diff current file' })
-      end
-    },
-    
-    {
-      "Bryley/neoai.nvim",
-      dependencies = {
-        "MunifTanjim/nui.nvim",
-      },
-      cmd = {
-        "NeoAI",
-        "NeoAIOpen",
-        "NeoAIClose",
-        "NeoAIToggle",
-        "NeoAIContext",
-        "NeoAIContextOpen",
-        "NeoAIContextClose",
-        "NeoAIInject",
-        "NeoAIInjectCode",
-        "NeoAIInjectContext",
-        "NeoAIInjectContextCode",
-      },
-      keys = {
-        { "<leader>as", desc = "summarize text" },
-        { "<leader>ag", desc = "generate git message" },
-      },
-      config = function()
-        require("neoai").setup({
-          -- Options go here
-        })
-      end,
-    },
-    "RRethy/nvim-treesitter-textsubjects",
-    config = function() -- matching tags/parens/etc
-      require('nvim-treesitter.configs').setup {
-        textsubjects = {
-          enable = true,
-          prev_selection = ',', -- (Optional) keymap to select the previous selection
-          keymaps = {
-            ['.'] = 'textsubjects-smart',
-            [';'] = 'textsubjects-container-outer',
-            ['i;'] = 'textsubjects-container-inner',
-          },
-        },
-      }
+    "ojroques/vim-oscyank",
+    config = function()
+      vim.keymap.set('n', ',y', '<Plug>OSCYankOperator', { desc = 'Yank to clipboard' })
+      vim.keymap.set('v', ',y', '<Plug>OSCYankVisual', { desc = 'Yank to clipboard (visual)' })
     end,
+  },
+  {
+    "jackMort/ChatGPT.nvim",
+    config = function()
+      require("chatgpt").setup()
+    end,
+    dependencies = {
+      "MunifTanjim/nui.nvim",
+      "nvim-lua/plenary.nvim",
+      "nvim-telescope/telescope.nvim"
+    },
+  },
+  {
+    "simrat39/symbols-outline.nvim",
+    config = function()
+      require('symbols-outline').setup {}
+    end
+  },
+  {
+    "sindrets/diffview.nvim",
+    config = function()
+      vim.keymap.set('n', ',gd', ':DiffviewFileHistory %<cr>', { desc = 'Git diff current file' })
+      vim.keymap.set('v', ',gd', ':DiffviewFileHistory %<cr>', { desc = 'Git diff current file' })
+    end
   },
 
   ---------------------
   -- Adopted plugins --
   ---------------------
 
-  require("lazy-lspcontrol")(),
+  require("lazy-lspcontrol").init(),
   require("lazy-treesitter")(),
   require("lazy-dial")(),
   require("lazy-vimtest")(),
@@ -102,13 +50,13 @@ return {
   "folke/which-key.nvim",
   "tommcdo/vim-express",              -- custom g* operations (g=iw - prompt 'get_'.v:val.'()' to change a word to a func)
   "stefandtw/quickfix-reflector.vim", -- edit the qf list directly with copen
-  "michaeljsmith/vim-indent-object",                                                 -- vii and viI (visual inner Indent)
+  "michaeljsmith/vim-indent-object",  -- vii and viI (visual inner Indent)
   "ryanoasis/vim-devicons",
-  "pgdouyon/vim-evanesco", -- vmap *, Highlight search, clear after searching
+  "pgdouyon/vim-evanesco",            -- vmap *, Highlight search, clear after searching
   "tommcdo/vim-exchange",
-  "tpope/vim-eunuch", -- eunuch.vim: cp/move/unlink commands
-  "mattn/emmet-vim",     -- fast HTML tag generation (in insert mode type tr*3CTL-Y, to make three <tr>s
-  "tomtom/tcomment_vim", -- An extensible & universal comment vim-plugin that also handles embedded filetypes
+  "tpope/vim-eunuch",                 -- eunuch.vim: cp/move/unlink commands
+  "mattn/emmet-vim",                  -- fast HTML tag generation (in insert mode type tr*3CTL-Y, to make three <tr>s
+  "tomtom/tcomment_vim",              -- An extensible & universal comment vim-plugin that also handles embedded filetypes
   {
     "folke/flash.nvim",
     event = "VeryLazy",
@@ -166,8 +114,8 @@ return {
       vim.g.gitblame_highlight_group = "StatusLineNC"
       vim.g.gitblame_message_when_not_committed = ''
       vim.cmd([[
-      nmap [og :GitBlameEnable<cr>
-      nmap ]og :GitBlameDisable<cr>
+      nmap [og :GitBlameDisable<cr>
+      nmap ]og :GitBlameEnable<cr>
     ]])
     end,
   },
@@ -231,7 +179,7 @@ return {
       -- remap to open the Telescope refactoring menu in visual mode
       vim.api.nvim_set_keymap(
         "v",
-        "<leader>dA",
+        "<leader>dr",
         "<Esc><cmd>lua require('telescope').extensions.refactoring.refactors()<CR>",
         { noremap = true, desc = "Refactor actions" }
       )
@@ -321,7 +269,7 @@ return {
               call gruvbox_material#highlight('FlashCursor', l:palette.bg0, l:palette.bg5)
           endif
         endfunction
-        
+
         augroup GruvboxMaterialCustom
           autocmd!
           autocmd ColorScheme gruvbox-material call s:gruvbox_material_custom()
@@ -352,8 +300,8 @@ return {
     "tpope/vim-unimpaired",
     config = function()
       vim.cmd([[
-        noremap ]on :set number<cr>
         noremap [on :set nonumber<cr>
+        noremap ]on :set number<cr>
       ]])
     end,
   },
@@ -399,7 +347,7 @@ return {
       vim.api.nvim_set_keymap("x", "ga", "<Plug>(EasyAlign)", { noremap = true })
       vim.api.nvim_set_keymap("n", "ga", "<Plug>(EasyAlign)", { noremap = true })
     end,
-  },                                  -- align with operator gL and gl (ie glip= to align paragraph by =)
+  }, -- align with operator gL and gl (ie glip= to align paragraph by =)
   {
     "tpope/vim-projectionist",
     config = function()
@@ -440,23 +388,22 @@ return {
     "tpope/vim-rhubarb",
     commit = "af12af4",
     dependencies = { "tpope/vim-fugitive" },
-  },                  -- rhubarb seems to be broken for most github repos after commit af12af4
+  }, -- rhubarb seems to be broken for most github repos after commit af12af4
   {
     "tpope/vim-abolish",
     config = function()
       vim.cmd([[
-      " pathing for abolish
       set runtimepath+=~/.vim/after
     ]])
     end,
-  },                     -- fix spelling errors
+  }, -- fix spelling errors, :S command.
   {
     dir = "~/Documents/classes/vim-searchconceal",
     config = function()
-      vim.cmd([[
-      map ,cc :SearchConcealClear<CR>
-      map ,ch :SearchConceal<CR>
-    ]])
+    --   vim.cmd([[
+    --   map ,cc :SearchConcealClear<CR>
+    --   map ,ch :SearchConceal<CR>
+    -- ]])
     end,
   },
   {
@@ -522,7 +469,8 @@ return {
     end,
   },
   {
-    dir = "~/Documents/classes/nvim-sluice",
+    "dsummersl/nvim-sluice",
+    -- dir = "~/Documents/classes/nvim-sluice",
     config = function()
     end
   },
@@ -559,8 +507,8 @@ return {
     main = "ibl",
     config = function()
       vim.cmd([[
-        nmap [oG :IBLEnable<cr>
-        nmap ]oG :IBLDisable<cr>
+        nmap [oG :IBLDisable<cr>
+        nmap ]oG :IBLEnable<cr>
       ]])
       require("ibl").setup({
         enabled = false,
@@ -578,7 +526,7 @@ return {
       map <leader>gv  <Plug>(operator-vtr)
     ]])
     end,
-  }, -- :VtrSendCommandToRunner for tmux
+  },                                                                                 -- :VtrSendCommandToRunner for tmux
   { "saaguero/vim-textobj-pastedtext", dependencies = { "kana/vim-textobj-user" } }, -- vgb for last pasted text.
   { "glts/vim-textobj-comment",        dependencies = { "kana/vim-textobj-user" } }, -- select comment with vic or vac.
 }

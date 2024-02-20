@@ -80,7 +80,7 @@ set signcolumn=yes:2
 set cmdheight=1
 
 set guifont=JetBrainsMono\ Nerd\ Font
-let g:python3_host_prog='/Users/danesummers/.pyenv/shims/python'
+let g:python3_host_prog='~/.pyenv/versions/neovim/bin/python'
 "}}}
 " Plugins{{{
 lua << EOF
@@ -102,7 +102,7 @@ if not vim.loop.fs_stat(".nvimrc") then
   require('lazy-loader')()
 end
 -- in your .nvimrc put this file, or pass additional configs.
--- require('lazy-loader')()
+-- require('lazy-loader')({ "extra-plugin" })
 EOF
 "}}}
 " Mappings {{{

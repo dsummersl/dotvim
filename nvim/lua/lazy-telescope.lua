@@ -5,7 +5,6 @@ return function()
       "nvim-lua/plenary.nvim",
       "nvim-lua/popup.nvim",
       "nvim-telescope/telescope-media-files.nvim",
-      "zolrath/telescope-projectionist.nvim",
       "nvim-telescope/telescope-live-grep-args.nvim",
     },
     build = "pip install ueberzug",
@@ -64,15 +63,13 @@ return function()
             auto_quoting = true, -- enable/disable auto-quoting
             mappings = {         -- extend mappings
               i = {
-                ["<C-s>"] = lga_actions.quote_prompt(),
-                ["<C-i>"] = lga_actions.quote_prompt({ postfix = " --iglob " }),
+                ["<C-t>"] = lga_actions.quote_prompt({ postfix = " -t " }),
               },
             },
           }
         }
       })
       require("telescope").load_extension("media_files")
-      require("telescope").load_extension("projectionist")
       require("telescope").load_extension("live_grep_args")
 
       vim.cmd([[
