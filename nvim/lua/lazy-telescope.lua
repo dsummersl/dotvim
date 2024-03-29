@@ -17,16 +17,17 @@ return function()
           color_devicons = true,
           layout_config = {
             center = {
-              height = 0.4,
+              height = 0.6,
             },
             cursor = {
-              height = 0.4,
+              height = 0.6,
             },
             horizontal = {
-              height = 0.4,
+              height = 0.6,
+              preview_width = 0.6
             },
             vertical = {
-              height = 0.4,
+              height = 0.6,
             },
           },
           mappings = {
@@ -85,7 +86,7 @@ return function()
 
         noremap <leader>/g :lua require("telescope").extensions.live_grep_args.live_grep_args()<cr>
         noremap <leader>/f :exec ":lua require('telescope').extensions.live_grep_args.live_grep_args({ default_text = '". expand("%:t:r:r") ."' })"<cr>
-        noremap <leader>// :exec ":lua require('telescope').extensions.live_grep_args.live_grep_args({ default_text = '\"". substitute(escape(@/,' '),'\\[<>]\{1}','\\\\b','g') ."\"' -g ". expand("%") ."' })"<cr>
+        noremap <leader>// :exec ":lua require('telescope').extensions.live_grep_args.live_grep_args({ default_text = '\"". substitute(escape(@/,' '),'\\[<>]\{1}','\\\\b','g') ."\" ". expand("%") ."' })"<cr>
         noremap <leader>/w :Telescope grep_string<cr>
       ]])
     end,

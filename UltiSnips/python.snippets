@@ -21,7 +21,7 @@ logger.$1`!p snip.rv=complete(t[1],['debug','info','warning','error'])`("|$2 = %
 endsnippet
 
 snippet lg "print " !b
-print("$1")$0
+print(f"$1")$0
 endsnippet
 
 snippet lge "print var" !b
@@ -89,7 +89,7 @@ snippet brk "Set PDB breakpoint" b
 import pdb; pdb.set_trace()
 endsnippet
 
-# install trepan3k for py3 or trepan2 for py2
+# pip install trepan3k
 snippet trk "Set trepan2 breakpoint" b
 from trepan.api import debug; debug()
 endsnippet

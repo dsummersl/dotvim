@@ -1,7 +1,7 @@
 -- How to setup local files: https://github.com/LazyVim/LazyVim/discussions/1878#discussioncomment-7667560
 
-local function find_plugin_index(spec, name)
-  for i, plugin in ipairs(spec) do
+local function find_plugin_index(specs, name)
+  for i, plugin in ipairs(specs) do
     if type(plugin) == "string" and plugin == name then
       return i
     end

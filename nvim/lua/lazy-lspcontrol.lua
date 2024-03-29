@@ -17,11 +17,11 @@ lsp_control.on_attach = function(client, bufnr)
   vim.keymap.set('n', ',dk', vim.lsp.buf.signature_help, keymap_opts('LSP Signature Help'))
 
   vim.keymap.set('n', ']d',
-    '<cmd>lua vim.diagnostic.goto_next{float=true, severity = { min = vim.diagnostic.severity.WARN }}<CR>',
-    keymap_opts('Next warning'))
+    '<cmd>lua vim.diagnostic.goto_next{float=true, severity = { min = vim.diagnostic.severity.HINT }}<CR>',
+    keymap_opts('Next lsp suggestion'))
   vim.keymap.set('n', '[d',
-    '<cmd>lua vim.diagnostic.goto_prev{float=true, severity = { min = vim.diagnostic.severity.WARN }}<CR>',
-    keymap_opts('Prev warning'))
+    '<cmd>lua vim.diagnostic.goto_prev{float=true, severity = { min = vim.diagnostic.severity.HINT }}<CR>',
+    keymap_opts('Prev lsp suggestion'))
   vim.keymap.set('n', ']D',
     '<cmd>lua vim.diagnostic.goto_next{float=true, severity = { min = vim.diagnostic.severity.ERROR }}<CR>',
     keymap_opts('Next error'))
@@ -158,8 +158,6 @@ lsp_control.init = function()
           null_ls.builtins.formatting.black,
           null_ls.builtins.formatting.prettier,
           null_ls.builtins.formatting.isort,
-          null_ls.builtins.diagnostics.eslint_d,
-          null_ls.builtins.code_actions.eslint_d,
           -- null_ls.builtins.diagnostics.pylint,
           null_ls.builtins.diagnostics.codespell,
           null_ls.builtins.formatting.codespell,

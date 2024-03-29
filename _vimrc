@@ -103,6 +103,7 @@ if not vim.loop.fs_stat(".nvimrc") then
 end
 -- in your .nvimrc put this file, or pass additional configs.
 -- require('lazy-loader')({ "extra-plugin" })
+
 EOF
 "}}}
 " Mappings {{{
