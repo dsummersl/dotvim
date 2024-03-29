@@ -33,8 +33,13 @@ return {
           change = "┊",
           delete = "┃",
         }
+      },
+      mappings = {
+        goto_first = nil,
+        goto_last = nil,
       }
     }
+    vim.keymap.set('n', ']H', ':lua MiniDiff.toggle_overlay()<cr>', { desc = 'MiniDiff toggle overlay' })
   end},
   {
     "sindrets/diffview.nvim",
