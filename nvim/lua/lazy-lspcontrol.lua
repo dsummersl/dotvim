@@ -13,7 +13,7 @@ lsp_control.on_attach = function(client, bufnr)
   -- vim.keymap.set('v', ',df', vim.lsp.buf.range_formatting, opts)
   vim.keymap.set('n', ',da', vim.lsp.buf.code_action, keymap_opts('Code actions'))
   -- vim.keymap.set('v', ',da', vim.lsp.buf.range_code_action, keymap_opts('Code actions'))
-  vim.keymap.set('n', ',dl', vim.lsp.buf.references, keymap_opts('LSP References'))
+  vim.keymap.set('n', ',dl', ':Telescope lsp_references<cr>', keymap_opts('LSP References'))
   vim.keymap.set('n', ',dk', vim.lsp.buf.signature_help, keymap_opts('LSP Signature Help'))
 
   vim.keymap.set('n', ']d',

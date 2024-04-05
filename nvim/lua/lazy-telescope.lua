@@ -6,6 +6,7 @@ return function()
       "nvim-lua/popup.nvim",
       "nvim-telescope/telescope-media-files.nvim",
       "nvim-telescope/telescope-live-grep-args.nvim",
+      "debugloop/telescope-undo.nvim",
     },
     build = "pip install ueberzug",
     config = function()
@@ -72,22 +73,23 @@ return function()
       })
       require("telescope").load_extension("media_files")
       require("telescope").load_extension("live_grep_args")
+      require("telescope").load_extension("undo")
 
       vim.cmd([[
-        nnoremap <leader>/r :Telescope resume<CR>
-        nnoremap <C-p> :Telescope find_files<CR>
+        nnoremap <silent> <leader>/r :Telescope resume<CR>
+        nnoremap <silent> <C-p> :Telescope find_files<CR>
         " User iterm2 to map shift-ctrl-p to <f15>
-        nnoremap <F11> :Telescope oldfiles<CR>
-        nnoremap <F15> :Telescope oldfiles<CR>
-        nnoremap <C-t> :Telescope tags<CR>
+        nnoremap <silent> <F11> :Telescope oldfiles<CR>
+        nnoremap <silent> <F15> :Telescope oldfiles<CR>
+        nnoremap <silent> <C-t> :Telescope tags<CR>
         " User iterm2 to map shift-ctrl-t to <f16>
-        nnoremap <F12> :silent! lua require"telescope-config".treesitter_or_ctags()<CR>
-        nnoremap <F16> :silent! lua require"telescope-config".treesitter_or_ctags()<CR>
+        nnoremap <silent> <F12> :silent! lua require"telescope-config".treesitter_or_ctags()<CR>
+        nnoremap <silent> <F16> :silent! lua require"telescope-config".treesitter_or_ctags()<CR>
 
-        noremap <leader>/g :lua require("telescope").extensions.live_grep_args.live_grep_args()<cr>
-        noremap <leader>/f :exec ":lua require('telescope').extensions.live_grep_args.live_grep_args({ default_text = '". expand("%:t:r:r") ."' })"<cr>
-        noremap <leader>// :exec ":lua require('telescope').extensions.live_grep_args.live_grep_args({ default_text = '\"". substitute(escape(@/,' '),'\\[<>]\{1}','\\\\b','g') ."\" ". expand("%") ."' })"<cr>
-        noremap <leader>/w :Telescope grep_string<cr>
+        noremap <silent> <leader>/g :lua require("telescope").extensions.live_grep_args.live_grep_args()<cr>
+        noremap <silent> <leader>/f :exec ":lua require('telescope').extensions.live_grep_args.live_grep_args({ default_text = '". expand("%:t:r:r") ."' })"<cr>
+        noremap <silent> <leader>// :exec ":lua require('telescope').extensions.live_grep_args.live_grep_args({ default_text = '\"". substitute(escape(@/,' '),'\\[<>]\{1}','\\\\b','g') ."\" ". expand("%") ."' })"<cr>
+        noremap <silent> <leader>/w :Telescope grep_string<cr>
       ]])
     end,
   }

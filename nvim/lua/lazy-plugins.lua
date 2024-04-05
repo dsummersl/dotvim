@@ -23,24 +23,68 @@ return {
       require('symbols-outline').setup {}
     end
   },
-  { 'echasnovski/mini.nvim', version = false, config = function()
-    require('mini.splitjoin').setup()
-    require('mini.starter').setup()
-    require('mini.diff').setup {
-      view = {
-        signs = {
-          add = "│",
-          change = "┊",
-          delete = "┃",
-        }
-      },
-      mappings = {
-        goto_first = nil,
-        goto_last = nil,
+  {
+    'echasnovski/mini.nvim',
+    version = false,
+    config = function()
+      require('mini.splitjoin').setup()
+      require('mini.starter').setup()
+      require('mini.diff').setup {
+        view = {
+          signs = {
+            add = "│",
+            change = "┊",
+            delete = "┃",
+          }
+        },
+        mappings = nil,
       }
-    }
-    vim.keymap.set('n', ']H', ':lua MiniDiff.toggle_overlay()<cr>', { desc = 'MiniDiff toggle overlay' })
-  end},
+      vim.keymap.set('n', ']H', ':lua MiniDiff.toggle_overlay()<cr>', { desc = 'MiniDiff toggle overlay' })
+    end
+  },
+  {
+    "folke/noice.nvim",
+    event = "VeryLazy",
+    enabled = false,
+    dependencies = {
+      "MunifTanjim/nui.nvim",
+    },
+    config = function()
+      require("noice").setup({
+        lsp = {
+          override = {
+            ["vim.lsp.util.convert_input_to_markdown_lines"] = true,
+            ["vim.lsp.util.stylize_markdown"] = true,
+            ["cmp.entry.get_documentation"] = true, -- requires hrsh7th/nvim-cmp
+          },
+        },
+        presets = {
+          bottom_search = true,         -- use a classic bottom cmdline for search
+          command_palette = true,       -- position the cmdline and popupmenu together
+          long_message_to_split = true, -- long messages will be sent to a split
+          inc_rename = false,           -- enables an input dialog for inc-rename.nvim
+          lsp_doc_border = false,       -- add a border to hover docs and signature help
+        },
+        views = {
+          cmdline_popup = {
+            position = {
+              row = -2,
+              col = "50%",
+            },
+          },
+          cmdline_popupmenu = {
+            position = {
+              row = -5,
+              col = "50%",
+            },
+          },
+        },
+        routes = {
+          { filter = { event = "null-ls", find = "diagnostics" }, opts = { skip = true }}
+        }
+      })
+    end,
+  },
   {
     "sindrets/diffview.nvim",
     config = function()
@@ -82,14 +126,14 @@ return {
     lazy = false,
     config = function()
       require('tabout').setup {
-        tabkey = '<C-t>', -- key to trigger tabout, set to an empty string to disable
+        tabkey = '<Tab>',             -- key to trigger tabout, set to an empty string to disable
         backwards_tabkey = '<S-Tab>', -- key to trigger backwards tabout, set to an empty string to disable
-        act_as_tab = true, -- shift content if tab out is not possible
-        act_as_shift_tab = false, -- reverse shift content if tab out is not possible (if your keyboard/terminal supports <S-Tab>)
-        default_tab = '<C-t>', -- shift default action (only at the beginning of a line, otherwise <TAB> is used)
-        default_shift_tab = '<C-d>', -- reverse shift default action,
-        enable_backwards = true, -- well ...
-        completion = false, -- if the tabkey is used in a completion pum
+        act_as_tab = true,            -- shift content if tab out is not possible
+        act_as_shift_tab = false,     -- reverse shift content if tab out is not possible (if your keyboard/terminal supports <S-Tab>)
+        default_tab = '<C-t>',        -- shift default action (only at the beginning of a line, otherwise <TAB> is used)
+        default_shift_tab = '<C-d>',  -- reverse shift default action,
+        enable_backwards = true,      -- well ...
+        completion = false,           -- if the tabkey is used in a completion pum
         tabouts = {
           { open = "'", close = "'" },
           { open = '"', close = '"' },
@@ -106,7 +150,7 @@ return {
       "nvim-treesitter/nvim-treesitter",
       "hrsh7th/nvim-cmp"
     },
-    opt = true,  -- Set this to true if the plugin is optional
+    opt = true,              -- Set this to true if the plugin is optional
     event = 'InsertCharPre', -- Set the event to 'InsertCharPre' for better compatibility
     priority = 1000,
   },
@@ -125,18 +169,18 @@ return {
   require("lazy-gutentags")(),
   require("lazy-cmp")(),
   require("lazy-sandwhich")(),
-  "chrisbra/unicode.vim",   -- :Unicode* commands to search for them.
+  "chrisbra/unicode.vim", -- :Unicode* commands to search for them.
   "aklt/plantuml-syntax",
   "folke/which-key.nvim",
-  "tommcdo/vim-express",                -- custom g* operations (g=iw - prompt 'get_'.v:val.'()' to change a word to a func)
-  "stefandtw/quickfix-reflector.vim",   -- edit the qf list directly with copen
-  "michaeljsmith/vim-indent-object",    -- vii and viI (visual inner Indent)
+  "tommcdo/vim-express",              -- custom g* operations (g=iw - prompt 'get_'.v:val.'()' to change a word to a func)
+  "stefandtw/quickfix-reflector.vim", -- edit the qf list directly with copen
+  "michaeljsmith/vim-indent-object",  -- vii and viI (visual inner Indent)
   "ryanoasis/vim-devicons",
-  "pgdouyon/vim-evanesco",              -- vmap *, Highlight search, clear after searching
+  "pgdouyon/vim-evanesco",            -- vmap *, Highlight search, clear after searching
   "tommcdo/vim-exchange",
-  "tpope/vim-eunuch",                   -- eunuch.vim: cp/move/unlink commands
-  "mattn/emmet-vim",                    -- fast HTML tag generation (in insert mode type tr*3CTL-Y, to make three <tr>s
-  "tomtom/tcomment_vim",                -- An extensible & universal comment vim-plugin that also handles embedded filetypes
+  "tpope/vim-eunuch",                 -- eunuch.vim: cp/move/unlink commands
+  "mattn/emmet-vim",                  -- fast HTML tag generation (in insert mode type tr*3CTL-Y, to make three <tr>s
+  "tomtom/tcomment_vim",              -- An extensible & universal comment vim-plugin that also handles embedded filetypes
   {
     "folke/flash.nvim",
     event = "VeryLazy",
@@ -174,7 +218,7 @@ return {
   },
   {
     "andymass/vim-matchup",
-    init = function()     -- matching tags/parens/etc
+    init = function() -- matching tags/parens/etc
       vim.g.matchup_matchparen_hi_background = 2
       vim.g.matchup_matchparen_offscreen = { method = "popup" }
     end,
@@ -187,15 +231,15 @@ return {
   },
   {
     "f-person/git-blame.nvim",
-    init = function()     -- show git blame in the editor.
+    init = function() -- show git blame in the editor.
       vim.g.gitblame_enabled = 0
       vim.g.gitblame_date_format = "%x"
       vim.g.gitblame_message_template = "<date> <author>: <sha> <summary>"
       vim.g.gitblame_highlight_group = "StatusLineNC"
       vim.g.gitblame_message_when_not_committed = ''
       vim.cmd([[
-      nmap [og :GitBlameDisable<cr>
-      nmap ]og :GitBlameEnable<cr>
+      nmap <silent> [og :GitBlameDisable<cr>
+      nmap <silent> ]og :GitBlameEnable<cr>
     ]])
     end,
   },
@@ -245,7 +289,8 @@ return {
     end,
   },
   {
-    dir = "~/Documents/classes/vim-diffundo",
+    "dsummersl/vim-diffundo",
+    -- dir = "~/Documents/classes/vim-diffundo",
     dependencies = { "kreskij/Repeatable.vim" },
     config = function()
       vim.cmd([[
@@ -354,13 +399,13 @@ return {
       sunmap ]iI
     ]])
     end,
-  },   -- Support indent motions ]ii
+  }, -- Support indent motions ]ii
   {
     "tpope/vim-unimpaired",
     config = function()
       vim.cmd([[
-        noremap [on :set nonumber<cr>
-        noremap ]on :set number<cr>
+        noremap <silent> [on :set nonumber<cr>
+        noremap <silent> ]on :set number<cr>
       ]])
     end,
   },
@@ -384,7 +429,7 @@ return {
       vmap <leader>v :VSSplit<cr>
     ]])
     end,
-  },   -- I've mapped this to <leader>v Lines to quickly resize splits (VSSplit)
+  }, -- I've mapped this to <leader>v Lines to quickly resize splits (VSSplit)
   {
     "kana/vim-operator-user",
     config = function()
@@ -399,14 +444,14 @@ return {
       " "map gs  <Plug>(operator-live-grep)
     ]])
     end,
-  },   -- Define my own operators for motions.
+  }, -- Define my own operators for motions.
   {
     "junegunn/vim-easy-align",
     config = function()
       vim.api.nvim_set_keymap("x", "ga", "<Plug>(EasyAlign)", { noremap = true })
       vim.api.nvim_set_keymap("n", "ga", "<Plug>(EasyAlign)", { noremap = true })
     end,
-  },   -- align with operator gL and gl (ie glip= to align paragraph by =)
+  }, -- align with operator gL and gl (ie glip= to align paragraph by =)
   {
     "tpope/vim-projectionist",
     config = function()
@@ -416,7 +461,7 @@ return {
       nnoremap <leader>. :E
     ]])
     end,
-  },   -- :E* commands for a project
+  }, -- :E* commands for a project
   -- {
   --   "embear/vim-localvimrc",
   --   init = function()
@@ -432,22 +477,22 @@ return {
     config = function()
       vim.cmd([[
       " easily access f-keys -- not easy on a macbookpro with 'touch bar'
-      nnoremap <F6> :Gvdiff<CR>
-      map <leader>f6 :Gvdiff<cr>
-      map <leader>f7 :Gvdiffsplit<cr>
-      nnoremap <leader>gg :silent! G<cr>
+      nnoremap <silent> <F6> :Gvdiff<CR>
+      map <silent> <leader>f6 :Gvdiff<cr>
+      map <silent> <leader>f7 :Gvdiffsplit<cr>
+      nnoremap <silent> <leader>gg :silent! G<cr>
 
       " get rid of any extra git fugitive buffers
       autocmd BufReadPost fugitive://* set bufhidden=wipe
       command! -nargs=0 Gone G log --pretty=format:"%ad %Cred%h%Creset: %<(15)%aN %Cred--%Creset %s" --date=short
     ]])
     end,
-  },   -- git
+  }, -- git
   {
     "tpope/vim-rhubarb",
     commit = "af12af4",
     dependencies = { "tpope/vim-fugitive" },
-  },   -- rhubarb seems to be broken for most github repos after commit af12af4
+  }, -- rhubarb seems to be broken for most github repos after commit af12af4
   {
     "tpope/vim-abolish",
     config = function()
@@ -455,7 +500,7 @@ return {
       set runtimepath+=~/.vim/after
     ]])
     end,
-  },   -- fix spelling errors, :S command.
+  }, -- fix spelling errors, :S command.
   {
     dir = "~/Documents/classes/vim-searchconceal",
     config = function()
@@ -473,9 +518,10 @@ return {
       command! UTFToASCII :call utf2ascii#replaceUTF()<cr>
     ]])
     end,
-  },   -- simple utf2ascii function.
+  }, -- simple utf2ascii function.
   {
-    dir = "~/Documents/classes/vim-mundo",
+    "simnalamburt/vim-mundo",
+    -- dir = "~/Documents/classes/vim-mundo",
     config = function()
       vim.g.mundo_verbose_graph = 0
       vim.g.mundo_mirror_graph = 1
@@ -530,8 +576,18 @@ return {
   {
     "dsummersl/nvim-sluice",
     -- dir = "~/Documents/classes/nvim-sluice",
-    config = function()
-    end
+    -- config = function()
+    --   require("sluice").setup {
+    --     gutters = {
+    --       {
+    --         plugins = { 'extmarks' },
+    --         extmarks = {
+    --           hl_groups = { 'IlluminatedWordWrite' }
+    --         }
+    --       }
+    --     }
+    --   }
+    -- end
   },
   {
     "SirVer/ultisnips",
@@ -566,8 +622,8 @@ return {
     main = "ibl",
     config = function()
       vim.cmd([[
-        nmap [oG :IBLDisable<cr>
-        nmap ]oG :IBLEnable<cr>
+        nmap <silent> [oG :IBLDisable<cr>
+        nmap <silent> ]oG :IBLEnable<cr>
       ]])
       require("ibl").setup({
         enabled = false,
@@ -585,7 +641,7 @@ return {
       map <leader>gv  <Plug>(operator-vtr)
     ]])
     end,
-  },                                                                                   -- :VtrSendCommandToRunner for tmux
-  { "saaguero/vim-textobj-pastedtext", dependencies = { "kana/vim-textobj-user" } },   -- vgb for last pasted text.
-  { "glts/vim-textobj-comment",        dependencies = { "kana/vim-textobj-user" } },   -- select comment with vic or vac.
+  },                                                                                 -- :VtrSendCommandToRunner for tmux
+  { "saaguero/vim-textobj-pastedtext", dependencies = { "kana/vim-textobj-user" } }, -- vgb for last pasted text.
+  { "glts/vim-textobj-comment",        dependencies = { "kana/vim-textobj-user" } }, -- select comment with vic or vac.
 }

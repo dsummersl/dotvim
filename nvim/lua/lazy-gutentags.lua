@@ -20,7 +20,7 @@ return function ()
 
       vim.cmd([[
       " If there is more than one tag match, show the list of matches
-      nmap <C-]> :GutentagsReset<cr>g<C-]>zt
+      nmap <silent> <C-]> :GutentagsReset<cr>g<C-]>zt
 
       function! ResetGutentags()
         if exists('b:gutentags_files')

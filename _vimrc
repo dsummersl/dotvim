@@ -63,7 +63,7 @@ set formatoptions=qlronj
 set linebreak " when wrap is turned on, break on words
 
 " let macros go faster
-set lazyredraw
+" set lazyredraw
 
 set updatetime=1000
 set timeoutlen=500
@@ -75,9 +75,6 @@ set pumblend=10
 " completion for command mode suggestions
 set wildoptions=pum
 set signcolumn=yes:2
-
-" show or hide that extra space at the bottom of the screen:
-set cmdheight=1
 
 set guifont=JetBrainsMono\ Nerd\ Font
 let g:python3_host_prog='~/.pyenv/versions/neovim/bin/python'
@@ -115,28 +112,28 @@ noremap <leader>/' /"<cr>
 cnoremap <c-n> <down>
 cnoremap <c-p> <up>
 
-nnoremap <leader>o :only<cr>
-nnoremap <leader>' :q<cr>
-nnoremap <leader>n <c-w>_
+nnoremap <silent> <leader>o :only<cr>
+nnoremap <silent> <leader>' :q<cr>
+nnoremap <silent> <leader>n <c-w>_
 
-map <leader>co :copen<cr>
-map <leader>lo :lopen<cr>
+map <silent> <leader>co :copen<cr>
+map <silent> <leader>lo :lopen<cr>
 
 " Quickly edit the contents of a register (for macros, say); <leader>m or
 " "q<leader>m  to edit register q
 " From https://github.com/mhinz/vim-galore#quickly-edit-your-macros
-nnoremap <leader>m  :<c-u><c-r><c-r>='let @'. v:register .' = '. string(getreg(v:register))<cr><c-f><left>
+nnoremap <silent> <leader>m  :<c-u><c-r><c-r>='let @'. v:register .' = '. string(getreg(v:register))<cr><c-f><left>
 
 " save my right pinky some pain:
-nnoremap <leader>t zt
-nnoremap <leader>b zb
-nnoremap <leader>, zz
-nnoremap <leader>l :silent! %y*<cr>
+nnoremap <silent> <leader>t zt
+nnoremap <silent> <leader>b zb
+nnoremap <silent> <leader>, zz
+nnoremap <silent> <leader>l :silent! %y*<cr>
 
 " I like having zs to jump to the start of the line, but I'd really love a
 " zm to jump to the middle - I don't think I'll miss the original folding
 " function of zm:
-nnoremap zm zs
+nnoremap <silent> zm zs
 
 " Repeat the previous change as if it had been made with cgn
 " - lets future changes for the same pattern happen with '.'
@@ -144,62 +141,62 @@ nnoremap zm zs
 nnoremap <silent> g. :call setreg('/',substitute(@", '\%x00', '\\n', 'g'))<cr>:exec printf("norm %sgn%s", v:operator, v:operator != 'd' ? '<c-a>':'')<cr>
 
 " when switching between the alternate window, automatically save.
-inoremap <C-^> <C-O>:e #<CR>
+inoremap <silent> <C-^> <C-O>:e #<CR>
 " do the same thing in terminal mode (even in insert mode)
-tnoremap <C-^> <C-\><C-N><C-O>:e #<CR>
+tnoremap <silent> <C-^> <C-\><C-N><C-O>:e #<CR>
 " quick autosave
-nnoremap <C-c> :w<CR>
-inoremap <C-c> <Esc>
+nnoremap <silent> <silent> <C-c> :w<CR>
+inoremap <silent> <C-c> <Esc>
 
 " instead of using this, I use 'gt'
-map <nul> <esc>
+map <silent> <nul> <esc>
 
 " turn off help key
-map <f1> <nul>
-imap <f1> <nul>
+map <silent> <f1> <nul>
+imap <silent> <f1> <nul>
 
 " Quickly maximize splits:
-map <C-j> <C-w>j<C-w>_
-map <C-k> <C-w>k<C-w>_
+map <silent> <C-j> <C-w>j<C-w>_
+map <silent> <C-k> <C-w>k<C-w>_
 
 " jump to the end of the line
 " Used iterm2 to map shift-ctrl-e to <f15>
-imap <M-e> <C-O>$
+imap <silent> <M-e> <C-O>$
 " Used iterm2 to map shift-ctrl-a to <f16>
-imap <M-a> <Home>
+imap <silent> <M-a> <Home>
 
 " noremap <leader>a ggVG"+y
 " copy the current filename and line number into the clipboard and past register:
-noremap <leader>f :let @+=expand("%") .'#'. line(".")<bar>let @"=@+ ."\n"<CR>
+noremap <silent> <leader>f :let @+=expand("%") .'#'. line(".")<bar>let @"=@+ ."\n"<CR>
 
 " unimpaired like mapping for diff option for ignoring whitespace.
-noremap ]oI :set diffopt-=iwhiteall<cr>
-noremap [oI :set diffopt+=iwhiteall<cr>
+noremap <silent> ]oI :set diffopt-=iwhiteall<cr>
+noremap <silent> [oI :set diffopt+=iwhiteall<cr>
 
-vnoremap ]6 d:let @"=system('base64 --decode', @") \| norm ""p<cr>
-vnoremap [6 d:let @"=system('base64 --wrap=0', @") \| norm ""p<cr>
+vnoremap <silent> ]6 d:let @"=system('base64 --decode', @") \| norm ""p<cr>
+vnoremap <silent> [6 d:let @"=system('base64 --wrap=0', @") \| norm ""p<cr>
 
 function! s:Lspstop()
   LspStop
   lua require('null-ls').disable{}
 endfunction
-noremap [ol :LspStart<cr>
-noremap ]ol :call <sid>Lspstop()<cr>
+noremap <silent> [ol :LspStart<cr>
+noremap <silent> ]ol :call <sid>Lspstop()<cr>
 
 " Navigate to the current directory of the file I'm in:
-map - :e %:h/<CR>
+map <silent> - :e %:h/<CR>
 
 " VimR apple paste:
-map <D-v> :norm "*p<cr>
-imap <D-v> <C-r><C-o>*
+map <silent> <D-v> :norm "*p<cr>
+imap <silent> <D-v> <C-r><C-o>*
 
 " Reverse the <C-r>/<C-r><C-o> meanings - make <C-r>" default to a repeatable behavior for text changes:
 " inoremap <C-r> <C-r><C-o>
 " inoremap <C-r><C-o> <C-r>
 
 " I used the " register a lot in changes, so make it easy to insert it:
-inoremap <C-t> <C-r><C-o>"
-cnoremap <C-t> <C-r><C-o>"
+inoremap <silent> <C-t> <C-r><C-o>"
+cnoremap <silent> <C-t> <C-r><C-o>"
 
 "}}}
 " :bda - delete all buffers {{{
