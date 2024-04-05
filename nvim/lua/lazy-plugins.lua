@@ -28,61 +28,21 @@ return {
     version = false,
     config = function()
       require('mini.splitjoin').setup()
-      require('mini.starter').setup()
-      require('mini.diff').setup {
-        view = {
-          signs = {
-            add = "│",
-            change = "┊",
-            delete = "┃",
-          }
-        },
-        mappings = nil,
-      }
-      vim.keymap.set('n', ']H', ':lua MiniDiff.toggle_overlay()<cr>', { desc = 'MiniDiff toggle overlay' })
     end
   },
   {
-    "folke/noice.nvim",
-    event = "VeryLazy",
-    enabled = false,
-    dependencies = {
-      "MunifTanjim/nui.nvim",
-    },
+    "mhinz/vim-signify",
     config = function()
-      require("noice").setup({
-        lsp = {
-          override = {
-            ["vim.lsp.util.convert_input_to_markdown_lines"] = true,
-            ["vim.lsp.util.stylize_markdown"] = true,
-            ["cmp.entry.get_documentation"] = true, -- requires hrsh7th/nvim-cmp
-          },
-        },
-        presets = {
-          bottom_search = true,         -- use a classic bottom cmdline for search
-          command_palette = true,       -- position the cmdline and popupmenu together
-          long_message_to_split = true, -- long messages will be sent to a split
-          inc_rename = false,           -- enables an input dialog for inc-rename.nvim
-          lsp_doc_border = false,       -- add a border to hover docs and signature help
-        },
-        views = {
-          cmdline_popup = {
-            position = {
-              row = -2,
-              col = "50%",
-            },
-          },
-          cmdline_popupmenu = {
-            position = {
-              row = -5,
-              col = "50%",
-            },
-          },
-        },
-        routes = {
-          { filter = { event = "null-ls", find = "diagnostics" }, opts = { skip = true }}
-        }
-      })
+      vim.g.signify_priority = 5
+      vim.g.signify_sign_show_count = 0
+      vim.g.signify_sign_add = "│"
+      vim.g.signify_sign_change = "┊"
+      vim.keymap.set('n', ']h', '<plug>(signify-next-hunk)', { desc = 'Next hunk' })
+      vim.keymap.set('n', '[h', '<plug>(signify-prev-hunk)', { desc = 'Previous hunk' })
+      vim.keymap.set('o', 'ih', '<plug>(signify-motion-inner-pending)', { desc = 'Inner hunk' })
+      vim.keymap.set('x', 'ih', '<plug>(signify-motion-inner-visual)', { desc = 'Inner hunk' })
+      vim.keymap.set('o', 'ah', '<plug>(signify-motion-outer-pending)', { desc = 'Outer hunk' })
+      vim.keymap.set('x', 'ah', '<plug>(signify-motion-outer-visual)', { desc = 'Outer hunk' })
     end,
   },
   {
