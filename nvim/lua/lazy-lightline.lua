@@ -77,7 +77,7 @@ return function()
         },
         sections = {
           lualine_a = { { 'mode', fmt = function(str) return str:sub(1, 1) end } },
-          lualine_b = { 'branch', 'diff', 'diagnostics', neotest_status },
+          lualine_b = { 'branch', 'diagnostics', neotest_status },
           lualine_c = { 'filename' },
           lualine_x = { 'filetype' },
           lualine_y = {},

@@ -8,6 +8,7 @@ return function()
       "nvim-treesitter/nvim-treesitter",
       "nvim-neotest/neotest-plenary",
       "nvim-neotest/neotest-vim-test",
+      "nvim-neotest/neotest-python",
     },
     config = function()
       local neotest = require("neotest")
@@ -15,6 +16,7 @@ return function()
         adapters = {
           require("neotest-plenary"),
           require("neotest-vim-test"),
+          require("neotest-python"),
         },
         status = {
           signs = false,
