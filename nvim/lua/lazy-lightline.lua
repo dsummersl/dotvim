@@ -8,12 +8,21 @@ return function()
     config = function()
       local neotest_status = {
         function()
-          local summary = require("neotest").state.status_counts(require("neotest").state.adapter_ids()[1])
+          local neotest = require("neotest")
+          local adapter_ids = neotest.state.adapter_ids()
+          if #adapter_ids == 0 then
+            return ""
+          end
 
+          local summary = neotest.state.status_counts(adapter_ids[1], { buffer = vim.fn.bufnr()})
           local passed = summary.passed
           local failed = summary.failed
+          local skipped = summary.skipped
           local running = summary.running
           local total = summary.total
+          if skipped + passed + failed + running == 0 then
+            return ""
+          end
 
           if running > 0 and failed > 0 then
             return string.format("%d  %d/%d", failed, passed, total)
@@ -27,11 +36,16 @@ return function()
             return string.format("%d  %d", failed, total)
           end
 
-          return string.format("%d", total)
+          return string.format("%d/%d", passed, total)
         end,
         color = function()
           local utils = require('lualine.utils.utils')
-          local summary = require("neotest").state.status_counts(require("neotest").state.adapter_ids()[1])
+          local neotest = require("neotest")
+          local adapter_ids = neotest.state.adapter_ids()
+          if #adapter_ids == 0 then
+            return ""
+          end
+          local summary = neotest.state.status_counts(adapter_ids[1], { buffer = vim.fn.bufnr()})
           if not summary then
             return ""
           end
@@ -45,7 +59,13 @@ return function()
           return { fg = utils.extract_color_from_hllist({ "fg", "sp" }, {"DiagnosticInfo"}, '#ffffff') }
         end,
         cond = function()
-          return #require("neotest").state.adapter_ids() > 0
+          local neotest = require("neotest")
+          local adapter_ids = neotest.state.adapter_ids()
+          if #adapter_ids == 0 then
+            return false
+          end
+          local summary = neotest.state.status_counts(adapter_ids[1], { buffer = vim.fn.bufnr()})
+          return summary ~= nil
         end,
       }
       require('lualine').setup {
