@@ -1,57 +1,80 @@
-return function ()
+return function()
   return {
-    "itchyny/lightline.vim",
+    "nvim-lualine/lualine.nvim",
     dependencies = {
+      "nvim-tree/nvim-web-devicons",
       "SmiteshP/nvim-navic",
     },
     config = function()
-      vim.cmd([[
-      function! LspStatus()
-        return "-"
-      endfunction
-      function! LightlineMode()
-        return lightline#mode()[0:0]
-      endfunction
-      function! LightlineFilename()
-        let filename = expand('%:~:.') !=# '' ? expand('%:~:.') : '[No Name]'
-        let modified = &modified ? ' +' : ''
-        return filename . modified
-      endfunction
-      function! LightlineFiletype()
-        return winwidth(0) > 70 ? (strlen(&filetype) ? WebDevIconsGetFileTypeSymbol() . ' ': 'no ft') : ''
-      endfunction
-      function! LightlineFileformat()
-        return WebDevIconsGetFileFormatSymbol()
-      endfunction
-      function! LightlineBreadcrumb()
-        return luaeval('require("nvim-navic").get_location({depth_limit = 4, separator = ": "})')
-      endfunction
-    ]])
+      local neotest_status = {
+        function()
+          local summary = require("neotest").state.status_counts(require("neotest").state.adapter_ids()[1])
 
-      vim.g.lightline = {
-        colorscheme = "jellybeans",
-        active = {
-          left = {
-            { "mode",     "paste" },
-            { "readonly", "filename", "breadcrumb" },
-          },
-          right = {
-            { "lineinfo" },
-            { "percent" },
-            { "currentfunction", "indent", "fileformat", "filetype" },
-          },
+          local passed = summary.passed
+          local failed = summary.failed
+          local running = summary.running
+          local total = summary.total
+
+          if running > 0 and failed > 0 then
+            return string.format("%d  %d/%d", failed, passed, total)
+          end
+
+          if running > 0 then
+            return string.format("%d/%d", passed, total)
+          end
+
+          if failed > 0 then
+            return string.format("%d  %d", failed, total)
+          end
+
+          return string.format("%d", total)
+        end,
+        color = function()
+          local utils = require('lualine.utils.utils')
+          local summary = require("neotest").state.status_counts(require("neotest").state.adapter_ids()[1])
+          if not summary then
+            return ""
+          end
+
+          if summary.failed > 0 then
+            return { fg = utils.extract_color_from_hllist({ "fg", "sp" }, {"DiagnosticError"}, '#e32636') }
+          elseif summary.running > 0 then
+            return { fg = utils.extract_color_from_hllist({ "fg", "sp" }, {"DiagnosticWarn"}, '#ffa500') }
+          end
+
+          return { fg = utils.extract_color_from_hllist({ "fg", "sp" }, {"DiagnosticInfo"}, '#ffffff') }
+        end,
+        cond = function()
+          return #require("neotest").state.adapter_ids() > 0
+        end,
+      }
+      require('lualine').setup {
+        options = {
+          icons_enabled = true,
+          theme = 'auto',
+          section_separators = '',
+          component_separators = '',
         },
-        component = {
-          indent = '%{&expandtab?"":"t"}%{&tabstop}',
+        sections = {
+          lualine_a = { { 'mode', fmt = function(str) return str:sub(1, 1) end } },
+          lualine_b = { 'branch', 'diff', 'diagnostics', neotest_status },
+          lualine_c = { 'filename' },
+          lualine_x = { 'filetype' },
+          lualine_y = {},
+          lualine_z = { 'location' }
         },
-        component_function = {
-          mode = "LightlineMode",
-          filename = "LightlineFilename",
-          filetype = "LightlineFiletype",
-          fileformat = "LightlineFileformat",
-          currentfunction = "LspStatus",
-          breadcrumb = "LightlineBreadcrumb",
+        inactive_sections = {
+          lualine_a = {},
+          lualine_b = {},
+          lualine_c = { 'filename' },
+          lualine_x = { 'location' },
+          lualine_y = {},
+          lualine_z = {}
         },
+        tabline = {},
+        winbar = {},
+        inactive_winbar = {},
+        extensions = {}
       }
     end,
   }

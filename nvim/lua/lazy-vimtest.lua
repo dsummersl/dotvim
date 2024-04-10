@@ -1,5 +1,38 @@
 return function()
-  return {
+  local neotest = {
+    "nvim-neotest/neotest",
+    dependencies = {
+      "nvim-neotest/nvim-nio",
+      "nvim-lua/plenary.nvim",
+      "antoinemadec/FixCursorHold.nvim",
+      "nvim-treesitter/nvim-treesitter",
+      "nvim-neotest/neotest-plenary",
+      "nvim-neotest/neotest-vim-test",
+    },
+    config = function()
+      local neotest = require("neotest")
+      neotest.setup({
+        adapters = {
+          require("neotest-plenary"),
+          require("neotest-vim-test"),
+        },
+        status = {
+          signs = false,
+        }
+      })
+      local testfile = function()
+        neotest.run.run(vim.fn.expand("%"))
+      end
+      local testoutput = function()
+        neotest.output.open({ enter = true })
+      end
+      vim.keymap.set('n', ',ctn', neotest.run.run, { desc = 'Run nearest test' })
+      vim.keymap.set('n', ',ctf', testfile, { desc = 'Run all tests in file' })
+      vim.keymap.set('n', ',ctl', neotest.run.run_last, { desc = 'Rerun last test' })
+      vim.keymap.set('n', ',cto', testoutput, { desc = 'Open last test run' })
+    end
+  }
+  local vimtest = {
     "vim-test/vim-test",
     lazy = true,
     keys = { ",ctn", ",ctf", ",ctl" },
@@ -40,4 +73,6 @@ return function()
       ]])
     end,
   }
+
+  return neotest
 end
