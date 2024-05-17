@@ -145,7 +145,7 @@ lsp_control.init = function()
       lspconfig.cssls.setup(opts)
       lspconfig.jsonls.setup(opts)
       lspconfig.tsserver.setup(opts)
-      lspconfig.ruby_ls.setup(opts)
+      lspconfig.ruby_lsp.setup(opts)
       lspconfig.vimls.setup(opts)
 
       local null_ls = require("null-ls")

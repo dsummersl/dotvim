@@ -7,79 +7,10 @@ return {
     end,
   },
   {
-    "jackMort/ChatGPT.nvim",
-    config = function()
-      require("chatgpt").setup()
-    end,
-    dependencies = {
-      "MunifTanjim/nui.nvim",
-      "nvim-lua/plenary.nvim",
-      "nvim-telescope/telescope.nvim"
-    },
-  },
-  {
     "simrat39/symbols-outline.nvim",
     config = function()
       require('symbols-outline').setup {}
     end
-  },
-  {
-    'echasnovski/mini.nvim',
-    version = false,
-    config = function()
-      require('mini.splitjoin').setup()
-    end
-  },
-  {
-    "mhinz/vim-signify",
-    config = function()
-      vim.g.signify_priority = 5
-      vim.g.signify_sign_show_count = 0
-      vim.g.signify_sign_add = "│"
-      vim.g.signify_sign_change = "┊"
-      vim.keymap.set('n', ']h', '<plug>(signify-next-hunk)', { desc = 'Next hunk' })
-      vim.keymap.set('n', '[h', '<plug>(signify-prev-hunk)', { desc = 'Previous hunk' })
-      vim.keymap.set('o', 'ih', '<plug>(signify-motion-inner-pending)', { desc = 'Inner hunk' })
-      vim.keymap.set('x', 'ih', '<plug>(signify-motion-inner-visual)', { desc = 'Inner hunk' })
-      vim.keymap.set('o', 'ah', '<plug>(signify-motion-outer-pending)', { desc = 'Outer hunk' })
-      vim.keymap.set('x', 'ah', '<plug>(signify-motion-outer-visual)', { desc = 'Outer hunk' })
-    end,
-  },
-  {
-    "sindrets/diffview.nvim",
-    config = function()
-      vim.keymap.set('n', ',gc', ':DiffviewClose<cr>', { desc = 'Diffview close' })
-      vim.keymap.set('n', ',gd', ':DiffviewFileHistory %<cr>', { desc = 'Diffview current file' })
-      vim.keymap.set('v', ',gd', ':DiffviewFileHistory %<cr>', { desc = 'Diffview current file' })
-      vim.keymap.set('n', ',gm', ':DiffviewOpen mainline..', { desc = 'Diffview against mainline' })
-    end
-  },
-  {
-    "folke/tokyonight.nvim",
-    config = function()
-      vim.cmd([[
-        function! TokyonightThemeHighlighting()
-          highlight SignifySignAdd    guifg=#399a96
-          highlight SignifySignChange guifg=#6382bd
-          highlight SignifySignDelete guifg=#c25d64
-        endfunction
-
-        augroup TokyonightThemeAutoCommands
-          autocmd!
-          au ColorScheme tokyonight,tokyonight-storm,tokyonight-night,tokyonight-moon
-                       \ call TokyonightThemeHighlighting()
-        augroup END
-      ]])
-    end,
-    lazy = false,
-    priority = 1000,
-    opts = {},
-  },
-  {
-    'stevearc/oil.nvim',
-    opts = {},
-    -- Optional dependencies
-    dependencies = { "nvim-tree/nvim-web-devicons" },
   },
   {
     'abecodes/tabout.nvim',
@@ -132,7 +63,13 @@ return {
   "chrisbra/unicode.vim", -- :Unicode* commands to search for them.
   "aklt/plantuml-syntax",
   "folke/which-key.nvim",
-  "tommcdo/vim-express",              -- custom g* operations (g=iw - prompt 'get_'.v:val.'()' to change a word to a func)
+  {
+    "tommcdo/vim-express",              -- custom g* operations (g=iw - prompt 'get_'.v:val.'()' to change a word to a func)
+    config = function()
+      vim.cmd([[
+      ]])
+    end,
+  },
   "stefandtw/quickfix-reflector.vim", -- edit the qf list directly with copen
   "michaeljsmith/vim-indent-object",  -- vii and viI (visual inner Indent)
   "ryanoasis/vim-devicons",
@@ -149,6 +86,10 @@ return {
         after = false,
         before = true
       }
+    },
+    -- TODO this isn't working - but I want to disable search
+    search = {
+      enabled = false,
     },
     keys = {
       { "s", mode = { "n", "x", "o" }, function() require("flash").jump() end,   desc = "Flash" },
@@ -221,12 +162,6 @@ return {
       vim.g.copilot_no_tab_map = true
       vim.g.copilot_assume_mapped = true
       vim.g.copilot_tab_fallback = ""
-    end,
-  },
-  {
-    "plasticboy/vim-markdown",
-    config = function()
-      vim.g.vim_markdown_folding_disabled = 1
     end,
   },
   {
@@ -604,4 +539,61 @@ return {
   },                                                                                 -- :VtrSendCommandToRunner for tmux
   { "saaguero/vim-textobj-pastedtext", dependencies = { "kana/vim-textobj-user" } }, -- vgb for last pasted text.
   { "glts/vim-textobj-comment",        dependencies = { "kana/vim-textobj-user" } }, -- select comment with vic or vac.
+  {
+    "sindrets/diffview.nvim",
+    config = function()
+      vim.keymap.set('n', ',gc', ':DiffviewClose<cr>', { desc = 'Diffview close' })
+      vim.keymap.set('n', ',gd', ':DiffviewFileHistory %<cr>', { desc = 'Diffview current file' })
+      vim.keymap.set('v', ',gd', ':DiffviewFileHistory %<cr>', { desc = 'Diffview current file' })
+      vim.keymap.set('n', ',gm', ':DiffviewOpen mainline..', { desc = 'Diffview against mainline' })
+    end
+  },
+  {
+    "folke/tokyonight.nvim",
+    config = function()
+      vim.cmd([[
+        function! TokyonightThemeHighlighting()
+          highlight SignifySignAdd    guifg=#399a96
+          highlight SignifySignChange guifg=#6382bd
+          highlight SignifySignDelete guifg=#c25d64
+        endfunction
+
+        augroup TokyonightThemeAutoCommands
+          autocmd!
+          au ColorScheme tokyonight,tokyonight-storm,tokyonight-night,tokyonight-moon
+                       \ call TokyonightThemeHighlighting()
+        augroup END
+      ]])
+    end,
+    lazy = false,
+    priority = 1000,
+    opts = {},
+  },
+  {
+    'stevearc/oil.nvim', -- replacement for netrw file browser
+    opts = {},
+    dependencies = { "nvim-tree/nvim-web-devicons" },
+  },
+  {
+    'echasnovski/mini.nvim',
+    version = false,
+    config = function()
+      require('mini.splitjoin').setup()
+    end
+  },
+  {
+    "mhinz/vim-signify",
+    config = function()
+      vim.g.signify_priority = 5
+      vim.g.signify_sign_show_count = 0
+      vim.g.signify_sign_add = "┃"
+      vim.g.signify_sign_change = "┇"
+      vim.keymap.set('n', ']h', '<plug>(signify-next-hunk)', { desc = 'Next hunk' })
+      vim.keymap.set('n', '[h', '<plug>(signify-prev-hunk)', { desc = 'Previous hunk' })
+      vim.keymap.set('o', 'ih', '<plug>(signify-motion-inner-pending)', { desc = 'Inner hunk' })
+      vim.keymap.set('x', 'ih', '<plug>(signify-motion-inner-visual)', { desc = 'Inner hunk' })
+      vim.keymap.set('o', 'ah', '<plug>(signify-motion-outer-pending)', { desc = 'Outer hunk' })
+      vim.keymap.set('x', 'ah', '<plug>(signify-motion-outer-visual)', { desc = 'Outer hunk' })
+    end,
+  },
 }

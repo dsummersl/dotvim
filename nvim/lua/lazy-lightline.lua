@@ -68,6 +68,11 @@ return function()
           return summary ~= nil
         end,
       }
+
+      local function navic_breadcrumb()
+        return require("nvim-navic").get_location({depth_limit = 3, separator = ": "})
+      end
+
       require('lualine').setup {
         options = {
           icons_enabled = true,
@@ -77,11 +82,11 @@ return function()
         },
         sections = {
           lualine_a = { { 'mode', fmt = function(str) return str:sub(1, 1) end } },
-          lualine_b = { 'branch', 'diagnostics', neotest_status },
-          lualine_c = { 'filename' },
+          lualine_b = { 'branch', neotest_status },
+          lualine_c = { 'filename', navic_breadcrumb },
           lualine_x = { 'filetype' },
-          lualine_y = {},
-          lualine_z = { 'location' }
+          lualine_y = { },
+          lualine_z = {  '%{&expandtab?"":"t"}%{&tabstop}', 'location' }
         },
         inactive_sections = {
           lualine_a = {},

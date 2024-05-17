@@ -6,9 +6,12 @@ return function()
       "nvim-lua/plenary.nvim",
       "antoinemadec/FixCursorHold.nvim",
       "nvim-treesitter/nvim-treesitter",
+      "mfussenegger/nvim-dap",
+      "mfussenegger/nvim-dap-python",
       "nvim-neotest/neotest-plenary",
       "nvim-neotest/neotest-vim-test",
       "nvim-neotest/neotest-python",
+      "nvim-neotest/neotest-jest",
     },
     config = function()
       local neotest = require("neotest")
@@ -16,11 +19,43 @@ return function()
         adapters = {
           require("neotest-plenary"),
           require("neotest-vim-test"),
-          require("neotest-python"),
+          require("neotest-python")({
+            args = { "-vvv" }
+          }),
+        },
+        consumers = {
+          my_consumers = function(client)
+            local yank = function()
+              local position_id, _last_args = neotest.run.get_last_run()
+              if not position_id then
+                print("No last run!")
+                return
+              end
+              -- local fname = vim.fn.expand("%:p")
+              -- local adapter_name, adapter = client:get_adapter(fname)
+              -- print(adapter)
+              --
+              -- -- this isn't working - I get an error about data not being
+              -- -- provided
+              -- local command = adapter.build_spec({ tree = position_id }).command
+              --
+              -- -- convert to string
+              -- local command_str = table.concat(command, " ")
+              vim.fn.setreg("*", position_id)
+              vim.cmd("OSCYankRegister *")
+            end
+
+            return {
+              yank = yank
+            }
+          end
         },
         status = {
           signs = false,
-        }
+        },
+        output = {
+          open_on_run = false
+        },
       })
       local testfile = function()
         neotest.run.run(vim.fn.expand("%"))
@@ -28,10 +63,16 @@ return function()
       local testoutput = function()
         neotest.output.open({ enter = true })
       end
+      local testdebug = function()
+        neotest.run.run_last({ strategy = "dap" })
+      end
       vim.keymap.set('n', ',ctn', neotest.run.run, { desc = 'Run nearest test' })
       vim.keymap.set('n', ',ctf', testfile, { desc = 'Run all tests in file' })
       vim.keymap.set('n', ',ctl', neotest.run.run_last, { desc = 'Rerun last test' })
+      vim.keymap.set('n', ',ctd', testdebug, { desc = 'Rerun last test with debugger' })
       vim.keymap.set('n', ',cto', testoutput, { desc = 'Open last test run' })
+      vim.keymap.set('n', ',cta', neotest.summary.open, { desc = 'Open test summary' })
+      vim.keymap.set('n', ',cty', neotest.my_consumers.yank, { desc = 'Copy last command run' })
     end
   }
   local vimtest = {

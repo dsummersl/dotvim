@@ -175,6 +175,10 @@ noremap <silent> [oI :set diffopt+=iwhiteall<cr>
 
 vnoremap <silent> ]6 d:let @"=system('base64 --decode', @") \| norm ""p<cr>
 vnoremap <silent> [6 d:let @"=system('base64 --wrap=0', @") \| norm ""p<cr>
+" lua << EOF
+" vim.keymap.set('v', ']6', 'd:let @"=system(\'base64 --decode\', @") | norm ""p<cr>', { desc = 'Decode base64', silent = true })
+" vim.keymap.set('v', '[6', 'd:let @"=system(\'base64 --wrap=0\', @") | norm ""p<cr>', { desc = 'Decode base64', silent = true })
+" EOF
 
 function! s:Lspstop()
   LspStop
@@ -220,6 +224,43 @@ function! s:SynStack()
 endfunc
 nmap <leader>z :call <SID>SynStack()<CR>
 nmap <leader>v :call <SID>SynGroup()<CR>
+"}}}
+" Codeblock mappings{{{
+function! s:SelectInnerCodeBlock()
+    function! IsFence()
+        return getline('.') =~ '^```'
+    endfunction
+
+    function! IsOpeningFence()
+        return IsFence() && getline(line('.'),'$')->filter({ _, val -> val =~ '^```'})->len() % 2 == 0
+    endfunction
+
+    function! IsBetweenFences()
+        return synID(line("."), col("."), 0)->synIDattr('name') =~? 'markdownCodeBlock'
+    endfunction
+
+    function! IsClosingFence()
+        return IsFence() && !IsOpeningFence()
+    endfunction
+
+    if IsOpeningFence() || IsBetweenFences()
+        call search('^```', 'W')
+        normal -
+        call search('^```', 'Wbs')
+        normal +
+        normal V''
+    elseif IsClosingFence()
+        call search('^```', 'Wbs')
+        normal +
+        normal V''k
+    else
+        return
+    endif
+endfunction
+
+noremap ib :<C-u>call <sid>SelectInnerCodeBlock()<CR>
+" noremap ib :<C-u>call <sid>SelectInnerCodeBlock()<CR>
+
 "}}}
 " UV()/DV() - Increment/decrement a pattern search functions{{{
 function! CopyMatches(reg)
