@@ -7,9 +7,10 @@ return function()
       "hrsh7th/cmp-buffer",
       "hrsh7th/cmp-path",
       "hrsh7th/cmp-cmdline",
-      -- "quangnguyen30192/cmp-nvim-ultisnips",
       "onsails/lspkind-nvim",
       "hrsh7th/cmp-nvim-lsp-signature-help",
+      "L3MON4D3/LuaSnip",
+      "saadparwaiz1/cmp_luasnip",
       -- TODO https://github.com/petertriho/cmp-git be able to reference git users and commits from github
     },
     config = function()
@@ -33,7 +34,7 @@ return function()
         },
         snippet = {
           expand = function(args)
-            vim.fn["UltiSnips#Anon"](args.body)
+            require("luasnip").lsp_expand(args.body)
           end,
         },
         window = {
@@ -53,12 +54,22 @@ return function()
           end),
           ["<C-n>"] = cmp.mapping.select_next_item(),
           ["<C-Space>"] = cmp.mapping.confirm({ select = true }),
+          ["<Tab>"] = cmp.mapping(function(fallback)
+            local ls = require("luasnip")
+            if ls.expandable() then
+              ls.expand()
+            elseif ls.jumpable(1) then
+              ls.jump(1)
+            else
+              fallback()
+            end
+          end, { "i", "s" }),
         },
         sources = {
           { name = "nvim_lsp_signature_help" },
-          { name = "nvim_lsp",  priority_weight = 2, keyword_length = 3 },
-          { name = "buffer",    priority_weight = 3, keyword_length = 3 },
-          -- { name = "ultisnips", priority_weight = 4, keyword_length = 2 },
+          { name = "nvim_lsp",               priority_weight = 2, keyword_length = 3 },
+          { name = "buffer",                 priority_weight = 3, keyword_length = 3 },
+          { name = "luasnip",                priority_weight = 1 },
         },
       })
 

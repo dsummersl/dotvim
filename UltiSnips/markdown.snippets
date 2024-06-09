@@ -2,53 +2,21 @@ clearsnippets
 priority 1
 
 snippet hh "Markdown heading" !b
-${1:Heading}
-`!p
-snip.rv = '='*(len(t[1]))
-`
-$0
-endsnippet
+	${1:Heading}
+	`!p
+	snip.rv = '='*(len(t[1]))
+	`
+	$0
 
 snippet sh "Markdown sub-heading" !b
-${1:Sub Heading}
-`!p
-snip.rv = '-'*(len(t[1]))
-`
-$0
-endsnippet
+	${1:Sub Heading}
+	`!p
+	snip.rv = '-'*(len(t[1]))
+	`
+	$0
 
 snippet link "Link to something"
-[${1:${VISUAL:Text}}](${3:http://${2:www.url.com}})$0
-endsnippet
+	[${1:${VISUAL:Text}}](${3:http://${2:www.url.com}})$0
 
 snippet img "Image"
-![${1:pic alt}](${2:path}${3/.+/ "/}${3:opt title}${3/.+/"/})$0
-endsnippet
-
-snippet haiku "archituctural haiku template" !b
-# ${1:PROJECT NAME}
-
-<p align="center">
-<i><strong>So</strong> project goals known</i> <br/>
-<i><strong>Do</strong> summarize and explain</i>  <br/>
-<i><strong>By</strong> using this template</i> 
-</p>
-
-Summary: $2
-
-## Stakeholders
-## Guideposts
-## Vocabulary
-## Architectural Decision Records
-    echo "docs/adr" > .adr-dir
-    adr init
-    git add .adr-dir docs
-    adr generate toc
-
-* [1. Record architecture decisions](docs/adr/0001-record-architecture-decisions.md)
-
-## Development
-## Deployment
-## Provisioning
-endsnippet
-	
+	![${1:pic alt}](${2:path}${3/.+/ "/}${3:opt title}${3/.+/"/})$0

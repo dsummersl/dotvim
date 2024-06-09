@@ -1,3 +1,8 @@
-snippet ${ "${variable}" !i
-${${1:num}${3::${2:default}}}$0
-endsnippet
+# snippets for making snippets :)
+snippet snip
+	snippet ${1:trigger} "${2:description}"
+		${0:${VISUAL}}
+snippet v
+	{VISUAL}
+snippet $
+	${${1:1}:${0:text}}

@@ -1,25 +1,19 @@
-
 extends ruby
 
 snippet it "rspec it '...'" !b
-it '$1' do
-  $0
-end
-endsnippet
+	it '$1' do
+	  $0
+	end
 
 snippet cont "rspec context '...'" !b
-context '$1' do
-  $0
-end
-endsnippet
+	context '$1' do
+	  $0
+	end
 
 snippet desc "rspec describe '...'" !b
-describe '$1' do
-  $0
-end
-endsnippet
+	describe '$1' do
+	  $0
+	end
 
 snippet exp "rspec expect(). " !b
-expect($1).$2
-endsnippet
-
+	expect($1).$2

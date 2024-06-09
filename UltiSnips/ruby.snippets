@@ -1,27 +1,21 @@
 snippet pp "Puppet pp block" !b
-${1:block} { "${2:name}":
-  $0
-}
-endsnippet
+	${1:block} { "${2:name}":
+	  $0
+	}
 
 snippet kv "key/value" !w
-$1 => $2
-endsnippet
+	$1 => $2
 
 snippet "\b(de)?f" "def <name>..." !r
-def $1
-end
-endsnippet
+	def $1
+	end
 
 snippet brk "breakpoint" !b
-require 'pry'
-binding.pry
-endsnippet
+	require 'pry'
+	binding.pry
 
 snippet lg "print" !b
-print "$1\n"$0
-endsnippet
+	print "$1\n"$0
 
 snippet lge "print variable" !b
-print "$1 = '#{$1}'\n"$0
-endsnippet
+	print "$1 = '#{$1}'\n"$0

@@ -1,171 +1,123 @@
 priority 10
 clearsnippets rfc
 
-global !p
-import os
-import sys
-sys.path.append(os.path.expanduser('~/.vim/python'))
-from ultisniphelpers import *
-endglobal
-
 snippet try "try/catch" !b
-try {
-	${VISUAL}
-} catch (${1:e}) {
-	${0:/* handle error */}
-}
-endsnippet
+	try {
+		${VISUAL}
+	} catch (${1:e}) {
+		${0:/* handle error */}
+	}
 
 snippet at "attr(k,v)" !b
-.attr('$1',$2)$0
-endsnippet
+	.attr('$1',$2)$0
 
 snippet lg "console.log" !w
-console.log("|$1");$0
-endsnippet
+	console.log("|$1");$0
 
 snippet lge "console.log variable" !w
-console.log("|$1 = "+ $1);$0
-endsnippet
+	console.log("|$1 = "+ $1);$0
 
 snippet lgev "console.log variable(stringify)" !w
-console.log("|$1 = "+ JSON.stringify($1));$0
-endsnippet
+	console.log("|$1 = "+ JSON.stringify($1));$0
 
 snippet str "Stringify" !w
-JSON.stringify($1)$0
-endsnippet
+	JSON.stringify($1)$0
 
 snippet fu "function" !w
-const $1 = () => $3;
-endsnippet
+	const $1 = () => $3;
 
 snippet la "lambda function" !w
-($1) => $0
-endsnippet
+	($1) => $0
 
 
 snippet trace "dump stack trace" !b
-console.log(new Error().stack);
-endsnippet
+	console.log(new Error().stack);
 
 snippet brk "node.js breakpoint" !b
-debugger;$0
-endsnippet
+	debugger;$0
 
 snippet break "node.js breakpoint" !b
-debugger;$0
-endsnippet
+	debugger;$0
 
 snippet req "require statement" !b
-var $1 = require('${2:$1}');$0
-endsnippet
+	var $1 = require('${2:$1}');$0
 
 snippet desc "Describe (js)" !b
-describe('${1:description}', () => {
-	$0
-});
-endsnippet
+	describe('${1:description}', () => {
+		$0
+	});
 
 snippet it "it (js)" !b
-it('${1:description}', ($2) => {
-	$0
-});
-endsnippet
+	it('${1:description}', ($2) => {
+		$0
+	});
 
 snippet if "if()" !b
-if ($1) {$2}
-endsnippet
+	if ($1) {$2}
 
 snippet aft "afterEach()" !b
-after${1:Each}(function() {
-	$2
-});
-endsnippet
+	after${1:Each}(function() {
+		$2
+	});
 
 snippet for "for loop" !b
-for (var ${1:i}=0; $1<$2; $1++) {
-	$3
-}
-endsnippet
+	for (var ${1:i}=0; $1<$2; $1++) {
+		$3
+	}
 
 snippet forin "for in/of" !b
-for (var ${1:i} $2`!p snip.rv=complete(t[2],['in','of'])` ${3:$1s}) {
-	$0
-}
-endsnippet
+	for (var ${1:i} $2`!p snip.rv=complete(t[2],['in','of'])` ${3:$1s}) {
+		$0
+	}
 
 snippet bef "beforeEach()" !b
-before${1:Each}(function() {
-	$2
-});
-endsnippet
+	before${1:Each}(function() {
+		$2
+	});
 
 # expect($1).$2`!p snip.rv=complete(t[2],['to','not'])`;$0
 snippet exp "expect()" !b
-expect($1).$2
-endsnippet
-
-snippet test "test()" !b
-test('$1', () => {
-	const component = shallow(
-		<$2 />
-	);
-	$3
-});
-endsnippet
+	expect($1).$2
 
 snippet log "logger.something()" !b
-logger.$1`!p snip.rv=complete(t[1],['info','debug','warn','error'])`($2);$0
-endsnippet
+	logger.$1`!p snip.rv=complete(t[1],['info','debug','warn','error'])`($2);$0
 
 snippet comp "React function" !b
-const ${1:Component} = () => $2;
-endsnippet
+	const ${1:Component} = () => $2;
 
 snippet scomp "Styled component" !b
-const ${1:Component}`!p t[1] = t[1][:1].capitalize() + t[1][1:] if len(t[1]) > 0 else t[1]` = styled${2:.div}\`
-	$3
-\`;
-endsnippet
+	const ${1:Component}`!p t[1] = t[1][:1].capitalize() + t[1][1:] if len(t[1]) > 0 else t[1]` = styled${2:.div}\`
+		$3
+	\`;
 
 snippet Scomp "Styled custom component" !b
-const ${1:Component}`!p t[1] = t[1][:1].capitalize() + t[1][1:] if len(t[1]) > 0 else t[1]` = styled(({className}) => (
-  <div className={className}>$2</div>
-))\`
-  $3
-\`;
-endsnippet
+	const ${1:Component}`!p t[1] = t[1][:1].capitalize() + t[1][1:] if len(t[1]) > 0 else t[1]` = styled(({className}) => (
+	  <div className={className}>$2</div>
+	))\`
+	  $3
+	\`;
 
 snippet SScomp "Styled custom component as function" !b
-const ${1:Component}`!p t[1] = t[1][:1].capitalize() + t[1][1:] if len(t[1]) > 0 else t[1]` = styled(({className}) => {
-	return (
-		<div className={className}>$2</div>
-	);
-})\`
-  $3
-\`;
-endsnippet
+	const ${1:Component}`!p t[1] = t[1][:1].capitalize() + t[1][1:] if len(t[1]) > 0 else t[1]` = styled(({className}) => {
+		return (
+			<div className={className}>$2</div>
+		);
+	})\`
+	  $3
+	\`;
 
 
 snippet imp "!important" !
-!important
-endsnippet
+	!important
 
 snippet use "const useX = X();" !b
-const $1 = use`!p snip.rv=capitalize(t[1])`();$2
-endsnippet
+	const $1 = use`!p snip.rv=capitalize(t[1])`();$2
 
 snippet sel "const data = useSelector((state) => state...);" !b
-const $1 = useSelector((state) => state.${2:$1});$3
-endsnippet
+	const $1 = useSelector((state) => state.${2:$1});$3
 
 snippet useS "useState Hook" !b
-const [${1}, set`!p snip.rv=capitalize(t[1])`] = useState(${3:'${4}'});
-endsnippet
+	const [${1}, set`!p snip.rv=capitalize(t[1])`] = useState(${3:'${4}'});
 
 snippet sla "styled component lambda function in ${}" !w
-${(${1:props}) => $2}
-endsnippet
-
-
+	${(${1:props}) => $2}

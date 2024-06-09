@@ -42,24 +42,6 @@ return function ()
           augend.constant.new({ elements = { "present", "absent" } }),
           augend.constant.new({ elements = { "enable", "disable" } }),
           augend.constant.new({ elements = { "public", "protected", "private" } }),
-          augend.user.new({
-            find = require("dial.augend.common").find_pattern_regex("\\v\\.([a-zA-Z_-]+)>"),
-            add = function(text, addend, cursor)
-              local word = text:sub(2)
-              text = "['" .. word .. "']"
-              cursor = #text
-              return { text = text, cursor = cursor }
-            end,
-          }),
-          augend.user.new({
-            find = require("dial.augend.common").find_pattern_regex("\\v\\[['\"]([a-zA-Z_-]+)['\"]\\]"),
-            add = function(text, addend, cursor)
-              local word = text:sub(3, -3)
-              text = "." .. word
-              cursor = #text
-              return { text = text, cursor = cursor }
-            end,
-          }),
         },
       })
 

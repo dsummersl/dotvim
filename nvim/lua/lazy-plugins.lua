@@ -66,7 +66,7 @@ return {
   "aklt/plantuml-syntax",
   "folke/which-key.nvim",
   {
-    "tommcdo/vim-express",              -- custom g* operations (g=iw - prompt 'get_'.v:val.'()' to change a word to a func)
+    "tommcdo/vim-express", -- custom g* operations (g=iw - prompt 'get_'.v:val.'()' to change a word to a func)
     config = function()
       vim.cmd([[
       ]])
@@ -486,19 +486,23 @@ return {
     --   }
     -- end
   },
-  -- {
-  --   "SirVer/ultisnips",
-  --   config = function()
-  --     vim.cmd([[
-  --     let g:UltiSnipsSnippetDirectories=[$HOME.'/.vim/UltiSnips', $HOME.'/.vim/bundle/vim-snippets/UltiSnips']
-  --     let g:UltiSnipsSnippetsDir='~/.vim/UltiSnips'
-  --     let g:UltiSnipsListSnippets='<C-\>'
-  --     let g:UltiSnipsExpandTrigger='<Tab>'
-  --     let g:UltiSnipsJumpForwardTrigger='<Tab>'
-  --     let g:UltiSnipsJumpBackwardTrigger='<S-Tab>'
-  --   ]])
-  --   end,
-  -- },
+  {
+    "L3MON4D3/LuaSnip",
+    version = "v2.*",
+    build = "make install_jsregexp",
+    config = function()
+      local ls = require("luasnip")
+      vim.keymap.set({ "i", "s" }, "<C-J>", function() ls.jump(1) end, { silent = true })
+      vim.keymap.set({ "i", "s" }, "<C-K>", function() ls.jump(-1) end, { silent = true })
+
+      vim.keymap.set({ "i", "s" }, "<C-E>", function()
+        if ls.choice_active() then
+          ls.change_choice(1)
+        end
+      end, { silent = true })
+      require("luasnip.loaders.from_snipmate").lazy_load({ paths = "~/.vim/UltiSnips" })
+    end,
+  },
   {
     "RRethy/vim-illuminate",
     config = function()
@@ -538,7 +542,7 @@ return {
       map <leader>gv  <Plug>(operator-vtr)
     ]])
     end,
-  },                                                                                 -- :VtrSendCommandToRunner for tmux
+  }, -- :VtrSendCommandToRunner for tmux
   {
     "kana/vim-textobj-user",
     config = function()
@@ -554,8 +558,8 @@ return {
       ]])
     end
   },
-  { "saaguero/vim-textobj-pastedtext",   dependencies = { "kana/vim-textobj-user" } }, -- vgb for last pasted text.
-  { "glts/vim-textobj-comment",          dependencies = { "kana/vim-textobj-user" } }, -- select comment with vic or vac.
+  { "saaguero/vim-textobj-pastedtext", dependencies = { "kana/vim-textobj-user" } },   -- vgb for last pasted text.
+  { "glts/vim-textobj-comment",        dependencies = { "kana/vim-textobj-user" } },   -- select comment with vic or vac.
   {
     "sindrets/diffview.nvim",
     config = function()

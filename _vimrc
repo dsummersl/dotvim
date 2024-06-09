@@ -326,6 +326,8 @@ function! s:SetStop(count, type='s')
 endfunction
 
 command! -nargs=* SS call s:SetStop(<f-args>)
+
+call s:SetStop(2)
 "}}}
 " :DiffAgainstRegister - Diff the current selection against whatever is in register {{{
 " TODO DiffAgainstRegister X Y (three way diff)
