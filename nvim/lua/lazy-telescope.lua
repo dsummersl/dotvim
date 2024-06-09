@@ -8,7 +8,6 @@ return function()
       "nvim-telescope/telescope-live-grep-args.nvim",
       "debugloop/telescope-undo.nvim",
     },
-    build = "pip install ueberzug",
     config = function()
       local actions = require("telescope.actions")
       local lga_actions = require("telescope-live-grep-args.actions")

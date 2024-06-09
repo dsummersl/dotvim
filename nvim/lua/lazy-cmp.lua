@@ -7,8 +7,9 @@ return function()
       "hrsh7th/cmp-buffer",
       "hrsh7th/cmp-path",
       "hrsh7th/cmp-cmdline",
-      "quangnguyen30192/cmp-nvim-ultisnips",
+      -- "quangnguyen30192/cmp-nvim-ultisnips",
       "onsails/lspkind-nvim",
+      "hrsh7th/cmp-nvim-lsp-signature-help",
       -- TODO https://github.com/petertriho/cmp-git be able to reference git users and commits from github
     },
     config = function()
@@ -54,9 +55,10 @@ return function()
           ["<C-Space>"] = cmp.mapping.confirm({ select = true }),
         },
         sources = {
+          { name = "nvim_lsp_signature_help" },
           { name = "nvim_lsp",  priority_weight = 2, keyword_length = 3 },
           { name = "buffer",    priority_weight = 3, keyword_length = 3 },
-          { name = "ultisnips", priority_weight = 4, keyword_length = 2 },
+          -- { name = "ultisnips", priority_weight = 4, keyword_length = 2 },
         },
       })
 

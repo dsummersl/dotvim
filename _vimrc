@@ -77,7 +77,8 @@ set wildoptions=pum
 set signcolumn=yes:2
 
 set guifont=JetBrainsMono\ Nerd\ Font
-let g:python3_host_prog='~/.pyenv/versions/neovim/bin/python'
+let g:python_host_prog='/Users/danesummers/.pyenv/versions/neovim/bin/python'
+let g:python3_host_prog='/Users/danesummers/.pyenv/versions/neovim/bin/python'
 "}}}
 " Plugins{{{
 lua << EOF

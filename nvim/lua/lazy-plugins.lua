@@ -6,12 +6,14 @@ return {
       vim.keymap.set('v', ',y', '<Plug>OSCYankVisual', { desc = 'Yank to clipboard (visual)' })
     end,
   },
-  {
-    "simrat39/symbols-outline.nvim",
-    config = function()
-      require('symbols-outline').setup {}
-    end
-  },
+  -- {
+  --   "simrat39/symbols-outline.nvim",
+  --   config = function()
+  --     require('symbols-outline').setup {}
+  --     vim.keymap.set('n', ']os', 'SymbolsOutlineOpen', { desc = 'Open Symbols Outline' })
+  --     vim.keymap.set('n', '[os', 'SymbolsOutlineClose', { desc = 'Close Symbols Outline' })
+  --   end
+  -- },
   {
     'abecodes/tabout.nvim',
     lazy = false,
@@ -484,19 +486,19 @@ return {
     --   }
     -- end
   },
-  {
-    "SirVer/ultisnips",
-    config = function()
-      vim.cmd([[
-      let g:UltiSnipsSnippetDirectories=[$HOME.'/.vim/UltiSnips', $HOME.'/.vim/bundle/vim-snippets/UltiSnips']
-      let g:UltiSnipsSnippetsDir='~/.vim/UltiSnips'
-      let g:UltiSnipsListSnippets='<C-\>'
-      let g:UltiSnipsExpandTrigger='<Tab>'
-      let g:UltiSnipsJumpForwardTrigger='<Tab>'
-      let g:UltiSnipsJumpBackwardTrigger='<S-Tab>'
-    ]])
-    end,
-  },
+  -- {
+  --   "SirVer/ultisnips",
+  --   config = function()
+  --     vim.cmd([[
+  --     let g:UltiSnipsSnippetDirectories=[$HOME.'/.vim/UltiSnips', $HOME.'/.vim/bundle/vim-snippets/UltiSnips']
+  --     let g:UltiSnipsSnippetsDir='~/.vim/UltiSnips'
+  --     let g:UltiSnipsListSnippets='<C-\>'
+  --     let g:UltiSnipsExpandTrigger='<Tab>'
+  --     let g:UltiSnipsJumpForwardTrigger='<Tab>'
+  --     let g:UltiSnipsJumpBackwardTrigger='<S-Tab>'
+  --   ]])
+  --   end,
+  -- },
   {
     "RRethy/vim-illuminate",
     config = function()
@@ -537,8 +539,23 @@ return {
     ]])
     end,
   },                                                                                 -- :VtrSendCommandToRunner for tmux
-  { "saaguero/vim-textobj-pastedtext", dependencies = { "kana/vim-textobj-user" } }, -- vgb for last pasted text.
-  { "glts/vim-textobj-comment",        dependencies = { "kana/vim-textobj-user" } }, -- select comment with vic or vac.
+  {
+    "kana/vim-textobj-user",
+    config = function()
+      -- from https://github.com/christoomey/vim-textobj-codeblock/blob/master/plugin/textobj-codeblock.vim
+      vim.cmd([[
+      call textobj#user#plugin('codeblock', {
+      \   'blocj': {
+      \     'pattern': ['^```\s\?\w\+$\n', '^```$'],
+      \     'select-a': 'aC',
+      \     'select-i': 'iC',
+      \   },
+      \ })
+      ]])
+    end
+  },
+  { "saaguero/vim-textobj-pastedtext",   dependencies = { "kana/vim-textobj-user" } }, -- vgb for last pasted text.
+  { "glts/vim-textobj-comment",          dependencies = { "kana/vim-textobj-user" } }, -- select comment with vic or vac.
   {
     "sindrets/diffview.nvim",
     config = function()
