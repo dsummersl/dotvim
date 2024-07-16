@@ -6,14 +6,17 @@ return {
       vim.keymap.set('v', ',y', '<Plug>OSCYankVisual', { desc = 'Yank to clipboard (visual)' })
     end,
   },
-  -- {
-  --   "simrat39/symbols-outline.nvim",
-  --   config = function()
-  --     require('symbols-outline').setup {}
-  --     vim.keymap.set('n', ']os', 'SymbolsOutlineOpen', { desc = 'Open Symbols Outline' })
-  --     vim.keymap.set('n', '[os', 'SymbolsOutlineClose', { desc = 'Close Symbols Outline' })
-  --   end
-  -- },
+  {
+    "jackMort/ChatGPT.nvim",
+    config = function()
+      require("chatgpt").setup()
+    end,
+    dependencies = {
+      "MunifTanjim/nui.nvim",
+      "nvim-lua/plenary.nvim",
+      "nvim-telescope/telescope.nvim"
+    },
+  },
   {
     'abecodes/tabout.nvim',
     lazy = false,
@@ -123,6 +126,9 @@ return {
     "andymass/vim-matchup",
     init = function() -- matching tags/parens/etc
       vim.g.matchup_matchparen_hi_background = 2
+      vim.g.matchup_matchparen_deferred = 1
+      vim.g.matchup_matchparen_deferred_show_delay = 50
+      vim.g.matchup_matchparen_deferred_hide_delay = 700
       vim.g.matchup_matchparen_offscreen = { method = "popup" }
     end,
   },
@@ -472,7 +478,7 @@ return {
   },
   {
     "dsummersl/nvim-sluice",
-    -- dir = "~/Documents/classes/nvim-sluice",
+    dir = "~/Documents/classes/nvim-sluice",
     -- config = function()
     --   require("sluice").setup {
     --     gutters = {
@@ -488,10 +494,34 @@ return {
   },
   {
     "L3MON4D3/LuaSnip",
+    dependencies = { "rafamadriz/friendly-snippets" },
     version = "v2.*",
     build = "make install_jsregexp",
     config = function()
+      vim.cmd("hi link LuasnipInsertNodePassive GruvboxRed")
+      vim.cmd("hi link LuasnipSnippetPassive GruvboxBlue")
+
       local ls = require("luasnip")
+      local types = require("luasnip.util.types")
+      ls.config.setup({
+        history = true,
+        update_events = { "TextChanged", "TextChangedI" },
+        enable_autosnippets = true,
+        ext_opts = {
+          [types.choiceNode] = {
+            active = {
+              virt_text = { { "●", "Orange" } },
+              hl_mode = "combine"
+            }
+          },
+          [types.insertNode] = {
+            active = {
+              virt_text = { { "●", "Blue" } },
+              hl_mode = "combine"
+            }
+          }
+        },
+      })
       vim.keymap.set({ "i", "s" }, "<C-J>", function() ls.jump(1) end, { silent = true })
       vim.keymap.set({ "i", "s" }, "<C-K>", function() ls.jump(-1) end, { silent = true })
 
@@ -500,7 +530,9 @@ return {
           ls.change_choice(1)
         end
       end, { silent = true })
-      require("luasnip.loaders.from_snipmate").lazy_load({ paths = "~/.vim/UltiSnips" })
+      require("luasnip.loaders.from_vscode").load_standalone({ path = "~/.vim/snippets/all.code-snippets.jsonc", lazy = true })
+      require("luasnip.loaders.from_vscode").lazy_load()
+      require("luasnip.loaders.from_snipmate").lazy_load({ paths = "~/.vim/snippets" })
     end,
   },
   {
@@ -558,8 +590,8 @@ return {
       ]])
     end
   },
-  { "saaguero/vim-textobj-pastedtext", dependencies = { "kana/vim-textobj-user" } },   -- vgb for last pasted text.
-  { "glts/vim-textobj-comment",        dependencies = { "kana/vim-textobj-user" } },   -- select comment with vic or vac.
+  { "saaguero/vim-textobj-pastedtext", dependencies = { "kana/vim-textobj-user" } }, -- vgb for last pasted text.
+  { "glts/vim-textobj-comment",        dependencies = { "kana/vim-textobj-user" } }, -- select comment with vic or vac.
   {
     "sindrets/diffview.nvim",
     config = function()

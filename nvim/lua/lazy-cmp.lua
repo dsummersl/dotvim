@@ -11,9 +11,14 @@ return function()
       "hrsh7th/cmp-nvim-lsp-signature-help",
       "L3MON4D3/LuaSnip",
       "saadparwaiz1/cmp_luasnip",
+      "L3MON4D3/cmp-luasnip-choice",
       -- TODO https://github.com/petertriho/cmp-git be able to reference git users and commits from github
     },
     config = function()
+      require('cmp_luasnip_choice').setup({
+        auto_open = true, -- Automatically open nvim-cmp on choice node (default: true)
+      });
+
       vim.cmd([[
         set completeopt=menu,menuone,noselect
         set pumheight=15
@@ -66,10 +71,11 @@ return function()
           end, { "i", "s" }),
         },
         sources = {
-          { name = "nvim_lsp_signature_help" },
-          { name = "nvim_lsp",               priority_weight = 2, keyword_length = 3 },
-          { name = "buffer",                 priority_weight = 3, keyword_length = 3 },
-          { name = "luasnip",                priority_weight = 1 },
+          { name = "nvim_lsp_signature_help" } ,
+          { name = "nvim_lsp"                  , priority_weight = 2, keyword_length = 3 },
+          { name = "buffer"                    , priority_weight = 3, keyword_length = 3 },
+          { name = "luasnip"                   , priority_weight = 1, keyword_length = 2 },
+          { name = "luasnip_choice"            , priority_weight = 1 },
         },
       })
 

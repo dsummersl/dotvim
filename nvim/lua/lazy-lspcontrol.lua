@@ -134,7 +134,23 @@ lsp_control.init = function()
           jsonls = { schemas = require("schemastore").json.schemas() },
         },
       })
-      lspconfig.pyright.setup(opts)
+      lspconfig.basedpyright.setup(opts)
+      -- this works for auto imports, but I can't add any custom folders!
+      -- lspconfig.pylsp.setup {
+      --   settings = {
+      --     pylsp = {
+      --       plugins = {
+      --         rope_autoimport = {
+      --           enabled = true
+      --         },
+      --         pycodestyle = {
+      --           enabled = false
+      --         }
+      --       }
+      --     }
+      --   }
+      -- }
+      lspconfig.ruff.setup(opts)
       lspconfig.lua_ls.setup({
         on_attach = on_attach,
         capabilities = cmp_capabilities,
@@ -154,7 +170,7 @@ lsp_control.init = function()
           null_ls.builtins.diagnostics.buf,
           null_ls.builtins.diagnostics.proselint,
           null_ls.builtins.code_actions.proselint,
-          null_ls.builtins.formatting.black,
+          -- null_ls.builtins.formatting.black,
           null_ls.builtins.formatting.prettier,
           null_ls.builtins.formatting.isort,
           -- null_ls.builtins.diagnostics.pylint,

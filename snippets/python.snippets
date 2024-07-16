@@ -1,11 +1,8 @@
-clearsnippets
-priority 1
-
 snippet log "logger " !b
-	logger.$1`!p snip.rv=complete(t[1],['debug','info','warning','error'])`("$2")$0
+	logger.$1("$2")$0
 
 snippet loge "logger var" !b
-	logger.$1`!p snip.rv=complete(t[1],['debug','info','warning','error'])`("|$2 = %s", $2)$0
+	logger.$1("|$2 = %s", $2)$0
 
 snippet lg "print " !b
 	print(f"$1")$0
@@ -13,30 +10,23 @@ snippet lg "print " !b
 snippet lge "print var" !b
 	print("|$1 = {0}".format($1))$0
 
-snippet la "lambda" w
-	lambda ${1:i}: $1${2}
-
 snippet kv "key/value" !b
-	'${1:key}': ${2:'$1'},$0
+	'${1:key}': $0
 
 snippet av "[key] = value" i
 	[${1:key}] = $2
 
-snippet def "function with docstrings" !b
-	def ${1:function}(${2:self}$3):
-		${4:${VISUAL:pass}}$0
-
 snippet test "test function" !b
-	def test_${1:function}(${2:params}):
-		${3:pass}$0
+	def test_${1:function}():
+		${2:pass}
 
 snippet for "for loop" !b
 	for ${1:val} in ${2:`!p snip.rv=t[1]`s}:
-		${3:${VISUAL:pass}}$0
+		${3:$TM_SELECTED_TEXT}$0
 
 snippet if "if" !b
 	if ${1:condition}:
-		${2:${VISUAL:pass}}$0
+		${2:$TM_SELECTED_TEXT}$0
 
 snippet ifmain "ifmain" b
 	if __name__ == '__main__':
@@ -44,20 +34,6 @@ snippet ifmain "ifmain" b
 
 snippet from "from module import name" b
 	from ${1:module} import ${2:Stuff}
-
-snippet try "Try / Except / Else / Finally" b
-	try:
-		${1:${VISUAL:pass}}
-	except${2: ${3:Exception} as ${4:e}}:
-		${5:raise}
-	else:
-		${6:pass}
-	finally:
-		${7:pass}
-
-snippet with "with syntax" !b
-	with $1 as $2:
-		$0
 
 snippet brk "Set PDB breakpoint" b
 	import pdb; pdb.set_trace()

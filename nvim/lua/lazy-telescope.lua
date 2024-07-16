@@ -7,6 +7,7 @@ return function()
       "nvim-telescope/telescope-media-files.nvim",
       "nvim-telescope/telescope-live-grep-args.nvim",
       "debugloop/telescope-undo.nvim",
+      "benfowler/telescope-luasnip.nvim",
     },
     config = function()
       local actions = require("telescope.actions")
@@ -73,6 +74,7 @@ return function()
       require("telescope").load_extension("media_files")
       require("telescope").load_extension("live_grep_args")
       require("telescope").load_extension("undo")
+      require("telescope").load_extension("luasnip")
 
       vim.cmd([[
         nnoremap <silent> <leader>/r :Telescope resume<CR>
