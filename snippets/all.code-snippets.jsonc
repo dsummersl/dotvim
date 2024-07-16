@@ -1,0 +1,64 @@
+{
+  "Log at a level": {
+    "prefix": "log",
+    "body": [
+      "logger.${1|info,debug,warn,error|}($2);$0"
+    ],
+    "description": "logger.<level>()",
+    "scope": "javascript,typescript"
+  },
+  "Styled component": {
+    "prefix": "scomp",
+    "body": [
+      // "const ${1:Component/(.*)/${1:/capitalize}/} = styled.${2:div}`",
+      "const ${1} = styled.${2:div}`",
+      "  $3",
+      "`;",
+      "$0"
+    ],
+    "description": "Styled component",
+    "scope": "javascript,typescript"
+  },
+  "Styled custom component": {
+    "prefix": "Scomp",
+    "body": [
+      // "const ${1:Component/(.*)/${1:/capitalize}/} = styled(({ className }) => (",
+      "const ${1} = styled(({ className }) => (",
+      "  <div className={className}>$2</div>",
+      "))`",
+      "  $3",
+      "`;",
+      "$0"
+    ],
+    "description": "Styled custom component",
+    "scope": "javascript,typescript"
+  },
+  "Styled custom component as function": {
+    "prefix": "SScomp",
+    "body": [
+      // "const ${1:Component/(.*)/${1:/capitalize}/} = styled(({ className }) => {",
+      "const ${1} = styled(({ className }) => {",
+      "  return (",
+      "    <div className={className}>$2</div>",
+      "  );",
+      "})`",
+      "  $3",
+      "`;",
+      "$0"
+    ],
+    "description": "Styled custom component as function",
+    "scope": "javascript,typescript"
+  },
+  "useState Hook": {
+    "prefix": "useS",
+    "body": [
+      // from https://github.com/rafamadriz/friendly-snippets/blob/700c4a25caacbb4648c9a27972c2fe203948e0c2/snippets/javascript/react.json#L301
+      // This works: "body": "const [${1:state}, set${1/(.*)/${1:/capitalize}/}] = useState(${2:initValue})$0",
+      // "const [${1}, set${1/(.*)/${1:/capitalize}/}] = useState(${3:'${4}'});",
+      "const [${1}, set${1/(.*)/${1:/capitalize}/}] = useState(${3:'${4}'});",
+      "$0"
+    ],
+    "description": "useState Hook",
+    "scope": "javascript,typescript"
+  }
+}
