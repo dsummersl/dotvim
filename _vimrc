@@ -139,6 +139,7 @@ nnoremap <silent> zm zs
 " Repeat the previous change as if it had been made with cgn
 " - lets future changes for the same pattern happen with '.'
 " Inspired by https://www.reddit.com/r/neovim/comments/sf0hmc/im_really_proud_of_this_mapping_i_came_up_with/
+" TODO broken?
 nnoremap <silent> g. :call setreg('/',substitute(@", '\%x00', '\\n', 'g'))<cr>:exec printf("norm %sgn%s", v:operator, v:operator != 'd' ? '<c-a>':'')<cr>
 
 " when switching between the alternate window, automatically save.

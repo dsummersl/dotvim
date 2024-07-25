@@ -67,13 +67,25 @@ return {
   require("lazy-sandwhich")(),
   "chrisbra/unicode.vim", -- :Unicode* commands to search for them.
   "aklt/plantuml-syntax",
-  "folke/which-key.nvim",
+  -- this breaks my 'gn' use in my 'g.' mapping:
+  -- {
+  --   "folke/which-key.nvim",
+  --   event = "VeryLazy",
+  --   opts = {
+  --     triggers = {}
+  --   },
+  --   keys = {
+  --     {
+  --       "<leader>?",
+  --       function()
+  --         require("which-key").show({ global = false })
+  --       end,
+  --       desc = "Buffer Local Keymaps (which-key)",
+  --     },
+  --   }
+  -- },
   {
-    "tommcdo/vim-express", -- custom g* operations (g=iw - prompt 'get_'.v:val.'()' to change a word to a func)
-    config = function()
-      vim.cmd([[
-      ]])
-    end,
+    "tommcdo/vim-express",            -- custom g* operations (g=iw - prompt 'get_'.v:val.'()' to change a word to a func)
   },
   "stefandtw/quickfix-reflector.vim", -- edit the qf list directly with copen
   "michaeljsmith/vim-indent-object",  -- vii and viI (visual inner Indent)
@@ -632,21 +644,17 @@ return {
     version = false,
     config = function()
       require('mini.splitjoin').setup()
+      require('mini.diff').setup {
+        view = {
+          signs = {
+            add = "│",
+            change = "┊",
+            delete = "┃",
+          }
+        },
+        mappings = nil,
+      }
+      vim.keymap.set('n', ',D', ':lua MiniDiff.toggle_overlay()<cr>', { desc = 'MiniDiff toggle overlay' })
     end
-  },
-  {
-    "mhinz/vim-signify",
-    config = function()
-      vim.g.signify_priority = 5
-      vim.g.signify_sign_show_count = 0
-      vim.g.signify_sign_add = "┃"
-      vim.g.signify_sign_change = "┇"
-      vim.keymap.set('n', ']h', '<plug>(signify-next-hunk)', { desc = 'Next hunk' })
-      vim.keymap.set('n', '[h', '<plug>(signify-prev-hunk)', { desc = 'Previous hunk' })
-      vim.keymap.set('o', 'ih', '<plug>(signify-motion-inner-pending)', { desc = 'Inner hunk' })
-      vim.keymap.set('x', 'ih', '<plug>(signify-motion-inner-visual)', { desc = 'Inner hunk' })
-      vim.keymap.set('o', 'ah', '<plug>(signify-motion-outer-pending)', { desc = 'Outer hunk' })
-      vim.keymap.set('x', 'ah', '<plug>(signify-motion-outer-visual)', { desc = 'Outer hunk' })
-    end,
-  },
+  }
 }
