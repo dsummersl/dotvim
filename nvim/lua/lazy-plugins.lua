@@ -2,9 +2,35 @@ return {
   {
     "ojroques/vim-oscyank",
     config = function()
-      vim.keymap.set('n', ',y', '<Plug>OSCYankOperator', { desc = 'Yank to clipboard' })
-      vim.keymap.set('v', ',y', '<Plug>OSCYankVisual', { desc = 'Yank to clipboard (visual)' })
+      vim.g.oscyank_silent = 1
+      vim.keymap.set('n', ',y', '<Plug>OSCYankOperator', { silent = true, desc = 'Yank to clipboard' })
+      vim.keymap.set('v', ',y', '<Plug>OSCYankVisual', { silent = true, desc = 'Yank to clipboard (visual)' })
     end,
+  },
+  {
+    "yetone/avante.nvim",
+    event = "VeryLazy",
+    build = "make", -- This is Optional, only if you want to use tiktoken_core to calculate tokens count
+    opts = {
+      hints = { enabled = false }
+    },
+    dependencies = {
+      "nvim-tree/nvim-web-devicons", -- or echasnovski/mini.icons
+      "stevearc/dressing.nvim",
+      "nvim-lua/plenary.nvim",
+      "MunifTanjim/nui.nvim",
+    },
+  },
+  {
+    'MeanderingProgrammer/render-markdown.nvim',
+    opts = {
+      heading = { enabled = false },
+      latex = { enabled = false },
+      sign = { enabled = false },
+      bullet = { enabled = false },
+      checkbox = { enable = false },
+    },
+    dependencies = { 'nvim-treesitter/nvim-treesitter', 'echasnovski/mini.nvim' },
   },
   {
     "jackMort/ChatGPT.nvim",
@@ -85,16 +111,21 @@ return {
   --   }
   -- },
   {
-    "tommcdo/vim-express",            -- custom g* operations (g=iw - prompt 'get_'.v:val.'()' to change a word to a func)
+    "tommcdo/vim-express", -- custom g* operations (g=iw - prompt 'get_'.v:val.'()' to change a word to a func)
   },
-  "stefandtw/quickfix-reflector.vim", -- edit the qf list directly with copen
-  "michaeljsmith/vim-indent-object",  -- vii and viI (visual inner Indent)
+  {
+    'stevearc/quicker.nvim',
+    ---@module "quicker"
+    ---@type quicker.SetupOptions
+    opts = {},
+  },
+  "michaeljsmith/vim-indent-object", -- vii and viI (visual inner Indent)
   "ryanoasis/vim-devicons",
-  "pgdouyon/vim-evanesco",            -- vmap *, Highlight search, clear after searching
+  "pgdouyon/vim-evanesco",           -- vmap *, Highlight search, clear after searching
   "tommcdo/vim-exchange",
-  "tpope/vim-eunuch",                 -- eunuch.vim: cp/move/unlink commands
-  "mattn/emmet-vim",                  -- fast HTML tag generation (in insert mode type tr*3CTL-Y, to make three <tr>s
-  "tomtom/tcomment_vim",              -- An extensible & universal comment vim-plugin that also handles embedded filetypes
+  "tpope/vim-eunuch",                -- eunuch.vim: cp/move/unlink commands
+  "mattn/emmet-vim",                 -- fast HTML tag generation (in insert mode type tr*3CTL-Y, to make three <tr>s
+  "tomtom/tcomment_vim",             -- An extensible & universal comment vim-plugin that also handles embedded filetypes
   {
     "folke/flash.nvim",
     event = "VeryLazy",
@@ -514,25 +545,11 @@ return {
       vim.cmd("hi link LuasnipSnippetPassive GruvboxBlue")
 
       local ls = require("luasnip")
-      local types = require("luasnip.util.types")
       ls.config.setup({
         history = true,
         update_events = { "TextChanged", "TextChangedI" },
         enable_autosnippets = true,
-        ext_opts = {
-          [types.choiceNode] = {
-            active = {
-              virt_text = { { "●", "Orange" } },
-              hl_mode = "combine"
-            }
-          },
-          [types.insertNode] = {
-            active = {
-              virt_text = { { "●", "Blue" } },
-              hl_mode = "combine"
-            }
-          }
-        },
+        ext_opts = {},
       })
       vim.keymap.set({ "i", "s" }, "<C-J>", function() ls.jump(1) end, { silent = true })
       vim.keymap.set({ "i", "s" }, "<C-K>", function() ls.jump(-1) end, { silent = true })
@@ -638,6 +655,29 @@ return {
     'stevearc/oil.nvim', -- replacement for netrw file browser
     opts = {},
     dependencies = { "nvim-tree/nvim-web-devicons" },
+    config = function()
+      require("oil").setup({
+        columns = {
+          "mtime",
+          "icon",
+        },
+        keymaps = {
+          ["g?"] = "actions.show_help",
+          ["<CR>"] = "actions.select",
+          ["<C-c>"] = "actions.close",
+          ["<C-l>"] = "actions.refresh",
+          ["-"] = "actions.parent",
+          ["_"] = "actions.open_cwd",
+          ["`"] = "actions.cd",
+          ["~"] = { "actions.cd", opts = { scope = "tab" }, desc = ":tcd to the current oil directory" },
+          ["gs"] = "actions.change_sort",
+          ["gx"] = "actions.open_external",
+          ["g."] = "actions.toggle_hidden",
+          ["g\\"] = "actions.toggle_trash",
+        },
+        use_default_keymaps = false,
+      })
+    end
   },
   {
     'echasnovski/mini.nvim',

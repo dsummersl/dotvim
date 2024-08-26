@@ -6,7 +6,7 @@ set exrc
 set cursorline
 " show column markers beyond the 80, and 100
 " TODO don't set a colorcolumn if the file is read only (help files and such).
-set colorcolumn=+20,+21,+22,+23
+" set colorcolumn=+20,+21,+22,+23
 
 set undofile
 set undodir=~/.vim/undo
@@ -22,6 +22,7 @@ set noshowmode
 
 " give a little context when at the top/bottom of the file.
 set scrolloff=2
+set sidescrolloff=5
 
 " use folding by default
 set foldmethod=marker
@@ -75,6 +76,9 @@ set pumblend=10
 " completion for command mode suggestions
 set wildoptions=pum
 set signcolumn=yes:2
+
+" hide the command line
+set cmdheight=0
 
 set guifont=JetBrainsMono\ Nerd\ Font
 let g:python_host_prog='/Users/danesummers/.pyenv/versions/neovim/bin/python'
@@ -147,7 +151,7 @@ inoremap <silent> <C-^> <C-O>:e #<CR>
 " do the same thing in terminal mode (even in insert mode)
 tnoremap <silent> <C-^> <C-\><C-N><C-O>:e #<CR>
 " quick autosave
-nnoremap <silent> <silent> <C-c> :w<CR>
+nnoremap <silent> <silent> <C-c> :silent w<CR>
 inoremap <silent> <C-c> <Esc>
 
 " instead of using this, I use 'gt'
@@ -169,7 +173,7 @@ imap <silent> <M-a> <Home>
 
 " noremap <leader>a ggVG"+y
 " copy the current filename and line number into the clipboard and past register:
-noremap <silent> <leader>f :let @+=expand("%") .'#'. line(".")<bar>let @"=@+ ."\n"<CR>
+noremap <silent> <leader>f :let @+=expand("%") .'#'. line(".")<bar>let @"=@+ ."\n"<bar>OSCYankRegister +<CR>
 
 " unimpaired like mapping for diff option for ignoring whitespace.
 noremap <silent> ]oI :set diffopt-=iwhiteall<cr>

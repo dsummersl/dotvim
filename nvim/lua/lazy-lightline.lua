@@ -69,8 +69,12 @@ return function()
         end,
       }
 
+      local function file_modified()
+        return vim.bo.modified and "" or " "
+      end
+
       local function navic_breadcrumb()
-        return require("nvim-navic").get_location({depth_limit = 3, separator = ": "})
+        return require("nvim-navic").get_location({depth_limit = 3, separator = ":"})
       end
 
       require('lualine').setup {
@@ -81,11 +85,11 @@ return function()
           component_separators = '',
         },
         sections = {
-          lualine_a = { { 'mode', fmt = function(str) return str:sub(1, 1) end } },
-          lualine_b = { 'branch', neotest_status },
-          lualine_c = { 'filename', navic_breadcrumb },
-          lualine_x = { 'filetype' },
-          lualine_y = { },
+          lualine_a = { '' },
+          lualine_b = { },
+          lualine_c = { navic_breadcrumb },
+          lualine_x = { },
+          lualine_y = { file_modified, 'searchcount', 'selectioncount', neotest_status },
           lualine_z = {  '%{&expandtab?"":"t"}%{&tabstop}', 'location' }
         },
         inactive_sections = {

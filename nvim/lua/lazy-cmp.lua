@@ -26,6 +26,7 @@ return function()
 
       local cmp = require("cmp")
       local lspkind = require("lspkind")
+      local ls = require("luasnip")
       cmp.setup({
         enabled = function()
           if vim.bo.buftype == 'prompt' then
@@ -39,7 +40,7 @@ return function()
         },
         snippet = {
           expand = function(args)
-            require("luasnip").lsp_expand(args.body)
+            ls.lsp_expand(args.body)
           end,
         },
         window = {
@@ -60,7 +61,6 @@ return function()
           ["<C-n>"] = cmp.mapping.select_next_item(),
           ["<C-Space>"] = cmp.mapping.confirm({ select = true }),
           ["<Tab>"] = cmp.mapping(function(fallback)
-            local ls = require("luasnip")
             if ls.expandable() then
               ls.expand()
             elseif ls.jumpable(1) then
