@@ -79,6 +79,7 @@ set signcolumn=yes:2
 
 " hide the command line
 set cmdheight=0
+set showcmdloc=statusline
 
 set guifont=JetBrainsMono\ Nerd\ Font
 let g:python_host_prog='/Users/danesummers/.pyenv/versions/neovim/bin/python'

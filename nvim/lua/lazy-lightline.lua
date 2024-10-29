@@ -74,7 +74,7 @@ return function()
       end
 
       local function navic_breadcrumb()
-        return require("nvim-navic").get_location({depth_limit = 3, separator = ":"})
+        return require("nvim-navic").get_location({depth_limit = 4, separator = ":"})
       end
 
       require('lualine').setup {
@@ -85,12 +85,12 @@ return function()
           component_separators = '',
         },
         sections = {
-          lualine_a = { '' },
-          lualine_b = { },
+          lualine_a = { },
+          lualine_b = { 'filename' },
           lualine_c = { navic_breadcrumb },
-          lualine_x = { },
-          lualine_y = { file_modified, 'searchcount', 'selectioncount', neotest_status },
-          lualine_z = {  '%{&expandtab?"":"t"}%{&tabstop}', 'location' }
+          lualine_x = { '%S', file_modified, 'searchcount', 'selectioncount', neotest_status },
+          lualine_y = { '%{&expandtab?"":"t"}%{&tabstop}', 'location' },
+          lualine_z = { }
         },
         inactive_sections = {
           lualine_a = {},
