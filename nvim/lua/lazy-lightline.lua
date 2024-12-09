@@ -89,7 +89,7 @@ return function()
           lualine_b = { 'filename' },
           lualine_c = { navic_breadcrumb },
           lualine_x = { '%S', file_modified, 'searchcount', 'selectioncount', neotest_status },
-          lualine_y = { '%{&expandtab?"":"t"}%{&tabstop}', 'location' },
+          lualine_y = { '%{&expandtab?"":"t"}%{&tabstop}', 'location', 'progress' },
           lualine_z = { }
         },
         inactive_sections = {

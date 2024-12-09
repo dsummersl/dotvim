@@ -22,6 +22,47 @@ return {
     },
   },
   {
+    "olimorris/codecompanion.nvim",
+    dependencies = {
+      "nvim-lua/plenary.nvim",
+      "nvim-treesitter/nvim-treesitter",
+      -- The following are optional:
+      { "MeanderingProgrammer/render-markdown.nvim", ft = { "markdown", "codecompanion" } },
+    },
+    config = function()
+      require('codecompanion').setup({
+        strategies = {
+          chat = {
+            keymaps = {
+              exitinsert = {
+                modes = {
+                  i = "<C-c>",
+                },
+                index = 3,
+                callback = function()
+                  vim.api.nvim_feedkeys(vim.api.nvim_replace_termcodes('<Esc>', true, true, true), 'n', true)
+                end,
+                description = "Exit Insert Mode",
+              },
+              close = {
+                modes = {
+                  n = "<C-c>",
+                },
+                index = 3,
+                callback = function()
+                  require("codecompanion").toggle()
+                end,
+                description = "Toggle Chat",
+              },
+            }
+          }
+        }
+      })
+      vim.keymap.set('n', ',cc', function() require("codecompanion").toggle() end, { silent = true, desc = 'Toggle CodeCompanion' })
+      vim.keymap.set('v', ',cc', function() require("codecompanion").toggle() end, { silent = true, desc = 'Toggle CodeCompanion (visual)' })
+    end,
+  },
+  {
     'MeanderingProgrammer/render-markdown.nvim',
     opts = {
       heading = { enabled = false },
@@ -31,17 +72,6 @@ return {
       checkbox = { enable = false },
     },
     dependencies = { 'nvim-treesitter/nvim-treesitter', 'echasnovski/mini.nvim' },
-  },
-  {
-    "jackMort/ChatGPT.nvim",
-    config = function()
-      require("chatgpt").setup()
-    end,
-    dependencies = {
-      "MunifTanjim/nui.nvim",
-      "nvim-lua/plenary.nvim",
-      "nvim-telescope/telescope.nvim"
-    },
   },
   {
     'abecodes/tabout.nvim',
@@ -113,11 +143,17 @@ return {
   {
     "tommcdo/vim-express", -- custom g* operations (g=iw - prompt 'get_'.v:val.'()' to change a word to a func)
   },
+  -- "stefandtw/quickfix-reflector.vim", -- edit the qf list directly with copen
   {
     'stevearc/quicker.nvim',
     ---@module "quicker"
     ---@type quicker.SetupOptions
-    opts = {},
+    opts = {
+      keys = {
+        { ">", "<cmd>lua require('quicker').expand()<CR>",   desc = "Expand quickfix content" },
+        { "<", "<cmd>lua require('quicker').collapse()<CR>", desc = "Collapse quickfix content" },
+      },
+    },
   },
   "michaeljsmith/vim-indent-object", -- vii and viI (visual inner Indent)
   "ryanoasis/vim-devicons",
@@ -227,16 +263,16 @@ return {
 
       -- remap to open the Telescope refactoring menu in visual mode
       vim.api.nvim_set_keymap(
-        "v",
-        "<leader>dr",
+        "n",
+        "<leader>dR",
         "<Esc><cmd>lua require('telescope').extensions.refactoring.refactors()<CR>",
         { noremap = true, desc = "Refactor actions" }
       )
     end,
   },
   {
-    "dsummersl/vim-diffundo",
-    -- dir = "~/Documents/classes/vim-diffundo",
+    -- "dsummersl/vim-diffundo",
+    dir = "~/Documents/classes/vim-diffundo",
     dependencies = { "kreskij/Repeatable.vim" },
     config = function()
       vim.cmd([[
@@ -521,19 +557,101 @@ return {
   },
   {
     "dsummersl/nvim-sluice",
+    -- branch = "update_config_format",
     dir = "~/Documents/classes/nvim-sluice",
-    -- config = function()
-    --   require("sluice").setup {
-    --     gutters = {
-    --       {
-    --         plugins = { 'extmarks' },
-    --         extmarks = {
-    --           hl_groups = { 'IlluminatedWordWrite' }
-    --         }
-    --       }
-    --     }
-    --   }
-    -- end
+    config = function()
+      local gutter = require("sluice.gutter")
+      local counters = require('sluice.utils.counters')
+
+      local function notGitHunk(v)
+        return not string.match(v, 'Signify.*') and not string.match(v, 'Illuminated.*')
+      end
+
+      -- require("sluice").setup {
+      --   gutters = {
+      --     {
+      --       plugins = {
+      --         'viewport',
+      --         -- { 'extmark', {
+      --         --   user_events = { 'Signify' },
+      --         --   sign_hl_group = 'Signify.*',
+      --         -- } },
+      --       }
+      --     },
+      --   }
+      -- }
+      require("sluice").setup {
+        enabled = true,
+        gutters = {
+          -- right side (macro mode):
+          { -- anything that isn't git (ie, lsp)
+            count_method = counters.methods.circle_2,
+            enabled = gutter.any_non_viewport_plugin_active,
+            plugins = {
+              'viewport',
+              { 'extmark', {
+                sign_hl_group = notGitHunk,
+              } },
+              'search',
+              -- { 'extmark', {
+              --   hl_group = 'Illuminated.*',
+              --   sign_hl_group = false,
+              --   priority = 6,
+              -- } },
+            }
+          },
+          { -- git
+            -- TODO want to only be enabled if the first extmark plugin has values
+            enabled = gutter.any_non_viewport_plugin_active,
+            plugins = {
+              'viewport',
+              { 'extmark', {
+                user_events = { 'Signify' },
+                sign_hl_group = 'Signify.*',
+              } },
+              -- { 'extmark', {
+              --   hl_group = 'Illuminated.*',
+              --   sign_hl_group = false,
+              --   priority = 6,
+              -- } },
+            }
+          },
+
+          -- left side (overriding signs column):
+          {
+            layout = 'left',
+            render_method = 'line',
+            gutter_hl = 'Normal',
+            enabled = true,
+            plugins = {}
+          },
+          {
+            layout = 'left',
+            render_method = 'line',
+            gutter_hl = 'Normal',
+            enabled = true,
+            count_method = counters.methods.circle_2,
+            plugins = {
+              { 'extmark', {
+                sign_hl_group = notGitHunk,
+              } },
+            }
+          },
+          {
+            layout = 'left',
+            render_method = 'line',
+            gutter_hl = 'Normal',
+            enabled = true,
+            plugins = {
+              { 'extmark', {
+                sign_hl_group = 'Signify.*',
+                user_events = { 'Signify' },
+              } },
+            }
+          },
+        }
+      }
+    end
   },
   {
     "L3MON4D3/LuaSnip",
@@ -680,21 +798,25 @@ return {
     end
   },
   {
+    "mhinz/vim-signify",
+    config = function()
+      vim.g.signify_priority = 5
+      vim.g.signify_sign_show_count = 0
+      vim.g.signify_sign_add = "│"
+      vim.g.signify_sign_change = "┊"
+      vim.keymap.set('n', ']h', '<plug>(signify-next-hunk)', { desc = 'Next hunk' })
+      vim.keymap.set('n', '[h', '<plug>(signify-prev-hunk)', { desc = 'Previous hunk' })
+      vim.keymap.set('o', 'ih', '<plug>(signify-motion-inner-pending)', { desc = 'Inner hunk' })
+      vim.keymap.set('x', 'ih', '<plug>(signify-motion-inner-visual)', { desc = 'Inner hunk' })
+      vim.keymap.set('o', 'ah', '<plug>(signify-motion-outer-pending)', { desc = 'Outer hunk' })
+      vim.keymap.set('x', 'ah', '<plug>(signify-motion-outer-visual)', { desc = 'Outer hunk' })
+    end,
+  },
+  {
     'echasnovski/mini.nvim',
     version = false,
     config = function()
       require('mini.splitjoin').setup()
-      require('mini.diff').setup {
-        view = {
-          signs = {
-            add = "│",
-            change = "┊",
-            delete = "┃",
-          }
-        },
-        mappings = nil,
-      }
-      vim.keymap.set('n', ',D', ':lua MiniDiff.toggle_overlay()<cr>', { desc = 'MiniDiff toggle overlay' })
     end
   }
 }

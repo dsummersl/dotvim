@@ -8,6 +8,10 @@ lsp_control.on_attach = function(client, bufnr)
   vim.keymap.set('n', ',dd', vim.lsp.buf.definition, keymap_opts('Jump to definition'))
   vim.keymap.set('n', ',dt', vim.lsp.buf.type_definition, keymap_opts('Jump to type definition'))
   vim.keymap.set('n', ',dh', vim.lsp.buf.hover, keymap_opts('LSP Hover'))
+  local toggle_inlay_hints = function ()
+    vim.lsp.inlay_hint.enable(not vim.lsp.inlay_hint.is_enabled())
+  end
+  vim.keymap.set('n', ',dH', toggle_inlay_hints, keymap_opts('LSP Hint'))
   vim.keymap.set('n', ',dr', vim.lsp.buf.rename, keymap_opts('LSP Rename'))
   vim.keymap.set('n', ',df', vim.lsp.buf.format, keymap_opts('Format buffer'))
   -- vim.keymap.set('v', ',df', vim.lsp.buf.range_formatting, opts)
@@ -160,7 +164,7 @@ lsp_control.init = function()
       lspconfig.html.setup(opts)
       lspconfig.cssls.setup(opts)
       lspconfig.jsonls.setup(opts)
-      lspconfig.tsserver.setup(opts)
+      lspconfig.ts_ls.setup(opts)
       lspconfig.vimls.setup(opts)
 
       local null_ls = require("null-ls")
@@ -168,15 +172,12 @@ lsp_control.init = function()
         sources = {
           null_ls.builtins.code_actions.refactoring,
           null_ls.builtins.diagnostics.buf,
-          null_ls.builtins.diagnostics.proselint,
-          null_ls.builtins.code_actions.proselint,
-          -- null_ls.builtins.formatting.black,
+          -- null_ls.builtins.diagnostics.proselint,
+          -- null_ls.builtins.code_actions.proselint,
           null_ls.builtins.formatting.prettier,
           null_ls.builtins.formatting.isort,
-          -- null_ls.builtins.diagnostics.pylint,
           null_ls.builtins.diagnostics.codespell,
           null_ls.builtins.formatting.codespell,
-          -- null_ls.builtins.diagnostics.flake8,
         },
         on_attach = on_attach,
       })

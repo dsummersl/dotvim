@@ -6,6 +6,7 @@ return function()
       "nvim-lua/popup.nvim",
       "nvim-telescope/telescope-media-files.nvim",
       "nvim-telescope/telescope-live-grep-args.nvim",
+      "nvim-telescope/telescope-frecency.nvim",
       "debugloop/telescope-undo.nvim",
       "benfowler/telescope-luasnip.nvim",
     },
@@ -68,6 +69,9 @@ return function()
                 ["<C-t>"] = lga_actions.quote_prompt({ postfix = " -t " }),
               },
             },
+          },
+          frecency = {
+            show_filter_column = false,
           }
         }
       })
@@ -75,11 +79,14 @@ return function()
       require("telescope").load_extension("live_grep_args")
       require("telescope").load_extension("undo")
       require("telescope").load_extension("luasnip")
+      require("telescope").load_extension "frecency"
 
       vim.cmd([[
         nnoremap <silent> <leader>/r :Telescope resume<CR>
         nnoremap <silent> <C-p> :Telescope find_files<CR>
         " User iterm2 to map shift-ctrl-p to <f15>
+        " nnoremap <silent> <F11> :Telescope frecency workspace=CWD path_display={"smart"}<CR>
+        " nnoremap <silent> <F15> :Telescope frecency workspace=CWD path_display={"smart"}<CR>
         nnoremap <silent> <F11> :Telescope oldfiles<CR>
         nnoremap <silent> <F15> :Telescope oldfiles<CR>
         nnoremap <silent> <C-t> :Telescope tags<CR>
